@@ -10,6 +10,8 @@ export default function Gallery() {
     resolveCondition: []
   });
 
+  console.log(data);
+
   return (
     <div className='content-block'>
       <div className='text-m text-b'>

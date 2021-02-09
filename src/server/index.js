@@ -69,8 +69,8 @@ function pollGalleryData() {
               
               if (json && !error) {
                 json.id = id;
-                json.animation_url = json.animation_url.replace('ipfs://ipfs', 'https://ipfs.io/ipfs');
-                json.image = json.image.replace('ipfs://ipfs', 'https://ipfs.io/ipfs');
+                if (json.animation_url) json.animation_url = json.animation_url.replace('ipfs://ipfs', 'https://ipfs.io/ipfs');
+                if (json.image) json.image = json.image.replace('ipfs://ipfs', 'https://ipfs.io/ipfs');
                 return resolve(json);
               } else {
                 return reject();
