@@ -59,8 +59,14 @@ function pollGalleryData() {
               url: `https://ipfs.io/ipfs/${ result3.split('/')[3] }`,
               method: 'GET',
             }, (err, response, body) => {
-              const json = JSON.parse(body);
-              if (json) {
+              let error = false;
+              try {
+                const json = JSON.parse(body);
+              } catch (e) {
+                error = true;
+              }
+              
+              if (json && !error) {
                 json.id = id;
                 json.animation_url = json.animation_url.replace('ipfs://ipfs', 'https://ipfs.io/ipfs');
                 json.image = json.image.replace('ipfs://ipfs', 'https://ipfs.io/ipfs');
@@ -75,7 +81,11 @@ function pollGalleryData() {
     }
 
     Promise.all(allData).then(results => {
-      if (totalCount === results.length) galleryData = results;
+      let complete = true;
+      for (let i = 0; i < results.length; i++) {
+        if (!results[i]) complete = false;
+      }
+      if (complete) galleryData = results;
       else console.log('Issue pulling all data');
     });
   });
