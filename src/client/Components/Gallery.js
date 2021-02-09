@@ -21,28 +21,65 @@ export default function Gallery() {
         Genesis Grants aim to curate, educate, and fund an artist's first true digital signature to ease and bridge the gap
         between traditional publishing and NFTs, the future of our creativity ❤️
       </div>
-      { isLoading ?
-          <div className='gallery-container margin-top'>
-            <span />
+      <div className='cols'>
+        { isLoading ?
+          <div className='gallery-block'>
+            <div className='block-art'>
+              <div className='block-art-image'>
+                ?
+              </div>
+            </div>
+            <div className='block-info text-s'>
+              Artwork by Artist
+            </div>
           </div>
-        :
-        <div className='gallery-container margin-top'>
-          {
-            data && data.map((item, index)=>{
-              return (
-                <div className='gallery-block' key={ index }>
-                  <div className='block-art'>
-                    <img src={ item.image } className='block-art-image' />
+          :
+          <div className='gallery-container margin-top'>
+            {
+              data && data.map((item, index)=>{
+                return (
+                  <div className='gallery-block' key={ index }>
+                    <div className='block-art'>
+                      <img src={ item.image } className='block-art-image' />
+                    </div>
+                    <div className='block-info text-s'>
+                      Artwork by Artist
+                    </div>
                   </div>
-                  <div className='block-info text-s'>
-                    Artwork by Artist
+                );
+              })
+            }
+            {
+              data && data.map((item, index)=>{
+                return (
+                  <div className='gallery-block' key={ index }>
+                    <div className='block-art'>
+                      <img src={ item.image } className='block-art-image' />
+                    </div>
+                    <div className='block-info text-s'>
+                      Artwork by Artist
+                    </div>
                   </div>
-                </div>
-              );
-            })
-          }
-        </div>
-      }
+                );
+              })
+            }
+            {
+              data && data.map((item, index)=>{
+                return (
+                  <div className='gallery-block' key={ index }>
+                    <div className='block-art'>
+                      <img src={ item.image } className='block-art-image' />
+                    </div>
+                    <div className='block-info text-s'>
+                      Artwork by Artist
+                    </div>
+                  </div>
+                );
+              })
+            }
+          </div>
+        }
+      </div>
     </div>
   );
 }

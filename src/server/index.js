@@ -95,7 +95,7 @@ function pollGalleryData() {
 pollGalleryData();
 setInterval(() => {
   pollGalleryData();
-}, 500000)
+}, 6000000)
 
 app.get('/galleryData', (req, res) => {
   res.json(galleryData);
