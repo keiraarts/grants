@@ -49,7 +49,7 @@ export default function Gallery() {
                 );
               })
             }
-            {
+            {/* {
               data && data.map((item, index)=>{
                 return (
                   <div className='gallery-block' key={ index }>
@@ -76,7 +76,7 @@ export default function Gallery() {
                   </div>
                 );
               })
-            }
+            } */}
           </div>
         }
       </div>

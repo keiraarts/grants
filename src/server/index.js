@@ -34,14 +34,6 @@ logger.add(new winston.transports.Console({
   format: winston.format.simple()
 }));
 
-// const api = axios.create({
-//   baseURL: 'https://api.digitalocean.com/',
-//   responseType: 'json',
-//   crossDomain: true
-// });
-
-// axios.defaults.headers.common.Authorization = secrets.digitalocean_key;
-
 const PROVIDER = new ethers.providers.JsonRpcProvider(`https://mainnet.infura.io/v3/${ ENV.INFURA }`,'mainnet');
 const contract = new ethers.Contract(ENV.CONTRACT_ADDRESS, ABI, PROVIDER);
 
