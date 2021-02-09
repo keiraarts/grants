@@ -60,8 +60,9 @@ function pollGalleryData() {
               method: 'GET',
             }, (err, response, body) => {
               let error = false;
+              let json;
               try {
-                const json = JSON.parse(body);
+                json = JSON.parse(body);
               } catch (e) {
                 error = true;
               }
