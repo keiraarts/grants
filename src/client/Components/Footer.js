@@ -22,8 +22,7 @@ export default function Header() {
         </div>
         <span className='flex-full' />
         <div className='text-s'>
-          Contact Us<br />
-          
+          Contact<br />
         </div>
       </div>
     </div>
