@@ -105,7 +105,7 @@ app.use((req, res) => {
   const route = req.originalUrl.split('/')[1];
   const allowedRoutes = ['nft', 'ethos', 'apply', 'committee'];
   if (allowedRoutes.indexOf(route) > -1) {
-    res.send('../client/index.js');
+    res.sendFile('../client/index.js');
   }
 })
 
