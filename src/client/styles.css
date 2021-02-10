@@ -76,8 +76,8 @@ canvas {
   font-size: 1rem;
 }
 
-.text-b {
-  font-weight: 500;
+.ethos-text {
+  font-size: 2rem;
 }
 
 .text-desc {
@@ -362,6 +362,10 @@ canvas {
   }
   
   .text-s {
+    font-size: 1rem;
+  }
+
+  .ethos-text {
     font-size: 1rem;
   }
 

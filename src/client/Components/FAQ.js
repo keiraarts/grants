@@ -6,7 +6,7 @@ export default function FAQ() {
   return (
     <div className='content-block'>
       <div className='text-l text-b'>
-        NFT Frequently Asked Questions
+        FAQ
       </div>
       <div className='text-s text-desc'>
         There's a new future for art?
@@ -48,6 +48,7 @@ export default function FAQ() {
           Yes, and in this context that's a good thing as that means your art is being shared. But that person does not own the asset!
           Downloading and owning a file is vastly different than owning an NFT, for reasons mentioned above.
         </div>
+        <br />
       </div>
     </div>
   );

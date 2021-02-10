@@ -18,7 +18,7 @@ export default function Ethos() {
       <div className='text-s text-desc'>
         Origins, motivations, and vision
       </div>
-      <div className='page-container margin-top'>
+      <div className='page-container margin-top ethos-text'>
         The Sevens Genesis Grant was founded by <span className='text-grey pointer' onClick={ () => openLink('https://twitter.com/illestrater_') }>Tim Kang</span> through
         the heart of <span className='text-grey pointer' onClick={ () => openLink('https://twitter.com/darlington') }>Mike Darlington</span>.
         We are a <Link to='/committee' className='text-grey remove-a'>committee</Link> who believes in shining a spotlight to those who demonstrate dedication and talent but are not deservingly recognized.

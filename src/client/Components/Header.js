@@ -42,11 +42,11 @@ export default function Header() {
         <Link to='/' className='info-block margin-left remove-a'>
           Gallery
         </Link>
-        <Link to='/nft' className='info-block remove-a'>
-          NFT FAQ
-        </Link>
         <Link to='/ethos' className='info-block margin-right remove-a'>
           Ethos
+        </Link>
+        <Link to='/nft' className='info-block remove-a'>
+          NFT FAQ
         </Link>
       </div>
     </div>
