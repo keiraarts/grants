@@ -8,7 +8,6 @@ const winston = require('winston');
 const express = require('express');
 const http = require('http');
 const https = require('https');
-const jwt = require('jsonwebtoken');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const ABI = require('./abi.json');
@@ -105,7 +104,7 @@ app.use((req, res) => {
   const route = req.originalUrl.split('/')[1];
   const allowedRoutes = ['nft', 'ethos', 'apply', 'committee'];
   if (allowedRoutes.indexOf(route) > -1) {
-    res.sendFile('../client/index.js');
+    res.sendFile(`${ __dirname }${ path.join('../../dist/index.html') }`);
   }
 })
 
