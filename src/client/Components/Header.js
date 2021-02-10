@@ -22,10 +22,10 @@ export default function Header() {
   return (
     <div>
       <div className='header flex'>
-        <div className='flex'>
+        <Link to='/' className='flex remove-a'>
           The Sevens<br />
           Genesis Grant
-        </div>
+        </Link>
         <span className='flex-full' />
         <div className='apply-block-container'>
           <div className='social-icons flex'>
@@ -33,9 +33,9 @@ export default function Header() {
             <img src={ Twitter } className='social-icon' alt='Twitter' onClick={ () => openLink('twitter') } />
             <img src={ Instagram } className='social-icon' alt='Instagram' onClick={ () => openLink('instagram') } />
           </div>
-          <div className='apply-block info-block'>
+          <Link to='/apply' className='apply-block info-block remove-a'>
             Apply<br />
-          </div>
+          </Link>
         </div>
       </div>
       <div className='info-block-container'>

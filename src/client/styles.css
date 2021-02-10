@@ -19,7 +19,7 @@ canvas {
 .App {
   width: 100%;
   height: 100%;
-  font-family: 'Rubik', sans-serif;
+  font-family: 'Imprima', sans-serif;
 }
 
 .margin-left {
@@ -103,6 +103,7 @@ canvas {
   margin: auto;
   height: 100%;
   font-size: 2rem;
+  font-weight: 400;
   z-index: 0;
   align-items: center;
 }
@@ -202,8 +203,17 @@ canvas {
   margin: 1%;
 }
 
-.text-gradient {
+.text-rainbow {
   background-image: repeating-linear-gradient(45deg, violet, indigo, blue, green, yellow, orange, red, violet);
+  background-clip: text;
+  color: transparent;
+  animation: rainbow 3000s alternate-reverse linear infinite;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-grey {
+  background-image: repeating-linear-gradient(45deg, #343d46 , #4f5b66 , #65737e , #a7adba , #c0c5ce, #343d46);
   background-clip: text;
   color: transparent;
   animation: rainbow 3000s alternate-reverse linear infinite;
@@ -221,10 +231,20 @@ canvas {
   }
 }
 
+.block-loading {
+  width: 100%;
+  position: absolute;
+  margin-left: auto;
+  margin-right: auto;
+  padding-top: 35%;
+}
+
 .block-art {
+  position: relative;
   width: 100%;
   text-align: center;
   align-items: center;
+  align-content: center;
   justify-content: center;
 }
 
@@ -264,7 +284,44 @@ canvas {
   cursor: pointer;
 }
 
-@media (max-width: 85rem) {
+.loading {
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+
+.loading div {
+  position: absolute;
+  border: 4px solid rgba(0, 0, 0, 0.2);
+  opacity: 1;
+  border-radius: 50%;
+  animation: loading 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+}
+
+.loading div:nth-child(2) {
+  animation-delay: -0.5s;
+}
+
+@keyframes loading {
+  0% {
+    top: 36px;
+    left: 36px;
+    width: 0;
+    height: 0;
+    opacity: 1;
+  }
+  100% {
+    top: 0px;
+    left: 0px;
+    width: 72px;
+    height: 72px;
+    opacity: 0;
+  }
+}
+
+
+@media (max-width: 90rem) {
   .header {
     margin: 2rem;
     font-size: 2rem;
@@ -309,6 +366,6 @@ canvas {
   }
 
   .text-desc {
-    width: 100%;
+    width: 80%;
   }
 }

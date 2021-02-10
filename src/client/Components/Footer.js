@@ -17,8 +17,8 @@ export default function Header() {
     <div>
       <div className='footer flex'>
         <div className='text-s'>
-          Founded by <a className='text-gradient pointer' onClick={ () => openLink('https://twitter.com/illestrater_') }>illestrater</a><br />
-          Curated by Genesis Grant Committee
+          Founded by <a className='text-rainbow pointer' onClick={ () => openLink('https://twitter.com/illestrater_') }>illestrater</a><br />
+          Curated by <a className='text-grey pointer' onClick={ () => openLink('https://twitter.com/illestrater_') }>Genesis Grant Committee</a><br />
         </div>
         <span className='flex-full' />
         <div className='text-s'>
