@@ -28,13 +28,13 @@ export default function Header() {
         </div>
         <span className='flex-full' />
         <div className='apply-block-container'>
-          <div className='apply-block info-block'>
-            Apply<br />
-          </div>
           <div className='social-icons flex'>
             <span className='flex-full' />
             <img src={ Twitter } className='social-icon' alt='Twitter' onClick={ () => openLink('twitter') } />
             <img src={ Instagram } className='social-icon' alt='Instagram' onClick={ () => openLink('instagram') } />
+          </div>
+          <div className='apply-block info-block'>
+            Apply<br />
           </div>
         </div>
       </div>

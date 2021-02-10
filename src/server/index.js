@@ -42,6 +42,7 @@ function pollGalleryData() {
   contract.totalSupply().then((result) => {
     const allData = [];
     let totalCount = result.toNumber();
+    console.log(totalCount);
     for (let i = 0; i < result.toNumber(); i++) {
       allData.push(new Promise((resolve, reject) => {
         const id = i;
@@ -63,6 +64,12 @@ function pollGalleryData() {
                 json.id = id;
                 if (json.animation_url) json.animation_url = json.animation_url.replace('ipfs://ipfs', 'https://ipfs.io/ipfs');
                 if (json.image) json.image = json.image.replace('ipfs://ipfs', 'https://ipfs.io/ipfs');
+                if (json.attributes) {
+                  json.attributes.forEach((item) => {
+                    json[item.key.toLowerCase()] = item.value;
+                  })
+                }
+                json.attributes = undefined;
                 return resolve(json);
               } else {
                 return reject();
@@ -94,6 +101,16 @@ app.get('/galleryData', (req, res) => {
 });
 
 app.use(express.static('dist'));
+app.use((req, res) => {
+  const route = req.originalUrl.split('/')[1];
+  const allowedRoutes = ['nft', 'ethos', 'apply', 'committee'];
+  if (allowedRoutes.indexOf(route) > -1) {
+    res.send('../client/index.js');
+  }
+})
+
+
+
 
 let server;
 if (ENV.ENV === 'DEV') {

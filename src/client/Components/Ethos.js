@@ -12,7 +12,7 @@ export default function Ethos() {
       <div className='text-s text-desc'>
         Origins, motivations, and vision
       </div>
-      <div className='gallery-container margin-top'>
+      <div className='page-container margin-top'>
         Love.
       </div>
     </div>
