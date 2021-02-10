@@ -9,6 +9,12 @@ export default function Gallery(props) {
   const [loaded, didLoad] = useState(false);
   const item = props.item;
 
+  function openLink(page)
+  {
+    let win = window.open(page, '_blank');
+    win.focus();
+  }
+
   return (
     <div className='gallery-block'>
       <div className='block-art'>

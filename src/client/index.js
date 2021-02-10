@@ -8,8 +8,9 @@ import Header from './Components/Header';
 import Footer from './Components/Footer';
 import Gallery from "./Components/Gallery";
 import FAQ from "./Components/FAQ";
-import Apply from "./Components/Apply";
 import Ethos from "./Components/Ethos";
+import Committee from "./Components/Committee";
+import Apply from "./Components/Apply";
 
 import './styles.css';
 
@@ -27,6 +28,7 @@ const App = () => {
               <Route path="/" exact component={ Gallery } />
               <Route path="/nft" exact component={ FAQ } />
               <Route path="/ethos" exact component={ Ethos } />
+              <Route path="/committee" exact component={ Committee } />
               <Route path="/apply" exact component={ Apply } />
               <Footer/>
             </div>

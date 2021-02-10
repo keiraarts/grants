@@ -5,7 +5,7 @@ import '../styles.css';
 export default function FAQ() {
   return (
     <div className='content-block'>
-      <div className='text-m text-b'>
+      <div className='text-l text-b'>
         NFT Frequently Asked Questions
       </div>
       <div className='text-s text-desc'>

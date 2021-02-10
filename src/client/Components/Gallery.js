@@ -16,7 +16,7 @@ export default function Gallery() {
 
   return (
     <div className='content-block'>
-      <div className='text-m text-b'>
+      <div className='text-l text-b'>
         Grant Recipients Gallery
       </div>
       <div className='text-s text-desc'>
