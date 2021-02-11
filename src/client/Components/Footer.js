@@ -18,12 +18,12 @@ export default function Header() {
       <div className='footer flex'>
         <div className='text-s'>
           Founded by <a className='text-rainbow pointer' onClick={ () => openLink('https://twitter.com/illestrater_') }>illestrater</a><br />
-          Curated by <a className='text-grey pointer' onClick={ () => openLink('https://twitter.com/illestrater_') }>Genesis Grant Committee</a><br />
+          Curated by <Link to='/program' className='text-grey remove-a'>Genesis Grant Committee</Link><br />
         </div>
         <span className='flex-full' />
-        <div className='text-s'>
+        {/* <div className='text-s'>
           Contact<br />
-        </div>
+        </div> */}
       </div>
     </div>
   );

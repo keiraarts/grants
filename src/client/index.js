@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
 import { StoreComponent, store } from './redux';
 import { BrowserRouter as Router, Route } from "react-router-dom";
-import useScroll from '@react-hooks-custom/use-scroll'
+// import useScroll from '@react-hooks-custom/use-scroll'
 import LoadBackground from './Components/Canvas';
 import Header from './Components/Header';
 import Footer from './Components/Footer';
@@ -16,8 +16,7 @@ import Apply from "./Components/Apply";
 import './styles.scss';
 
 const App = () => {  
-  const { scrollX, scrollY } = useScroll();
-  console.log(scrollX, scrollY);
+  // const { scrollX, scrollY } = useScroll();
 
   return (
     <Router>

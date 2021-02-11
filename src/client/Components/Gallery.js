@@ -15,7 +15,7 @@ export default function Gallery() {
   });
 
   const showData = FounderGallery ? FounderGallery : null;
-  console.log(showData);
+  // console.log(showData);
 
   const resize = () => {
     setResizer(true);
@@ -32,13 +32,16 @@ export default function Gallery() {
   const [resizing, setResizer] = useState(false);
 
   let initCols;
-  if (window.innerWidth <= 700) initCols = '2';
+  if (window.innerWidth <= 450) initCols = '1';
+  else if (window.innerWidth > 450 && window.innerWidth <= 700) initCols = '2';
   else if (window.innerWidth > 700 && window.innerWidth <= 1000) initCols = '3'
   else initCols = '4';
+
   const [cols, setCols] = useState(initCols);
   useEffect(() => {
     if (resizing) {
-      if (window.innerWidth <= 700) setCols('2');
+      if (window.innerWidth <= 450) setCols('1');
+      else if (window.innerWidth > 450 && window.innerWidth <= 700) setCols('2');
       else if (window.innerWidth > 700 && window.innerWidth <= 1000) setCols('3')
       else setCols('4');
       setResizer(false);

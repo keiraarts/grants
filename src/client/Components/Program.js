@@ -22,7 +22,7 @@ export default function Program() {
         Not only will you receive funding and resources but also special NFTs and gifts by commissioned or donating artists
         as well as an invitation to a community of your fellow recipients and a grand welcome into the industry.
         <div className='text-s margin-top'>
-          <Link to='/apply' className='text-grey remove-a'>Apply to The Sevens Genesis Grant</Link>
+          <Link to='/program' className='text-grey remove-a'>Applications opening soon...</Link>
         </div>
         <br />
       </div>
