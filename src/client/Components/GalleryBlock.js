@@ -44,8 +44,8 @@ export default function Gallery(props) {
           </div>
           <div>
             { (item.external || item.website) && <div><img src={ Web } className='block-social-web pointer' alt='Website' onClick={ () => openLink(item.external || item.website) } /></div> }
-            { item.twitter && <div><img src={ Twitter } className='block-social' alt='Twitter' onClick={ () => openLink(`https://twitter.com/${ item.twitter }`) } /></div> }
-            { item.instagram && <div><img src={ Instagram } className='block-social' alt='Instagram' onClick={ () => openLink(`https://instagram.com/${ item.instagram }`) } /></div> }
+            { item.twitter && <div><img src={ Twitter } className='block-social' alt='Twitter' onClick={ () => openLink(str.substring(0, 4) === 'http' ? item.twitter : `https://twitter.com/${ item.twitter }`) } /></div> }
+            { item.instagram && <div><img src={ Instagram } className='block-social' alt='Instagram' onClick={ () => openLink(str.substring(0, 4) === 'http' ? item.instagram : `https://instagram.com/${ item.instagram }`) } /></div> }
           </div>
         </div>
       </div>
