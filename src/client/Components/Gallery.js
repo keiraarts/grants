@@ -55,11 +55,11 @@ export default function Gallery() {
       </div>
       <div className='text-s margin-top-s text-desc'>
         Genesis Grants curates, educates, and funds artists' first true digital signature to ease and bridge the gap
-        between traditional publishing and NFTs, the future of our creativity - here are our grant recipients
+        between traditional publishing and NFTs, the future of our creativity
       </div>
       <div className='text-s margin-top-s text-desc'>
         Once the first grant recipients have been finalized, this gallery will update with their respective artwork.
-        Below is currently the founder's collection of some of his favorite NFTs minus his NiftyGateway collection.
+        Below is currently a placeholder collection of some of the founder's favorite NFTs
       </div>
       <div className='cols'>
         { isLoading ?

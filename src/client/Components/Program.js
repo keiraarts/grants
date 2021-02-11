@@ -21,6 +21,9 @@ export default function Program() {
         <br /><br />
         Not only will you receive funding and resources but also special NFTs and gifts by commissioned or donating artists
         as well as an invitation to a community of your fellow recipients and a grand welcome into the industry.
+        <br /><br />
+        We seek quality work with a proven track record of a passion for art, regardless of your current recognition with a preference
+        to those who are determined to seek aid for starting their self-sovereign career.
         <div className='text-s margin-top'>
           <Link to='/program' className='text-grey remove-a'>Applications opening soon...</Link>
         </div>
