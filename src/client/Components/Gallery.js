@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { usePromise } from 'promise-hook';
+import '@appnest/masonry-layout';
 
 import { apiUrl } from '../baseUrl';
 
-import '../styles.css';
+import '../styles.scss';
+import FounderGallery from '../FounderGallery.json';
 import GalleryBlock from './GalleryBlock';
 
 export default function Gallery() {
@@ -12,16 +14,49 @@ export default function Gallery() {
     resolveCondition: []
   });
 
-  const showData = data ? data.slice(0, 10) : null;
+  const showData = FounderGallery ? FounderGallery : null;
+  console.log(showData);
+
+  const resize = () => {
+    setResizer(true);
+  }
+
+  const [listener, setListener] = useState(false);
+  useEffect(() => {
+    if (!listener) {
+      window.addEventListener('resize', resize);
+      setListener(true);
+    }
+  }, [listener]);
+
+  const [resizing, setResizer] = useState(false);
+
+  let initCols;
+  if (window.innerWidth <= 700) initCols = '2';
+  else if (window.innerWidth > 700 && window.innerWidth <= 1000) initCols = '3'
+  else initCols = '4';
+  const [cols, setCols] = useState(initCols);
+  useEffect(() => {
+    if (resizing) {
+      if (window.innerWidth <= 700) setCols('2');
+      else if (window.innerWidth > 700 && window.innerWidth <= 1000) setCols('3')
+      else setCols('4');
+      setResizer(false);
+    }
+  }, [resizing]);
 
   return (
     <div className='content-block'>
       <div className='text-l text-b'>
         Gallery
       </div>
-      <div className='text-s text-desc'>
+      <div className='text-s margin-top-s text-desc'>
         Genesis Grants curates, educates, and funds artists' first true digital signature to ease and bridge the gap
         between traditional publishing and NFTs, the future of our creativity - here are our grant recipients
+      </div>
+      <div className='text-s margin-top-s text-desc'>
+        Once the first grant recipients have been finalized, this gallery will update with their respective artwork.
+        Below is currently the founder's collection of some of his favorite NFTs minus his NiftyGateway collection.
       </div>
       <div className='cols'>
         { isLoading ?
@@ -31,14 +66,16 @@ export default function Gallery() {
             </div>
           </div>
           :
-          <div className='gallery-container margin-top'>
-            {
-              showData && showData.map((item, index)=>{
-                return (
-                  <GalleryBlock item={ item } key={ index } />
-                );
-              })
-            }
+          <div className='margin-top'>
+            <masonry-layout cols={ cols } >
+              {
+                showData && showData.map((item, index)=>{
+                  return (
+                    <GalleryBlock item={ item } key={ index } />
+                  );
+                })
+              }
+            </masonry-layout>
           </div>
         }
       </div>

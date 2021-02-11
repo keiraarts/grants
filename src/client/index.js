@@ -10,9 +10,10 @@ import Gallery from "./Components/Gallery";
 import FAQ from "./Components/FAQ";
 import Ethos from "./Components/Ethos";
 import Committee from "./Components/Committee";
+import Program from "./Components/Program";
 import Apply from "./Components/Apply";
 
-import './styles.css';
+import './styles.scss';
 
 const App = () => {  
   const { scrollX, scrollY } = useScroll();
@@ -29,6 +30,7 @@ const App = () => {
               <Route path="/nft" exact component={ FAQ } />
               <Route path="/ethos" exact component={ Ethos } />
               <Route path="/committee" exact component={ Committee } />
+              <Route path="/program" exact component={ Program } />
               <Route path="/apply" exact component={ Apply } />
               <Footer/>
             </div>

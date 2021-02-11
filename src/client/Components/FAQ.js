@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 
-import '../styles.css';
+import '../styles.scss';
 
 export default function FAQ() {
   return (
@@ -8,7 +8,7 @@ export default function FAQ() {
       <div className='text-l text-b'>
         FAQ
       </div>
-      <div className='text-s text-desc'>
+      <div className='text-s margin-top-s text-desc'>
         There's a new future for art?
       </div>
       <div className='page-container margin-top'>

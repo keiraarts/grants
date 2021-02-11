@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from "react-router-dom";
 
-import '../styles.css';
+import '../styles.scss';
 
 export default function Committee() {
   function openLink(page)
@@ -15,7 +15,7 @@ export default function Committee() {
       <div className='text-l text-b'>
         Genesis Grants Committee
       </div>
-      <div className='text-s text-desc'>
+      <div className='text-s margin-top-s text-desc'>
         Our shared love of art, music, and design
       </div>
       <div className='page-container margin-top'>

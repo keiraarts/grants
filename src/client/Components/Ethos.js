@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from "react-router-dom";
 
-import '../styles.css';
+import '../styles.scss';
 
 export default function Ethos() {
   function openLink(page)
@@ -15,7 +15,7 @@ export default function Ethos() {
       <div className='text-l text-b'>
         Ethos
       </div>
-      <div className='text-s text-desc'>
+      <div className='text-s margin-top-s text-desc'>
         Origins, motivations, and vision
       </div>
       <div className='page-container margin-top ethos-text'>
@@ -24,12 +24,12 @@ export default function Ethos() {
         We are a <Link to='/committee' className='text-grey remove-a'>committee</Link> who believes in shining a spotlight to those who demonstrate dedication and talent but are not deservingly recognized.
         <br /><br />
         In the past, digital art in and of itself has not been given the renown it deserves pertaining to the broader scope of traditional art forms.
-        This will change due to the nature of being able to sell and own digital assets using blockchain.
+        This will change because of the paradigm of being able to sell and own digital assets using blockchain.
         <br /><br />
         Amazing artists have entered this blooming world of NFTs and are establishing a name for themselves, regardless of their prior track record of success.
         But, so many talented people have yet to discover this burgeoning opportunity at hand.
         <br /><br />
-        Currently, the available resources for an artist to learn about and take their first steps into this world is scattered, daunting, and expensive.
+        Currently, the available resources for an artist to learn about and take their first steps into this world are scattered, daunting, and expensive.
         We provide these tools and initial funding to newcomers who are eager to participate and jump start their career through their passions for creativity.
         <br /><br />
         We believe in a bright future for artistry across the globe, and we are all grounded by a drive to create a foundation

@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { StoreComponent, store } from '../redux';
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
-import '../styles.css';
+import '../styles.scss';
 import Twitter from '../assets/twitter.png';
 import Instagram from '../assets/instagram.png';
 
@@ -19,6 +19,8 @@ export default function Header() {
     win.focus();
   }
 
+  const location = useLocation();
+
   return (
     <div>
       <div className='header flex'>
@@ -33,19 +35,19 @@ export default function Header() {
             <img src={ Twitter } className='social-icon' alt='Twitter' onClick={ () => openLink('twitter') } />
             <img src={ Instagram } className='social-icon' alt='Instagram' onClick={ () => openLink('instagram') } />
           </div>
-          <Link to='/apply' className='apply-block info-block remove-a'>
+          <Link to='/program' className={ `apply-block info-block remove-a ${ location.pathname === '/program' && 'header-selected' }` }>
             Apply<br />
           </Link>
         </div>
       </div>
       <div className='info-block-container'>
-        <Link to='/' className='info-block margin-left remove-a'>
+        <Link to='/' className={ `info-block margin-left remove-a ${ location.pathname === '/' && 'header-selected' }` }>
           Gallery
         </Link>
-        <Link to='/ethos' className='info-block remove-a'>
+        <Link to='/ethos' className= { `info-block remove-a ${ location.pathname === '/ethos' && 'header-selected' }` }>
           Ethos
         </Link>
-        <Link to='/nft' className='info-block margin-right remove-a'>
+        <Link to='/nft' className={ `info-block margin-right remove-a ${ location.pathname === '/nft' && 'header-selected' }` }>
           NFT FAQ
         </Link>
       </div>

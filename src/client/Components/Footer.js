@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { StoreComponent, store } from '../redux';
 import { Link } from "react-router-dom";
 
-import '../styles.css';
+import '../styles.scss';
 import Twitter from '../assets/twitter.png';
 import Instagram from '../assets/instagram.png';
 

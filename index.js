@@ -16,7 +16,8 @@ const { ethers, BigNumber } = require('ethers');
 
 const app = express();
 app.use(cors());
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '30mb' }));
+app.use(bodyParser.urlencoded({ limit: '30mb', extended: true, parameterLimit: 50000 }));
 
 const ENV = process.env;
 
@@ -99,10 +100,17 @@ app.get('/galleryData', (req, res) => {
   res.json(galleryData);
 });
 
+app.post('/submitApplication', (req, res) => {
+  req.body.art = null;
+  req.body.cover = null;
+  console.log(req.body);
+  res.json(true);
+});
+
 app.use(express.static('dist'));
 app.use((req, res) => {
   const route = req.originalUrl.split('/')[1];
-  const allowedRoutes = ['nft', 'ethos', 'apply', 'committee'];
+  const allowedRoutes = ['nft', 'ethos', 'apply', 'committee', 'program'];
   if (allowedRoutes.indexOf(route) > -1) {
     res.sendFile(`${ __dirname }${ path.join('/dist/index.html') }`);
   }

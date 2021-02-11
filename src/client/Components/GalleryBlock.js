@@ -3,7 +3,7 @@ import Twitter from '../assets/twitter.png';
 import Instagram from '../assets/instagram.png';
 import Web from '../assets/website.png';
 
-import '../styles.css';
+import '../styles.scss';
 
 export default function Gallery(props) {
   const [loaded, didLoad] = useState(false);
@@ -19,7 +19,15 @@ export default function Gallery(props) {
     <div className='gallery-block'>
       <div className='block-art'>
         { (!loaded) && <div className='block-loading'><div className='loading'><div></div><div></div></div></div> }
-        <img src={ item.image } className='block-art-image' onLoad={ () => didLoad(true) } />
+        { item.image.slice(-3) === 'mp4' ?
+          <video controls autoPlay muted loop className='block-art-image' onCanPlay={ () => didLoad(true) }>
+            <source src={ item.image }
+                    type="video/mp4" />
+            Sorry, your browser doesn't support embedded videos.
+          </video>
+         :
+         <img src={ item.image } className='block-art-image' onLoad={ () => didLoad(true) } />
+        }
       </div>
       <div className='text-s'>
         <div className='flex'>
@@ -43,15 +51,4 @@ export default function Gallery(props) {
       </div>
     </div>
   );
-}
-
-const getGalleryData = () => {
-  console.log(process.env);
-  return fetch(`${ apiUrl() }/galleryData`, {
-    method: 'GET',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    },
-  }).then(res => res.json());
 }
