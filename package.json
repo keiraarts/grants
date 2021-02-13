@@ -4,7 +4,6 @@
   "description": "Boilerplate to build a full stack web application using React, Node.js, Express and Webpack.",
   "main": "index.js",
   "scripts": {
-    "preinstall": "npx npm-force-resolutions",
     "build": "webpack --mode production",
     "start": "npm run build && node index.js",
     "client": "webpack-dev-server --mode development --devtool inline-source-map --hot",
@@ -44,7 +43,6 @@
     "s3": "^4.4.0",
     "use-events": "^1.1.7",
     "winston": "^3.1.0",
-    "graceful-fs": "4.2.2"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",
