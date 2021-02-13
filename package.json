@@ -4,6 +4,7 @@
   "description": "Boilerplate to build a full stack web application using React, Node.js, Express and Webpack.",
   "main": "index.js",
   "scripts": {
+    "preinstall": "npx npm-force-resolutions",
     "build": "webpack --mode production",
     "start": "npm run build && node index.js",
     "client": "webpack-dev-server --mode development --devtool inline-source-map --hot",
