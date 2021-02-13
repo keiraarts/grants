@@ -164,7 +164,7 @@ app.post('/submitApplication', async (req, res) => {
   newApplicant.save((err, data) => {
     if (err) return res.status(500).json(err);
     else return res.json(true);
-  })
+  });
 });
 
 app.use(express.static('dist'));

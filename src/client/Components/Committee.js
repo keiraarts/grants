@@ -28,10 +28,12 @@ export default function Committee() {
         <div className='text-s'>3D Artist & concert visual aficionado</div>
         <span className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://3lau.com/') }>Justin Blau (3LAU)</span>
         <div className='text-s'>Music producer & NFT innovator</div>
-        <span className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('http://justinmaller.com/') }>Justin Maller</span>
-        <div className='text-s'>Creative Director of Deviantart & Depthcore</div>
         <span className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://twitter.com/axieking') }>OhhShiny</span>
         <div className='text-s'>Traditional fine art & NFT collector</div>
+        <span className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://twitter.com/LordTylerWard') }>Tyler Ward</span>
+        <div className='text-s'>Founder of Barn Bridge & DeFi degen</div>
+        <span className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('http://justinmaller.com/') }>Justin Maller</span>
+        <div className='text-s'>Creative Director of Deviantart & Depthcore</div>
         <span className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://www.beeple-crap.com/') }>Mike Winkelmann (Beeple)?</span>
         <div className='text-s'>Renowned digital art director & professional hair trimmer</div>
         <div className='text-m margin-top'>Grant Donors</div>
