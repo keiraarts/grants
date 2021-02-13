@@ -32,6 +32,8 @@ export default function Committee() {
         <div className='text-s'>Traditional fine art & NFT collector</div>
         <span className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://twitter.com/LordTylerWard') }>Tyler Ward</span>
         <div className='text-s'>Founder of Barn Bridge & DeFi degen</div>
+        <span className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://www.youtube.com/c/BrandonKangFilms/videos') }>Brandon Kang</span>
+        <div className='text-s'>Videographer & NFT collector</div>
         <span className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('http://justinmaller.com/') }>Justin Maller</span>
         <div className='text-s'>Creative Director of Deviantart & Depthcore</div>
         <span className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://www.beeple-crap.com/') }>Mike Winkelmann (Beeple)?</span>
