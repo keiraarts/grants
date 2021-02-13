@@ -368,6 +368,14 @@ $gray: #9b9b9b;
   pointer-events: none;
 }
 
+.file__label {
+  display: block;
+  transition: 0.2s;
+  font-size: 1rem;
+  color: $gray;
+  pointer-events: none;
+}
+
 .form__field:focus {
   ~ .form__label {
     position: absolute;
@@ -387,7 +395,9 @@ $gray: #9b9b9b;
 
 /* reset input */
 .form__field{
-  &:required,&:invalid { box-shadow:none; }
+  &:required,&:invalid {
+    box-shadow:none;
+  }
 }
 
 .intent-field {
@@ -396,6 +406,7 @@ $gray: #9b9b9b;
 
 .submit-button {
   font-family: 'Imprima', sans-serif;
+  white-space: normal;
   border: none;
   display: inline-block;
   text-align: center;
@@ -479,5 +490,20 @@ $gray: #9b9b9b;
 
   .text-desc {
     width: 80%;
+  }
+
+  .form__group {
+    position: relative;
+    width: 100%;
+  }
+
+  @keyframes rainbow {
+    from {
+      background-position-x: 0%;
+      
+    }
+    to {
+      background-position-x: 12000vw;
+    }
   }
 }

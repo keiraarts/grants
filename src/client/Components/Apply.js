@@ -1,3 +1,4 @@
+import { getFips } from 'crypto';
 import React, { useState } from 'react';
 import { apiUrl } from '../baseUrl';
 
@@ -37,7 +38,7 @@ export default function Application() {
       if (file.size < 32000000) {
         if (responsetype) {
           if (type === 'art') setData({ ...data, art: reader.result })
-          if (type === 'cover') setData({ ...data, cover: reader.result })
+          if (type === 'thumbnail') setData({ ...data, thumbnail: reader.result })
         } else {
           setErr('File type unsupported');
         }
@@ -55,7 +56,7 @@ export default function Application() {
       <div className='text-s margin-top-s text-desc'>
         As your first NFT mint, submit this form with a single work of art that you believe is powerful and true to yourself
       </div>
-      <div className='page-container margin-top'>
+      <div className='margin-top'>
         <form onSubmit={ submit }>
           <div className='form__group field'>
             <input type='text' className='form__field' placeholder='Name' name='name' id='name' required maxLength='100' onChange={e => setData({ ...data, name: e.target.value })} />
@@ -67,11 +68,11 @@ export default function Application() {
           </div>
           <div className='form__group field'>
             <input type='url' className='form__field' placeholder='URL' name='url' id='url' required maxLength='100' onChange={e => setData({ ...data, website: e.target.value })} />
-            <label className='form__label'>Website or Prior Artwork URL</label>
+            <label className='form__label'>Website / Artwork URL</label>
           </div>
           <div className='form__group field'>
-            <input type='text' className='form__field' placeholder='Twitter' name='twitter' id='twitter' maxLength='100' onChange={e => setData({ ...data, twitter: e.target.value })} />
-            <label className='form__label'>Twitter Handle*</label>
+            <input type='text' className='form__field' placeholder='Twitter' name='twitter' id='twitter' required maxLength='100' onChange={e => setData({ ...data, twitter: e.target.value })} />
+            <label className='form__label'>Twitter Handle</label>
           </div>
           <div className='form__group field'>
             <input type='text' className='form__field' placeholder='Instagram' name='instagram' id='instagram' maxLength='100' onChange={e => setData({ ...data, instagram: e.target.value })} />
@@ -82,12 +83,12 @@ export default function Application() {
             <label className='form__label'>Statement of Intent</label>
           </div>
           <div className='form__group field'>
-            <input type='file' className='form__field' placeholder='Artwork' name='artwork' id='name' required onChange={ (e) => uploadHandler(e.target, 'art') } />
-            <label className='form__label'>Art Submission (JPG, PNG, GIF, WEBP, or MP4 - Max 30mb)</label>
+            <label className='file__label'>Art Submission (JPG, PNG, GIF, WEBP, or MP4 - Max 30mb)</label>
+            <input type='file' className='form__field' placeholder='Artwork' name='artwork' id='name' accept='image/jpeg, image/png, image/gif, image/webp, video/mp4' required onChange={ (e) => uploadHandler(e.target, 'art') } />
           </div>
           <div className='form__group field'>
-            <input type='file' className='form__field' placeholder='Artwork' name='artwork' id='name' onChange={ (e) => uploadHandler(e.target, 'cover') } />
-            <label className='form__label'>Cover GIF for MP4* - Square Aspect Ratio Recommended (WEBP, GIF - Max 30mb)</label>
+            <label className='file__label'>Thumbnail GIF for MP4* - Square Aspect Ratio Recommended (WEBP, GIF - Max 30mb)</label>
+            <input type='file' className='form__field' placeholder='Artwork' name='artwork' id='name' accept='image/gif, image/webp' onChange={ (e) => uploadHandler(e.target, 'thumbnail') } />
           </div>
           { err ? 
             <div className='margin-top-s text-s text-err'>
@@ -108,7 +109,7 @@ export default function Application() {
               Thank you for submitting your application! We will get back to you soon via e-mail or social direct message.
             </div>
           }
-          { (!submitting && !submitted) && <input type='submit' value='Applications Are Currently Closed' className='submit-button' /> }
+          { (!submitting && !submitted) && <input type='submit' value='Submit Application' className='submit-button' /> }
         </form>
         <br />
       </div>

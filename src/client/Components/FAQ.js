@@ -1,8 +1,15 @@
 import React, { useEffect } from 'react';
+import { Link } from "react-router-dom";
 
 import '../styles.scss';
 
 export default function FAQ() {
+  function openLink(page)
+  {
+    let win = window.open(page, '_blank');
+    win.focus();
+  }
+
   return (
     <div className='content-block'>
       <div className='text-l text-b'>
@@ -47,6 +54,9 @@ export default function FAQ() {
         <div className='text-s margin-top-s'>
           Yes, and in this context that's a good thing as that means your art is being shared. But that person does not own the asset!
           Downloading and owning a file is vastly different than owning an NFT, for reasons mentioned above.
+        </div>
+        <div className='text-s margin-top'>
+          <Link to='/tutorial' className='text-grey remove-a'>Mint NFTs on your own</Link>
         </div>
         <br />
       </div>

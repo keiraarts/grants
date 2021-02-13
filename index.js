@@ -2,7 +2,6 @@ require('dotenv').config();
 const _ = require('lodash');
 const fs = require('fs');
 const path = require('path');
-const axios = require('axios');
 const request = require('request');
 const winston = require('winston');
 const express = require('express');
@@ -10,6 +9,11 @@ const http = require('http');
 const https = require('https');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const crypto = require('crypto');
+const s3 = require('s3');
+const mongoose = require('mongoose');
+
+const models = require('./mongoModels.js');
 const ABI = require('./abi.json');
 
 const { ethers, BigNumber } = require('ethers');
@@ -20,6 +24,18 @@ app.use(bodyParser.json({ limit: '30mb' }));
 app.use(bodyParser.urlencoded({ limit: '30mb', extended: true, parameterLimit: 50000 }));
 
 const ENV = process.env;
+
+mongoose.connect(ENV.MONGO);
+const Applicant = mongoose.model('Applicant');
+
+const spaces = s3.createClient({
+  s3Options: {
+    accessKeyId: ENV.SPACES_KEY,
+    secretAccessKey: ENV.SPACES_SECRET,
+    region: 'US',
+    endpoint: 'nyc3.digitaloceanspaces.com'
+  }
+});
 
 const logger = winston.createLogger({
   level: 'info',
@@ -100,11 +116,55 @@ app.get('/galleryData', (req, res) => {
   res.json(galleryData);
 });
 
-app.post('/submitApplication', (req, res) => {
-  req.body.art = null;
-  req.body.cover = null;
-  console.log(req.body);
-  res.json(true);
+app.post('/submitApplication', async (req, res) => {
+  const applicant = {
+    name:       req.body.name,
+    email:      req.body.email,
+    website:    req.body.website,
+    twitter:    req.body.twitter,
+    instagram:  req.body.instagram,
+    statement:  req.body.statement,
+  };
+
+  await Object.keys(req.body).forEach(async (item) => {
+    if (item === 'art' || item === 'thumbnail') {
+      let ext, image;
+      if (item === 'art') ext = req.body[item].split(';')[0].match(/jpeg|png|gif|webp|mp4/)[0];
+      if (item === 'thumbnail') ext = req.body[item].split(';')[0].match(/jpeg|png|gif|webp/)[0];
+       image = req.body[item].replace(/^data:image\/\w+;base64,/, '');
+       image = image.replace(/^data:video\/mp4;base64,/, '');
+      const buf = new Buffer.from(image, 'base64');
+      const name = crypto.randomBytes(20).toString('hex');
+
+      if (item === 'art') applicant.art = `${ name }.${ ext }`
+      else if (item === 'thumbnail') applicant.thumbnail = `${ name }.${ ext }`
+
+      await fs.writeFileSync(path.join(__dirname, `./images/${ name }.${ ext }`), buf);
+      const uploader = await spaces.uploadFile({
+          localFile: path.join(__dirname, `./images/${ name }.${ ext }`),
+          s3Params: {
+              Bucket: 'grants',
+              Key: `${ name }.${ ext }`,
+              ACL: 'public-read'
+          }
+      });
+
+      uploader.on('end', () => {
+          fs.unlink(path.join(__dirname, `./images/${ name }.${ ext }`), (err2) => {
+              if (err2 !== null) {
+                  console.log(err2);
+              }
+              return null;
+          });
+      });
+    }
+  });
+
+  const newApplicant = new Applicant(applicant);
+  newApplicant.save((err, data) => {
+    if (err) return res.status(500).json(err);
+    else return res.json(true);
+  })
 });
 
 app.use(express.static('dist'));
