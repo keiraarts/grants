@@ -32,8 +32,8 @@ export default function Ethos() {
         Currently, the available resources for an artist to learn about and take their first steps into this world are scattered, daunting, and expensive.
         We provide these tools and initial funding to newcomers who are eager to participate and jump start their career through their passions for creativity.
         <br /><br />
-        There are also concerns over carbon footprint but fortunately this will be resolved when platforms eventually migrate to scalable solutions - in the meantime
-        every NFT we mint we will offset its emission by <span className='text-grey remove-a' onClick={ () => openLink('https://teamtrees.org/') }>planting trees</span>.
+        There are also concerns over carbon footprint; fortunately this will be resolved when platforms migrate to scalable solutions. In the meantime
+        we will offset the emissions produced by every NFT we mint by <span className='text-grey remove-a' onClick={ () => openLink('https://teamtrees.org/') }>planting trees</span>.
         <br /><br />
         We believe in a bright future for artistry across the globe, and we are all grounded by a drive to create a foundation
         and welcome others into this future through our shared love for art, music, and design.
