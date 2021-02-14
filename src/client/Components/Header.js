@@ -36,7 +36,7 @@ export default function Header() {
             <img src={ Instagram } className='social-icon' alt='Instagram' onClick={ () => openLink('instagram') } />
           </div>
           <Link to='/program' className={ `apply-block info-block remove-a ${ location.pathname === '/program' && 'header-selected' }` }>
-            Apply<br />
+            <span>Apply</span>
           </Link>
         </div>
       </div>

@@ -53,7 +53,7 @@ export default function Application() {
       <div className='text-l text-b'>
         Artist Application
       </div>
-      <div className='text-s margin-top-s text-desc'>
+      <div className='text-s margin-top-s'>
         As your first NFT mint, submit this form with a single work of art that you believe is powerful and true to yourself
       </div>
       <div className='margin-top'>

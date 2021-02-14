@@ -16,7 +16,7 @@ export default function Tutorial() {
         Getting Started
       </div>
       <div className='text-s margin-top-s text-desc'>
-        I would like to mint an NFT on my own
+        I would like to mint an NFT on my own!
       </div>
       <div className='text-s margin-top text-desc'>
         There are many benefits of the grant outside of funding,

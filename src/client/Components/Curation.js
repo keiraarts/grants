@@ -37,7 +37,7 @@ export default function Curation() {
       <div className='text-l text-b'>
         Committee Curation
       </div>
-      <div className='text-s margin-top-s text-desc'>
+      <div className='text-s margin-top-s'>
         Let's move people forward.
       </div>
       <div className='margin-top'>

@@ -15,7 +15,7 @@ export default function Ethos() {
       <div className='text-l text-b'>
         Ethos
       </div>
-      <div className='text-s margin-top-s text-desc'>
+      <div className='text-s margin-top-s'>
         Origins, motivations, and vision
       </div>
       <div className='page-container margin-top ethos-text'>

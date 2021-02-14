@@ -15,7 +15,7 @@ export default function Committee() {
       <div className='text-l text-b'>
         Committee
       </div>
-      <div className='text-s margin-top-s text-desc'>
+      <div className='text-s margin-top-s'>
         Our shared love of art, music, and design
       </div>
       <div className='page-container margin-top'>

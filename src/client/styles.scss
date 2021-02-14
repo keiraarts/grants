@@ -19,7 +19,7 @@ canvas {
 .App {
   width: 100%;
   height: 100%;
-  font-family: 'Imprima', sans-serif;
+  font-family: 'Roboto Slab', sans-serif;
 }
 
 .margin-left {
@@ -66,6 +66,7 @@ canvas {
 
 .text-l {
   font-size: 3rem;
+  font-weight: 500;
 }
 
 .text-m {
@@ -491,7 +492,7 @@ $gray: #9b9b9b;
   }
 
   .text-desc {
-    width: 80%;
+    width: 100%;
   }
 
   .form__group {

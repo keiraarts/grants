@@ -15,7 +15,7 @@ export default function FAQ() {
       <div className='text-l text-b'>
         FAQ
       </div>
-      <div className='text-s margin-top-s text-desc'>
+      <div className='text-s margin-top-s'>
         There's a new future for art?
       </div>
       <div className='page-container margin-top'>
