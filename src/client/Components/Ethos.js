@@ -34,6 +34,7 @@ export default function Ethos() {
         <br /><br />
         There are also concerns over carbon footprint; fortunately this will be resolved when platforms migrate to scalable solutions. In the meantime
         we will offset the emissions produced by every NFT we mint by <span className='text-grey remove-a' onClick={ () => openLink('https://teamtrees.org/') }>planting trees</span>.
+        We also have a shared love for equality and want to especially highlight BIPOC.
         <br /><br />
         We believe in a bright future for artistry across the globe, and we are all grounded by a drive to create a foundation
         and welcome others into this future through our shared love for art, music, and design.
