@@ -29,7 +29,7 @@ export default function Header() {
           Genesis Grant
         </Link>
         <span className='flex-full' />
-        <div className='apply-block-container'>
+        <div>
           <div className='social-icons flex'>
             <span className='flex-full' />
             <img src={ Twitter } className='social-icon' alt='Twitter' onClick={ () => openLink('twitter') } />
