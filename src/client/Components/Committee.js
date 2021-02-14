@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from "react-router-dom";
 
 import '../styles.scss';
 
@@ -19,7 +18,7 @@ export default function Committee() {
         Our shared love of art, music, and design
       </div>
       <div className='page-container margin-top'>
-        <div className='text-m'>Committee Members (Tentative)</div>
+        <div className='text-m'>Committee Members</div>
         <span className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://twitter.com/illestrater_') }>Tim Kang (illestrater)</span>
         <div className='text-s'>CEO of CUE Music & paradigm pusher</div>
         <span className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://twitter.com/darlington') }>Mike Darlington</span>
@@ -36,7 +35,7 @@ export default function Committee() {
         <div className='text-s'>Professional videographer & NFT collector</div>
         <span className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('http://justinmaller.com/') }>Justin Maller</span>
         <div className='text-s'>Creative Director of Deviantart & Depthcore</div>
-        <span className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://www.beeple-crap.com/') }>Mike Winkelmann (Beeple)?</span>
+        <span className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://www.beeple-crap.com/') }>Mike Winkelmann (Beeple)</span>
         <div className='text-s'>Renowned digital art director & professional hair trimmer</div>
         <div className='text-m margin-top'>Grant Donors</div>
         <span className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://twitter.com/illestrater_') }>Tim Kang</span>
