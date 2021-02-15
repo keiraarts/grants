@@ -13,6 +13,7 @@ import Tutorial from "./Components/Tutorials/Tutorial";
 import Rarible from "./Components/Tutorials/Rarible";
 import OpenSea from "./Components/Tutorials/OpenSea";
 import Committee from "./Components/Committee";
+import Donate from "./Components/Donate";
 import Program from "./Components/Program";
 import Apply from "./Components/Apply";
 import Curation from "./Components/Curation";
@@ -36,6 +37,7 @@ const App = () => {
               <Route path="/rarible" exact component={ Rarible } />
               <Route path="/opensea" exact component={ OpenSea } />
               <Route path="/committee" exact component={ Committee } />
+              <Route path="/donate" exact component={ Donate } />
               <Route path="/program" exact component={ Program } />
               <Route path="/apply" exact component={ Apply } />
               <Route path="/curation" exact component={ Curation } />

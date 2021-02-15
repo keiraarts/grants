@@ -19,25 +19,23 @@ export default function Ethos() {
         Origins, motivations, and vision
       </div>
       <div className='page-container margin-top ethos-text'>
-        The Sevens Genesis Grant was founded by <span className='text-grey pointer' onClick={ () => openLink('https://twitter.com/illestrater_') }>Tim Kang</span> through
-        the heart of <span className='text-grey pointer' onClick={ () => openLink('https://twitter.com/darlington') }>Mike Darlington</span>.
-        We are a <Link to='/committee' className='text-grey remove-a'>committee</Link> who believes in shining a spotlight to those who demonstrate dedication and talent but are not deservingly recognized.
+        The Sevens Genesis Grant was founded by Tim Kang through the heart of Mike Darlington.
+        We are a global <Link to='/committee' className='text-grey remove-a'>committee</Link> with a mission to spotlight emerging artists and share their creativity with the world.
         <br /><br />
-        In the past, digital art in and of itself has not been given the renown it deserves pertaining to the broader scope of traditional art forms.
-        This will change because of the paradigm of being able to sell and own digital assets using blockchain.
+        Since its inception digital art as a medium has not received the respect or renown it deserves in the traditional fine art world.
+        We believe this paradigm is at a crucial tipping point with the advent of blockchain technology designed to allow digital creations to be securely authenticated, sold and owned.
         <br /><br />
-        Amazing artists have entered this blooming world of NFTs and are establishing a name for themselves, regardless of their prior track record of success.
-        But, so many talented people have yet to discover this burgeoning opportunity at hand.
+        A talented and intrepid cast of artists have already entered the world of NFTs and are quickly establishing themselves in this burgeoning realm. 
+        As the space rapidly matures, the breadth of opportunity is expanding; the NFT community is primed to welcome more creative people and have them embrace the opportunity at hand.
         <br /><br />
-        Currently, the available resources for an artist to learn about and take their first steps into this world are scattered, daunting, and expensive.
-        We provide these tools and initial funding to newcomers who are eager to participate and jump start their career through their passions for creativity.
+        Currently, the available resources for artists looking to become informed and take their first steps into this world are scattered, daunting, and expensive.
+        The Sevens Genesis Grant will provide these tools and initial fundings to newcomers who are eager to participate and jump start their journey exploring their passion for creativity.
         <br /><br />
-        There are also concerns over carbon footprint; fortunately this will be resolved when platforms migrate to scalable solutions. In the meantime
-        we will offset the emissions produced by every NFT we mint by <span className='text-grey remove-a' onClick={ () => openLink('https://teamtrees.org/') }>planting trees</span>.
-        We also have a shared love for equality and want to especially highlight BIPOC.
+        The Sevens Genesis Grant understands and shares the concerns regarding blockchains carbon footprint; this will be resolved in the near future on a systemic level when platforms migrate to scalable solutions.
+        In the meantime we will offset the emissions produced by each and every NFT we mint by planting trees in partnership with <span className='text-grey remove-a' onClick={ () => openLink('https://teamtrees.org/') }>#teamtrees</span>.
+        We also deeply committed to equality and will focus on promoting and advancing the creative output of the BIPOC and LGBT communities.
         <br /><br />
-        We believe in a bright future for artistry across the globe, and we are all grounded by a drive to create a foundation
-        and welcome others into this future through our shared love for art, music, and design.
+        Our foundation believes in a bright future for artistry across the globe, and we are excited to welcome others into this new era through our shared passion for art, music, and design.
         <br /><br />
       </div>
     </div>
