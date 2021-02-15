@@ -18,8 +18,7 @@ export default function Committee() {
         Our shared love of art, music, and design
       </div>
       <div className='page-container margin-top'>
-        <div className='text-m'>Leaders</div>
-        <span className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://twitter.com/illestrater_') }>Tim Kang (illestrater)</span>
+        <span className='text-s text-grey pointer' onClick={ () => openLink('https://twitter.com/illestrater_') }>Tim Kang (illestrater)</span>
         <div className='text-s'>CEO of CUE Music & paradigm pusher</div>
         <span className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://twitter.com/darlington') }>Mike Darlington</span>
         <div className='text-s'>CEO of Monstercat music label & captain NFT gremlin</div>
@@ -44,22 +43,20 @@ export default function Committee() {
         <br />
         <div className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://www.instagram.com/fvckrender') }>ThankYouX</div>
         <br />
-        <div className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('') }>Maalavidaa?</div>
+        <div className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://maalavidaa.com/') }>Maalavidaa</div>
+        <br />
+        <div className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('http://www.blakekathryn.com/') }>Blake Kathryn</div>
+        <br />
+        <div className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://slimesunday.com/') }>slimesunday</div>
+        <br />
+        <div className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://www.instagram.com/toomuchlag') }>toomuchlag</div>
         <br />
         <div className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://www.victormosquera.com/') }>Victor Mosquera?</div>
         <br />
         <div className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('') }>smeccea?</div>
         <br />
-        <div className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://www.victormosquera.com/') }>slimesunday?</div>
-        <br />
         <div className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('') }>Billelis?</div>
-        <br />
-        <div className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('') }>Blake Kathryn?</div>
-        <br />
-        <div className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('') }>toomuchlag?</div>
-        <br />
-
-        <div className='text-s'></div>
+        <br /><br />
       </div>
     </div>
   );
