@@ -28,6 +28,7 @@ const App = () => {
       <div className='App'>
         <StoreComponent store={store}>
           <div className='dim-gradient'>
+          {/* <div className='dim-gradient'> */}
             <div className='site-content'>
               <Header />
               <Route path="/" exact component={ Gallery } />
@@ -44,8 +45,9 @@ const App = () => {
               <Footer/>
             </div>
           </div>
-          <canvas id='canvas' width='3' height='3'></canvas>
-          <LoadBackground />
+          <div className='background-gradient' />
+          {/* <canvas id='canvas' width='3' height='3'></canvas>
+          <LoadBackground /> */}
         </StoreComponent>
       </div>
     </Router>

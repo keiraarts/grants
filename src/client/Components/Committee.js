@@ -18,10 +18,13 @@ export default function Committee() {
         Our shared love of art, music, and design
       </div>
       <div className='page-container margin-top'>
+      <div className='text-m margin-top'>Advisors</div>
         <span className='text-s text-grey pointer' onClick={ () => openLink('https://twitter.com/illestrater_') }>Tim Kang (illestrater)</span>
         <div className='text-s'>CEO of CUE Music & paradigm pusher</div>
         <span className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://twitter.com/darlington') }>Mike Darlington</span>
         <div className='text-s'>CEO of Monstercat music label & captain NFT gremlin</div>
+        <span className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://www.instagram.com/yesladypheonix/') }>Lady Phoenix</span>
+        <div className='text-s'>Co-Founder of Universe Contemporary & leading crypto art evangelist</div>
         <span className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://3lau.com/') }>Justin Blau (3LAU)</span>
         <div className='text-s'>Music producer & NFT innovator</div>
         <span className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://twitter.com/axieking') }>OhhShiny</span>
@@ -55,7 +58,7 @@ export default function Committee() {
         <br />
         <div className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('') }>smeccea?</div>
         <br />
-        <div className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('') }>Billelis?</div>
+        <div className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://www.billelis.com/') }>Billelis</div>
         <br /><br />
       </div>
     </div>
