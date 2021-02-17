@@ -118,12 +118,15 @@ app.get('/galleryData', (req, res) => {
 
 app.post('/submitApplication', async (req, res) => {
   const applicant = {
-    name:       req.body.name,
-    email:      req.body.email,
-    website:    req.body.website,
-    twitter:    req.body.twitter,
-    instagram:  req.body.instagram,
-    statement:  req.body.statement,
+    name:        req.body.name,
+    email:       req.body.email,
+    country:     req.body.country,
+    countryCode: req.body.countryCode,
+    website:     req.body.website,
+    twitter:     req.body.twitter,
+    instagram:   req.body.instagram,
+    statement:   req.body.statement,
+    additional:  req.body.additional
   };
 
   await Object.keys(req.body).forEach(async (item) => {

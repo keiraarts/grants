@@ -10,6 +10,14 @@ const applicant = {
         type: String,
         trim: true
     },
+    country: {
+        type: String,
+        trim: true
+    },
+    countryCode: {
+        type: String,
+        trim: true
+    },
     website: {
         type:  String,
         trim:  true,
@@ -23,6 +31,10 @@ const applicant = {
         trim:  true,
     },
     statement: {
+        type:  String,
+        trim:  true,
+    },
+    additional: {
         type:  String,
         trim:  true,
     },
