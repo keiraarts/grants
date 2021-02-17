@@ -176,9 +176,10 @@ app.use((req, res) => {
   const allowedRoutes = ['nft', 'ethos', 'apply', 'committee', 'program', 'curation', 'tutorial', 'rarible', 'opensea'];
   if (allowedRoutes.indexOf(route) > -1) {
     res.sendFile(`${ __dirname }${ path.join('/dist/index.html') }`);
+  } else if (route === 'social.png') {
+    res.sendFile(`${ __dirname }${ path.join('/public/social.png') }`);
   }
 })
-
 
 
 
