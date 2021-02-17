@@ -23,7 +23,7 @@ export default function Committee() {
         <div className='text-s'>CEO of CUE Music & paradigm pusher</div>
         <span className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://twitter.com/darlington') }>Mike Darlington</span>
         <div className='text-s'>CEO of Monstercat music label & captain NFT gremlin</div>
-        <span className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://www.instagram.com/yesladypheonix/') }>Lady Phoenix</span>
+        <span className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://www.instagram.com/yesladypheonix/') }>Lady PheOnix</span>
         <div className='text-s'>Co-Founder of Universe Contemporary & leading crypto art evangelist</div>
         <span className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://3lau.com/') }>Justin Blau (3LAU)</span>
         <div className='text-s'>Music producer & NFT innovator</div>
@@ -34,17 +34,17 @@ export default function Committee() {
         <span className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://www.youtube.com/c/BrandonKangFilms/videos') }>Brandon Kang</span>
         <div className='text-s'>Professional videographer & NFT collector</div>
         <span className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('http://justinmaller.com/') }>Justin Maller</span>
-        <div className='text-s'>Creative Director of Deviantart & Depthcore</div>
-        <span className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://www.beeple-crap.com/') }>Mike Winkelmann (Beeple)</span>
+        <div className='text-s'>Digital Artist & CCO of Deviantart</div>
+        <span className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://www.beeple-crap.com/') }>Mike Winkelmann (beeple)</span>
         <div className='text-s'>Renowned digital art director & professional hair trimmer</div>
         <div className='text-m margin-top'>Artists</div>
         <div className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://nessgraphics.com/') }>NessGraphics</div>
         <br />
         <div className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://www.instagram.com/fvckrender') }>FVCKRENDER</div>
         <br />
-        <div className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://www.instagram.com/fvckrender') }>aeforia</div>
+        <div className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://aeforiadesign.com/') }>aeforia</div>
         <br />
-        <div className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://www.instagram.com/fvckrender') }>ThankYouX</div>
+        <div className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://thankyoux.com/') }>ThankYouX</div>
         <br />
         <div className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://maalavidaa.com/') }>Maalavidaa</div>
         <br />
@@ -54,11 +54,13 @@ export default function Committee() {
         <br />
         <div className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://www.instagram.com/toomuchlag') }>toomuchlag</div>
         <br />
-        <div className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://www.victormosquera.com/') }>Victor Mosquera?</div>
+        <div className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://www.victormosquera.com/') }>Victor Mosquera</div>
         <br />
-        <div className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('') }>smeccea?</div>
+        <div className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://smeccea.com/') }>smeccea</div>
         <br />
         <div className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://www.billelis.com/') }>Billelis</div>
+        <br />
+        <div className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://www.behance.net/Filiphds') }>Filip Hodas</div>
         <br /><br />
       </div>
     </div>

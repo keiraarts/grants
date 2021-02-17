@@ -1,5 +1,5 @@
-import { getFips } from 'crypto';
-import React, { useState } from 'react';
+import React, { useState, Select } from 'react';
+import CountryList from 'country-list';
 import { apiUrl } from '../baseUrl';
 
 import '../styles.scss';
@@ -7,19 +7,24 @@ import '../styles.scss';
 export default function Application() {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [err, setErr] = useState(false);
   const submit = e => {
     e.preventDefault();
-    setSubmitting(true);
-    fetch(`${ apiUrl() }/submitApplication`, {
-      method: 'POST',
-      body: JSON.stringify(data),
-      headers: { 'Content-Type': 'application/json' },
-    })
-      .then(res => res.json())
-      .then(json => setSubmitted(true))
+    if (!data.country || !data.countryCode) setErr('Please select your Country of Representation');
+    else {
+      setErr(false);
+      setSubmitting(true);
+      fetch(`${ apiUrl() }/submitApplication`, {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: { 'Content-Type': 'application/json' },
+      })
+        .then(res => res.json())
+        .then(json => setSubmitted(true))
+    }
   }
 
-  const [err, setErr] = useState(false);
+
   const [data, setData] = useState({});
   const uploadHandler = (target, type) => {
     setErr(false);
@@ -48,6 +53,8 @@ export default function Application() {
     }
   };
 
+  console.log(data);
+
   return (
     <div className='content-block'>
       <div className='text-l text-b'>
@@ -61,6 +68,16 @@ export default function Application() {
           <div className='form__group field'>
             <input type='text' className='form__field' placeholder='Name' name='name' id='name' required maxLength='100' onChange={e => setData({ ...data, name: e.target.value })} />
             <label className='form__label'>Artist Name</label>
+          </div>
+          <div className='select-dropdown'>
+            <select name='Country' defaultValue='default' required onChange={e => setData({ ...data, country: e.target.value, countryCode: CountryList.getCode(e.target.value) })}>
+              <option value='default' disabled hidden> 
+                Country of Representation
+              </option> 
+              {CountryList.getNames().map((fbb, key) =>
+                <option key={ key } value={ fbb }>{ fbb }</option>
+              )};
+            </select>
           </div>
           <div className='form__group field'>
             <input type='email' className='form__field' placeholder='Email' name='email' id='email' required maxLength='100' onChange={e => setData({ ...data, email: e.target.value })} />
@@ -80,14 +97,18 @@ export default function Application() {
           </div>
           <div className='form__group field'>
             <textarea type='text' className='form__field intent-field' placeholder='Email' name='email' id='name' required maxLength='2000' onChange={e => setData({ ...data, statement: e.target.value })} />
-            <label className='form__label'>Statement of Intent</label>
+            <label className='form__label'>Statement of Intent (2000 chars)</label>
           </div>
           <div className='form__group field'>
-            <label className='file__label'>Art Submission (JPG, PNG, GIF, WEBP, or MP4 - Max 30mb)</label>
+            <textarea type='text' className='form__field intent-field' placeholder='Email' name='email' id='name' maxLength='2000' onChange={e => setData({ ...data, statement: e.target.value })} />
+            <label className='form__label'>Additional Information (2000 chars)*</label>
+          </div>
+          <div className='form__group field'>
+            <label className='file__label'>Art Submission (JPG, PNG, GIF, WEBP, or MP4 - Max 100mb)</label>
             <input type='file' className='form__field' placeholder='Artwork' name='artwork' id='name' accept='image/jpeg, image/png, image/gif, image/webp, video/mp4' required onChange={ (e) => uploadHandler(e.target, 'art') } />
           </div>
           <div className='form__group field'>
-            <label className='file__label'>Thumbnail GIF for MP4* - Square Aspect Ratio Recommended (WEBP, GIF - Max 30mb)</label>
+            <label className='file__label'>Thumbnail GIF for MP4* - Square Size Recommended (WEBP, GIF - Max 100mb)</label>
             <input type='file' className='form__field' placeholder='Artwork' name='artwork' id='name' accept='image/gif, image/webp' onChange={ (e) => uploadHandler(e.target, 'thumbnail') } />
           </div>
           { err ? 

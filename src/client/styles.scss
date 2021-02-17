@@ -430,7 +430,10 @@ $gray: #9b9b9b;
 }
 
 .submit-button {
-  font-family: 'Imprima', sans-serif;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  font-family: 'Roboto Slab', sans-serif;
   white-space: normal;
   border: none;
   display: inline-block;
@@ -463,6 +466,54 @@ $gray: #9b9b9b;
   outline: none;
   transform: translate(3px, 3px);
   box-shadow: 1px 1px 1px #ccc;
+}
+
+.select-dropdown,
+.select-dropdown * {
+  width: 50%;
+	position: relative;
+	box-sizing: border-box;
+}
+
+.select-dropdown {
+  margin-top: 1rem;
+  border-bottom: 2px solid $gray;
+	position: relative;
+  font-size: 1rem;
+  color: $gray;
+	border-radius: 4px;
+}
+
+.select-dropdown select {
+	font-size: 1.3rem;
+  font-family: 'Roboto Slab', sans-serif;
+	font-weight: normal;
+	width: 100%;
+	padding: 1rem 0 1rem 0;
+  color: $gray;
+	border: none;
+	background-color: transparent;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+	appearance: none;
+}
+
+.select-dropdown select:active, .select-dropdown select:focus {
+	outline: none;
+	box-shadow: none;
+}
+
+.select-dropdown:after {
+	content: "";
+	position: absolute;
+	top: 50%;
+	right: 8px;
+	width: 0;
+	height: 0;
+	margin-top: -2px;
+	border-bottom: 5px solid #aaa;
+	border-right: 5px solid transparent;
+	border-left: 5px solid transparent;
 }
 
 @media (max-width: 90rem) {

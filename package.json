@@ -19,6 +19,7 @@
     "babel-polyfill": "^6.26.0",
     "body-parser": "^1.18.3",
     "cors": "^2.8.5",
+    "country-list": "^2.2.0",
     "crypto": "^1.0.1",
     "dotenv": "^6.2.0",
     "easy-peasy": "^1.6.1",
