@@ -98,7 +98,7 @@ export default function Application() {
             <label className='form__label'>Statement of Intent (2000 chars)</label>
           </div>
           <div className='form__group field'>
-            <textarea type='text' className='form__field intent-field' placeholder='Email' name='email' id='name' maxLength='2000' onChange={e => setData({ ...data, statement: e.target.value })} />
+            <textarea type='text' className='form__field intent-field' placeholder='Email' name='email' id='name' maxLength='2000' onChange={e => setData({ ...data, additional: e.target.value })} />
             <label className='form__label'>Additional Information (2000 chars)*</label>
           </div>
           <div className='form__group field'>
