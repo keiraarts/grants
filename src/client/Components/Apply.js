@@ -53,8 +53,6 @@ export default function Application() {
     }
   };
 
-  console.log(data);
-
   return (
     <div className='content-block'>
       <div className='text-l text-b'>
