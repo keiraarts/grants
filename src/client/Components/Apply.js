@@ -40,7 +40,7 @@ export default function Application() {
       if (ext === 'webp') responsetype = 'image/webp';
       if (ext === 'mp4') responsetype = 'video/mp4';
 
-      if (file.size < 32000000) {
+      if ((type === 'art' && file.size < 120000000) || (type === 'thumbnail' && file.size < 32000000)) {
         if (responsetype) {
           if (type === 'art') setData({ ...data, art: reader.result })
           if (type === 'thumbnail') setData({ ...data, thumbnail: reader.result })
