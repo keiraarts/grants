@@ -13,7 +13,7 @@ export default function Program() {
         Why should an artist apply?
       </div>
       <div className='page-container margin-top ethos-text'>
-        The grants program will mint and transfer your single editioned artwork to you as part of The Sevens Genesis Grant collection on Rarible
+        Sevens Genesis Grant will mint and transfer your single editioned artwork to you as part of The Sevens Genesis Grant collection on Rarible
         as well as provide additional funds to proceed with your first ever sale.
         <br /><br />
         We will highlight you and your work as being a grant recipient and provide easy to understand resources in order for you to become

@@ -1,15 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { StoreComponent, store } from './redux';
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { BrowserRouter, Route } from "react-router-dom";
 // import useScroll from '@react-hooks-custom/use-scroll'
-import LoadBackground from './Components/Canvas';
 import Header from './Components/Header';
 import Footer from './Components/Footer';
 import Gallery from "./Components/Gallery";
 import Ethos from "./Components/Ethos";
 import FAQ from "./Components/FAQ";
-import Tutorial from "./Components/Tutorials/Tutorial";
+import Resources from "./Components/Resources";
+import Tutorial from "./Components/Tutorials/Wallet";
 import Rarible from "./Components/Tutorials/Rarible";
 import OpenSea from "./Components/Tutorials/OpenSea";
 import Committee from "./Components/Committee";
@@ -26,16 +26,16 @@ const App = () => {
   // const { scrollX, scrollY } = useScroll();
 
   return (
-    <Router>
+    <BrowserRouter onChange={() => { window.scrollTo(0, 0); console.log('YEO') }}>
       <div className='App'>
         <StoreComponent store={store}>
           <div className='dim-gradient'>
-          {/* <div className='dim-gradient'> */}
             <div className='site-content'>
               <Header />
               <Route path="/" exact component={ Gallery } />
               <Route path="/ethos" exact component={ Ethos } />
               <Route path="/nft" exact component={ FAQ } />
+              <Route path="/resources" exact component={ Resources } />
               <Route path="/tutorial" exact component={ Tutorial } />
               <Route path="/rarible" exact component={ Rarible } />
               <Route path="/opensea" exact component={ OpenSea } />
@@ -50,11 +50,9 @@ const App = () => {
             </div>
           </div>
           <div className='background-gradient' />
-          {/* <canvas id='canvas' width='3' height='3'></canvas>
-          <LoadBackground /> */}
         </StoreComponent>
       </div>
-    </Router>
+    </BrowserRouter>
   );
 }
 

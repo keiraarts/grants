@@ -18,7 +18,7 @@ export default function Committee() {
         We are endlessly grateful for all of our donors
       </div>
       <div className='text-s margin-top text-desc'>
-        The Sevens Genesis Grant is a non-profit organization committed to helping artists.
+        Sevens Genesis Grant is a non-profit organization committed to helping artists.
         Our donation address is genesisgrants.eth currently managed by the founder. We intend to transition this to a multi-sig or DAO. 
       </div>
       <div className='page-container'>

@@ -19,8 +19,6 @@ export default function Header() {
         <div className='text-s'>
           Founded by <a className='text-rainbow pointer' onClick={ () => openLink('https://twitter.com/illestrater_') }>illestrater</a><br />
           Curated by <Link to='/committee' className='text-grey remove-a'>Genesis Grant Committee</Link><br />
-          <br />
-          Please consider <Link to='/donate' className='text-grey remove-a'>donating</Link> to the grant
         </div>
         <span className='flex-full' />
         {/* <div className='text-s'>

@@ -51,15 +51,13 @@ export default function Gallery() {
   return (
     <div className='content-block'>
       <div className='text-l text-b'>
-        Gallery
+        Sevens Genesis Grant
       </div>
       <div className='text-s margin-top-s text-desc'>
-        Genesis Grants curates, educates, and funds artists' first true digital signature to ease and bridge the gap
-        between traditional publishing and NFTs, the future of our creativity
+        Curating, educating, and funding artists' first digital signature
       </div>
       <div className='text-s margin-top-s text-desc'>
-        Once the first grant recipients have been finalized, this gallery will update with their respective artwork.
-        Below is currently a placeholder collection of some of the founder's favorite NFTs
+        <em>Grant recipients will be highlighted below. Temporary gallery of founder's favorite NFTs.</em>
       </div>
       <div className='cols'>
         { isLoading ?

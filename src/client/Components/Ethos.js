@@ -19,7 +19,7 @@ export default function Ethos() {
         Origins, motivations, and vision
       </div>
       <div className='page-container margin-top ethos-text'>
-        The Sevens Genesis Grant was founded by Tim Kang through the heart of Mike Darlington.
+        Sevens Genesis Grant was founded by Tim Kang through the heart of Mike Darlington.
         We are a global <Link to='/committee' className='text-grey remove-a'>committee</Link> with a mission to spotlight emerging artists and share their creativity with the world.
         <br /><br />
         Since its inception digital art as a medium has not received the respect or renown it deserves in the traditional fine art world.
@@ -29,9 +29,9 @@ export default function Ethos() {
         As the space rapidly matures, the breadth of opportunity is expanding; the NFT community is primed to welcome more creative people and have them embrace the opportunity at hand.
         <br /><br />
         Currently, the available resources for artists looking to become informed and take their first steps into this world are scattered, daunting, and expensive.
-        The Sevens Genesis Grant will provide these tools and initial fundings to newcomers who are eager to participate and jump start their journey exploring their passion for creativity.
+        Sevens Genesis Grant will provide these tools and initial fundings to newcomers who are eager to participate and jump start their journey exploring their passion for creativity.
         <br /><br />
-        The Sevens Genesis Grant understands and shares the concerns regarding blockchains carbon footprint; this will be resolved in the near future on a systemic level when platforms migrate to scalable solutions.
+        Sevens Genesis Grant understands and shares the concerns regarding blockchains carbon footprint; this will be resolved in the near future on a systemic level when platforms migrate to scalable solutions.
         In the meantime we will offset the emissions produced by each and every NFT we mint by planting trees in partnership with <span className='text-grey remove-a pointer' onClick={ () => openLink('https://teamtrees.org/') }>#teamtrees</span>.
         We also deeply committed to equality and will focus on promoting and advancing the creative output of the BIPOC and LGBTQ+ communities.
         <br /><br />

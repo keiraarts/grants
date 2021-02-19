@@ -3,8 +3,7 @@ import { StoreComponent, store } from '../redux';
 import { Link, useLocation } from "react-router-dom";
 
 import '../styles.scss';
-import Twitter from '../assets/twitter.png';
-import Instagram from '../assets/instagram.png';
+import Logo from '../assets/logo.png';
 
 export default function Header() {
   function openLink(page)
@@ -22,34 +21,31 @@ export default function Header() {
   const location = useLocation();
 
   return (
-    <div>
-      <div className='header flex'>
-        <Link to='/' className='flex remove-a'>
-          The Sevens<br />
-          Genesis Grant
-        </Link>
-        <span className='flex-full' />
-        <div>
-          <div className='social-icons flex'>
-            <span className='flex-full' />
-            <img src={ Twitter } className='social-icon' alt='Twitter' onClick={ () => openLink('twitter') } />
-            <img src={ Instagram } className='social-icon' alt='Instagram' onClick={ () => openLink('instagram') } />
-          </div>
-          <Link to='/program' className={ `apply-block info-block remove-a ${ location.pathname === '/program' && 'header-selected' }` }>
-            <span>Apply</span>
+    <div className='header flex'>
+      <Link to='/' className='flex remove-a'>
+        <img src={ Logo } className='logo' alt='Twitter' />
+      </Link>
+      <div className='flex-full' />
+      <div className='nav-container'>
+        <div className='flex-full' />
+        <div className='header-nav'>
+          <Link to='/ethos' className= { `header-margin remove-a ${ location.pathname === '/ethos' && 'header-selected' }` }>
+            Ethos
+          </Link>
+          <Link to='/nft' className={ `header-margin remove-a ${ location.pathname === '/nft' && 'header-selected' }` }>
+            FAQ
+          </Link>
+          <Link to='/resources' className={ `header-margin remove-a ${ location.pathname === '/resources' && 'header-selected' }` }>
+            Resources
+          </Link>
+          <Link to='/testimony' className={ `header-margin remove-a ${ location.pathname === '/testimony' && 'header-selected' }` }>
+            Testimonies
+          </Link>
+          <Link to='/program' className={ `header-margin remove-a ${ (location.pathname === '/program' || location.pathname === '/apply') && 'header-selected' }` }>
+            Apply
           </Link>
         </div>
-      </div>
-      <div className='info-block-container'>
-        <Link to='/' className={ `info-block margin-left remove-a ${ location.pathname === '/' && 'header-selected' }` }>
-          Gallery
-        </Link>
-        <Link to='/ethos' className= { `info-block remove-a ${ location.pathname === '/ethos' && 'header-selected' }` }>
-          Ethos
-        </Link>
-        <Link to='/nft' className={ `info-block margin-right remove-a ${ location.pathname === '/nft' && 'header-selected' }` }>
-          NFT FAQ
-        </Link>
+        <div className='flex-full' />
       </div>
     </div>
   );

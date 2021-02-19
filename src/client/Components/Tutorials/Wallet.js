@@ -49,17 +49,6 @@ export default function Tutorial() {
           in which you pay using the crypto currency Ether (ETH). In your wallet, you will see a deposit address (e.g. 0x777Bc2a...) in your MetaMask.
           <br /><br />Purchase ETH on a crypto currency exchange, such as Coinbase, Gemini or Binance, and withdraw to this deposit address.
         </div>
-        <div className='text-m margin-top'>
-          4) Mint Your First NFT
-        </div>
-        <div className='text-s margin-top-s'>
-          <Link to='/rarible' className='text-grey remove-a'>Rarible Minting Tutorial</Link>
-          <br /><br />
-          <Link to='/opensea' className='text-grey remove-a'>OpenSea Minting Tutorial</Link>
-          <br /><br />
-          Currently, the gas cost to mint an NFT and accept a bid will range between $50 - $200+ USD which is currently a serious issue.
-          This is what the grant program funds, along with other benefits to its recipients.
-        </div>
         <br />
       </div>
     </div>
