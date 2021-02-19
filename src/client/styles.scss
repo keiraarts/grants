@@ -160,24 +160,6 @@ canvas {
   font-weight: 500;
 }
 
-@media (max-width: 45rem) {
-  .logo {
-    width: 2rem;
-    height: 2rem;
-  }
-
-  .header-nav {
-    display: flex;
-    justify-content: flex-end;
-    font-size: 0.8rem;
-    font-weight: 500;
-  }
-  
-  .header-margin {
-    margin-left: 0.5rem;
-  }
-}
-
 .info-block-container {
   display: flex;
 }
@@ -581,7 +563,7 @@ $gray: #9b9b9b;
   }
 
   .text-l {
-    font-size: 2rem;
+    font-size: 2.4rem;
   }
   
   .text-m {
@@ -605,6 +587,13 @@ $gray: #9b9b9b;
     width: 100%;
   }
 
+  .select-dropdown,
+  .select-dropdown * {
+    width: 100%;
+    position: relative;
+    box-sizing: border-box;
+  }
+
   @keyframes rainbow {
     from {
       background-position-x: 0vw;
@@ -613,5 +602,41 @@ $gray: #9b9b9b;
     to {
       background-position-x: 12000vw;
     }
+  }
+}
+
+@media (max-width: 35rem) {
+  .text-l {
+    font-size: 1.6rem;
+  }
+
+  .logo {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .header {
+    margin: 1rem;
+    font-size: 2rem;
+  }
+
+  .header-nav {
+    display: flex;
+    justify-content: flex-end;
+    font-size: 0.8rem;
+    font-weight: 500;
+  }
+  
+  .header-margin {
+    margin-left: 0.5rem;
+  }
+
+  .content-block {
+    margin: 1rem 1rem;
+    padding: 1rem;
+  }
+
+  .info-block-container {
+    margin: 0 1rem 0 1rem;
   }
 }

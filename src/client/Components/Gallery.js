@@ -50,7 +50,7 @@ export default function Gallery() {
 
   return (
     <div className='content-block'>
-      <div className='text-l text-b'>
+      <div className='text-l'>
         Sevens Genesis Grant
       </div>
       <div className='text-s margin-top-s text-desc'>
