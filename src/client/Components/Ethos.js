@@ -32,7 +32,7 @@ export default function Ethos() {
         The Sevens Genesis Grant will provide these tools and initial fundings to newcomers who are eager to participate and jump start their journey exploring their passion for creativity.
         <br /><br />
         The Sevens Genesis Grant understands and shares the concerns regarding blockchains carbon footprint; this will be resolved in the near future on a systemic level when platforms migrate to scalable solutions.
-        In the meantime we will offset the emissions produced by each and every NFT we mint by planting trees in partnership with <span className='text-grey remove-a' onClick={ () => openLink('https://teamtrees.org/') }>#teamtrees</span>.
+        In the meantime we will offset the emissions produced by each and every NFT we mint by planting trees in partnership with <span className='text-grey remove-a pointer' onClick={ () => openLink('https://teamtrees.org/') }>#teamtrees</span>.
         We also deeply committed to equality and will focus on promoting and advancing the creative output of the BIPOC and LGBTQ+ communities.
         <br /><br />
         Our foundation believes in a bright future for artistry across the globe, and we are excited to welcome others into this new era through our shared passion for art, music, and design.

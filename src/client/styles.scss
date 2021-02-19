@@ -481,7 +481,6 @@ $gray: #9b9b9b;
 	position: relative;
   font-size: 1rem;
   color: $gray;
-	border-radius: 4px;
 }
 
 .select-dropdown select {
@@ -489,7 +488,7 @@ $gray: #9b9b9b;
   font-family: 'Roboto Slab', sans-serif;
 	font-weight: normal;
 	width: 100%;
-	padding: 1rem 0 1rem 0;
+	padding: 1rem 0 0.8rem 0;
   color: $gray;
 	border: none;
 	background-color: transparent;

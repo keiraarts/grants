@@ -17,6 +17,7 @@ import Donate from "./Components/Donate";
 import Program from "./Components/Program";
 import Apply from "./Components/Apply";
 import Curation from "./Components/Curation";
+import Testimony from "./Components/Testimony";
 import Contract from "./Components/Contract";
 
 import './styles.scss';
@@ -43,6 +44,7 @@ const App = () => {
               <Route path="/program" exact component={ Program } />
               <Route path="/apply" exact component={ Apply } />
               <Route path="/curation" exact component={ Curation } />
+              <Route path="/testimony" exact component={ Testimony } />
               <Route path="/contract" exact component={ Contract } />
               <Footer/>
             </div>

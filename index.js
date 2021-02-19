@@ -173,7 +173,7 @@ app.post('/submitApplication', async (req, res) => {
 app.use(express.static('dist'));
 app.use((req, res) => {
   const route = req.originalUrl.split('/')[1];
-  const allowedRoutes = ['nft', 'ethos', 'apply', 'committee', 'program', 'curation', 'tutorial', 'rarible', 'opensea'];
+  const allowedRoutes = ['nft', 'ethos', 'apply', 'committee', 'program', 'curation', 'donate', 'tutorial', , 'testimony', 'rarible', 'opensea'];
   if (allowedRoutes.indexOf(route) > -1) {
     res.sendFile(`${ __dirname }${ path.join('/dist/index.html') }`);
   } else if (route === 'social.png') {

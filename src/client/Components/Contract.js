@@ -12,9 +12,9 @@ const setContract = async () => {
   // Our current contract factory version
   const version = 'v1.0.0'
   const abiData = await fetch(`https://us-central1-thing-1d2be.cloudfunctions.net/getAbi?version=${version}`)
-  
+
   const { abi } = await abiData.json()
-  
+
   // The Mintbase market you want to interact with
   const address = `0x3f4200234e26d2dfbc55fcfd9390bc128d5e2cca`;
   const contract = new Contract(address, abi, provider)
@@ -24,12 +24,6 @@ const setContract = async () => {
   
   // Now take a look at all the functions you get by looking into the log 
   console.log('Mintbase contract:', signedContract)
-}
-
-const testMint = async () => {
-  await signedContract.batchMint('0xeEE5Eb24E7A0EA53B75a1b9aD72e7D20562f4283', Number(1), 'M5wbgKfnT6H2rF4v8Pc6Gh2759rGV3vljjVP0IEJgNg', Number(0), false).catch(async () => {
-    throw 'User rejected'
-  })
 }
 
 let provider, signer;
@@ -73,7 +67,6 @@ export default function Curation() {
           <div className='text-s'>
             { address }<br />
             <span className='text-s margin-top-s text-grey pointer' onClick={ () => setConnected(false) }>Disconnect Wallet</span><br />
-            <span className='text-s margin-top-s text-grey pointer' onClick={ () => testMint() }>Mint</span>
           </div>
         :
           <div className='text-s'>
