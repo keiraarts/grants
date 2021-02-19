@@ -57,7 +57,7 @@ export default function Gallery() {
         Curating, educating, and funding artists' first digital signature
       </div>
       <div className='text-s margin-top-s text-desc'>
-        <em>Grant recipients will be highlighted below. Temporary gallery of founder's favorite NFTs.</em>
+        <em>Grant recipients will be highlighted below - temporary gallery of founder's favorite NFTs</em>
       </div>
       <div className='cols'>
         { isLoading ?
