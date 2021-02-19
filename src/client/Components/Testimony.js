@@ -20,7 +20,7 @@ export default function Committee() {
       <div className='page-container'>
         <div className='text-s margin-top'>
           "I would never have imagined connecting with people who I consider legends. Now I have the opportunity to
-          be part of a community of the most creative and forward thinking individuals in the world, and it drives me to put out something great for the world."
+          be part of a community of the most creative and forward thinking individuals in the world, and it drives me to do something great for others."
           -  <span className='text-s text-grey pointer' onClick={ () => openLink('https://twitter.com/illestrater_') }>illestrater</span>
         </div>
         <div className='text-s margin-top'>
