@@ -16,19 +16,16 @@ export default function Header() {
   }
 
   return (
-    <div>
-      <div className='footer flex'>
-        <div className='text-s'>
-          Founded by <a className='text-rainbow pointer' onClick={ () => openLink('https://twitter.com/illestrater_') }>illestrater</a><br />
-          & <Link to='/committee' className='text-grey remove-a'>Grant Committee</Link><br />
-        </div>
-        <span className='flex-full' />
-        <div className='social-icons flex'>
-          <img src={ Twitter } className='social-icon' alt='Twitter' onClick={ () => openLink('https://twitter.com/genesisgrants') } />
-          <img src={ Instagram } className='social-icon' alt='Instagram' onClick={ () => openLink('https://instagram.com/genesisgrants') } />
-          <img src={ Discord } className='social-icon' alt='Instagram' onClick={ () => openLink('https://discord.gg/7fN5u2qXRC') } />
-          <a href='mailto:tim@grants.art'><img src={ Email } className='social-icon' alt='Email' /></a>
-        </div>
+    <div className='footer'>
+      <div className='center text-s'>
+        Founded by <a className='text-rainbow pointer' onClick={ () => openLink('https://twitter.com/illestrater_') }>illestrater</a><br /><br />
+        Curated by <Link to='/committee' className='text-grey remove-a'>Sevens Genesis Grant Committee</Link><br />
+      </div>
+      <div className='social-icons margin-top flex'>
+        <img src={ Twitter } className='social-icon' alt='Twitter' onClick={ () => openLink('https://twitter.com/genesisgrants') } />
+        <img src={ Instagram } className='social-icon' alt='Instagram' onClick={ () => openLink('https://instagram.com/genesisgrants') } />
+        <img src={ Discord } className='social-icon' alt='Instagram' onClick={ () => openLink('https://discord.gg/7fN5u2qXRC') } />
+        <a href='mailto:tim@grants.art'><img src={ Email } className='social-icon' alt='Email' /></a>
       </div>
     </div>
   );

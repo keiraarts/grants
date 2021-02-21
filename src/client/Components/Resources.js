@@ -25,6 +25,7 @@ export default function Committee() {
         <Link to='/tutorial' className='text-grey remove-a margin-top'>Setting up a wallet</Link><br />
         <Link to='/opensea' className='text-grey remove-a margin-top'>Minting on OpenSea</Link><br />
         <Link to='/rarible' className='text-grey remove-a margin-top'>Minting on Rarible</Link><br />
+        <a className='text-grey pointer margin-top' onClick={ () => openLink('https://coopahtroopa.mirror.xyz/PF42Z9oE_r6yhZN9jZrrseXfHaZALj9JIfMplshlgQ0') }>Maalavidaa's Artist Mental Health Community</a><br />
         <br />
       </div>
     </div>
