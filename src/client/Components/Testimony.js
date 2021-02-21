@@ -19,7 +19,7 @@ export default function Committee() {
       </div>
       <div className='page-container'>
         <div className='text-s margin-top'>
-          <i>If you would like to share your short story, please <a href='mailto:tim@grants.art' className='text-s text-grey pointer'>email us</a> your testimony.</i>
+          <i>If you would like to share your experiences in short, please <a href='mailto:tim@grants.art' className='text-s text-grey pointer'>email us</a> your testimony.</i>
         </div>
         <div className='text-s margin-top'>
           "The NFT space has changed my life. I feel like an artist with a clear mission. I am inspired and honoured to be in this space.
@@ -28,18 +28,14 @@ export default function Committee() {
           -  <span className='text-s text-grey pointer' onClick={ () => openLink('https://twitter.com/billelis') }>Billelis</span>
         </div>
         <div className='text-s margin-top'>
-          "---------------------"
-          -  <span className='text-s text-grey pointer' onClick={ () => openLink('') }>Artist</span>
-        </div>
-        <div className='text-s margin-top'>
-          "---------------------"
-          -  <span className='text-s text-grey pointer' onClick={ () => openLink('') }>Artist</span>
-        </div>
-        <div className='text-s margin-top'>
           "I would never have imagined connecting with people who I consider legends. Now I have the opportunity to
           be part of a community of the most creative and forward thinking individuals in the world, and it drives me to do something great for others."
           -  <span className='text-s text-grey pointer' onClick={ () => openLink('https://twitter.com/illestrater_') }>illestrater</span>
         </div>
+        <div className='text-s margin-top'>
+          Many more testimonies to be revealed soon ❤️
+        </div>
+        <br />
       </div>
     </div>
   );
