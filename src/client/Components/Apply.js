@@ -63,6 +63,7 @@ export default function Application() {
       </div>
       <div className='margin-top'>
         <div className='text-s'>
+          <i>Please note this is not a minting platform and is reserved for artists who have not sold an NFT before</i><br /><br />
           <i>Starred fields* are optional but strongly recommended</i>
         </div>
         <form onSubmit={ submit }>
