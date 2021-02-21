@@ -19,6 +19,9 @@ export default function Committee() {
       </div>
       <div className='page-container'>
         <div className='text-s margin-top'>
+          <i>If you would like to share your short story, please <a href='mailto:tim@grants.art' className='text-s text-grey pointer'>email us</a> your testimony.</i>
+        </div>
+        <div className='text-s margin-top'>
           "The NFT space has changed my life. I feel like an artist with a clear mission. I am inspired and honoured to be in this space.
           But most of all I am grateful for this initiative of change. We, as artists can help shape the future of this community and support upcoming creatives with
           knowledge and support resulting in more inclusivity and talent in the NFT world"

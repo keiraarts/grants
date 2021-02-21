@@ -62,6 +62,9 @@ export default function Application() {
         As your first NFT mint, submit this form with a single work of art that you believe is powerful and true to yourself
       </div>
       <div className='margin-top'>
+        <div className='text-s'>
+          <i>Starred fields* are optional but strongly recommended</i>
+        </div>
         <form onSubmit={ submit }>
           <div className='form__group field'>
             <input type='text' className='form__field' placeholder='Name' name='name' id='name' required maxLength='100' onChange={e => setData({ ...data, name: e.target.value })} />
@@ -76,6 +79,10 @@ export default function Application() {
                 <option key={ key } value={ fbb }>{ fbb }</option>
               )};
             </select>
+          </div>
+          <div className='form__group field'>
+            <input type='text' className='form__field' placeholder='City' name='city' id='city' maxLength='100' onChange={e => setData({ ...data, city: e.target.value })} />
+            <label className='form__label'>City*</label>
           </div>
           <div className='form__group field'>
             <input type='email' className='form__field' placeholder='Email' name='email' id='email' required maxLength='100' onChange={e => setData({ ...data, email: e.target.value })} />
@@ -115,7 +122,7 @@ export default function Application() {
             </div>
           :
             <div className='margin-top-s text-s'>
-              Starred fields* are optional but strongly recommended
+              <i>If you are a short film maker, please <a href='mailto:tim@grants.art' className='text-s text-grey pointer'>email us</a></i>
             </div>
           }
           { (submitting && !submitted) &&

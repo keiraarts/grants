@@ -18,6 +18,10 @@ const applicant = {
         type: String,
         trim: true
     },
+    city: {
+        type: String,
+        trim: true
+    },
     website: {
         type:  String,
         trim:  true,

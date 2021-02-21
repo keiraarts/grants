@@ -122,11 +122,12 @@ app.post('/submitApplication', async (req, res) => {
     email:       req.body.email,
     country:     req.body.country,
     countryCode: req.body.countryCode,
+    city:        req.body.city,
     website:     req.body.website,
     twitter:     req.body.twitter,
     instagram:   req.body.instagram,
     statement:   req.body.statement,
-    additional:  req.body.additional
+    additional:  req.body.additional,
   };
 
   await Object.keys(req.body).forEach(async (item) => {
