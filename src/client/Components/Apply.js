@@ -133,7 +133,8 @@ export default function Application() {
           }
           { submitted &&
             <div className='margin-top-s text-s text-rainbow'>
-              Thank you for submitting your application! We will get back to you soon via e-mail or social direct message.
+              Thank you for submitting your application!<br />
+              We will get back to you once we announce an acceptance date via e-mail or social direct message.
             </div>
           }
           { (!submitting && !submitted) && <input type='submit' value='Submit Application' className='submit-button' /> }
