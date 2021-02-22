@@ -63,7 +63,7 @@ export default function Application() {
       </div>
       <div className='margin-top'>
         <div className='text-s'>
-          <i>Please note this is not a minting platform and is reserved for artists who have not sold an NFT before</i><br /><br />
+          <i>Please note this is reserved for artists who have not sold an NFT before</i><br /><br />
           <i>Starred fields* are optional but strongly recommended</i>
         </div>
         <form onSubmit={ submit }>
@@ -110,11 +110,11 @@ export default function Application() {
             <label className='form__label'>Additional Information (2000 chars)*</label>
           </div>
           <div className='form__group field'>
-            <label className='file__label'>Art Submission (JPG, PNG, GIF, WEBP, or MP4 - Max 100mb)</label>
+            <label className='file__label'>Art Submission (JPG, PNG, GIF, WEBP, or MP4 - Max 77MB)</label>
             <input type='file' className='form__field' placeholder='Artwork' name='artwork' id='name' accept='image/jpeg, image/png, image/gif, image/webp, video/mp4' required onChange={ (e) => uploadHandler(e.target, 'art') } />
           </div>
           <div className='form__group field'>
-            <label className='file__label'>Thumbnail GIF for MP4* - Square Size Recommended (WEBP, GIF - Max 100mb)</label>
+            <label className='file__label'>Thumbnail GIF for MP4* - Square Size Recommended (WEBP, GIF - Max 33MB)</label>
             <input type='file' className='form__field' placeholder='Artwork' name='artwork' id='name' accept='image/gif, image/webp' onChange={ (e) => uploadHandler(e.target, 'thumbnail') } />
           </div>
           { err ? 
@@ -123,7 +123,7 @@ export default function Application() {
             </div>
           :
             <div className='margin-top-s text-s'>
-              <i>If you are a short film maker, please <a href='mailto:tim@grants.art' className='text-s text-grey pointer'>email us</a></i>
+              <i>If you are a short film animator with a large file please provide external URL upload in Additional Information</i>
             </div>
           }
           { (submitting && !submitted) &&
