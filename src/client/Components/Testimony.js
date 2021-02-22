@@ -28,6 +28,13 @@ export default function Committee() {
           -  <span className='text-s text-grey pointer' onClick={ () => openLink('https://twitter.com/billelis') }>Billelis</span>
         </div>
         <div className='text-s margin-top'>
+          "Thanks to the NFT, I’ve merged my 'Personal Projects' folder to my 'Work' folder now. I wake up to do what my artist’s motivations, thoughts and ideas speak to me.
+          This is a feeling every artist in the world should have the opportunity to feel, the sense of true freedom of creation.
+          I’m honored and grateful for being part of this meaningful initiative and sharing my knowledge
+          and experiences to help upcoming artists show their passion and grow this amazing community."
+          -  <span className='text-s text-grey pointer' onClick={ () => openLink('https://www.instagram.com/render_fruit/?hl=en') }>RenderFruit</span>
+        </div>
+        <div className='text-s margin-top'>
           "I would never have imagined connecting with people who I consider legends. Now I have the opportunity to
           be part of a community of the most creative and forward thinking individuals in the world, and it drives me to do something great for others."
           -  <span className='text-s text-grey pointer' onClick={ () => openLink('https://twitter.com/illestrater_') }>illestrater</span>
