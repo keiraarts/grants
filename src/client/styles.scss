@@ -306,6 +306,12 @@ canvas {
   width: 100%;
 }
 
+.curation-art {
+  max-height: 85vh;
+  width: auto;
+  object-fit: cover;
+}
+
 .block-info {
   display: flex;
   flex-direction: column;

@@ -29,13 +29,13 @@ export default function Gallery(props) {
       >
         <div className='block-art'>
           { item.art && item.art.slice(-3) === 'mp4' ?
-            <video controls autoPlay muted loop className='block-art-image' onCanPlay={ () => didLoad(true) }>
+            <video controls autoPlay muted loop className='curation-art' onCanPlay={ () => didLoad(true) }>
               <source src={ `https://cdn.grants.art/${ item.art }` }
                       type="video/mp4" />
               Sorry, your browser doesn't support embedded videos.
             </video>
           :
-          <img src={ `https://cdn.grants.art/${ item.art }` } className='block-art-image' onLoad={ () => didLoad(true) } />
+          <img src={ `https://cdn.grants.art/${ item.art }` } className='curation-art' onLoad={ () => didLoad(true) } />
           }
           <br />
           <span className='flex text-grey center pointer text-m font' onClick={ () => setArtOpen(false) }>Close</span>
