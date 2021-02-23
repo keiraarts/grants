@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { StoreComponent, store } from './redux';
 import { BrowserRouter, Route } from "react-router-dom";
+import { ModalProvider } from "react-modal-hook";
 // import useScroll from '@react-hooks-custom/use-scroll'
 import Header from './Components/Header';
 import Footer from './Components/Footer';
@@ -57,4 +58,8 @@ const App = () => {
 }
 
 const rootElement = document.getElementById("root");
-ReactDOM.render(<App />, rootElement);
+ReactDOM.render(
+  <ModalProvider>
+    <App />
+  </ModalProvider>
+, rootElement);
