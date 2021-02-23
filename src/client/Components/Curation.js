@@ -1,36 +1,19 @@
-import { getFips } from 'crypto';
-import { ethers } from 'ethers';
 import React, { useEffect, useState } from 'react';
+import { usePromise } from 'promise-hook';
 import { apiUrl } from '../baseUrl';
+
+import CurationBlock from './CurationBlock';
 
 import '../styles.scss';
 
-let provider;
 
 export default function Curation() {
-  const [connected, setConnected] = useState(false);
-  const [address, setAddress] = useState(null);
+  const { isLoading, data } = usePromise(() => getGalleryData(), {
+    resolve: true,
+    resolveCondition: []
+  });
 
-  function connectWallet() {
-    if (window.ethereum) {
-      console.log('testing');
-      window.ethereum.enable().then(provider = new ethers.providers.Web3Provider(window.ethereum));
-      const signer = provider.getSigner();
-      signer.getAddress().then(add => { setAddress(add); setConnected(true) });
-    }
-  }
-
-  useEffect(() => {
-    setTimeout(() => {
-      if (window.ethereum) {
-        window.ethereum.on('accountsChanged', function (accounts) {
-          connectWallet();
-        })
-      }
-
-      connectWallet();
-    }, 1000)
-  }, []);
+  console.log(data);
 
   return (
     <div className='content-block'>
@@ -41,17 +24,25 @@ export default function Curation() {
         Let's move people forward.
       </div>
       <div className='margin-top'>
-        { connected ?
-          <div className='text-s'>
-            { address }<br />
-            <span className='text-s margin-top-s text-grey pointer' onClick={ () => setConnected(false) }>Disconnect Wallet</span>
-          </div>
-        :
-          <div className='text-s'>
-            <span className='text-s margin-top-s text-grey pointer' onClick={ () => connectWallet() }>Connect Wallet</span>
-          </div>
+        { (!isLoading && data.length) &&
+          data.map((item, index)=>{
+            return (
+              <CurationBlock item={ item } key={ index } />
+            );
+          })
         }
       </div>
     </div>
   );
+}
+
+const getGalleryData = () => {
+  console.log(process.env);
+  return fetch(`${ apiUrl() }/viewAllApplications`, {
+    method: 'GET',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+  }).then(res => res.json());
 }

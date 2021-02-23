@@ -172,6 +172,16 @@ app.post('/submitApplication', async (req, res) => {
   });
 });
 
+app.get('/viewAllApplications', (req, res) => {
+  const now = new Date();
+  return Applicant.find({}, (err, data) => {
+      return err ?
+          res.status(500).json(err) :
+          res.json(data);
+  })
+});
+
+
 app.use(express.static('dist'));
 app.use((req, res) => {
   const route = req.originalUrl.split('/')[1];
