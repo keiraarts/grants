@@ -62,14 +62,14 @@ export default function Gallery(props) {
       </ReactModal>
       <div className='block-art'>
         { (!loaded) && <div className='block-loading'><div className='loading'><div></div><div></div></div></div> }
-        { item.art && item.art.slice(-3) === 'mp4' ?
+        { (item.art && !item.thumbnail && item.art.slice(-3) === 'mp4') ?
           <video controls autoPlay muted loop className='block-art-image pointer' onCanPlay={ () => didLoad(true) } onClick={ () => setArtOpen(true) }>
             <source src={ `https://cdn.grants.art/${ item.art }` }
                     type="video/mp4" />
             Sorry, your browser doesn't support embedded videos.
           </video>
          :
-         <img src={ `https://cdn.grants.art/${ item.art }` } className='block-art-image pointer' onLoad={ () => didLoad(true) } onClick={ () => setArtOpen(true) } />
+         <img src={ `https://cdn.grants.art/${ item.thumbnail || item.art }` } className='block-art-image pointer' onLoad={ () => didLoad(true) } onClick={ () => setArtOpen(true) } />
         }
       </div>
       <div className='text-s'>
@@ -77,8 +77,8 @@ export default function Gallery(props) {
           <div className='flex-full text-left'>
             <div className='block-info'>
               <div className='flex-full'>
-                <i>{ item.name }</i><br />
-                <span className='text-s'>{ item.city && `${ item.city }, ` }{ item.country }</span><br />
+                <strong>{ item.name }</strong><br />
+                <span className='text-xs'>{ item.city && `${ item.city }, ` }{ item.country }</span><br />
                 <span className='text-xs'>{ item.email }</span>
               </div>
               <div className='block-market'>

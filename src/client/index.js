@@ -27,8 +27,8 @@ const App = () => {
     <BrowserRouter onChange={() => { window.scrollTo(0, 0); console.log('YEO') }}>
       <StoreComponent store={store}>
         <div className='App'>
-          <div className='dim-gradient' id='dim'>
-            <div className='site-content' id='site'>
+          <div className='dim-gradient'>
+            <div className='site-content'>
               <Header />
               <Route path="/" exact component={ Gallery } />
               <Route path="/ethos" exact component={ Ethos } />
@@ -47,7 +47,6 @@ const App = () => {
               <Footer/>
             </div>
           </div>
-          <div className='background-gradient' />
         </div>
       </StoreComponent>
     </BrowserRouter>

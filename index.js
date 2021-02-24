@@ -13,7 +13,8 @@ const crypto = require('crypto');
 const s3 = require('s3');
 const mongoose = require('mongoose');
 
-const models = require('./mongoModels.js');
+require('./mongo/Applicant.js');
+require('./mongo/Approval.js');
 const ABI = require('./abi.json');
 
 const { ethers, BigNumber } = require('ethers');
