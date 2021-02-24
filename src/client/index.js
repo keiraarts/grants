@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import { StoreComponent, store } from './redux';
 import { BrowserRouter, Route } from "react-router-dom";
 import { ModalProvider } from "react-modal-hook";
-// import useScroll from '@react-hooks-custom/use-scroll'
 import Header from './Components/Header';
 import Footer from './Components/Footer';
 import Gallery from "./Components/Gallery";
@@ -23,15 +22,13 @@ import Contract from "./Components/Contract";
 
 import './styles.scss';
 
-const App = () => {  
-  // const { scrollX, scrollY } = useScroll();
-
+const App = () => {
   return (
     <BrowserRouter onChange={() => { window.scrollTo(0, 0); console.log('YEO') }}>
-      <div className='App'>
-        <StoreComponent store={store}>
-          <div className='dim-gradient'>
-            <div className='site-content'>
+      <StoreComponent store={store}>
+        <div className='App'>
+          <div className='dim-gradient' id='dim'>
+            <div className='site-content' id='site'>
               <Header />
               <Route path="/" exact component={ Gallery } />
               <Route path="/ethos" exact component={ Ethos } />
@@ -44,15 +41,15 @@ const App = () => {
               <Route path="/donate" exact component={ Donate } />
               <Route path="/program" exact component={ Program } />
               <Route path="/apply" exact component={ Apply } />
-              <Route path="/curation" exact component={ Curation } />
+              <Route path="/curation" exact component = {Curation } />
               <Route path="/testimony" exact component={ Testimony } />
               <Route path="/contract" exact component={ Contract } />
               <Footer/>
             </div>
           </div>
           <div className='background-gradient' />
-        </StoreComponent>
-      </div>
+        </div>
+      </StoreComponent>
     </BrowserRouter>
   );
 }

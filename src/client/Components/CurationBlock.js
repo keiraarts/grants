@@ -78,7 +78,8 @@ export default function Gallery(props) {
             <div className='block-info'>
               <div className='flex-full'>
                 <i>{ item.name }</i><br />
-                <strong>{ item.artist ? item.artist : 'Artist Unknown' }</strong>
+                <span className='text-s'>{ item.city && `${ item.city }, ` }{ item.country }</span><br />
+                <span className='text-xs'>{ item.email }</span>
               </div>
               <div className='block-market'>
                 <span className='pointer text-grey' onClick={ () => setInfoOpen(true) }>Statement of Intent</span>

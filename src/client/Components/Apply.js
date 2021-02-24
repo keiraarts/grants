@@ -11,6 +11,7 @@ export default function Application() {
   const submit = e => {
     e.preventDefault();
     if (!data.country || !data.countryCode) setErr('Please select your Country of Representation');
+    else if (!data.art) setErr('No artwork selected');
     else {
       setErr(false);
       setSubmitting(true);
@@ -127,7 +128,7 @@ export default function Application() {
             </div>
           }
           { (submitting && !submitted) &&
-            <div className='margin-top-s text-s text-rainbow'>
+            <div className='margin-top-s text-s text-grey'>
               Your application is being submitted..
             </div>
           }
