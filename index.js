@@ -9,7 +9,6 @@ const http = require('http');
 const https = require('https');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const crypto = require('crypto');
 const s3 = require('s3');
 const mongoose = require('mongoose');
 

@@ -1,4 +1,5 @@
 const Applicant = require('mongoose').model('Applicant');
+const crypto = require('crypto');
 const auth = require('../../services/authorization-service');
 const errorMessages = require('../../services/error-messages');
 
