@@ -60,8 +60,6 @@ export default function Curation() {
     }
   }, [showData]);
 
-  console.log(data);
-
   return (
     <div className='content-block' ref={ contentRef }>
       <div className='text-l text-b'>

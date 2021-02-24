@@ -51,14 +51,26 @@ const applicant = {
     },
     art:  {
         type:  String,
-        required: tru
+        required: true
     },
     thumbnail:  String,
     approvalCount: {
         type:     Number,
         default:  0,
     },
-    issueFlagged: Boolean,
+    flagged: [{
+        user: {
+            type:     mongoose.Schema.ObjectId,
+            ref:      'User',
+        },
+        message: {
+            type:     String,
+        }
+    }],
+    user: {
+        type:     mongoose.Schema.ObjectId,
+        ref:      'User',
+    },
 };
 
 const ApplicantSchema = new Schema(applicant);

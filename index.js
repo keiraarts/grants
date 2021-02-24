@@ -13,8 +13,6 @@ const crypto = require('crypto');
 const s3 = require('s3');
 const mongoose = require('mongoose');
 
-require('./mongo/Applicant.js');
-require('./mongo/Approval.js');
 const ABI = require('./abi.json');
 
 const { ethers, BigNumber } = require('ethers');
@@ -26,9 +24,6 @@ app.use(bodyParser.urlencoded({ limit: '150mb', extended: true }));
 app.use(express.json({ limit: '150mb' }));
 
 const ENV = process.env;
-
-mongoose.connect(ENV.MONGO);
-const Applicant = mongoose.model('Applicant');
 
 const spaces = s3.createClient({
   s3Options: {
@@ -118,83 +113,26 @@ app.get('/galleryData', (req, res) => {
   res.json(galleryData);
 });
 
-app.post('/submitApplication', async (req, res) => {
-  const applicant = {
-    name:        req.body.name,
-    email:       req.body.email,
-    country:     req.body.country,
-    countryCode: req.body.countryCode,
-    city:        req.body.city,
-    website:     req.body.website,
-    twitter:     req.body.twitter,
-    instagram:   req.body.instagram,
-    statement:   req.body.statement,
-    additional:  req.body.additional,
-  };
 
-  await Object.keys(req.body).forEach(async (item) => {
-    if (item === 'art' || item === 'thumbnail') {
-      let ext, image;
-      if (item === 'art') ext = req.body[item].split(';')[0].match(/jpeg|png|gif|webp|mp4/)[0];
-      if (item === 'thumbnail') ext = req.body[item].split(';')[0].match(/jpeg|png|gif|webp/)[0];
-       image = req.body[item].replace(/^data:image\/\w+;base64,/, '');
-       image = image.replace(/^data:video\/mp4;base64,/, '');
-      const buf = new Buffer.from(image, 'base64');
-      const name = crypto.randomBytes(20).toString('hex');
-
-      if (item === 'art') applicant.art = `${ name }.${ ext }`
-      else if (item === 'thumbnail') applicant.thumbnail = `${ name }.${ ext }`
-
-      await fs.writeFileSync(path.join(__dirname, `./images/${ name }.${ ext }`), buf);
-      const uploader = await spaces.uploadFile({
-          localFile: path.join(__dirname, `./images/${ name }.${ ext }`),
-          s3Params: {
-              Bucket: 'grants',
-              Key: `${ name }.${ ext }`,
-              ACL: 'public-read'
-          }
-      });
-
-      uploader.on('end', () => {
-          fs.unlink(path.join(__dirname, `./images/${ name }.${ ext }`), (err2) => {
-              if (err2 !== null) {
-                  console.log(err2);
-              }
-              return null;
-          });
-      });
-    }
-  });
-
-  const newApplicant = new Applicant(applicant);
-  newApplicant.save((err, data) => {
-    if (err) return res.status(500).json(err);
-    else return res.json(true);
-  });
-});
-
-app.get('/viewAllApplications', (req, res) => {
-  const now = new Date();
-  return Applicant.find({}, (err, data) => {
-      return err ?
-          res.status(500).json(err) :
-          res.json(data);
-  })
-});
+require('./models/user/userRoutes.js')(app);
+require('./models/applicant/applicantRoutes.js')(app);
+require('./models/approval/approvalRoutes.js')(app);
+mongoose.connect(ENV.MONGO);
 
 
 app.use(express.static('dist'));
 app.use((req, res) => {
   const route = req.originalUrl.split('/')[1];
-  const allowedRoutes = ['nft', 'ethos', 'apply', 'committee', 'program', 'curation', 'donate', 'tutorial', , 'testimony', 'rarible', 'opensea', 'resources'];
+  const allowedRoutes = [
+    'nft', 'ethos', 'apply', 'committee', 'program', 'curation', 'register',
+    'donate', 'tutorial', , 'testimony', 'rarible', 'opensea', 'resources'
+    ];
   if (allowedRoutes.indexOf(route) > -1) {
     res.sendFile(`${ __dirname }${ path.join('/dist/index.html') }`);
   } else if (route === 'social.png') {
     res.sendFile(`${ __dirname }${ path.join('/public/social.png') }`);
   }
 })
-
-
 
 let server;
 if (ENV.ENV === 'DEV') {

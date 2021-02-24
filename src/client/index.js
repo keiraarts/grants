@@ -17,6 +17,7 @@ import Donate from "./Components/Donate";
 import Program from "./Components/Program";
 import Apply from "./Components/Apply";
 import Curation from "./Components/Curation";
+import Register from "./Components/Register";
 import Testimony from "./Components/Testimony";
 import Contract from "./Components/Contract";
 
@@ -44,6 +45,7 @@ const App = () => {
               <Route path="/curation" exact component = {Curation } />
               <Route path="/testimony" exact component={ Testimony } />
               <Route path="/contract" exact component={ Contract } />
+              <Route path="/register" exact component={ Register } />
               <Footer/>
             </div>
           </div>

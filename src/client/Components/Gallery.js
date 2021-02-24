@@ -15,7 +15,6 @@ export default function Gallery() {
   });
 
   const showData = FounderGallery ? FounderGallery : null;
-  // console.log(showData);
 
   const resize = () => {
     setResizer(true);
@@ -85,7 +84,6 @@ export default function Gallery() {
 }
 
 const getGalleryData = () => {
-  console.log(process.env);
   return fetch(`${ apiUrl() }/galleryData`, {
     method: 'GET',
     headers: {
