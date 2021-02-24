@@ -9,7 +9,6 @@ const http = require('http');
 const https = require('https');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const s3 = require('s3');
 const mongoose = require('mongoose');
 
 const ABI = require('./abi.json');
@@ -23,15 +22,6 @@ app.use(bodyParser.urlencoded({ limit: '150mb', extended: true }));
 app.use(express.json({ limit: '150mb' }));
 
 const ENV = process.env;
-
-const spaces = s3.createClient({
-  s3Options: {
-    accessKeyId: ENV.SPACES_KEY,
-    secretAccessKey: ENV.SPACES_SECRET,
-    region: 'US',
-    endpoint: 'nyc3.digitaloceanspaces.com'
-  }
-});
 
 const logger = winston.createLogger({
   level: 'info',

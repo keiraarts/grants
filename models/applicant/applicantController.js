@@ -2,8 +2,20 @@ const Applicant = require('mongoose').model('Applicant');
 const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
+const s3 = require('s3');
 const auth = require('../../services/authorization-service');
 const errorMessages = require('../../services/error-messages');
+
+const ENV = process.env;
+
+const spaces = s3.createClient({
+  s3Options: {
+    accessKeyId: ENV.SPACES_KEY,
+    secretAccessKey: ENV.SPACES_SECRET,
+    region: 'US',
+    endpoint: 'nyc3.digitaloceanspaces.com'
+  }
+});
 
 exports.submitApplication = async (req, res) => {
   const applicant = {
