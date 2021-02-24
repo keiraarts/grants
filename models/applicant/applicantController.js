@@ -1,5 +1,7 @@
 const Applicant = require('mongoose').model('Applicant');
 const crypto = require('crypto');
+const fs = require('fs');
+const path = require('path');
 const auth = require('../../services/authorization-service');
 const errorMessages = require('../../services/error-messages');
 
@@ -30,9 +32,9 @@ exports.submitApplication = async (req, res) => {
       if (item === 'art') applicant.art = `${ name }.${ ext }`
       else if (item === 'thumbnail') applicant.thumbnail = `${ name }.${ ext }`
 
-      await fs.writeFileSync(path.join(__dirname, `./images/${ name }.${ ext }`), buf);
+      await fs.writeFileSync(path.join(__dirname, `../../images/${ name }.${ ext }`), buf);
       const uploader = await spaces.uploadFile({
-          localFile: path.join(__dirname, `./images/${ name }.${ ext }`),
+          localFile: path.join(__dirname, `../../images/${ name }.${ ext }`),
           s3Params: {
               Bucket: 'grants',
               Key: `${ name }.${ ext }`,
@@ -41,7 +43,7 @@ exports.submitApplication = async (req, res) => {
       });
 
       uploader.on('end', () => {
-          fs.unlink(path.join(__dirname, `./images/${ name }.${ ext }`), (err2) => {
+          fs.unlink(path.join(__dirname, `../../images/${ name }.${ ext }`), (err2) => {
               if (err2 !== null) {
                   console.log(err2);
               }
