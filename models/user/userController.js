@@ -1,5 +1,6 @@
 const User = require('mongoose').model('User');
-const auth = require('../../services/authorization-service');
+const jsonwebtoken = require('jsonwebtoken');
+const crypto = require('crypto');
 const errorMessages = require('../../services/error-messages');
 
 const ENV = process.env;
@@ -21,7 +22,7 @@ exports.register = (req, res) => {
       return res.status(500).json(errorMessages.parse(err));
     } else if (!req.user) {
       if (!user) {
-        if (req.body.password !== req.body.retype) {
+        if (req.body.password !== req.body.confirmPassword) {
           return res.status(500).json('Passwords do not match');
         }
 
@@ -35,10 +36,8 @@ exports.register = (req, res) => {
         };
 
         user = new User(user);
-        return user.save((err2, data) => {
-          if (err2) {
-              return res.status(500).json(errorMessages.parse(err2));
-          }
+        return user.save((err, data) => {
+          if (err) return res.status(500).json(err);
 
           // notificationService.emailVerification(user.email, user.username, user.emailToken);
 
@@ -46,13 +45,10 @@ exports.register = (req, res) => {
               username: user.username,
               id:       data.id,
           }, ENV.JWT);
-          user = deleteSensitiveFields(user);
-          return res.json({ user: { username, id }, token });
+          return res.json({ username: user.username, id: user.id, token });
         });
       }
       return res.status(500).json('User or Email already exists');
     }
-
-    console.log('wtf');
   });
 };

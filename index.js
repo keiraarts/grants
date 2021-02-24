@@ -17,9 +17,9 @@ const { ethers, BigNumber } = require('ethers');
 
 const app = express();
 app.use(cors());
-app.use(bodyParser.json({ limit: '150mb' }));
-app.use(bodyParser.urlencoded({ limit: '150mb', extended: true }));
-app.use(express.json({ limit: '150mb' }));
+app.use(bodyParser.json({ limit: '200mb' }));
+app.use(bodyParser.urlencoded({ limit: '200mb', extended: true }));
+app.use(express.json({ limit: '200mb' }));
 
 const ENV = process.env;
 
