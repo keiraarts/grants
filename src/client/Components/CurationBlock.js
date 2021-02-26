@@ -148,9 +148,19 @@ export default function Gallery(props) {
             <div><img src={ (item.flagged && item.flagged.length) ? Flagged : Flag } className='block-flag' alt='Flag' onClick={ () => setFlagOpen(true) } /></div>
           </div>
         </div>
-        <div className='approve-block' onClick={ () => props.setApproval({ id: item.id }, props.index) }>
-          { props.viewApproved ? 'Unapprove' : 'Approve' }
+        <div className='approve-block' onClick={ () => {
+          if (props.viewTab === 'unapproved' || props.viewTab === 'approved') props.setApproval({ id: item.id }, props.index);
+          else props.setRejection({ id: item.id }, props.index);
+        } }>
+          { (props.viewTab === 'unapproved') && 'Approve' }
+          { (props.viewTab === 'approved') && 'Unapprove' }
+          { (props.viewTab === 'rejected') && 'Unreject' }
         </div>
+        { props.viewTab === 'unapproved' &&
+          <div className='approve-block' onClick={ () => props.setRejection({ id: item.id }, props.index) }>
+            Reject
+          </div>
+        }
       </div>
     </div>
   );

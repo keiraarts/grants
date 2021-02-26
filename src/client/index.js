@@ -31,8 +31,6 @@ const App = () => {
     return isRehydrated ? children : null;
   }
 
-  console.log('YO');
-
   return (
     <BrowserRouter onChange={() => { window.scrollTo(0, 0); console.log('YEO') }}>
       <StoreComponent store={ store }>

@@ -49,7 +49,7 @@ export default function Curation() {
     }
   }, [resizing]);
   
-  const [viewApproved, setViewApproved] = useState(false);
+  const [viewTab, setViewTab] = useState('unapproved');
   const [showData, setShowData] = useState([]);
   const contentRef = useRef(null);
   useEffect(() => {
@@ -57,13 +57,13 @@ export default function Curation() {
   }, [data])
 
   const setApproval = (approve, index) => {
-    if (!viewApproved) {
+    if (viewTab === 'unapproved') {
       data.unapproved[index].approvalCount++;
       data.unapproved[index].approved.push({ _id: auth.id });
       data.approved.push(data.unapproved[index]);
       data.unapproved.splice(index, 1);
       approve.type = 'approve';
-    } else {
+    } else if (viewTab === 'approved') {
       data.approved[index].approvalCount--;
       data.unapproved.push(data.approved[index]);
       const removeArray = data.approved.findIndex(e => e.id === approve.id);
@@ -89,32 +89,61 @@ export default function Curation() {
     }).then(res => res.json());
   }
 
-  const toggleView = (view) => {
-    if (view === 'unapproved') {
-      setShowData(data.unapproved.slice(0, 30));
-      setViewApproved(false);
-    } else if (view === 'approved') {
-      setShowData(data.approved.slice(0, 30));
-      setViewApproved(true);
-    } else if (view === 'recipients'); {
+  console.log(data, showData);
 
+  const setRejection = (reject, index) => {
+    if (viewTab === 'unapproved') {
+      data.unapproved[index].rejectCount++;
+      data.unapproved[index].rejected.push({ _id: auth.id });
+      data.rejected.push(data.unapproved[index]);
+      data.unapproved.splice(index, 1);
+      reject.type = 'reject'
+    } else if (viewTab === 'rejected') {
+      data.rejected[index].rejectCount--;
+      data.unapproved.push(data.rejected[index]);
+      const removeArray = data.rejected.findIndex(e => e.id === reject.id);
+      const removeRejection = data.rejected[index].rejected.findIndex(e => e.id === reject.id);
+      data.rejected[index].rejected.splice(removeRejection, 1);
+      data.rejected.splice(removeArray, 1);
+      reject.type = 'unreject'
     }
+
+    const newData = showData;
+    const removeIndex = newData.findIndex(e => e.id === reject.id);
+    newData.splice(removeIndex, 1);
+    setShowData([...newData]);
+
+    return fetch(`${ apiUrl() }/rejectApplicant`, {
+      method: 'POST',
+      body: JSON.stringify(reject),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': auth.token
+      },
+    }).then(res => res.json());
+  }
+
+  const toggleView = (view) => {
+    if (view === 'unapproved') setShowData(data.unapproved.slice(0, 30));
+    else if (view === 'approved') setShowData(data.approved.slice(0, 30));
+    else if (view === 'rejected') setShowData(data.rejected.slice(0, 30));
+    setViewTab(view);
   }
 
   const [loading, setLoading] = useState(false);
   useScrollPosition(({ currPos }) => {
     if (((-1 * currPos.y) + 1500 > contentRef.current.offsetHeight) && !loading) {
-      if (viewApproved) setShowData(data.approved.slice(0, showData.length + 30))
-      else setShowData(data.unapproved.slice(0, showData.length + 30))
+      if (viewTab === 'approved') setShowData(data.approved.slice(0, showData.length + 30))
+      else if (viewTab === 'unapproved') setShowData(data.unapproved.slice(0, showData.length + 30))
+      else if (viewTab === 'rejected') setShowData(data.rejected.slice(0, showData.length + 30))
     }
   }, [showData]);
 
   const submitFlag = (flagData, index) => {
-    if (!viewApproved) {
-      data.unapproved[index].flagged.push(flagData);
-    } else {
-      data.approved[index].flagged.push(flagData);
-    }
+    if (viewTab === 'unapproved') data.unapproved[index].flagged.push(flagData);
+    else if (viewTab === 'approved') data.approved[index].flagged.push(flagData);
+    else if (viewTab === 'rejected') data.rejected[index].flagged.push(flagData);
 
     return fetch(`${ apiUrl() }/flagApplicant`, {
       method: 'POST',
@@ -128,13 +157,15 @@ export default function Curation() {
   };
 
   const removeFlag = (flagData, index) => {
-    if (!viewApproved) {
+    if (viewTab === 'unapproved') {
       const removeIndex = data.unapproved[index].flagged.findIndex(e => e._id === flagData.flagId);
-      console.log('FOUND INDEX', removeIndex);
       data.unapproved[index].flagged.splice(removeIndex, 1);
-    } else {
+    } else if (viewTab === 'approved') {
       const removeIndex = data.approved[index].flagged.findIndex(e => e._id === flagData.flagId);
       data.approved[index].flagged.splice(removeIndex, 1);
+    } else if (viewTab === 'rejected') {
+      const removeIndex = data.rejected[index].flagged.findIndex(e => e._id === flagData.flagId);
+      data.rejected[index].flagged.splice(removeIndex, 1);
     }
 
     return fetch(`${ apiUrl() }/removeFlag`, {
@@ -157,12 +188,16 @@ export default function Curation() {
         Let's move people forward.
       </div>
       <div className='flex margin-top'>
-        <div className={ viewApproved ? 'info-block' : 'info-block info-block-selected' } onClick={ () => toggleView('unapproved') }>
+        <div className={ viewTab === 'unapproved' ? 'info-block' : 'info-block info-block-selected' } onClick={ () => toggleView('unapproved') }>
           Unapproved
         </div>
         <div className='info-block-space' />
-        <div className={ !viewApproved ? 'info-block' : 'info-block info-block-selected' } onClick={ () => toggleView('approved') }>
+        <div className={ viewTab === 'approved' ? 'info-block' : 'info-block info-block-selected' } onClick={ () => toggleView('approved') }>
           Approved
+        </div>
+        <div className='info-block-space' />
+        <div className={ viewTab === 'rejected' ? 'info-block' : 'info-block info-block-selected' } onClick={ () => toggleView('rejected') }>
+          Rejected
         </div>
         {/* <div className='info-block-space' />
         <div className='info-block'>
@@ -180,7 +215,8 @@ export default function Curation() {
                     key={ index }
                     index={ index }
                     setApproval={ setApproval }
-                    viewApproved={ viewApproved }
+                    setRejection={ setRejection }
+                    viewTab ={ viewTab }
                     submitFlag={ submitFlag }
                     removeFlag={ removeFlag }
                   />

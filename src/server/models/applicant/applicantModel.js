@@ -53,10 +53,6 @@ const applicant = {
         type:  String,
     },
     thumbnail:  String,
-    approvalCount: {
-        type:     Number,
-        default:  0,
-    },
     removed: {
         type: Boolean,
         default: false
@@ -77,7 +73,21 @@ const applicant = {
             type:     String,
         }
     }],
+    approvalCount: {
+        type:     Number,
+        default:  0,
+    },
+    rejectCount: {
+        type:     Number,
+        default:  0,
+    },
     approved: [{
+        user: {
+            type:     mongoose.Schema.ObjectId,
+            ref:      'User',
+        },
+    }],
+    rejected: [{
         user: {
             type:     mongoose.Schema.ObjectId,
             ref:      'User',

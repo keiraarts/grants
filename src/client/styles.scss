@@ -8,10 +8,6 @@ body {
   margin: 0rem;
   width: 100%;
   height: 100%;
-  transform: translate3d(0,0,0);
-  -webkit-transform: translate3d(0,0,0);
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
   background: linear-gradient(-45deg, violet, indigo, blue, green, yellow, orange, red, violet);
   background-size: 400% 400%;
   background-attachment: fixed;
@@ -29,10 +25,6 @@ canvas {
 
 .background-gradient {
   position: absolute;
-  transform: translate3d(0,0,0);
-  -webkit-transform: translate3d(0,0,0);
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
   background: linear-gradient(-45deg, violet, indigo, blue, green, yellow, orange, red, violet);
   background-size: 400% 400%;
   z-index: -1;
@@ -56,8 +48,6 @@ canvas {
 .App {
   width: 100%;
   height: 100%;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
   font-family: 'Roboto Slab', sans-serif;
 }
 
@@ -149,8 +139,6 @@ canvas {
   min-height: 100%;
   position: absolute;
   will-change: top;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
   background-color: rgba(255, 255, 255, 0.97);
 }
 
@@ -299,11 +287,7 @@ canvas {
   background-clip: text;
   color: transparent;
   background-color: transparent;
-  transform: translate3d(0,0,0);
-  -webkit-transform: translate3d(0,0,0);
   animation: rainbow 3000s alternate-reverse linear infinite;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -314,11 +298,7 @@ canvas {
   background-clip: text;
   color: transparent;
   background-color: transparent;
-  transform: translate3d(0,0,0);
-  -webkit-transform: translate3d(0,0,0);
   animation: rainbow 3000s alternate-reverse linear infinite;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }

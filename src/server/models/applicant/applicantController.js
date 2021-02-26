@@ -80,15 +80,16 @@ exports.viewAllApplications = (req, res) => {
       if (!user || !user.committee) return res.status(401).json({ err: 'Authentication error' });
       else {
         return Applicant.find({ removed: { $ne: true } }, (err, data) => {
-          const unapproved = [], approved = [];
+          const unapproved = [], approved = [], rejected = [];
           data.forEach(e => {
             if (e.approved.find(g => g._id.equals(jwt.id))) approved.push(e);
+            else if (e.rejected.find(g => g._id.equals(jwt.id))) rejected.push(e);
             else unapproved.push(e);
           })
 
           return err ?
               res.status(500).json(err) :
-              res.json({ unapproved, approved });
+              res.json({ unapproved, approved, rejected });
         })
       }
     }).sort('-created_at');
@@ -115,6 +116,38 @@ exports.approveApplicant = (req, res) => {
               if (approvedIndex >= 0) {
                 data.approved.splice(approvedIndex, 1);
                 data.approvalCount--;
+                data.save();
+              }
+            }
+
+            return res.json(true);
+          }
+        })
+      }
+    });
+  });
+};
+
+exports.rejectApplicant = (req, res) => {
+  auth(req.headers.authorization, res, (jwt) => {
+    User.findById(jwt.id, (err, user) => {
+      if (err) return res.json(err);
+      if (!user || !user.committee) return res.status(401).json({ err: 'Authentication error' }); 
+      else {
+        return Applicant.findById(req.body.id, (err2, data) => {
+          if (err2) return res.status(500).json(err);
+          else {
+            const rejected = data.rejected.findIndex(e => e.equals(jwt.id));
+            if (req.body.type === 'reject') {
+              if (rejected < 0) {
+                data.rejected.push(jwt.id);
+                data.rejectCount++;
+                data.save();
+              }
+            } else if (req.body.type === 'unreject') {
+              if (rejected >= 0) {
+                data.rejected.splice(rejected, 1);
+                data.rejectCount--;
                 data.save();
               }
             }
