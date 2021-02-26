@@ -81,7 +81,6 @@ exports.viewAllApplications = (req, res) => {
       else {
         return Applicant.find({ removed: { $ne: true } }, (err, data) => {
           const unapproved = [], approved = [];
-          console.log(data[0].approved[0]._id, jwt.id);
           data.forEach(e => {
             if (e.approved.find(g => g._id.equals(jwt.id))) approved.push(e);
             else unapproved.push(e);
