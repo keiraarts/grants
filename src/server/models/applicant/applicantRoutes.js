@@ -8,4 +8,5 @@ module.exports = (app) => {
   app.post('/rejectApplicant', applicant.rejectApplicant);
   app.post('/flagApplicant', applicant.flagApplicant);
   app.post('/removeFlag', applicant.removeFlag);
+  app.get('/asdf', applicant.asdf);
 };

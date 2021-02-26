@@ -208,3 +208,36 @@ exports.removeFlag = (req, res) => {
     });
   });
 };
+
+
+exports.asdf = (req, res) => {
+
+};
+
+/// MANUAL EMAIL: 484 DOCS
+
+// setTimeout(() => {
+//   return Applicant.find({}, (err2, data) => {
+//     if (err2) return res.status(500).json(err);
+//     const found = [];
+//     data.forEach(e => {
+//       if (!e.statement || !e.name || !e.email || !e.twitter || !e.website || e.flagged.find(g => g.type === 'Artwork Issue' && g.user.equals('6035e7415f0a684942f4e17c'))) found.push(e.email);
+//     })
+
+//     console.log(found);
+//   });
+// })
+
+
+setTimeout(() => {
+  return Applicant.find({}, async (err2, data) => {
+    if (err2) return res.status(500).json(err);
+    const found = [];
+    data.forEach(async e => {
+      const test = e.flagged.find(g => g.type === 'Artwork Issue' && g.user.equals('6035e7415f0a684942f4e17c'));
+      if (e.statement !== 'EMPTY' && e.name !== 'EMPTY' && e.email !== 'EMPTY' && e.twitter !== 'EMPTY' && e.website !== 'EMPTY' && !test && !test) {
+        console.log(`${ e.email },`);
+      }
+    })
+  });
+});
