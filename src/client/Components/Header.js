@@ -1,11 +1,14 @@
 import React, { useEffect } from 'react';
 import { StoreComponent, store } from '../redux';
 import { Link, useLocation } from "react-router-dom";
+import { useStoreState } from 'easy-peasy';
 
 import '../styles.scss';
 import Logo from '../assets/logo.png';
 
 export default function Header() {
+  const auth = useStoreState(state => state.user.auth);
+
   function openLink(page)
   {
     let win;
@@ -46,6 +49,11 @@ export default function Header() {
           </Link>
         </div>
         <div className='flex-full' />
+        { (auth && auth.username) &&
+        <div className='text-s flex'>
+          <div className='flex-full' />
+          Logged in as&nbsp;<span className='text-grey pointer'>{ auth.username }</span>
+        </div> }
       </div>
     </div>
   );

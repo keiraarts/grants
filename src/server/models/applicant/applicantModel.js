@@ -51,21 +51,34 @@ const applicant = {
     },
     art:  {
         type:  String,
-        required: true
     },
     thumbnail:  String,
     approvalCount: {
         type:     Number,
         default:  0,
     },
+    removed: {
+        type: Boolean,
+        default: false
+    },
     flagged: [{
         user: {
             type:     mongoose.Schema.ObjectId,
             ref:      'User',
         },
+        type: {
+            type:  String,
+            trim:  true,
+        },
         message: {
             type:     String,
         }
+    }],
+    approved: [{
+        user: {
+            type:     mongoose.Schema.ObjectId,
+            ref:      'User',
+        },
     }],
     user: {
         type:     mongoose.Schema.ObjectId,

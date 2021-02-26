@@ -23,7 +23,7 @@
     "country-list": "^2.2.0",
     "crypto": "^1.0.1",
     "dotenv": "^6.2.0",
-    "easy-peasy": "^1.6.1",
+    "easy-peasy": "^4.0.1",
     "ethers": "^5.0.30",
     "express": "^4.16.4",
     "fs": "^0.0.1-security",

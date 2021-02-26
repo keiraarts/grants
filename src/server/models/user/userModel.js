@@ -41,6 +41,10 @@ const user = {
         type: String,
         required: false,
     },
+    committee: {
+        type: Boolean,
+        default: false
+    }
 };
 
 const UserSchema = new Schema(user);

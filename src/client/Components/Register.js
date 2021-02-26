@@ -1,10 +1,16 @@
 import React, { useState } from 'react';
+import { usePromise } from 'promise-hook';
+import { Redirect } from "react-router-dom";
 import { apiUrl } from '../baseUrl';
+import { useStoreActions } from 'easy-peasy';
 
 import '../styles.scss';
 
 export default function Register() {
-  const [data, setData] = useState({
+  const setAuth = useStoreActions(dispatch => dispatch.user.setAuth);
+
+  const { isLoading, request, data } = usePromise(register);
+  const [registerData, setRegisterData] = useState({
     username: '',
     password: '',
     first: '',
@@ -32,44 +38,41 @@ export default function Register() {
     e.preventDefault();
     setErr(false);
     setSubmitting(true);
-    fetch(`${ apiUrl() }/registerUser`, {
-      method: 'POST',
-      body: JSON.stringify(data),
-      headers: { 'Content-Type': 'application/json' },
-    })
-      .then(res => res.json())
-      .then(json => setSubmitted(true))
+    request(registerData);
   }
+
+  if (data) setAuth(data);
 
   return (
     <div className='content-block'>
+      { data && <Redirect to='/' /> }
       <div className='text-l text-b'>
         User Registration
       </div>
       <div className='margin-top'>
         <form onSubmit={ submit }>
           <div className='form__group field'>
-            <input type='text' className='form__field' placeholder='First Name' name='first' id='first' required maxLength='100' onChange={e => setData({ ...data, first: e.target.value })} />
+            <input type='text' className='form__field' placeholder='First Name' name='first' id='first' required maxLength='100' onChange={e => setRegisterData({ ...registerData, first: e.target.value })} />
             <label className='form__label'>First Name</label>
           </div>
           <div className='form__group field'>
-            <input type='text' className='form__field' placeholder='Last Name' name='last' id='last' required maxLength='100' onChange={e => setData({ ...data, last: e.target.value })} />
+            <input type='text' className='form__field' placeholder='Last Name' name='last' id='last' required maxLength='100' onChange={e => setRegisterData({ ...registerData, last: e.target.value })} />
             <label className='form__label'>Last Name</label>
           </div>
           <div className='form__group field'>
-            <input type='text' className='form__field' placeholder='Username' name='username' id='username' required maxLength='100' onChange={e => setData({ ...data, username: e.target.value })} />
+            <input type='text' className='form__field' placeholder='Username' name='username' id='username' required maxLength='100' onChange={e => setRegisterData({ ...registerData, username: e.target.value })} />
             <label className='form__label'>Username</label>
           </div>
           <div className='form__group field'>
-            <input type='email' className='form__field' placeholder='Email' name='email' id='email' required maxLength='100' onChange={e => setData({ ...data, email: e.target.value })} />
+            <input type='email' className='form__field' placeholder='Email' name='email' id='email' required maxLength='100' onChange={e => setRegisterData({ ...registerData, email: e.target.value })} />
             <label className='form__label'>Email</label>
           </div>
           <div className='form__group field'>
-            <input type='password' className='form__field' placeholder='Password' name='password' id='password' maxLength='100' required onChange={e => setData({ ...data, password: e.target.value })} />
+            <input type='password' className='form__field' placeholder='Password' name='password' id='password' maxLength='100' required onChange={e => setRegisterData({ ...registerData, password: e.target.value })} />
             <label className='form__label'>Password</label>
           </div>
           <div className='form__group field'>
-            <input type='password' className='form__field' placeholder='Confirm Password' name='password' id='password' required maxLength='100' onChange={e => setData({ ...data, confirmPassword: e.target.value })} />
+            <input type='password' className='form__field' placeholder='Confirm Password' name='password' id='password' required maxLength='100' onChange={e => setRegisterData({ ...registerData, confirmPassword: e.target.value })} />
             <label className='form__label'>Confirm Password</label>
           </div>
           { err &&
@@ -94,4 +97,13 @@ export default function Register() {
       </div>
     </div>
   );
+}
+
+const register = (data) => {
+  return fetch(`${ apiUrl() }/registerUser`, {
+    method: 'POST',
+    body: JSON.stringify(data),
+    headers: { 'Content-Type': 'application/json' },
+  })
+  .then(res => res.json())
 }

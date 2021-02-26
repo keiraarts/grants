@@ -52,3 +52,31 @@ exports.register = (req, res) => {
     }
   });
 };
+
+exports.login = (req, res, next) => {
+  User.findOne({
+      $or: [
+          { email: { $regex: new RegExp(`^${ req.body.username.toLowerCase().trim() }$`, 'i') } },
+          { username: { $regex: new RegExp(`^${ req.body.username.toLowerCase().trim() }$`, 'i') } }
+      ]
+  }, (err, user) => {
+      if (err) {
+          return next(err);
+      } else if (!user) {
+          return res.status(401).json(`Could not find user: ${ req.body.username }`);
+      } else if ((user.username.toLowerCase() !== req.body.username.toLowerCase().trim() && user.email.toLowerCase() !== req.body.username.toLowerCase().trim())) {
+          return res.status(401).json(`Could not find user: ${ req.body.username }`);
+      } else if (user.hashPassword(req.body.password) !== user.password) {
+          return res.status(401).json('Invalid password');
+      } else if (user.banned) {
+          return res.status(401).json('Your account is banned');
+      }
+
+      const token = jsonwebtoken.sign({
+          id:       user.id,
+          username: user.username,
+      }, ENV.JWT);
+
+      return res.json({ username: user.username, id: user.id, token });
+  });
+};

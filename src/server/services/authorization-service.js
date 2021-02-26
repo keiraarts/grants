@@ -1,5 +1,7 @@
 const jwt = require('jsonwebtoken');
 
+const ENV = process.env;
+
 module.exports = (token, res, callback) => {
     try {
         const jwtUser = jwt.verify(token, ENV.JWT);

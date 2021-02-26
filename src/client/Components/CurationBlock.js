@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import Twitter from '../assets/twitter.png';
 import Instagram from '../assets/instagram.png';
 import Web from '../assets/website.png';
+import Flag from '../assets/flag.png';
+import Flagged from '../assets/flagged.png';
 import ReactModal from 'react-modal';
 
 import '../styles.scss';
@@ -12,6 +14,9 @@ export default function Gallery(props) {
 
   const [artOpen, setArtOpen] = React.useState(false);
   const [infoOpen, setInfoOpen] = React.useState(false);
+  const [flagOpen, setFlagOpen] = React.useState(false);
+
+  const [flagData, setFlagData] = useState('');
 
   function openLink(page)
   {
@@ -26,6 +31,7 @@ export default function Gallery(props) {
         style={{ content: { width : '80%', margin: 'auto', } }}
         onRequestClose={ () => setArtOpen(false) }
         shouldCloseOnOverlayClick={ true }
+        ariaHideApp={ false }
       >
         <div className='block-art'>
           { item.art && item.art.slice(-3) === 'mp4' ?
@@ -43,21 +49,64 @@ export default function Gallery(props) {
       </ReactModal>
       <ReactModal
         isOpen={ infoOpen }
-        style={{ content: { width : '80%',  height: '50%', margin: 'auto', } }}
+        style={{ content: { width : '50%',  height: '50%', margin: 'auto', } }}
         onRequestClose={ () => setInfoOpen(false) }
         shouldCloseOnOverlayClick={ true }
+        ariaHideApp={ false }
       >
-        <div className='block-art font'>
-          <span className='text-m'>Statement of Intent</span><br />
-          { item.statement }<br /><br />
-          { item.additional &&
-            <div>
-              <span className='text-m'>Additional Info</span><br />
-              { item.additional }
-            </div>
-          }
-          <br />
+        <div className='font flex-v'>
+          <div className='flex-full'>
+            <span className='text-m'>Statement of Intent</span><br />
+            { item.statement }<br /><br />
+            { item.additional &&
+              <div>
+                <span className='text-m'>Additional Info</span><br />
+                { item.additional }
+              </div>
+            }
+            <br />
+          </div>
           <span className='flex text-grey center pointer text-m font' onClick={ () => setInfoOpen(false) }>Close</span>
+        </div>
+      </ReactModal>
+      <ReactModal
+        isOpen={ flagOpen }
+        style={{ content: { width : '50%',  height: '50%', margin: 'auto', } }}
+        onRequestClose={ () => setFlagOpen(false) }
+        shouldCloseOnOverlayClick={ true }
+        ariaHideApp={ false }
+      >
+        <div>
+          <div className='form__group full-width field'>
+            <textarea type='text' className='form__field intent-field' placeholder='Email' name='email' id='name' maxLength='2000' onChange={e => setFlagData(e.target.value) } />
+            <label className='form__label'>Optional Information</label>
+          </div>
+          <div className='approve-block' onClick={ () => { props.submitFlag({ id: item.id, message: flagData, type: 'Already Minted' }, props.index); setFlagOpen(false) } }>
+            Already Minted
+          </div>
+          <div className='approve-block' onClick={ () => { props.submitFlag({ id: item.id, message: flagData, type: 'Artwork Issue' }, props.index); setFlagOpen(false) } }>
+            Issue with Artwork
+          </div>
+          <div className='approve-block' onClick={ () => { props.submitFlag({ id: item.id, message: flagData, type: 'Other' }, props.index); setFlagOpen(false) } }>
+            Other
+          </div>
+          <br /><br />
+          { (item.flagged && item.flagged.length) ?
+            <div>
+              Flags:
+              {
+                item.flagged.map((item, index) => {
+                  return (<div>{ item.type }{ item.message ? ` - ${ item.message }` : '' }</div>)
+                })
+              }
+              <br />
+            </div>
+            :
+            <></>
+          }
+          <div className='approve-block' onClick={ () => setFlagOpen(false) }>
+            Close
+          </div>
         </div>
       </ReactModal>
       <div className='block-art'>
@@ -90,7 +139,11 @@ export default function Gallery(props) {
             { (item.external || item.website) && <div><img src={ Web } className='block-social-web pointer' alt='Website' onClick={ () => openLink(item.external || item.website) } /></div> }
             { item.twitter && <div><img src={ Twitter } className='block-social' alt='Twitter' onClick={ () => openLink(item.twitter.substring(0, 4) === 'http' ? item.twitter : `https://twitter.com/${ item.twitter }`) } /></div> }
             { item.instagram && <div><img src={ Instagram } className='block-social' alt='Instagram' onClick={ () => openLink(item.instagram.substring(0, 4) === 'http' ? item.instagram : `https://instagram.com/${ item.instagram }`) } /></div> }
+            <div><img src={ (item.flagged && item.flagged.length) ? Flagged : Flag } className='block-flag' alt='Flag' onClick={ () => setFlagOpen(true) } /></div>
           </div>
+        </div>
+        <div className='approve-block' onClick={ () => props.setApproval({ id: item.id }, props.index) }>
+          { props.viewApproved ? 'Unapprove' : 'Approve' }
         </div>
       </div>
     </div>
