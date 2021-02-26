@@ -103,8 +103,8 @@ app.get('/galleryData', (req, res) => {
 });
 
 
-require('./src/server/models/user/userRoutes.js')(app);
-require('./src/server/models/applicant/applicantRoutes.js')(app);
+require(`${ __dirname }/src/server/models/user/userRoutes.js`)(app);
+require(`${ __dirname }/src/server/models/applicant/applicantRoutes.js`)(app);
 mongoose.connect(ENV.MONGO);
 
 
