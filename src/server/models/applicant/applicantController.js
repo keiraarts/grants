@@ -77,7 +77,7 @@ exports.viewAllApplications = (req, res) => {
   auth(req.headers.authorization, res, (jwt) => {
     User.findById(jwt.id, (err, user) => {
       if (err) return res.json(err);
-      if (!user) return res.status(401).json({ err: 'Authentication error' });
+      if (!user || !user.committee) return res.status(401).json({ err: 'Authentication error' });
       else {
         return Applicant.find({ removed: { $ne: true } }, (err, data) => {
           const unapproved = [], approved = [];
@@ -105,8 +105,7 @@ exports.approveApplicant = (req, res) => {
         return Applicant.findById(req.body.id, (err2, data) => {
           if (err2) return res.status(500).json(err);
           else {
-            const approvedIndex = data.approved.findIndex(e => e.equals(req.body.id));
-            console.log('FOUND', approvedIndex);
+            const approvedIndex = data.approved.findIndex(e => e.equals(jwt.id));
             if (req.body.type === 'approve') {
               if (approvedIndex < 0) {
                 data.approved.push(jwt.id);
@@ -131,7 +130,32 @@ exports.approveApplicant = (req, res) => {
 
 
 exports.flagApplicant = (req, res) => {
-  console.log('FLAGGING', req.body);
+  auth(req.headers.authorization, res, (jwt) => {
+    User.findById(jwt.id, (err, user) => {
+      if (err) return res.json(err);
+      if (!user || !user.committee) return res.status(401).json({ err: 'Authentication error' }); 
+      else {
+        return Applicant.findById(req.body.id, (err2, data) => {
+          if (err2) return res.status(500).json(err);
+          else if (data) {
+            data.flagged.push({
+              user: jwt.id,
+              message: req.body.message,
+              type: req.body.type
+            });
+
+            data.save();
+          }
+
+          return res.json(true);
+        })
+      }
+    });
+  });
+};
+
+
+exports.removeFlag = (req, res) => {
   auth(req.headers.authorization, res, (jwt) => {
     User.findById(jwt.id, (err, user) => {
       if (err) return res.json(err);
@@ -140,15 +164,13 @@ exports.flagApplicant = (req, res) => {
         return Applicant.findById(req.body.id, (err2, data) => {
           if (err2) return res.status(500).json(err);
           else {
-            data.flagged.push({
-              user: jwt.id,
-              message: req.body.message,
-              type: req.body.type
-            });
+            const flaggedIndex = data.flagged.findIndex(e => e.equals(req.body.flagId));
+            data.flagged.splice(flaggedIndex, 1);
 
             data.save();
-            return res.json(true);
           }
+
+          return res.json(true);
         })
       }
     });

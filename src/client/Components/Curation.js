@@ -16,8 +16,6 @@ export default function Curation() {
     resolveCondition: []
   });
 
-  console.log(data);
-
   const resize = () => {
     setResizer(true);
   }
@@ -59,7 +57,6 @@ export default function Curation() {
   }, [data])
 
   const setApproval = (approve, index) => {
-    console.log(approve, index);
     if (!viewApproved) {
       data.unapproved[index].approvalCount++;
       data.unapproved[index].approved.push({ _id: auth.id });
@@ -130,7 +127,26 @@ export default function Curation() {
     }).then(res => res.json());
   };
 
-  console.log('DAFUQ?', data);
+  const removeFlag = (flagData, index) => {
+    if (!viewApproved) {
+      const removeIndex = data.unapproved[index].flagged.findIndex(e => e._id === flagData.flagId);
+      console.log('FOUND INDEX', removeIndex);
+      data.unapproved[index].flagged.splice(removeIndex, 1);
+    } else {
+      const removeIndex = data.approved[index].flagged.findIndex(e => e._id === flagData.flagId);
+      data.approved[index].flagged.splice(removeIndex, 1);
+    }
+
+    return fetch(`${ apiUrl() }/removeFlag`, {
+      method: 'POST',
+      body: JSON.stringify(flagData),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': auth.token
+      },
+    }).then(res => res.json());
+  };
 
   return (
     <div className='content-block' ref={ contentRef }>
@@ -148,10 +164,10 @@ export default function Curation() {
         <div className={ !viewApproved ? 'info-block' : 'info-block info-block-selected' } onClick={ () => toggleView('approved') }>
           Approved
         </div>
-        <div className='info-block-space' />
+        {/* <div className='info-block-space' />
         <div className='info-block'>
           Recipients
-        </div>
+        </div> */}
       </div>
       <div className='margin-top'>
         { (!isLoading && showData.length && auth && auth.username) ?
@@ -166,6 +182,7 @@ export default function Curation() {
                     setApproval={ setApproval }
                     viewApproved={ viewApproved }
                     submitFlag={ submitFlag }
+                    removeFlag={ removeFlag }
                   />
                 );
               })

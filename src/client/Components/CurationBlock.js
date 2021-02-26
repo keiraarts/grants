@@ -54,7 +54,7 @@ export default function Gallery(props) {
         shouldCloseOnOverlayClick={ true }
         ariaHideApp={ false }
       >
-        <div className='font flex-v'>
+        <div className='font flex-v full-height'>
           <div className='flex-full'>
             <span className='text-m'>Statement of Intent</span><br />
             { item.statement }<br /><br />
@@ -71,42 +71,48 @@ export default function Gallery(props) {
       </ReactModal>
       <ReactModal
         isOpen={ flagOpen }
-        style={{ content: { width : '50%',  height: '50%', margin: 'auto', } }}
+        style={{ content: { width : '50%',  height: '80%', margin: 'auto', } }}
         onRequestClose={ () => setFlagOpen(false) }
         shouldCloseOnOverlayClick={ true }
         ariaHideApp={ false }
       >
-        <div>
-          <div className='form__group full-width field'>
-            <textarea type='text' className='form__field intent-field' placeholder='Email' name='email' id='name' maxLength='2000' onChange={e => setFlagData(e.target.value) } />
-            <label className='form__label'>Optional Information</label>
-          </div>
-          <div className='approve-block' onClick={ () => { props.submitFlag({ id: item.id, message: flagData, type: 'Already Minted' }, props.index); setFlagOpen(false) } }>
-            Already Minted
-          </div>
-          <div className='approve-block' onClick={ () => { props.submitFlag({ id: item.id, message: flagData, type: 'Artwork Issue' }, props.index); setFlagOpen(false) } }>
-            Issue with Artwork
-          </div>
-          <div className='approve-block' onClick={ () => { props.submitFlag({ id: item.id, message: flagData, type: 'Other' }, props.index); setFlagOpen(false) } }>
-            Other
-          </div>
-          <br /><br />
-          { (item.flagged && item.flagged.length) ?
-            <div>
-              Flags:
-              {
-                item.flagged.map((item, index) => {
-                  return (<div>{ item.type }{ item.message ? ` - ${ item.message }` : '' }</div>)
-                })
-              }
-              <br />
+        <div className='font flex-v full-height'>
+          <div className='flex-full'>
+            <span className='text-m'>Raise an Issue</span>
+            <div className='form__group full-width field'>
+              <textarea type='text' className='form__field intent-field' placeholder='Email' name='email' id='name' maxLength='2000' onChange={e => setFlagData(e.target.value) } />
+              <label className='form__label'>Optional Information</label>
             </div>
-            :
-            <></>
-          }
-          <div className='approve-block' onClick={ () => setFlagOpen(false) }>
-            Close
+            <div className='approve-block' onClick={ () => { props.submitFlag({ id: item.id, message: flagData, type: 'Already Minted' }, props.index); setFlagOpen(false) } }>
+              Already Minted
+            </div>
+            <div className='approve-block' onClick={ () => { props.submitFlag({ id: item.id, message: flagData, type: 'Artwork Issue' }, props.index); setFlagOpen(false) } }>
+              Issue with Artwork
+            </div>
+            <div className='approve-block' onClick={ () => { props.submitFlag({ id: item.id, message: flagData, type: 'Other' }, props.index); setFlagOpen(false) } }>
+              Other
+            </div>
+            <br /><br />
+            { (item.flagged && item.flagged.length) ?
+              <div>
+                Flags:
+                {
+                  item.flagged.map((flagged, index) => {
+                    return (
+                      <div>
+                        <span className='text-grey pointer' onClick={ () => { props.removeFlag({ id: item.id, flagId: flagged._id }, props.index); setFlagOpen(false) }}>X&nbsp;&nbsp;</span>
+                        { flagged.type }{ flagged.message ? ` - ${ flagged.message }` : '' }
+                      </div>
+                    )
+                  })
+                }
+                <br />
+              </div>
+              :
+              <></>
+            }
           </div>
+          <span className='flex text-grey center pointer text-m font' onClick={ () => setFlagOpen(false) }>Close</span>
         </div>
       </ReactModal>
       <div className='block-art'>

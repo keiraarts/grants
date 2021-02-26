@@ -62,6 +62,9 @@ const applicant = {
         default: false
     },
     flagged: [{
+        id: {
+            type:     String,
+        },
         user: {
             type:     mongoose.Schema.ObjectId,
             ref:      'User',

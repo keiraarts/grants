@@ -6,4 +6,5 @@ module.exports = (app) => {
   app.get('/viewAllApplications', applicant.viewAllApplications);
   app.post('/approveApplicant', applicant.approveApplicant);
   app.post('/flagApplicant', applicant.flagApplicant);
+  app.post('/removeFlag', applicant.removeFlag);
 };

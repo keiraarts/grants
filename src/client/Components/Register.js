@@ -37,8 +37,14 @@ export default function Register() {
   const submit = e => {
     e.preventDefault();
     setErr(false);
-    setSubmitting(true);
-    request(registerData);
+    if (registerData.first === '' || registerData.last === '' || registerData.email === '') {
+      setErr('Some fields are missing!');
+    } else if (registerData.password !== registerData.confirmPassword) {
+      setErr('Your passwords do not match!');
+    } else {
+      setSubmitting(true);
+      request(registerData);
+    }
   }
 
   if (data) setAuth(data);
@@ -80,10 +86,12 @@ export default function Register() {
               { err }
             </div>
           }
-          { (submitting && !submitted) &&
+          { (submitting && !submitted) ?
             <div className='margin-top-s text-s text-grey'>
               Your registration is being submitted..
             </div>
+            :
+            <input type='submit' value='Register Account' className='submit-button' />
           }
           { submitted &&
             <div className='margin-top-s text-s text-rainbow'>
@@ -91,7 +99,6 @@ export default function Register() {
               We will get back to you once we announce an acceptance date via e-mail or social direct message.
             </div>
           }
-          { <input type='submit' value='Register Account' className='submit-button' /> }
         </form>
         <br />
       </div>
