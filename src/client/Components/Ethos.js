@@ -10,6 +10,8 @@ export default function Ethos() {
     win.focus();
   }
 
+  console.log('YO2');
+
   return (
     <div className='content-block'>
       <div className='text-l text-b'>
