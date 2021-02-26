@@ -11,7 +11,12 @@ export default function Application() {
   const submit = e => {
     e.preventDefault();
     if (!data.country || !data.countryCode) setErr('Please select your Country of Representation');
+    else if (!data.name) setErr('Please include an artist name');
+    else if (!data.email) setErr('Please include an email');
+    else if (!data.twitter) setErr('Please include a Twitter handle');
+    else if (!data.website) setErr('Please include a URL reference');
     else if (!data.art) setErr('No artwork selected');
+    else if (!data.statement) setErr('Please write a statement of intent');
     else {
       setErr(false);
       setSubmitting(true);
