@@ -50,10 +50,13 @@ export default function Header() {
         </div>
         <div className='flex-full' />
         { (auth && auth.username) &&
-        <div className='text-s flex'>
-          <div className='flex-full' />
-          Logged in as&nbsp;<span className='text-grey pointer'>{ auth.username }</span>
-        </div> }
+          <div>
+            <div className='text-s flex'>
+              <div className='flex-full' />
+              Logged in as&nbsp;<span className='text-grey pointer'>{ auth.username }</span>
+            </div>
+          </div>
+        }
       </div>
     </div>
   );

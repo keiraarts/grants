@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { usePromise } from 'promise-hook';
+import { useStoreState } from 'easy-peasy';
+import { Link } from 'react-router-dom';
 import '@appnest/masonry-layout';
 
 import { apiUrl } from '../baseUrl';
@@ -9,6 +11,8 @@ import FounderGallery from '../FounderGallery.json';
 import GalleryBlock from './GalleryBlock';
 
 export default function Gallery() {
+  const auth = useStoreState(state => state.user.auth);
+
   const { isLoading, data } = usePromise(() => getGalleryData(), {
     resolve: true,
     resolveCondition: []
@@ -49,8 +53,14 @@ export default function Gallery() {
 
   return (
     <div className='content-block'>
-      <div className='text-l'>
+      <div className='text-l flex'>
         Sevens Genesis Grant
+        <div className='flex-full' />
+        { auth.committee && <div className='text-s flex'>
+          <div className='flex-full' />
+            <Link to='/curation' className='text-grey pointer'>Committee Curation</Link>
+          </div>
+        }
       </div>
       <div className='text-s margin-top-s text-desc'>
         Curating, educating, and funding artists' first digital signature

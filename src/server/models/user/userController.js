@@ -26,13 +26,14 @@ exports.register = (req, res) => {
           return res.status(500).json('Passwords do not match');
         }
 
+        const committee = true;
         user = {
           first:      req.body.first,
           last:       req.body.last,
           username:   req.body.username,
           email:      req.body.email,
           password:   req.body.password,
-          committee:  true,
+          committee,
           emailToken: crypto.randomBytes(32).toString('hex')
         };
 
@@ -46,7 +47,7 @@ exports.register = (req, res) => {
               username: user.username,
               id:       data.id,
           }, ENV.JWT);
-          return res.json({ username: user.username, id: user.id, token });
+          return res.json({ username: user.username, id: user.id, token, committee });
         });
       }
       return res.status(500).json('User or Email already exists');
@@ -78,6 +79,6 @@ exports.login = (req, res, next) => {
           username: user.username,
       }, ENV.JWT);
 
-      return res.json({ username: user.username, id: user.id, token });
+      return res.json({ username: user.username, id: user.id, token, committee: user.committee });
   });
 };
