@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { StoreComponent, store } from '../redux';
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation } from 'react-router-dom';
 import { useStoreState } from 'easy-peasy';
 
 import '../styles.scss';
