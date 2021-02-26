@@ -113,7 +113,8 @@ app.use((req, res) => {
   const route = req.originalUrl.split('/')[1];
   const allowedRoutes = [
     'nft', 'ethos', 'apply', 'committee', 'program', 'curation', 'register',
-    'donate', 'tutorial', , 'testimony', 'rarible', 'opensea', 'resources'
+    'donate', 'tutorial', , 'testimony', 'rarible', 'opensea', 'resources',
+    'login', 'register'
     ];
   if (allowedRoutes.indexOf(route) > -1) {
     res.sendFile(`${ __dirname }${ path.join('/dist/index.html') }`);
