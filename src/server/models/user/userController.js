@@ -32,6 +32,7 @@ exports.register = (req, res) => {
           username:   req.body.username,
           email:      req.body.email,
           password:   req.body.password,
+          committee:  true,
           emailToken: crypto.randomBytes(32).toString('hex')
         };
 
