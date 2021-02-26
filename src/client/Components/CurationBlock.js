@@ -22,6 +22,7 @@ export default function Gallery(props) {
   {
     console.log(page);
     page = page.replace('@', '');
+    if (item.twitter.substring(0, 3) === 'www') page = `https://${ page }`
     let win = window.open(page, '_blank');
     win.focus();
   }
