@@ -27,6 +27,10 @@ export default function Committee() {
         <div className='text-s'>Silver Donor</div>
         <span className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://twitter.com/etyoung') }>Eric Young</span>
         <div className='text-s'>Silver Donor</div>
+        <span className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://twitter.com/WhaleShark_Pro') }>Whaleshark</span>
+        <div className='text-s'>Silver Donor</div>
+        <span className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://twitter.com/Weel25067618') }>Weel</span>
+        <div className='text-s'>Bronze Donor</div>
         <br />
       </div>
     </div>

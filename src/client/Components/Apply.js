@@ -73,6 +73,15 @@ export default function Application() {
           <i>Starred fields* are optional but strongly recommended</i>
         </div>
         <form onSubmit={ submit }>
+          {/* <div className='select-dropdown'>
+            <select name='Country' defaultValue='default' required onChange={e => setData({ ...data, country: e.target.value, countryCode: CountryList.getCode(e.target.value) })}>
+              <option value='default' disabled hidden> 
+                Minted an NFT before?
+              </option>
+                <option value='Yes'>Yes</option>
+                <option value='No'>No</option>
+            </select>
+          </div> */}
           <div className='form__group field'>
             <input type='text' className='form__field' placeholder='Name' name='name' id='name' required maxLength='100' onChange={e => setData({ ...data, name: e.target.value })} />
             <label className='form__label'>Artist Name</label>
