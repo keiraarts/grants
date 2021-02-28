@@ -338,7 +338,8 @@ canvas {
 
 .curation-art {
   max-height: 85vh;
-  width: auto;
+  width: 100%    !important;
+  height: auto   !important;
   object-fit: cover;
 }
 
