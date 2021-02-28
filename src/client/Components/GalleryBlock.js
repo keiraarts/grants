@@ -20,7 +20,7 @@ export default function Gallery(props) {
       <div className='block-art'>
         { (!loaded) && <div className='block-loading'><div className='loading'><div></div><div></div></div></div> }
         { item.image.slice(-3) === 'mp4' ?
-          <video controls autoPlay muted loop className='block-art-image' onCanPlay={ () => didLoad(true) }>
+          <video controls autoPlay muted loop playsinline className='block-art-image' onCanPlay={ () => didLoad(true) }>
             <source src={ item.image }
                     type="video/mp4" />
             Sorry, your browser doesn't support embedded videos.

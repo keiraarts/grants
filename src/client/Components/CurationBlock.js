@@ -121,7 +121,7 @@ export default function Gallery(props) {
       <div className='block-art'>
         { (!loaded) && <div className='block-loading'><div className='loading'><div></div><div></div></div></div> }
         { (item.art && !item.thumbnail && item.art.slice(-3) === 'mp4') ?
-          <video controls autoPlay muted loop className='block-art-image pointer' onCanPlay={ () => didLoad(true) } onClick={ () => setArtOpen(true) }>
+          <video controls autoPlay playsinline muted loop className='block-art-image pointer' onCanPlay={ () => didLoad(true) } onClick={ () => setArtOpen(true) }>
             <source src={ `https://cdn.grants.art/${ item.art }` }
                     type="video/mp4" />
             Sorry, your browser doesn't support embedded videos.
