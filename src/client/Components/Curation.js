@@ -89,8 +89,6 @@ export default function Curation() {
     }).then(res => res.json());
   }
 
-  console.log(data, showData);
-
   const setRejection = (reject, index) => {
     if (viewTab === 'unapproved') {
       data.unapproved[index].rejectCount++;
