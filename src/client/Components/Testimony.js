@@ -35,6 +35,18 @@ export default function Committee() {
           -  <span className='text-s text-grey pointer' onClick={ () => openLink('https://twitter.com/billelis') }>Billelis</span>
         </div>
         <div className='text-s margin-top'>
+          "Just 4 months ago I was working 15 hour days minimum on client projects.
+            Today I am working over 15 hours a day, oh hang on, I am not working… I am creating what I have always wanted to create. Thanks to Cryptoart, I have found a new community, a new family and a new opportunity to build the future I have always wanted too for my daughter Boo.
+            It's life changing and I am forever grateful to all the collectors who have believed and connected with my art and the AMAZING community of artists and admirers within the crypto art world.
+            I have spoken to people I wouldn’t of even dreamt to speaking to, and have made life long friends."
+          -  <span className='text-s text-grey pointer' onClick={ () => openLink('https://www.behance.net/JonathanQuintin') }>mbsjq</span>
+        </div>
+        <div className='text-s margin-top'>
+          "NFTs and CryptoArt will be remembered as the Art movement of our lifetimes. It is a movement that comes from the bottom, democratizing art exposure and opportunities in a way that never happened before.
+          It gives freedom and power to the artist and is changing a lot of lives, from the smallest artists to the top ones."
+          -  <span className='text-s text-grey pointer' onClick={ () => openLink('https://www.instagram.com/msistema/') }>Marc Ferrer Vives</span>
+        </div>
+        <div className='text-s margin-top'>
           "I would never have imagined connecting with people who I consider legends. Now I have the opportunity to
           be part of a community of the most creative and forward thinking individuals in the world, and it drives me to do something great for others."
           -  <span className='text-s text-grey pointer' onClick={ () => openLink('https://twitter.com/illestrater_') }>illestrater</span>
