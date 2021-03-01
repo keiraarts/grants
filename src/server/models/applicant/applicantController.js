@@ -229,15 +229,15 @@ exports.asdf = (req, res) => {
 // })
 
 
-setTimeout(() => {
-  return Applicant.find({}, async (err2, data) => {
-    if (err2) return res.status(500).json(err);
-    const found = [];
-    data.forEach(async e => {
-      const test = e.flagged.find(g => g.type === 'Artwork Issue' && g.user.equals('6035e7415f0a684942f4e17c'));
-      if (e.statement !== 'EMPTY' && e.name !== 'EMPTY' && e.email !== 'EMPTY' && e.twitter !== 'EMPTY' && e.website !== 'EMPTY' && !test && !test) {
-        console.log(`${ e.email },`);
-      }
-    })
-  });
-});
+// setTimeout(() => {
+//   return Applicant.find({}, async (err2, data) => {
+//     if (err2) return res.status(500).json(err);
+//     const found = [];
+//     data.forEach(async e => {
+//       const test = e.flagged.find(g => g.type === 'Artwork Issue' && g.user.equals('6035e7415f0a684942f4e17c'));
+//       if (e.statement !== 'EMPTY' && e.name !== 'EMPTY' && e.email !== 'EMPTY' && e.twitter !== 'EMPTY' && e.website !== 'EMPTY' && !test && !test) {
+//         console.log(`${ e.email },`);
+//       }
+//     })
+//   });
+// });

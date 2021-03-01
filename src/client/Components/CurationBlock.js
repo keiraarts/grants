@@ -31,7 +31,7 @@ export default function Gallery(props) {
     <div className='gallery-block'>
       <ReactModal
         isOpen={ artOpen }
-        style={{ content: { width : '80%', margin: 'auto', } }}
+        style={{ content: { margin: 'auto', } }}
         onRequestClose={ () => setArtOpen(false) }
         shouldCloseOnOverlayClick={ true }
         ariaHideApp={ false }
@@ -48,11 +48,12 @@ export default function Gallery(props) {
           }
           <br />
           <span className='flex text-grey center pointer text-m font' onClick={ () => setArtOpen(false) }>Close</span>
+          <br />
         </div>
       </ReactModal>
       <ReactModal
         isOpen={ infoOpen }
-        style={{ content: { width : '50%',  height: '50%', margin: 'auto', } }}
+        style={{ content: { height: '50%', margin: 'auto', } }}
         onRequestClose={ () => setInfoOpen(false) }
         shouldCloseOnOverlayClick={ true }
         ariaHideApp={ false }
@@ -70,6 +71,7 @@ export default function Gallery(props) {
             <br />
           </div>
           <span className='flex text-grey center pointer text-m font' onClick={ () => setInfoOpen(false) }>Close</span>
+          <br />
         </div>
       </ReactModal>
       <ReactModal
