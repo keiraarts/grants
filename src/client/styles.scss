@@ -283,11 +283,11 @@ canvas {
 
 .text-rainbow {
   display: inline-block;
-  background: repeating-linear-gradient(45deg, violet, indigo, blue, green, yellow, orange, red, violet);
+  background: linear-gradient(45deg, violet, indigo, blue, green, yellow, orange, red, violet);
   background-clip: text;
   color: transparent;
   background-color: transparent;
-  animation: rainbow 3000s alternate-reverse linear infinite;
+  animation: rainbow 30s alternate-reverse linear infinite;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -299,11 +299,11 @@ canvas {
 }
 .text-grey {
   display: inline-block;
-  background: repeating-linear-gradient(45deg, #343d46 , #4f5b66 , #65737e , #a7adba , #c0c5ce, #343d46);
+  background: linear-gradient(45deg, #343d46 , #4f5b66 , #65737e , #a7adba , #c0c5ce, #343d46);
   background-clip: text;
   color: transparent;
   background-color: transparent;
-  animation: rainbow 3000s alternate-reverse linear infinite;
+  animation: rainbow 30s alternate-reverse linear infinite;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -314,7 +314,7 @@ canvas {
     
   }
   to {
-    background-position-x: 6000vw;
+    background-position-x: 100vw;
   }
 }
 
