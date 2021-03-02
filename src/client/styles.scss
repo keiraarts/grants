@@ -283,7 +283,7 @@ canvas {
 
 .text-rainbow {
   display: inline-block;
-  background-image: repeating-linear-gradient(45deg, violet, indigo, blue, green, yellow, orange, red, violet);
+  background: repeating-linear-gradient(45deg, violet, indigo, blue, green, yellow, orange, red, violet);
   background-clip: text;
   color: transparent;
   background-color: transparent;
@@ -292,9 +292,14 @@ canvas {
   -webkit-text-fill-color: transparent;
 }
 
+@keyframes rainbow2 { 
+  0%{background-position:0% 2%}
+  50%{background-position:100% 99%}
+  100%{background-position:0% 2%}
+}
 .text-grey {
   display: inline-block;
-  background-image: repeating-linear-gradient(45deg, #343d46 , #4f5b66 , #65737e , #a7adba , #c0c5ce, #343d46);
+  background: repeating-linear-gradient(45deg, #343d46 , #4f5b66 , #65737e , #a7adba , #c0c5ce, #343d46);
   background-clip: text;
   color: transparent;
   background-color: transparent;
