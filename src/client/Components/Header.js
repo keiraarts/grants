@@ -53,7 +53,7 @@ export default function Header() {
           <div>
             <div className='text-s flex'>
               <div className='flex-full' />
-              Logged in as&nbsp;<span className='text-grey pointer'>{ auth.username }</span>
+              Logged in as&nbsp;<Link to='/account' className='text-grey pointer'>{ auth.username }</Link>
             </div>
           </div>
         }

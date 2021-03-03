@@ -110,11 +110,11 @@ export default function Application() {
           </div>
           <div className='form__group field'>
             <input type='text' className='form__field' placeholder='Twitter' name='twitter' id='twitter' required maxLength='100' onChange={e => setData({ ...data, twitter: e.target.value })} />
-            <label className='form__label'>Twitter Handle</label>
+            <label className='form__label'>Twitter @Handle</label>
           </div>
           <div className='form__group field'>
             <input type='text' className='form__field' placeholder='Instagram' name='instagram' id='instagram' maxLength='100' onChange={e => setData({ ...data, instagram: e.target.value })} />
-            <label className='form__label'>Instagram Handle*</label>
+            <label className='form__label'>Instagram @Handle*</label>
           </div>
           <div className='form__group field'>
             <textarea type='text' className='form__field intent-field' placeholder='Email' name='email' id='name' required maxLength='2000' onChange={e => setData({ ...data, statement: e.target.value })} />

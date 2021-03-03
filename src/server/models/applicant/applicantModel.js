@@ -52,6 +52,12 @@ const applicant = {
     art:  {
         type:  String,
     },
+    description: {
+        type:  String,
+    },
+    minted: {
+        type:  Boolean,
+    },
     thumbnail:  String,
     removed: {
         type: Boolean,

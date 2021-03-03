@@ -4,7 +4,6 @@ const fs = require('fs');
 const path = require('path');
 const s3 = require('s3');
 const auth = require('../../services/authorization-service');
-const errorMessages = require('../../services/error-messages');
 
 const Applicant = require('mongoose').model('Applicant');
 const User = require('mongoose').model('User');
@@ -70,6 +69,21 @@ exports.submitApplication = async (req, res) => {
   newApplicant.save((err, data) => {
     if (err) return res.status(500).json(err);
     else return res.json(true);
+  });
+};
+
+exports.updateApplication = async (req, res) => {
+  auth(req.headers.authorization, res, (jwt) => {
+    User.findById(jwt.id, (err, user) => {
+      if (!user) return res.status(401).json({ err: 'Authentication error' });
+      return Applicant.findOne({ user: user._id }, (err, applicant) => {
+        applicant.minted = req.body.minted;
+        applicant.name = req.body.name;
+        applicant.description = req.body.description;
+        applicant.save();
+        return res.json('Application updated');
+      })
+    });
   });
 };
 
@@ -233,11 +247,15 @@ exports.asdf = (req, res) => {
 //   return Applicant.find({}, async (err2, data) => {
 //     if (err2) return res.status(500).json(err);
 //     const found = [];
+//     let count = 0;
 //     data.forEach(async e => {
 //       const test = e.flagged.find(g => g.type === 'Artwork Issue' && g.user.equals('6035e7415f0a684942f4e17c'));
-//       if (e.statement !== 'EMPTY' && e.name !== 'EMPTY' && e.email !== 'EMPTY' && e.twitter !== 'EMPTY' && e.website !== 'EMPTY' && !test && !test) {
-//         console.log(`${ e.email },`);
+//       if (e.approvalCount >= 4 && e.statement !== 'EMPTY' && e.name !== 'EMPTY' && e.email !== 'EMPTY' && e.twitter !== 'EMPTY' && e.website !== 'EMPTY' && !test && !test) {
+//         console.log(`${ e.approvalCount },`);
+//         count++;
 //       }
 //     })
-//   });
+
+//     console.log(count);
+//   }).sort('-approvalCount');
 // });

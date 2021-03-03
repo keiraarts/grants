@@ -11,6 +11,14 @@ const user = {
         type: String,
         trim: true
     },
+    artistName: {
+        type: String,
+        trim: true
+    },
+    wallet: {
+        type: String,
+        trim: true,
+    },
     username: {
         type:  String,
         trim:  true,
@@ -44,7 +52,35 @@ const user = {
     committee: {
         type: Boolean,
         default: false
-    }
+    },
+    country: {
+        type: String,
+        trim: true,
+        required: true
+    },
+    countryCode: {
+        type: String,
+        trim: true,
+        required: true
+    },
+    city: {
+        type: String,
+        trim: true
+    },
+    website: {
+        type:  String,
+        trim:  true,
+        required: true
+    },
+    twitter: {
+        type:  String,
+        trim:  true,
+        required: true
+    },
+    instagram: {
+        type:  String,
+        trim:  true,
+    },
 };
 
 const UserSchema = new Schema(user);

@@ -103,6 +103,9 @@ app.get('/galleryData', (req, res) => {
 });
 
 
+require('./src/server/models/user/userModel.js');
+require('./src/server/models/applicant/applicantModel.js');
+
 require('./src/server/models/user/userRoutes.js')(app);
 require('./src/server/models/applicant/applicantRoutes.js')(app);
 mongoose.connect(ENV.MONGO);

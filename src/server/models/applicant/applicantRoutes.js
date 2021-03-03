@@ -1,8 +1,8 @@
-require('./applicantModel.js');
 const applicant = require('./applicantController');
 
 module.exports = (app) => {
   app.post('/submitApplication', applicant.submitApplication);
+  app.post('/updateApplication', applicant.updateApplication);
   app.get('/viewAllApplications', applicant.viewAllApplications);
   app.post('/approveApplicant', applicant.approveApplicant);
   app.post('/rejectApplicant', applicant.rejectApplicant);

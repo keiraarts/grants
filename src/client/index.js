@@ -21,6 +21,7 @@ import Curation from "./Components/Curation";
 import Testimony from "./Components/Testimony";
 import Register from "./Components/Register";
 import Login from "./Components/Login";
+import Account from "./Components/Account";
 import Contract from "./Components/Contract";
 
 import './styles.scss';
@@ -54,6 +55,7 @@ const App = () => {
                 <Route path="/testimony" exact component={ Testimony } />
                 <Route path="/register" exact component={ Register } />
                 <Route path="/login" exact component={ Login } />
+                <Route path="/account" exact component={ Account } />
                 <Route path="/contract" exact component={ Contract } />
                 <Footer/>
               </WaitForStateRehydration>

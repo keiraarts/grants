@@ -1,6 +1,8 @@
 const User = require('mongoose').model('User');
+const Applicant = require('mongoose').model('Applicant');
 const jsonwebtoken = require('jsonwebtoken');
 const crypto = require('crypto');
+const auth = require('../../services/authorization-service');
 const errorMessages = require('../../services/error-messages');
 
 const ENV = process.env;
@@ -26,20 +28,34 @@ exports.register = (req, res) => {
           return res.status(500).json('Passwords do not match');
         }
 
-        const committee = true;
+        const applicant = await Applicant.findOne({ email: req.body.email, removed: { $ne: true } }, (err2, data) => data)
+          .select('-flagged -approvalCount -rejectCount -rejected -approved');
+
         user = {
-          first:      req.body.first,
-          last:       req.body.last,
-          username:   req.body.username,
-          email:      req.body.email,
-          password:   req.body.password,
-          committee,
+          first:       req.body.first,
+          last:        req.body.last,
+          username:    req.body.username,
+          email:       req.body.email,
+          password:    req.body.password,
+          artistName:  applicant.name,
+          country:     applicant.country,
+          countryCode: applicant.countryCode,
+          city:        applicant.city,
+          website:     applicant.website,
+          twitter:     applicant.twitter,
+          instagram:   applicant.instagram,
+          committee:   false,
           emailToken: crypto.randomBytes(32).toString('hex')
         };
+
+        console.log(user);
 
         user = new User(user);
         return user.save((err, data) => {
           if (err) return res.status(500).json(err);
+
+          applicant.user = data._id;
+          applicant.save();
 
           // notificationService.emailVerification(user.email, user.username, user.emailToken);
 
@@ -47,7 +63,7 @@ exports.register = (req, res) => {
               username: user.username,
               id:       data.id,
           }, ENV.JWT);
-          return res.json({ username: user.username, id: user.id, token, committee });
+          return res.json({ username: user.username, id: user.id, token, committee: false });
         });
       }
       return res.status(500).json('User or Email already exists');
@@ -82,3 +98,18 @@ exports.login = (req, res, next) => {
       return res.json({ username: user.username, id: user.id, token, committee: user.committee });
   });
 };
+
+exports.getAccount = (req, res, next) => {
+  auth(req.headers.authorization, res, (jwt) => {
+    User.findById(jwt.id, (err, user) => {
+      if (err) return res.json(err);
+      if (!user) return res.status(401).json({ err: 'Authentication error' }); 
+      else {
+        return Applicant.findOne({ email: user.email, removed: { $ne: true } }, (err2, data) => {
+          if (err2) return res.status(500).json(err);
+          return res.json({ user, application: data });
+        }).select('-flagged -approvalCount -rejectCount -rejected -approved')
+      }
+    }).select('first last email artistName wallet');
+  });
+}
