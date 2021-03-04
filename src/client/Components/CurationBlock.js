@@ -38,7 +38,7 @@ export default function Gallery(props) {
       >
         <div className='block-art'>
           { item.art && item.art.slice(-3) === 'mp4' ?
-            <video controls muted webkit-playsinline playsinline loop className='curation-art' onCanPlay={ () => didLoad(true) }>
+            <video controls muted webkit-playsinline='true' playsInline loop className='curation-art' onCanPlay={ () => didLoad(true) }>
               <source src={ `https://cdn.grants.art/${ item.art }` }
                       type="video/mp4" />
               Sorry, your browser doesn't support embedded videos.
@@ -123,7 +123,7 @@ export default function Gallery(props) {
       <div className='block-art'>
         { (!loaded) && <div className='block-loading'><div className='loading'><div></div><div></div></div></div> }
         { (item.art && !item.thumbnail && item.art.slice(-3) === 'mp4') ?
-          <video controls webkit-playsinline playsinline muted loop className='block-art-image pointer' onCanPlay={ () => didLoad(true) } onClick={ () => setArtOpen(true) }>
+          <video controls webkit-playsinline='true' playsInline muted loop className='block-art-image pointer' onCanPlay={ () => didLoad(true) } onClick={ () => setArtOpen(true) }>
             <source src={ `https://cdn.grants.art/${ item.art }` }
                     type="video/mp4" />
             Sorry, your browser doesn't support embedded videos.

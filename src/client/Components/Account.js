@@ -50,8 +50,8 @@ export default function Register() {
       setApplication({
         ...application,
         name: data.user.artistName,
-        description: data.application.description,
-        minted: data.application.minted
+        description: data.application ? data.application.description : null,
+        minted: data.application ? data.application.minted : null
       })
     }
   }, [data]);
@@ -175,7 +175,7 @@ export default function Register() {
               { data.application.art &&
                 <div>
                   { (data.application.art && data.application.art.slice(-3) === 'mp4') ?
-                  <video controls webkit-playsinline playsinline muted loop>
+                  <video controls webkit-playsinline='true' playsInline muted loop>
                     <source src={ `https://cdn.grants.art/${ data.application.art }` }
                             type="video/mp4" />
                     Sorry, your browser doesn't support embedded videos.
