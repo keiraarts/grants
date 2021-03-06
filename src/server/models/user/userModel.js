@@ -15,6 +15,10 @@ const user = {
         type: String,
         trim: true
     },
+    birthYear: {
+        type: String,
+        trim: true
+    },
     wallet: {
         type: String,
         trim: true,
@@ -49,6 +53,10 @@ const user = {
         type: String,
         required: false,
     },
+    emailVerified: {
+        type: Boolean,
+        default: false
+    },
     committee: {
         type: Boolean,
         default: false
@@ -56,12 +64,10 @@ const user = {
     country: {
         type: String,
         trim: true,
-        required: true
     },
     countryCode: {
         type: String,
         trim: true,
-        required: true
     },
     city: {
         type: String,
@@ -70,12 +76,10 @@ const user = {
     website: {
         type:  String,
         trim:  true,
-        required: true
     },
     twitter: {
         type:  String,
         trim:  true,
-        required: true
     },
     instagram: {
         type:  String,

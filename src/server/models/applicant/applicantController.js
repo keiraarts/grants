@@ -4,6 +4,8 @@ const fs = require('fs');
 const path = require('path');
 const s3 = require('s3');
 const auth = require('../../services/authorization-service');
+const nodemailer = require('nodemailer');
+const templates = require('../../emails/templates');
 
 const Applicant = require('mongoose').model('Applicant');
 const User = require('mongoose').model('User');
@@ -14,6 +16,17 @@ const spaces = s3.createClient({
     secretAccessKey: ENV.SPACES_SECRET,
     region: 'US',
     endpoint: 'nyc3.digitaloceanspaces.com'
+  }
+});
+
+
+const transporter = nodemailer.createTransport({
+  host: 'email-smtp.us-east-1.amazonaws.com',
+  port: 465,
+  secure: true,
+  auth: {
+    user: ENV.SES_USER,
+    pass: ENV.SES_PASS
   }
 });
 
@@ -68,7 +81,10 @@ exports.submitApplication = async (req, res) => {
   const newApplicant = new Applicant(applicant);
   newApplicant.save((err, data) => {
     if (err) return res.status(500).json(err);
-    else return res.json(true);
+    else {
+      transporter.sendMail(templates.applicationConfirmation(applicant.email));
+      return res.json(true);
+    }
   });
 };
 
@@ -78,9 +94,12 @@ exports.updateApplication = async (req, res) => {
       if (!user) return res.status(401).json({ err: 'Authentication error' });
       return Applicant.findOne({ user: user._id }, (err, applicant) => {
         applicant.minted = req.body.minted;
-        applicant.name = req.body.name;
         applicant.description = req.body.description;
+        applicant.name = req.body.name;
         applicant.save();
+        user.artistName = req.body.name;
+        user.birthYear = req.body.birthYear;
+        user.save();
         return res.json('Application updated');
       })
     });

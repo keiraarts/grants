@@ -10,6 +10,7 @@ const https = require('https');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+require('./src/server/services/opensea-service');
 
 const ABI = require('./abi.json');
 
@@ -98,7 +99,7 @@ setInterval(() => {
   pollGalleryData();
 }, 6000000)
 
-app.get('/galleryData', (req, res) => {
+app.get('/api/galleryData', (req, res) => {
   res.json(galleryData);
 });
 
@@ -117,8 +118,9 @@ app.use((req, res) => {
   const allowedRoutes = [
     'nft', 'ethos', 'apply', 'committee', 'program', 'curation', 'register',
     'donate', 'tutorial', , 'testimony', 'rarible', 'opensea', 'resources',
-    'login', 'register'
+    'login', 'register', 'art'
     ];
+    
   if (allowedRoutes.indexOf(route) > -1) {
     res.sendFile(`${ __dirname }${ path.join('/dist/index.html') }`);
   } else if (route === 'social.png') {

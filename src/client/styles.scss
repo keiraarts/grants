@@ -86,6 +86,10 @@ canvas {
   padding-top: 1rem;
 }
 
+.margin-top-minus {
+  margin-top: 0rem !important;
+}
+
 .spacer {
   height: 2rem;
 }
@@ -106,6 +110,10 @@ canvas {
 
 .text-m {
   font-size: 2rem;
+}
+
+.text-mid {
+  font-size: 1.4rem;
 }
 
 .text-s {
@@ -311,6 +319,15 @@ canvas {
   to {
     background-position-x: 6000vw;
   }
+}
+
+.gallery-description {
+  width: 20%;
+}
+
+.gallery-art {
+  max-width: 80%;
+  max-height: 50rem;
 }
 
 .block-loading {

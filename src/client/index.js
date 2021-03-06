@@ -22,7 +22,7 @@ import Testimony from "./Components/Testimony";
 import Register from "./Components/Register";
 import Login from "./Components/Login";
 import Account from "./Components/Account";
-import Contract from "./Components/Contract";
+import Genesis from "./Components/Genesis";
 
 import './styles.scss';
 
@@ -56,7 +56,7 @@ const App = () => {
                 <Route path="/register" exact component={ Register } />
                 <Route path="/login" exact component={ Login } />
                 <Route path="/account" exact component={ Account } />
-                <Route path="/contract" exact component={ Contract } />
+                <Route path="/gallery/:id" component={ Genesis } />
                 <Footer/>
               </WaitForStateRehydration>
             </div>

@@ -2,7 +2,10 @@ const User = require('mongoose').model('User');
 const Applicant = require('mongoose').model('Applicant');
 const jsonwebtoken = require('jsonwebtoken');
 const crypto = require('crypto');
+const ethers = require('ethers');
 const auth = require('../../services/authorization-service');
+const nodemailer = require('nodemailer');
+const templates = require('../../emails/templates');
 const errorMessages = require('../../services/error-messages');
 
 const ENV = process.env;
@@ -12,6 +15,16 @@ function validateUsername(string) {
   return string.match(regex);
 }
 
+const transporter = nodemailer.createTransport({
+  host: 'email-smtp.us-east-1.amazonaws.com',
+  port: 465,
+  secure: true,
+  auth: {
+    user: ENV.SES_USER,
+    pass: ENV.SES_PASS
+  }
+});
+
 exports.register = (req, res) => {
   if (!validateUsername(req.body.username)) {
     return res.status(406).json('Invalid username');
@@ -19,7 +32,12 @@ exports.register = (req, res) => {
 
   if (req.body.username.length > 30) return res.status(406).json('Username too long');
 
-  return User.findOne({ username: req.body.username, email: req.body.email }, async (err, user) => {
+  return User.findOne({
+    $or: [
+        { email: { $regex: new RegExp(`^${ req.body.email.toLowerCase().trim() }$`, 'i') } },
+        { username: { $regex: new RegExp(`^${ req.body.username.toLowerCase().trim() }$`, 'i') } }
+    ]
+  }, async (err, user) => {
     if (err) {
       return res.status(500).json(errorMessages.parse(err));
     } else if (!req.user) {
@@ -29,7 +47,7 @@ exports.register = (req, res) => {
         }
 
         const applicant = await Applicant.findOne({ email: req.body.email, removed: { $ne: true } }, (err2, data) => data)
-          .select('-flagged -approvalCount -rejectCount -rejected -approved');
+          .select('-flagged -approvalCount -rejectCount -rejected -approved').sort({ $natural:-1 });
 
         user = {
           first:       req.body.first,
@@ -37,27 +55,27 @@ exports.register = (req, res) => {
           username:    req.body.username,
           email:       req.body.email,
           password:    req.body.password,
-          artistName:  applicant.name,
-          country:     applicant.country,
-          countryCode: applicant.countryCode,
-          city:        applicant.city,
-          website:     applicant.website,
-          twitter:     applicant.twitter,
-          instagram:   applicant.instagram,
+          artistName:  applicant && applicant.name,
+          country:     applicant && applicant.country,
+          countryCode: applicant && applicant.countryCode,
+          city:        applicant && applicant.city,
+          website:     applicant && applicant.website,
+          twitter:     applicant && applicant.twitter,
+          instagram:   applicant && applicant.instagram,
           committee:   false,
           emailToken: crypto.randomBytes(32).toString('hex')
         };
 
-        console.log(user);
-
         user = new User(user);
         return user.save((err, data) => {
-          if (err) return res.status(500).json(err);
+          if (err) return res.status(500).json('There was an issue please notify tim@grants.art');
+          
+          if (applicant) {
+            applicant.user = data._id;
+            applicant.save();
+          }
 
-          applicant.user = data._id;
-          applicant.save();
-
-          // notificationService.emailVerification(user.email, user.username, user.emailToken);
+          transporter.sendMail(templates.verification(user.email, user.username, user.token));
 
           const token = jsonwebtoken.sign({
               username: user.username,
@@ -93,9 +111,10 @@ exports.login = (req, res, next) => {
       const token = jsonwebtoken.sign({
           id:       user.id,
           username: user.username,
+          wallet:   user.wallet,
       }, ENV.JWT);
 
-      return res.json({ username: user.username, id: user.id, token, committee: user.committee });
+      return res.json({ username: user.username, id: user.id, token, wallet: user.wallet, committee: user.committee });
   });
 };
 
@@ -110,6 +129,28 @@ exports.getAccount = (req, res, next) => {
           return res.json({ user, application: data });
         }).select('-flagged -approvalCount -rejectCount -rejected -approved')
       }
-    }).select('first last email artistName wallet');
+    }).select('-password -salt -emailToken -committee');
+  });
+}
+
+exports.verifyWallet = (req, res, next) => {
+  auth(req.headers.authorization, res, (jwt) => {
+    User.findById(jwt.id, (err, user) => {
+      if (err) return res.json(err);
+      if (!user) return res.status(401).json({ err: 'Authentication error' }); 
+      else {
+        if (user.wallet) return res.json(true);
+
+        const signedAddress = ethers.utils.verifyMessage('Verify wallet address for Sevens Foundation', req.body.signature);
+        console.log(signedAddress, req.body.address);
+        if (signedAddress === req.body.address) {
+          user.wallet = signedAddress;
+          user.save();
+          return res.json(true);
+        }
+
+        return res.json(false);
+      }
+    });
   });
 }

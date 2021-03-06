@@ -81,7 +81,7 @@ export default function Gallery() {
               {
                 showData && showData.map((item, index)=>{
                   return (
-                    <GalleryBlock item={ item } key={ index } />
+                    <GalleryBlock item={ item } key={ index } index={ index } />
                   );
                 })
               }

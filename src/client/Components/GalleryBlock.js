@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from "react-router-dom";
 import Twitter from '../assets/twitter.png';
 import Instagram from '../assets/instagram.png';
 import Web from '../assets/website.png';
@@ -38,7 +39,7 @@ export default function Gallery(props) {
                 <strong>{ item.artist ? item.artist : 'Artist Unknown' }</strong>
               </div>
               <div className='block-market'>
-                <span className='pointer text-grey' onClick={ () => openLink(item.external_url) }>View Market</span>
+                <Link to={ `/art/${ props.index }` } className='pointer text-grey'>View Market</Link>
               </div>
             </div>
           </div>

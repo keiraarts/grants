@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { usePromise } from 'promise-hook';
 import { Redirect } from "react-router-dom";
 import { apiUrl } from '../baseUrl';
 import { useStoreActions } from 'easy-peasy';
@@ -9,7 +8,6 @@ import '../styles.scss';
 export default function Register() {
   const setAuth = useStoreActions(dispatch => dispatch.user.setAuth);
 
-  const { isLoading, request, data } = usePromise(login);
   const [loginData, setLoginData] = useState({
     username: '',
     password: '',
@@ -19,19 +17,31 @@ export default function Register() {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [err, setErr] = useState(false);
+  const [logged, setLogged] = useState(false);
   const submit = e => {
-    console.log('LOGGING IN', loginData);
     e.preventDefault();
     setErr(false);
     setSubmitting(true);
-    request(loginData);
+    fetch(`${ apiUrl() }/loginUser`, {
+      method: 'POST',
+      body: JSON.stringify(loginData),
+      headers: { 'Content-Type': 'application/json' },
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data && data.username) {
+        setAuth(data);
+        setLogged(true);
+      } else {
+        setSubmitting(false);
+        setErr('Your login credentials were incorrect');
+      }
+    })
   }
-
-  if (data) setAuth(data);
 
   return (
     <div className='content-block'>
-      { data && <Redirect to='/' /> }
+      { logged && <Redirect to='/' /> }
       <div className='text-l text-b'>
         User Login
       </div>
@@ -50,7 +60,7 @@ export default function Register() {
               { err }
             </div>
           }
-          { ((submitting && !submitted) || data) ?
+          { ((submitting && !submitted) && !logged) ?
             <div className='margin-top-s text-s text-grey'>
               Logging in..
             </div>
@@ -65,10 +75,5 @@ export default function Register() {
 }
 
 const login = (data) => {
-  return fetch(`${ apiUrl() }/loginUser`, {
-    method: 'POST',
-    body: JSON.stringify(data),
-    headers: { 'Content-Type': 'application/json' },
-  })
-  .then(res => res.json())
+
 }

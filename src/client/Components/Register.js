@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { usePromise } from 'promise-hook';
 import { Redirect } from "react-router-dom";
 import { apiUrl } from '../baseUrl';
 import { useStoreActions } from 'easy-peasy';
@@ -9,7 +8,6 @@ import '../styles.scss';
 export default function Register() {
   const setAuth = useStoreActions(dispatch => dispatch.user.setAuth);
 
-  const { isLoading, request, data } = usePromise(register);
   const [registerData, setRegisterData] = useState({
     username: '',
     password: '',
@@ -34,6 +32,7 @@ export default function Register() {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [err, setErr] = useState(false);
+  const [logged, setLogged] = useState(false);
   const submit = e => {
     e.preventDefault();
     setErr(false);
@@ -43,15 +42,27 @@ export default function Register() {
       setErr('Your passwords do not match!');
     } else {
       setSubmitting(true);
-      request(registerData);
+      fetch(`${ apiUrl() }/registerUser`, {
+        method: 'POST',
+        body: JSON.stringify(registerData),
+        headers: { 'Content-Type': 'application/json' },
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.username) {
+          setAuth(data);
+          setLogged(true);
+        } else {
+          setSubmitting(false);
+          setErr(data);
+        }
+      })
     }
   }
 
-  if (data) setAuth(data);
-
   return (
     <div className='content-block'>
-      { data && <Redirect to='/' /> }
+      { logged && <Redirect to='/' /> }
       <div className='text-l text-b'>
         User Registration
       </div>
@@ -104,13 +115,4 @@ export default function Register() {
       </div>
     </div>
   );
-}
-
-const register = (data) => {
-  return fetch(`${ apiUrl() }/registerUser`, {
-    method: 'POST',
-    body: JSON.stringify(data),
-    headers: { 'Content-Type': 'application/json' },
-  })
-  .then(res => res.json())
 }
