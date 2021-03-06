@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { usePromise } from 'promise-hook';
 import { Redirect } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useStoreState, useStoreActions } from 'easy-peasy';
 import { apiUrl } from '../baseUrl';
 import { ethers, Contract } from 'ethers';
-import { useStoreState, useStoreActions } from 'easy-peasy';
 const { web3 } = window
 
 import '../styles.scss';
@@ -198,13 +199,15 @@ export default function Register() {
               <div className='text-s margin-top-s'><strong>Connected Wallet Address</strong></div>
               <div className='text-s'>
                 { address || 'No Wallet Connected' } 
-                { (address && !verifiedWallet && verifiedAddress !== address) && <span className='text-s text-grey pointer' onClick={ verifyWallet }>&nbsp;Verify</span> }</div>
+                { (address && !verifiedWallet && verifiedAddress !== address) && <span className='text-s text-grey pointer' onClick={ verifyWallet }>&nbsp;Verify</span> }
+              </div>
+              { !address && <Link to='/tutorial' className='text-s text-grey pointer'>Setup a wallet</Link> }
             </div>
           }
           { (!editingAccount && data && data.application) &&
             <div>
               <div className='text-m margin-top'>Application Submission</div>
-              <div className='text-s'>Status: { status }</div>
+              <div className='text-s'>Status: { status }{ !verifiedWallet && ' || Need Verified Wallet'}</div>
               { data.application.minted === undefined && <div className='select-dropdown margin-top-minus'>
                 <div className='text-s margin-top'>Have you minted and sold an NFT before?</div>
                   <select name='Mint' defaultValue={ dropdownDefault } value={ dropdownDefault } required onChange={e => setApplication({ ...application, minted: e.target.value })}>

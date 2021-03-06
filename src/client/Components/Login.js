@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Redirect } from "react-router-dom";
 import { apiUrl } from '../baseUrl';
+import { Link } from 'react-router-dom';
 import { useStoreActions } from 'easy-peasy';
 
 import '../styles.scss';
@@ -65,7 +66,10 @@ export default function Register() {
               Logging in..
             </div>
             :
-            <input type='submit' value='Log In' className='submit-button' />
+            <div>
+              <input type='submit' value='Log In' className='submit-button' />
+              &nbsp;&nbsp;or <Link to='/register' className='text-grey pointer'>Register an Account</Link>
+            </div>
           }
         </form>
         <br />

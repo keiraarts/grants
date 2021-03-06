@@ -49,11 +49,18 @@ export default function Header() {
           </Link>
         </div>
         <div className='flex-full' />
-        { (auth && auth.username) &&
+        { (auth && auth.username) ?
           <div>
             <div className='text-s flex'>
               <div className='flex-full' />
               Logged in as&nbsp;<Link to='/account' className='text-grey pointer'>{ auth.username }</Link>
+            </div>
+          </div>
+          :
+          <div>
+            <div className='text-s flex'>
+              <div className='flex-full' />
+              <Link to='/login' className='text-grey pointer'>Log In</Link>
             </div>
           </div>
         }
