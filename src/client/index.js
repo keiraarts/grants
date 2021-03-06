@@ -23,6 +23,7 @@ import Register from "./Components/Register";
 import Login from "./Components/Login";
 import Account from "./Components/Account";
 import Genesis from "./Components/Genesis";
+import VerifyEmail from "./Components/VerifyEmail";
 
 import './styles.scss';
 
@@ -56,6 +57,7 @@ const App = () => {
                 <Route path="/register" exact component={ Register } />
                 <Route path="/login" exact component={ Login } />
                 <Route path="/account" exact component={ Account } />
+                <Route path="/verifyemail/:id" component={ VerifyEmail } />
                 <Route path="/gallery/:id" component={ Genesis } />
                 <Footer/>
               </WaitForStateRehydration>

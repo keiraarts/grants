@@ -118,7 +118,7 @@ app.use((req, res) => {
   const allowedRoutes = [
     'nft', 'ethos', 'apply', 'committee', 'program', 'curation', 'register',
     'donate', 'tutorial', , 'testimony', 'rarible', 'opensea', 'resources',
-    'login', 'register', 'art', 'account',
+    'login', 'register', 'art', 'account', 'verifyemail',
     ];
     
   if (allowedRoutes.indexOf(route) > -1) {

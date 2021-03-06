@@ -133,6 +133,37 @@ exports.getAccount = (req, res, next) => {
   });
 }
 
+exports.updateUser = async (req, res) => {
+  auth(req.headers.authorization, res, (jwt) => {
+    User.findById(jwt.id, (err, user) => {
+      if (err) return res.json(err);
+      if (!user) return res.status(401).json({ err: 'Authentication error' });
+      user.username = req.body.username;
+      user.email = req.body.email;
+      user.first = req.body.first;
+      user.last = req.body.last;
+      user.birthYear = req.body.birthYear;
+      user.city = req.body.city;
+      user.website = req.body.website;
+      user.twitter = req.body.twitter;
+      user.instagram = req.body.instagram;
+      user.save();
+      return res.json('Profile updated');
+    });
+  });
+};
+
+exports.sendEmailVerification = async (req, res) => {
+  auth(req.headers.authorization, res, (jwt) => {
+    User.findById(jwt.id, (err, user) => {
+      if (err) return res.json(err);
+      if (!user) return res.status(401).json({ err: 'Authentication error' });
+      transporter.sendMail(templates.verification(user.email, user.username, user.emailToken));
+      return res.json('Verification sent');
+    });
+  });
+};
+
 exports.verifyWallet = (req, res, next) => {
   auth(req.headers.authorization, res, (jwt) => {
     User.findById(jwt.id, (err, user) => {
@@ -152,5 +183,17 @@ exports.verifyWallet = (req, res, next) => {
         return res.json(false);
       }
     });
+  });
+}
+
+exports.verifyEmail = (req, res, next) => {
+  User.findOne({ emailToken: req.body.token }, (err, user) => {
+    if (err) return res.json(err);
+    if (!user) return res.status(401).json({ err: 'Authentication error' }); 
+    else {
+      user.emailVerified = true;
+      user.save();
+      return res.json(true);
+    }
   });
 }

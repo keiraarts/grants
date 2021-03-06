@@ -87,7 +87,7 @@ canvas {
 }
 
 .margin-top-minus {
-  margin-top: 0rem !important;
+  margin-top: -0.5rem !important;
 }
 
 .spacer {
@@ -311,6 +311,10 @@ canvas {
   -webkit-text-fill-color: transparent;
 }
 
+.text-black {
+  color: black !important;
+}
+
 @keyframes rainbow {
   from {
     background-position-x: 0vw;
@@ -476,6 +480,10 @@ canvas {
 /* Apply */
 $black: #000;
 $gray: #9b9b9b;
+.form__title {
+  color: $gray;
+}
+
 .form__group {
   font-family: 'Roboto Slab', sans-serif;
   position: relative;

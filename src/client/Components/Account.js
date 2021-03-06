@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { usePromise } from 'promise-hook';
 import { Redirect } from "react-router-dom";
 import { Link } from "react-router-dom";
+import CountryList from 'country-list';
 import { useStoreState, useStoreActions } from 'easy-peasy';
 import { apiUrl } from '../baseUrl';
 import { ethers, Contract } from 'ethers';
@@ -24,6 +25,7 @@ export default function Register() {
   const [editingAccount, setEditingAccount] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [user, setUser] = useState(null);
   const [application, setApplication] = useState({});
   const [err, setErr] = useState(false);
   const submit = e => {
@@ -46,10 +48,27 @@ export default function Register() {
     }
   }
 
+  const [submitUser, setSubmitUser] = useState(false);
+  const updateAccount = e => {
+    setSubmitUser(true);
+    fetch(`${ apiUrl() }/updateUser`, {
+      method: 'POST',
+      body: JSON.stringify(user),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': auth.token
+      },
+    })
+      .then(res => res.json())
+      .then(json => { setSubmitUser(false); setEditingAccount(false); })
+  }
+
   useEffect(() => {
-    if (data && data.user) {
+    if (data && data.user) setUser(data.user)
+    if (data && data.application) {
       setApplication({
         ...application,
+        ...data.application,
         name: data.user.artistName,
         birthYear: data.user.birthYear,
         description: data.application ? data.application.description : null,
@@ -90,6 +109,22 @@ export default function Register() {
     });
   }
 
+  const [sentEmailVerification, setEmailVerification] = useState(null);
+  function verifyEmail() {
+    fetch(`${ apiUrl() }/sendEmailVerification`, {
+      method: 'POST',
+      body: JSON.stringify({}),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': auth.token
+      },
+    })
+      .then(res => res.json())
+      .then(json => {
+        setEmailVerification(true);
+      })
+  }
+
   useEffect(() => {
     setTimeout(() => {
       if (window.ethereum) {
@@ -110,10 +145,10 @@ export default function Register() {
 
   const dropdownDefault = application.minted === undefined ? 'default' : `${ application.minted }`;
 
-  const completeInfo = (data && data.user && data.application && data.application.description && data.user.artistName && data.user.birthYear && (data.application.minted !== undefined)) ? true : false;
+  const completeInfo = (data && user && application && user.username && application.name && application.description && user.artistName && user.birthYear && (application.minted !== undefined)) ? true : false;
   const status = completeInfo ? 'Pending' : 'Need Additional Info';
-  console.log(data)
-  console.log('STATUS', completeInfo, status);
+  console.log(user);
+  console.log('YO', application);
 
   return (
     <div className='content-block'>
@@ -131,67 +166,95 @@ export default function Register() {
           { editingAccount &&
             <form onSubmit={ submit }>
               <div className='form__group field'>
-                <input type='text' className='form__field' placeholder='First Name' name='first' id='first' required maxLength='100' onChange={e => setRegisterData({ ...registerData, first: e.target.value })} />
-                <label className='form__label'>First Name</label>
-              </div>
-              <div className='form__group field'>
-                <input type='text' className='form__field' placeholder='Last Name' name='last' id='last' required maxLength='100' onChange={e => setRegisterData({ ...registerData, last: e.target.value })} />
-                <label className='form__label'>Last Name</label>
-              </div>
-              <div className='form__group field'>
-                <input type='text' className='form__field' placeholder='Username' name='username' id='username' required maxLength='100' onChange={e => setRegisterData({ ...registerData, username: e.target.value })} />
+                <input type='text' className='form__field' placeholder='Username' name='username' id='username' required maxLength='100' value={ user.username } onChange={e => setUser({ ...user, username: e.target.value })} />
                 <label className='form__label'>Username</label>
               </div>
               <div className='form__group field'>
-                <input type='email' className='form__field' placeholder='Email' name='email' id='email' required maxLength='100' onChange={e => setRegisterData({ ...registerData, email: e.target.value })} />
+                <input type='email' disabled={ user.emailVerified } className='form__field' placeholder='Email' name='email' id='email' required maxLength='100' value={ user.email } onChange={e => setUser({ ...user, email: e.target.value })} />
                 <label className='form__label'>Email</label>
               </div>
               <div className='form__group field'>
-                <input type='password' className='form__field' placeholder='Password' name='password' id='password' maxLength='100' required onChange={e => setRegisterData({ ...registerData, password: e.target.value })} />
-                <label className='form__label'>Password</label>
+                <input type='text' className='form__field' placeholder='First Name' name='first' id='first' required maxLength='100' value={ user.first } onChange={e => setUser({ ...user, first: e.target.value })} />
+                <label className='form__label'>First Name</label>
               </div>
               <div className='form__group field'>
-                <input type='password' className='form__field' placeholder='Confirm Password' name='password' id='password' required maxLength='100' onChange={e => setRegisterData({ ...registerData, confirmPassword: e.target.value })} />
-                <label className='form__label'>Confirm Password</label>
+                <input type='text' className='form__field' placeholder='Last Name' name='last' id='last' required maxLength='100' value={ user.last } onChange={e => setUser({ ...user, last: e.target.value })} />
+                <label className='form__label'>Last Name</label>
+              </div>
+              <div className='form__group field'>
+                <input type='text' className='form__field' placeholder='Name' name='name' id='name' value={ user.birthYear } maxLength='4' onChange={e => setUser({ ...user, birthYear: e.target.value })} />
+                <label className='form__label'>Birth Year</label>
+              </div>
+              <div className='text-s margin-top-s form__title'>Country of Representation</div>
+              <div className='select-dropdown margin-top-minus'>
+                <select name='Country' className='text-black' defaultValue={ user.country } value={ user.country } required onChange={e => setUser({ ...user, country: e.target.value, countryCode: CountryList.getCode(e.target.value) })}>
+                  <option value='default' disabled hidden> 
+                    Country of Representation
+                  </option> 
+                  {CountryList.getNames().map((fbb, key) =>
+                    <option key={ key } value={ fbb }>{ fbb }</option>
+                  )};
+                </select>
+              </div>
+              <div className='form__group field'>
+                <input type='text' className='form__field' placeholder='City' name='city' id='city' maxLength='100' value={ user.city } onChange={e => setUser({ ...user, city: e.target.value })} />
+                <label className='form__label'>City</label>
+              </div>
+              <div className='form__group field'>
+                <input type='url' className='form__field' placeholder='URL' name='url' id='url' required maxLength='100' value={ user.website } onChange={e => setUser({ ...user, website: e.target.value })} />
+                <label className='form__label'>Website / Artwork URL</label>
+              </div>
+              <div className='form__group field'>
+                <input type='text' className='form__field' placeholder='Twitter' name='twitter' id='twitter' required maxLength='100' value={ user.twitter } onChange={e => setUser({ ...user, twitter: e.target.value })} />
+                <label className='form__label'>Twitter @Handle</label>
+              </div>
+              <div className='form__group field'>
+                <input type='text' className='form__field' placeholder='Instagram' name='instagram' id='instagram' maxLength='100' value={ user.instagram } onChange={e => setUser({ ...user, instagram: e.target.value })} />
+                <label className='form__label'>Instagram @Handle*</label>
               </div>
               { err &&
                 <div className='margin-top-s text-s text-err'>
                   { err }
                 </div>
               }
-              { (submitting && !submitted) ?
+              { submitUser ?
                 <div className='margin-top-s text-s text-grey'>
-                  Your registration is being submitted..
+                  Your profile is updating..
                 </div>
                 :
-                <input type='submit' value='Register Account' className='submit-button' />
-              }
-              { submitted &&
-                <div className='margin-top-s text-s text-rainbow'>
-                  Thank you for submitting your application!<br />
-                  We will get back to you once we announce an acceptance date via e-mail or social direct message.
+                <div>
+                  <input type='submit' value='Update Account' className='submit-button' onClick={ updateAccount } />&nbsp;
+                  <input type='submit' value='Cancel' className='submit-button' onClick={ () => setEditingAccount(false) } />
                 </div>
               }
             </form>
           }
-          { (!editingAccount && data && data.user) &&
+          { (!editingAccount && data && user) &&
             <div>
               <div className='text-s'><strong>Username</strong></div>
-              <div className='text-s'>{ data.user.username }</div>
-              <div className='text-s margin-top-s'><strong>Email</strong></div>
-              <div className='text-s'>{ data.user.email }</div>
-              <div className='text-s margin-top-s'><strong>Name</strong></div>
-              <div className='text-s'>{ data.user.first } { data.user.last }</div>
-              { data.user.country && 
-                <div className='text-s margin-top-s'>
-                  <div><strong>Country</strong></div>
-                  <div>{ data.user.country }</div>
+              <div className='text-s'>{ user.username }</div>
+              <div className='text-s margin-top-s'><strong>Email{ !user.emailVerified && ' - Unverified' }</strong></div>
+              <div className='text-s'>
+                { user.email }
+                { (!user.emailVerified && !sentEmailVerification) && <span className='text-s text-grey pointer' onClick={ verifyEmail }>&nbsp;Send Verification Email</span> }
+                { sentEmailVerification && <span>&nbsp; - Verification Email Sent</span> }
+              </div>
+              { (user.first || user.last) &&
+                <div>
+                  <div className='text-s margin-top-s'><strong>Name</strong></div>
+                  <div className='text-s'>{ user.first } { user.last }</div>
                 </div>
               }
-              { data.user.birthYear &&
+              { user.country && 
+                <div className='text-s margin-top-s'>
+                  <div><strong>Country</strong></div>
+                  <div>{ user.country }</div>
+                </div>
+              }
+              { user.birthYear &&
                 <div className='text-s margin-top-s'>
                   <div><strong>Birth Year</strong></div>
-                  <div>{ data.user.birthYear }</div>
+                  <div>{ user.birthYear }</div>
                 </div>
               }
               <div className='text-s margin-top-s'><strong>Verified Wallet Address</strong></div>
@@ -202,30 +265,34 @@ export default function Register() {
                 { (address && !verifiedWallet && verifiedAddress !== address) && <span className='text-s text-grey pointer' onClick={ verifyWallet }>&nbsp;Verify</span> }
               </div>
               { !address && <Link to='/tutorial' className='text-s text-grey pointer'>Setup a wallet</Link> }
+              { !editingAccount && <div><input type='submit' value='Edit Account' className='submit-button' onClick={ () => setEditingAccount(true) } /></div> }
             </div>
           }
-          { (!editingAccount && data && data.application) &&
+          { (data && user && application && application.name) &&
             <div>
               <div className='text-m margin-top'>Application Submission</div>
               <div className='text-s'>Status: { status }{ !verifiedWallet && ' || Need Verified Wallet'}</div>
-              { data.application.minted === undefined && <div className='select-dropdown margin-top-minus'>
-                <div className='text-s margin-top'>Have you minted and sold an NFT before?</div>
-                  <select name='Mint' defaultValue={ dropdownDefault } value={ dropdownDefault } required onChange={e => setApplication({ ...application, minted: e.target.value })}>
-                    <option value='default' disabled hidden>
-                      Select an option
-                    </option>
-                    <option value='false'>No</option>
-                    <option value='true'>Yes</option>
-                  </select>
+              { data.application.minted === undefined &&
+                <div>
+                  <div className='text-s margin-top form__title'>Have you sold an NFT before?</div>
+                  <div className='select-dropdown margin-top-minus'>
+                    <select name='Mint' className='text-black' defaultValue={ dropdownDefault } value={ dropdownDefault } required onChange={e => setApplication({ ...application, minted: e.target.value })}>
+                      <option value='default' disabled hidden>
+                        Select an option
+                      </option>
+                      <option value='false'>No</option>
+                      <option value='true'>Yes</option>
+                    </select>
+                  </div>
                 </div>
               }
-              { !data.user.artistName &&
+              { !user.artistName &&
                 <div className='form__group field'>
                   <input type='text' className='form__field' placeholder='Name' name='name' id='name' value={ application.name } maxLength='100' onChange={e => setApplication({ ...application, name: e.target.value })} />
                   <label className='form__label'>Artist Name</label>
                 </div>
               }
-              { !data.user.birthYear &&
+              { !user.birthYear &&
                 <div className='form__group field'>
                   <input type='text' className='form__field' placeholder='Name' name='name' id='name' value={ application.birthYear } maxLength='4' onChange={e => setApplication({ ...application, birthYear: e.target.value })} />
                   <label className='form__label'>Birth Year</label>
@@ -236,23 +303,23 @@ export default function Register() {
                 <label className='form__label'>Artwork Description</label>
               </div>
               <div className='text-s margin-top-s'><strong>Artwork Submission</strong></div>
-              { data.application.art &&
+              { application.art &&
                 <div>
-                  { (data.application.art && data.application.art.slice(-3) === 'mp4') ?
+                  { (application.art && application.art.slice(-3) === 'mp4') ?
                   <video className='gallery-art' controls webkit-playsinline='true' playsInline muted loop>
-                    <source src={ `https://cdn.grants.art/${ data.application.art }` }
+                    <source src={ `https://cdn.grants.art/${ application.art }` }
                             type="video/mp4" />
                     Sorry, your browser doesn't support embedded videos.
                   </video>
                   :
-                    <img className='gallery-art' src={ `https://cdn.grants.art/${ data.application.art }` } />
+                    <img className='gallery-art' src={ `https://cdn.grants.art/${ application.art }` } />
                   }
                 </div>
               }
-              { data.application.thumbnail &&
+              { application.thumbnail &&
                 <div>
                   <div className='text-s margin-top-s'><strong>Artwork Thumbnail</strong></div>
-                  <img className='gallery-art' src={ `https://cdn.grants.art/${ data.application.thumbnail }` } />
+                  <img className='gallery-art' src={ `https://cdn.grants.art/${ application.thumbnail }` } />
                 </div>
               }
               { err &&
