@@ -187,7 +187,7 @@ export default function Register() {
               </div>
               <div className='text-s margin-top-s form__title'>Country of Representation</div>
               <div className='select-dropdown margin-top-minus'>
-                <select name='Country' className='text-black' defaultValue={ user.country } value={ user.country } required onChange={e => setUser({ ...user, country: e.target.value, countryCode: CountryList.getCode(e.target.value) })}>
+                <select name='Country' className='text-black' defaultValue={ user.country || 'default' } value={ user.country } required onChange={e => setUser({ ...user, country: e.target.value, countryCode: CountryList.getCode(e.target.value) })}>
                   <option value='default' disabled hidden> 
                     Country of Representation
                   </option> 
