@@ -52,13 +52,17 @@ const applicant = {
     art:  {
         type:  String,
     },
+    thumbnail:  String,
     description: {
         type:  String,
     },
     minted: {
         type:  Boolean,
     },
-    thumbnail:  String,
+    newArt:  {
+        type:  String,
+    },
+    newThumbnail:  String,
     removed: {
         type: Boolean,
         default: false

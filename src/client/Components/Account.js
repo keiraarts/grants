@@ -25,6 +25,7 @@ export default function Register() {
   });
 
   const [editingAccount, setEditingAccount] = useState(false);
+  const [artEdit, setArtEdit] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [user, setUser] = useState(null);
@@ -110,6 +111,33 @@ export default function Register() {
         })
     });
   }
+
+  const uploadHandler = (target, type) => {
+    setErr(false);
+    const file = target.files[0];
+    const reader = new FileReader();
+    const ext = target.value.substr(target.value.length - 3).toLowerCase();
+    reader.readAsDataURL(file);
+    let responsetype;
+    reader.onload = () => {
+      if (ext === 'jpg' || ext === 'jpeg') responsetype = 'image/jpeg';
+      if (ext === 'png') responsetype = 'image/png';
+      if (ext === 'gif') responsetype = 'image/gif';
+      if (ext === 'ebp') responsetype = 'image/webp';
+      if (ext === 'mp4') responsetype = 'video/mp4';
+
+      if ((type === 'newArt' && file.size < 120000000) || (type === 'newThumbnail' && file.size < 32000000)) {
+        if (responsetype) {
+          if (type === 'newArt') setApplication({ ...application, newArt: reader.result })
+          if (type === 'newThumbnail') setApplication({ ...application, newThumbnail: reader.result })
+        } else {
+          setErr('File type unsupported');
+        }
+      } else {
+        setErr('File size too large');
+      }
+    }
+  };
 
   const [sentEmailVerification, setEmailVerification] = useState(null);
   function verifyEmail() {
@@ -321,6 +349,7 @@ export default function Register() {
                 <label className='form__label'>Artwork Description</label>
               </div>
               <div className='text-s margin-top-s'><strong>Artwork Submission</strong></div>
+              {/* - <span className='text-s text-grey pointer' onClick={ () => setArtEdit(true) }>Edit Submission</span> */}
               { application.art &&
                 <div>
                   { (application.art && application.art.slice(-3) === 'mp4') ?
@@ -332,6 +361,12 @@ export default function Register() {
                   :
                     <img className='gallery-art' src={ `https://cdn.grants.art/${ application.art }` } />
                   }
+                  {/* { artEdit &&
+                    <div className='form__group field'>
+                      <label className='file__label'>Art Submission (JPG, PNG, GIF, WEBP, or MP4 - Max 77MB)</label>
+                      <input type='file' className='form__field' placeholder='Artwork' name='artwork' id='name' accept='image/jpeg, image/png, image/gif, image/webp, video/mp4' required onChange={ (e) => uploadHandler(e.target, 'newArt') } />
+                    </div>
+                  } */}
                 </div>
               }
               { application.thumbnail &&
@@ -340,6 +375,12 @@ export default function Register() {
                   <img className='gallery-art' src={ `https://cdn.grants.art/${ application.thumbnail }` } />
                 </div>
               }
+              {/* { artEdit &&
+                <div className='form__group field'>
+                  <label className='file__label'>Thumbnail GIF for MP4* - Square Size Recommended (WEBP, GIF - Max 33MB)</label>
+                  <input type='file' className='form__field' placeholder='Artwork' name='artwork' id='name' accept='image/gif, image/webp' onChange={ (e) => uploadHandler(e.target, 'newThumbnail') } />
+                </div>
+              } */}
               { err &&
                 <div className='margin-top-s text-s text-err'>
                   { err }

@@ -88,6 +88,60 @@ exports.submitApplication = async (req, res) => {
   });
 };
 
+// exports.updateApplication = async (req, res) => {
+//   auth(req.headers.authorization, res, (jwt) => {
+//     User.findById(jwt.id, (err, user) => {
+//       if (!user) return res.status(401).json({ err: 'Authentication error' });
+//       return Applicant.findOne({ user: user._id }, async (err, applicant) => {
+//         user.artistName = req.body.name;
+//         user.birthYear = req.body.birthYear;
+
+//         await Object.keys(req.body).forEach(async (item) => {
+//           if (item === 'newArt' || item === 'newThumbnail') {
+//             let ext, image;
+//             if (item === 'newArt') ext = req.body[item].split(';')[0].match(/jpeg|png|gif|webp|mp4/)[0];
+//             if (item === 'newThumbnail') ext = req.body[item].split(';')[0].match(/jpeg|png|gif|webp/)[0];
+//             image = req.body[item].replace(/^data:image\/\w+;base64,/, '');
+//             image = image.replace(/^data:video\/mp4;base64,/, '');
+//             const buf = new Buffer.from(image, 'base64');
+//             const name = crypto.randomBytes(20).toString('hex');
+      
+//             if (item === 'newArt') applicant.newArt = `${ name }.${ ext }`
+//             else if (item === 'newThumbnail') applicant.newThumbnail = `${ name }.${ ext }`
+      
+//             await fs.writeFileSync(path.join(__dirname, `../../images/${ name }.${ ext }`), buf);
+//             const uploader = await spaces.uploadFile({
+//               localFile: path.join(__dirname, `../../images/${ name }.${ ext }`),
+//               s3Params: {
+//                 Bucket: 'grants',
+//                 Key: `${ name }.${ ext }`,
+//                 ACL: 'public-read'
+//               }
+//             });
+      
+//             uploader.on('end', () => {
+//               fs.unlink(path.join(__dirname, `../../images/${ name }.${ ext }`), (err2) => {
+//                 if (err2 !== null) {
+//                   console.log(err2);
+//                 }
+//                 return null;
+//               });
+//             });
+//           }
+//         });
+
+//         applicant.minted = req.body.minted;
+//         applicant.description = req.body.description;
+//         applicant.name = req.body.name;
+//         applicant.save();
+
+//         user.save();
+//         return res.json('Application updated');
+//       })
+//     });
+//   });
+// };
+
 exports.updateApplication = async (req, res) => {
   auth(req.headers.authorization, res, (jwt) => {
     User.findById(jwt.id, (err, user) => {

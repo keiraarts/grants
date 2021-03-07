@@ -47,7 +47,7 @@ exports.register = (req, res) => {
         }
 
         const applicant = await Applicant.findOne({ email: req.body.email, removed: { $ne: true } }, (err2, data) => data)
-          .select('-flagged -approvalCount -rejectCount -rejected -approved').sort({ $natural:-1 });
+          .select('-flagged -approvalCount -rejectCount -rejected -approved').sort({ _id: -1 });
 
         user = {
           first:       req.body.first,
@@ -160,6 +160,7 @@ exports.sendEmailVerification = async (req, res) => {
     User.findById(jwt.id, (err, user) => {
       if (err) return res.json(err);
       if (!user) return res.status(401).json({ err: 'Authentication error' });
+      console.log('WTF', user.email, user.username, user.emailToken);
       transporter.sendMail(templates.verification(user.email, user.username, user.emailToken));
       return res.json('Verification sent');
     });
