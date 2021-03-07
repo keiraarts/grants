@@ -31,7 +31,7 @@ const transporter = nodemailer.createTransport({
 });
 
 exports.submitApplication = async (req, res) => {
-  return res.json(true);
+  // return res.json(true);
   const applicant = {
     name:        req.body.name,
     email:       req.body.email,
