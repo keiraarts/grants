@@ -220,7 +220,7 @@ export default function Curation() {
         </div> */}
       </div>
       <div className='margin-top'>
-        { (!isLoading && showData.length && auth && auth.username) ?
+        { (showData.length && auth && auth.username) ?
           <masonry-layout cols={ cols } >
             {
               showData && showData.map((item, index) => {
@@ -239,9 +239,12 @@ export default function Curation() {
               })
             }
           </masonry-layout>
-          :
+          : <></>
+        }
+        { (!isLoading && !loading2 && !showData.length) &&
           <div>None to show</div>
         }
+        { (isLoading || loading2) && <div>Loading data...</div> }
       </div>
     </div>
   );
