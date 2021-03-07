@@ -43,7 +43,7 @@ export default function Application() {
       if (ext === 'jpg' || ext === 'jpeg') responsetype = 'image/jpeg';
       if (ext === 'png') responsetype = 'image/png';
       if (ext === 'gif') responsetype = 'image/gif';
-      if (ext === 'webp') responsetype = 'image/webp';
+      if (ext === 'ebp') responsetype = 'image/webp';
       if (ext === 'mp4') responsetype = 'video/mp4';
 
       if ((type === 'art' && file.size < 120000000) || (type === 'thumbnail' && file.size < 32000000)) {
