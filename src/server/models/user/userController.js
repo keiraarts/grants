@@ -75,7 +75,7 @@ exports.register = (req, res) => {
             applicant.save();
           }
 
-          transporter.sendMail(templates.verification(user.email, user.username, user.token));
+          transporter.sendMail(templates.verification(user.email, user.username, user.emailToken));
 
           const token = jsonwebtoken.sign({
               username: user.username,
@@ -160,7 +160,6 @@ exports.sendEmailVerification = async (req, res) => {
     User.findById(jwt.id, (err, user) => {
       if (err) return res.json(err);
       if (!user) return res.status(401).json({ err: 'Authentication error' });
-      console.log('WTF', user.email, user.username, user.emailToken);
       transporter.sendMail(templates.verification(user.email, user.username, user.emailToken));
       return res.json('Verification sent');
     });
