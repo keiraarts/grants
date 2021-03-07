@@ -31,6 +31,7 @@ const transporter = nodemailer.createTransport({
 });
 
 exports.submitApplication = async (req, res) => {
+  return res.json(true);
   const applicant = {
     name:        req.body.name,
     email:       req.body.email,
@@ -317,7 +318,46 @@ exports.asdf = (req, res) => {
 
 };
 
-/// MANUAL EMAIL: 484 DOCS
+// setTimeout(() => {
+//   return Applicant.find({}, (err, data) => {
+//     if (err) console.log('error');
+//     else {
+//       data.forEach(e => {
+//         let fixedTwitter = e.twitter.toLowerCase();
+//         fixedTwitter = fixedTwitter.replace(`www.twitter.com`, '');
+//         fixedTwitter = fixedTwitter.replace(`twitter.com`, '');
+//         fixedTwitter = fixedTwitter.replace(`https://twitter.com/`, '');
+//         fixedTwitter = fixedTwitter.replace(`https://`, '');
+//         fixedTwitter = fixedTwitter.replace(`http://`, '');
+//         fixedTwitter = fixedTwitter.replace(`/`, '');
+//         fixedTwitter = fixedTwitter.replace('@', '');
+//         if (fixedTwitter === 'na') fixedTwitter = '';
+//         if (fixedTwitter === 'n.a.') fixedTwitter = '';
+//         if (fixedTwitter === '-') fixedTwitter = '';
+//         if (fixedTwitter === '*') fixedTwitter = '';
+//         if (fixedTwitter === '.') fixedTwitter = '';
+
+//         if (e.instagram) {
+//           let fixedInstagram = e.instagram.toLowerCase();
+//           fixedInstagram = fixedInstagram.replace(`www.instagram.com`, '');
+//           fixedInstagram = fixedInstagram.replace(`instagram.com`, '');
+//           fixedInstagram = fixedInstagram.replace(`https://instagram.com/`, '');
+//           fixedInstagram = fixedInstagram.replace(`https://`, '');
+//           fixedInstagram = fixedInstagram.replace(`http://`, '');
+//           fixedInstagram = fixedInstagram.replace('\/', '');
+//           fixedInstagram = fixedInstagram.replace('@', '');
+//           if (fixedInstagram === 'na') fixedInstagram = '';
+//           if (fixedInstagram === 'n.a.') fixedInstagram = '';
+//           if (fixedInstagram === '-') fixedInstagram = '';
+//           if (fixedInstagram === '*') fixedInstagram = '';
+//           if (fixedInstagram === '.') fixedInstagram = '';
+
+//           console.log(fixedInstagram);
+//         }
+//       })
+//     }
+//   });
+// })
 
 // setTimeout(() => {
 //   return Applicant.find({}, (err2, data) => {
@@ -332,6 +372,16 @@ exports.asdf = (req, res) => {
 //     console.log(found);
 //   });
 // })
+
+// setTimeout(() => {
+//   return Applicant.find({}, (err2, data) => {
+//     if (err2) return res.status(500).json(err);
+//     data.forEach(e => {
+//       transporter.sendMail(templates.applicationProcess(e.email));
+//     })
+//   });
+// })
+
 
 
 // setTimeout(() => {

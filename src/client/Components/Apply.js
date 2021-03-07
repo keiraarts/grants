@@ -138,7 +138,7 @@ export default function Application() {
             </div>
           :
             <div className='margin-top-s text-s'>
-              <i>Applications close 11:59PM UTC (3:59PM Pacific Time)</i>
+              <i>Applications are closed!</i>
             </div>
           }
           { (submitting && !submitted) &&
@@ -152,7 +152,7 @@ export default function Application() {
               We will get back to you once we announce an acceptance date via e-mail or social direct message.
             </div>
           }
-          { (!submitting && !submitted) && <input type='submit' value='Submit Application' className='submit-button' /> }
+          {/* { (!submitting && !submitted) && <input type='submit' value='Submit Application' className='submit-button' /> } */}
         </form>
         <br />
       </div>

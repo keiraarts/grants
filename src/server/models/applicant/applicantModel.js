@@ -34,7 +34,6 @@ const applicant = {
     twitter: {
         type:  String,
         trim:  true,
-        required: true
     },
     instagram: {
         type:  String,
