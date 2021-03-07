@@ -138,7 +138,7 @@ export default function Application() {
             </div>
           :
             <div className='margin-top-s text-s'>
-              <i>If you are a short film animator with a large file please provide external URL upload in Additional Information</i>
+              <i>Applications close 11:59PM UTC (3:59PM Pacific Time)</i>
             </div>
           }
           { (submitting && !submitted) &&
