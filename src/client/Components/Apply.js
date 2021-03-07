@@ -138,7 +138,7 @@ export default function Application() {
             </div>
           :
             <div className='margin-top-s text-s'>
-              {/* <i>Applications are closed!</i> */}
+              <i>Applications are closed!</i>
             </div>
           }
           { (submitting && !submitted) &&
