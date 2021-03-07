@@ -172,10 +172,7 @@ exports.verifyWallet = (req, res, next) => {
       if (err) return res.json(err);
       if (!user) return res.status(401).json({ err: 'Authentication error' }); 
       else {
-        if (user.wallet) return res.json(true);
-
         const signedAddress = ethers.utils.verifyMessage('Verify wallet address for Sevens Foundation', req.body.signature);
-        console.log(signedAddress, req.body.address);
         if (signedAddress === req.body.address) {
           user.wallet = signedAddress;
           user.save();

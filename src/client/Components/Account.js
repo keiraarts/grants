@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { usePromise } from 'promise-hook';
-import { Redirect } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from 'react-router-dom';
 import CountryList from 'country-list';
 import { useStoreState, useStoreActions } from 'easy-peasy';
 import { apiUrl } from '../baseUrl';
@@ -147,8 +146,6 @@ export default function Register() {
 
   const completeInfo = (data && user && application && user.username && application.name && application.description && user.artistName && user.birthYear && (application.minted !== undefined)) ? true : false;
   const status = completeInfo ? 'Pending' : 'Need Additional Info';
-  console.log(user);
-  console.log('YO', application);
 
   return (
     <div className='content-block'>
@@ -262,7 +259,7 @@ export default function Register() {
               <div className='text-s margin-top-s'><strong>Connected Wallet Address</strong></div>
               <div className='text-s'>
                 { address || 'No Wallet Connected' } 
-                { (address && !verifiedWallet && verifiedAddress !== address) && <span className='text-s text-grey pointer' onClick={ verifyWallet }>&nbsp;Verify</span> }
+                { (address && auth && auth.wallet !== address) && <span className='text-s text-grey pointer' onClick={ verifyWallet }>&nbsp;Verify</span> }
               </div>
               { !address && <Link to='/tutorial' className='text-s text-grey pointer'>Setup a wallet</Link> }
               { !editingAccount && <div><input type='submit' value='Edit Account' className='submit-button' onClick={ () => setEditingAccount(true) } /></div> }

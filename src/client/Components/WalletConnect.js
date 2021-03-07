@@ -6,7 +6,6 @@ export default function WalletConnect() {
   function connectWallet() {
     if (window.ethereum) {
       provider = window.web3.currentProvider;
-      console.log('BRUH', provider.selectedAddress);
     }
   }
 

@@ -16,6 +16,11 @@ export default function Curation() {
     resolveCondition: []
   });
 
+  const { isLoading: loading2, data: top } = usePromise(() => viewTopApplications(auth.token), {
+    resolve: true,
+    resolveCondition: []
+  });
+
   const resize = () => {
     setResizer(true);
   }
@@ -126,6 +131,7 @@ export default function Curation() {
     if (view === 'unapproved') setShowData(data.unapproved.slice(0, 30));
     else if (view === 'approved') setShowData(data.approved.slice(0, 30));
     else if (view === 'rejected') setShowData(data.rejected.slice(0, 30));
+    else if (view === 'results') setShowData(top.slice(0, 30));
     setViewTab(view);
   }
 
@@ -135,6 +141,7 @@ export default function Curation() {
       if (viewTab === 'approved') setShowData(data.approved.slice(0, showData.length + 30))
       else if (viewTab === 'unapproved') setShowData(data.unapproved.slice(0, showData.length + 30))
       else if (viewTab === 'rejected') setShowData(data.rejected.slice(0, showData.length + 30))
+      else if (viewTab === 'results') setShowData(top.slice(0, showData.length + 30))
     }
   }, [showData]);
 
@@ -142,6 +149,7 @@ export default function Curation() {
     if (viewTab === 'unapproved') data.unapproved[index].flagged.push(flagData);
     else if (viewTab === 'approved') data.approved[index].flagged.push(flagData);
     else if (viewTab === 'rejected') data.rejected[index].flagged.push(flagData);
+    else if (viewTab === 'results') top[index].flagged.push(flagData);
 
     return fetch(`${ apiUrl() }/flagApplicant`, {
       method: 'POST',
@@ -164,6 +172,9 @@ export default function Curation() {
     } else if (viewTab === 'rejected') {
       const removeIndex = data.rejected[index].flagged.findIndex(e => e._id === flagData.flagId);
       data.rejected[index].flagged.splice(removeIndex, 1);
+    } else if (viewTab === 'results') {
+      const removeIndex = top[index].flagged.findIndex(e => e._id === flagData.flagId);
+      top[index].flagged.splice(removeIndex, 1);
     }
 
     return fetch(`${ apiUrl() }/removeFlag`, {
@@ -177,6 +188,8 @@ export default function Curation() {
     }).then(res => res.json());
   };
 
+  console.log(top);
+
   return (
     <div className='content-block' ref={ contentRef }>
       <div className='text-l text-b'>
@@ -186,16 +199,20 @@ export default function Curation() {
         Let's move people forward.
       </div>
       <div className='flex margin-top'>
-        <div className={ viewTab === 'unapproved' ? 'info-block' : 'info-block info-block-selected' } onClick={ () => toggleView('unapproved') }>
+        <div className={ viewTab === 'unapproved' ? 'info-block info-block-selected' : 'info-block' } onClick={ () => toggleView('unapproved') }>
           Unapproved
         </div>
         <div className='info-block-space' />
-        <div className={ viewTab === 'approved' ? 'info-block' : 'info-block info-block-selected' } onClick={ () => toggleView('approved') }>
+        <div className={ viewTab === 'approved' ? 'info-block info-block-selected' : 'info-block' } onClick={ () => toggleView('approved') }>
           Approved
         </div>
         <div className='info-block-space' />
-        <div className={ viewTab === 'rejected' ? 'info-block' : 'info-block info-block-selected' } onClick={ () => toggleView('rejected') }>
+        <div className={ viewTab === 'rejected' ? 'info-block info-block-selected' : 'info-block' } onClick={ () => toggleView('rejected') }>
           Rejected
+        </div>
+        <div className='info-block-space' />
+        <div className={ viewTab === 'results' ? 'info-block info-block-selected' : 'info-block' } onClick={ () => toggleView('results') }>
+          Results
         </div>
         {/* <div className='info-block-space' />
         <div className='info-block'>
@@ -232,6 +249,17 @@ export default function Curation() {
 
 const getGalleryData = (jwt) => {
   return fetch(`${ apiUrl() }/viewAllApplications`, {
+    method: 'GET',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Authorization': jwt
+    },
+  }).then(res => res.json());
+}
+
+const viewTopApplications = (jwt) => {
+  return fetch(`${ apiUrl() }/viewTopApplications`, {
     method: 'GET',
     headers: {
       'Accept': 'application/json',

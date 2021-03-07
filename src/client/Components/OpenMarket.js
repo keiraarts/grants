@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { usePromise } from 'promise-hook';
+import { Link } from 'react-router-dom';
 import { useParams } from "react-router-dom";
+import { useStoreState } from 'easy-peasy';
 import { OpenSeaPort, Network, EventType } from 'opensea-js';
 import Web3 from 'web3';
 
@@ -9,11 +10,9 @@ import '../styles.scss';
 let provider, seaport;
 
 export default function OpenMarket(props) {
-  const { id } = useParams();
-  const [connected, setConnected] = useState(false);
-  const [address, setAddress] = useState(null);
+  const auth = useStoreState(state => state.user.auth);
   
-  const asset = props.asset
+  const asset = props.asset;
   const tokenAddress = asset.asset_contract.address;
   const tokenId = asset.token_id;
 
@@ -35,10 +34,6 @@ export default function OpenMarket(props) {
       pollBids();
     }, 3000);
   }, []);
-  // const { isLoading, data } = usePromise(() => getOrderBook(tokenAddress, tokenId), {
-  //   resolve: true,
-  //   resolveCondition: []
-  // });
 
   const [bids, setBids] = useState(null);
   useEffect(() => {
@@ -54,45 +49,56 @@ export default function OpenMarket(props) {
     }
   }, [data])
 
-  console.log(bids);
+  const [bid, setBid] = useState(0);
+  const [unverified, setUnverified] = useState(false);
+  const [bidErr, setBidErr] = useState(null);
+  const placeBid = async () => {
+    setUnverified(false);
+    connectWallet();
+    if (provider && provider.selectedAddress) {
+      console.log(auth.wallet, provider.selectedAddress);
+      if (auth.wallet.toLowerCase() !== provider.selectedAddress.toLowerCase()) setUnverified(true);
+      else if (bid <= 0) setBidErr('Your bid must be greater than 0 WETH');
+      else {
+        setBidErr(false);
+        await seaport.createBuyOrder({
+          asset: {
+            tokenId,
+            tokenAddress
+          },
+          accountAddress: provider.selectedAddress,
+          // Value of the offer, in units of the payment token (or wrapped ETH if none is specified):
+          startAmount: bid,
+        })
+      }
+    }
+  }
 
   async function connectWallet() {
     if (window.ethereum) {
       provider = window.web3.currentProvider;
-      seaport = new OpenSeaPort(provider, {
-        networkName: Network.Main
-      })
-
-      // const tokenAddress = data.external_url.split('/')[4];
-      // const tokenId = data.external_url.split('/')[5];
-
-      const accountAddress = '0x7341158387c33247d7aFff2E06D1ae8f5D114C85';
-
-      console.log(props.asset);
-
-      const offer = await seaport.createBuyOrder({
-        asset: {
-          tokenId,
-          tokenAddress
-        },
-        accountAddress,
-        // Value of the offer, in units of the payment token (or wrapped ETH if none is specified):
-        startAmount: .07,
-      })
+      if (!provider.selectedAddress) window.ethereum.enable();
+      else {
+        seaport = new OpenSeaPort(provider, {
+          networkName: Network.Main
+        })
+      }
     }
   }
 
   useEffect(() => {
     setTimeout(() => {
+      console.log('uhhh', provider);
       if (window.ethereum) {
         window.ethereum.on('accountsChanged', function (accounts) {
           connectWallet();
         })
       }
-
-      connectWallet();
     }, 1000)
   }, []);
+
+  const isOwner = (asset && asset.owner && provider !== undefined && asset.owner.address.toLowerCase() !== provider.selectedAddress.toLowerCase());
+  if (provider) console.log(isOwner, asset.owner.address.toLowerCase(), provider.selectedAddress.toLowerCase());
 
   return (
     <div className='margin-top'>
@@ -102,17 +108,32 @@ export default function OpenMarket(props) {
       <div className='text-s margin-top-s'>
         <strong>Owner:</strong> { (asset && ((asset.owner.user && asset.owner.user.username) ? asset.owner.user.username : asset.owner.address)) }
       </div>
+      { !isOwner &&
+        <div className='flex'>
+          <div className='form__group field'>
+            <input type='text' className='form__field' placeholder='Bid Amount' name='amount' id='amount' required maxLength='100' onChange={e => setBid(e.target.value) } />
+            <label className='form__label_s'>Bid Amount (WETH)</label>
+          </div>
+          &nbsp;<input type='submit' value='Place Bid' className='small-button' onClick={ placeBid } />
+        </div>
+      }
+      { unverified && <Link to='/account' className='text-grey margin-top-s'>Verify your wallet to place a bid</Link> }
+      { bidErr && 
+        <div className='text-err margin-top-s'>
+          { bidErr }
+        </div>
+      }
       <div className='text-s margin-top-s'>
-        { bids &&
-          bids.map((bid, index)=>{
-            return (
-              <div className='margin-top-s' key={ index }>
-                Bid of { bid.value }Ξ<br />
-                <span className='text-xs'>{ bid.user }</span>
-              </div>
-            );
-          })
-        }
+      { bids &&
+        bids.map((bid, index)=>{
+          return (
+            <div className='margin-top-s' key={ index }>
+              Bid of { bid.value }Ξ<br />
+              <span className='text-xs'>{ bid.user }</span>
+            </div>
+          );
+        })
+      }
       </div>
     </div>
   );

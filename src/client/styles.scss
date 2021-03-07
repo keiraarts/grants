@@ -533,6 +533,16 @@ $gray: #9b9b9b;
   pointer-events: none;
 }
 
+.form__label_s {
+  position: absolute;
+  top: 0;
+  display: block;
+  transition: 0.2s;
+  font-size: 0.8rem;
+  color: $gray;
+  pointer-events: none;
+}
+
 .file__label {
   display: block;
   transition: 0.2s;
@@ -567,6 +577,45 @@ $gray: #9b9b9b;
 
 .intent-field {
   height: 10rem;
+}
+
+.small-button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  font-family: 'Roboto Slab', sans-serif;
+  white-space: normal;
+  border: none;
+  display: inline-block;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  outline: none;
+  flex-grow: 1;
+  font-size: 1rem;
+  box-shadow: 3px 3px 5px #ccc;
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 1rem;
+  padding: 0.6rem;
+  margin-top: 1rem;
+}
+
+.small-button:hover {
+  background-image: repeating-linear-gradient(45deg, violet, indigo, blue, green, yellow, orange, red, violet);
+  background-clip: text;
+  color: transparent;
+  outline: none;
+  cursor: pointer;
+  animation: rainbow 3000s alternate-reverse linear infinite;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.small-button:active {
+  border: none;
+  outline: none;
+  transform: translate(3px, 3px);
+  box-shadow: 1px 1px 1px #ccc;
 }
 
 .submit-button {

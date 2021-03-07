@@ -129,6 +129,22 @@ exports.viewAllApplications = (req, res) => {
   });
 };
 
+exports.viewTopApplications = (req, res) => {
+  auth(req.headers.authorization, res, (jwt) => {
+    User.findById(jwt.id, (err, user) => {
+      if (err) return res.json(err);
+      if (!user || !user.committee) return res.status(401).json({ err: 'Authentication error' });
+      else {
+        return Applicant.find({ removed: { $ne: true } }, (err, data) => {
+          return err ?
+              res.status(500).json(err) :
+              res.json(data);
+        }).sort('-approvalCount')
+      }
+    });
+  });
+};
+
 exports.approveApplicant = (req, res) => {
   auth(req.headers.authorization, res, (jwt) => {
     User.findById(jwt.id, (err, user) => {
@@ -269,7 +285,7 @@ exports.asdf = (req, res) => {
 //     let count = 0;
 //     data.forEach(async e => {
 //       const test = e.flagged.find(g => g.type === 'Artwork Issue' && g.user.equals('6035e7415f0a684942f4e17c'));
-//       if (e.approvalCount >= 4 && e.statement !== 'EMPTY' && e.name !== 'EMPTY' && e.email !== 'EMPTY' && e.twitter !== 'EMPTY' && e.website !== 'EMPTY' && !test && !test) {
+//       if (e.approvalCount >= 2 && e.statement !== 'EMPTY' && e.name !== 'EMPTY' && e.email !== 'EMPTY' && e.twitter !== 'EMPTY' && e.website !== 'EMPTY' && !test && !test) {
 //         console.log(`${ e.approvalCount },`);
 //         count++;
 //       }
