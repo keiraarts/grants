@@ -5,7 +5,10 @@ import CountryList from 'country-list';
 import { useStoreState, useStoreActions } from 'easy-peasy';
 import { apiUrl } from '../baseUrl';
 import { ethers, Contract } from 'ethers';
-const { web3 } = window
+
+import Twitter from '../assets/twitter.png';
+import Instagram from '../assets/instagram.png';
+import Web from '../assets/website.png';
 
 import '../styles.scss';
 
@@ -136,6 +139,16 @@ export default function Register() {
     }, 1000)
   }, []);
 
+  
+  function openLink(page)
+  {
+    page = page.replace('@', '');
+    if (user.twitter.substring(0, 3) === 'www') page = `https://${ page }`
+    let win = window.open(page, '_blank');
+    win.focus();
+  }
+
+
   const [logout, setLogout] = useState(false);
   const logMeOut = e => {
     setAuth({});
@@ -254,6 +267,14 @@ export default function Register() {
                   <div>{ user.birthYear }</div>
                 </div>
               }
+              <div className='margin-top-s flex'>
+                <div className='flex'>
+                  { user.website && <div><img src={ Web } className='account-social-web pointer' alt='Website' onClick={ () => openLink(user.website) } /></div> }
+                  { user.twitter && <div><img src={ Twitter } className='account-social pointer' alt='Twitter' onClick={ () => openLink(user.twitter.substring(0, 4) === 'http' || user.twitter.substring(0, 3) === 'www' ? user.twitter : `https://twitter.com/${ user.twitter }`) } /></div> }
+                  { user.instagram && <div><img src={ Instagram } className='account-social pointer' alt='Instagram' onClick={ () => openLink(user.instagram.substring(0, 4) === 'http' || user.instagram.substring(0, 3) === 'www' ? user.instagram : `https://instagram.com/${ user.instagram }`) } /></div> }
+                </div>
+                <div className='flex-full' />
+              </div>
               <div className='text-s margin-top-s'><strong>Verified Wallet Address</strong></div>
               <div className='text-s'>{ verifiedWallet || 'No Wallet Verified' }</div>
               <div className='text-s margin-top-s'><strong>Connected Wallet Address</strong></div>

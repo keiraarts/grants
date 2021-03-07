@@ -401,6 +401,19 @@ canvas {
   flex-direction: column;
 }
 
+.account-social {
+  width: 2rem;
+  height: 2rem;
+  margin-right: 0.4rem;
+}
+
+.account-social-web {
+  width: 1.6rem;
+  height: 1.6rem;
+  margin-right: 0.8rem;
+  margin-bottom: 0.2rem;
+}
+
 .block-social {
   width: 1.6rem;
   height: 1.6rem;
@@ -756,10 +769,6 @@ $gray: #9b9b9b;
     font-size: 1rem;
   }
 
-  .text-s {
-    font-size: 1rem;
-  }
-
   .ethos-text {
     font-size: 1rem;
   }
@@ -794,6 +803,10 @@ $gray: #9b9b9b;
 @media (max-width: 35rem) {
   .text-l {
     font-size: 1.6rem;
+  }
+
+  .text-s {
+    font-size: 0.8rem;
   }
 
   .logo {
