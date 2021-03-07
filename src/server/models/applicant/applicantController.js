@@ -268,9 +268,11 @@ exports.asdf = (req, res) => {
 // setTimeout(() => {
 //   return Applicant.find({}, (err2, data) => {
 //     if (err2) return res.status(500).json(err);
-//     const found = [];
-//     data.forEach(e => {
-//       if (!e.statement || !e.name || !e.email || !e.twitter || !e.website || e.flagged.find(g => g.type === 'Artwork Issue' && g.user.equals('6035e7415f0a684942f4e17c'))) found.push(e.email);
+//     let found = '';
+//     const confirm = data.splice(484, data.length);
+//     confirm.forEach(e => {
+//       // if (!e.statement || !e.name || !e.email || !e.twitter || !e.website || e.flagged.find(g => g.type === 'Artwork Issue' && g.user.equals('6035e7415f0a684942f4e17c'))) found.push(e.email);
+//       found = `${ found },${ e.email }`;
 //     })
 
 //     console.log(found);
