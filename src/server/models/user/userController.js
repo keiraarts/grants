@@ -124,7 +124,7 @@ exports.getAccount = (req, res, next) => {
       if (err) return res.json(err);
       if (!user) return res.status(401).json({ err: 'Authentication error' }); 
       else {
-        return Applicant.findOne({ email: user.email, removed: { $ne: true } }, (err2, data) => {
+        return Applicant.findOne({ user: user._id , removed: { $ne: true } }, (err2, data) => {
           if (err2) return res.status(500).json(err);
           return res.json({ user, application: data });
         }).select('-flagged -approvalCount -rejectCount -rejected -approved')
@@ -139,7 +139,7 @@ exports.updateUser = async (req, res) => {
       if (err) return res.json(err);
       if (!user) return res.status(401).json({ err: 'Authentication error' });
       user.username = req.body.username;
-      user.email = req.body.email;
+      user.email = req.body.email.toLowerCase();
       user.first = req.body.first;
       user.last = req.body.last;
       user.birthYear = req.body.birthYear;
