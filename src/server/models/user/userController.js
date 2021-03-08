@@ -46,7 +46,7 @@ exports.register = (req, res) => {
           return res.status(500).json('Passwords do not match');
         }
 
-        const applicant = await Applicant.findOne({ email: req.body.email, removed: { $ne: true } }, (err2, data) => data)
+        const applicant = await Applicant.findOne({ email: { $regex: new RegExp(`^${ req.body.email.toLowerCase().trim() }$`, 'i') }, removed: { $ne: true } }, (err2, data) => data)
           .select('-flagged -approvalCount -rejectCount -rejected -approved').sort({ _id: -1 });
 
         user = {
