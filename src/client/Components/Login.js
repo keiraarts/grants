@@ -68,7 +68,7 @@ export default function Register() {
             :
             <div>
               <input type='submit' value='Log In' className='submit-button' />
-              {/* &nbsp;&nbsp;&nbsp;or&nbsp;&nbsp;<Link to='/register' className='text-m text-grey pointer'>Register an Account</Link> */}
+              &nbsp;&nbsp;&nbsp;or&nbsp;&nbsp;<Link to='/register' className='text-m text-grey pointer'>Register an Account</Link>
             </div>
           }
         </form>
