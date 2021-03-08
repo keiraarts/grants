@@ -202,22 +202,30 @@ exports.verifyEmail = (req, res, next) => {
 // FIX BAD MAPPING
 
 // setTimeout(() => {
-//   return User.find({ email: 'vfxmaria@gmail.com'}, (err2, data) => {
+//   return User.find({}, (err2, data) => {
 //     if (err2) return res.status(500).json(err);
 //     data.forEach(async e => {
-//       const applicant = await Applicant.findOne({ email: e.email, removed: { $ne: true } }, (err, app) => {
+//       const applicant = await Applicant.findOne({ email: { $regex: new RegExp(`^${ e.email.toLowerCase().trim() }$`, 'i') }, removed: { $ne: true } }, (err, app) => {
 //         if (err) console.log(err);
 //         else if (app) {
-//             e.artistName = app.name;
-//             e.country = app.country;
-//             e.countryCode = app.countryCode;
-//             e.city =  app.city;
-//             e.website =  app.website;
-//             e.twitter =  app.twitter;
-//             e.instagram =  app.instagram;
-//             e.save();
-//             console.log(e);
+//           if (!app.user) {
+//             // console.log(app.email);
+//             app.user = e._id;
+//             app.save();
+//             console.log(app.user);
+//             // app.save();
+//             // console.log(app.email);
+//             // e.artistName = app.name;
+//             // e.country = app.country;
+//             // e.countryCode = app.countryCode;
+//             // e.city =  app.city;
+//             // e.website =  app.website;
+//             // e.twitter =  app.twitter;
+//             // e.instagram =  app.instagram;
+//             // e.save();
+//             // console.log(e);
 //             // console.log(e.email, e._id);
+//           }
 //         }
 //       })
 //           .select('-flagged -approvalCount -rejectCount -rejected -approved').sort({ _id: -1 });

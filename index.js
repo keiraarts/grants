@@ -10,7 +10,6 @@ const https = require('https');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-require('./src/server/services/opensea-service');
 
 const ABI = require('./abi.json');
 
