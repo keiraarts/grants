@@ -25,7 +25,7 @@ export default function Program() {
         We seek quality work with a proven track record of a passion for art, regardless of your current recognition with a preference
         to those who are determined to seek aid for starting their self-sovereign career.
         <div className='text-s margin-top'>
-          <Link to='/apply' className='text-rainbow remove-a'>Apply to Sevens Genesis Grant</Link>
+          <span className='text-grey remove-a'>Applications are closed</span>
         </div>
         <br />
       </div>
