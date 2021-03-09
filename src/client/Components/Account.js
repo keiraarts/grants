@@ -186,7 +186,7 @@ export default function Register() {
   const dropdownDefault = application.minted === undefined ? 'default' : `${ application.minted }`;
 
   const completeInfo = (data && user && application && user.username && application.name && application.description && user.artistName && user.birthYear && (application.minted !== undefined)) ? true : false;
-  const status = completeInfo ? 'Pending' : 'Need Additional Info';
+  const status = completeInfo ? 'Awaiting Results' : 'Need Additional Info';
 
   return (
     <div className='content-block'>

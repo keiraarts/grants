@@ -124,7 +124,7 @@ exports.getAccount = (req, res, next) => {
       if (err) return res.json(err);
       if (!user) return res.status(401).json({ err: 'Authentication error' }); 
       else {
-        return Applicant.findOne({ user: user._id , removed: { $ne: true } }, (err2, data) => {
+        return Applicant.findOne({ user: user._id, removed: { $ne: true } }, (err2, data) => {
           if (err2) return res.status(500).json(err);
           return res.json({ user, application: data });
         }).select('-flagged -approvalCount -rejectCount -rejected -approved')
@@ -231,4 +231,12 @@ exports.verifyEmail = (req, res, next) => {
 //           .select('-flagged -approvalCount -rejectCount -rejected -approved').sort({ _id: -1 });
 //     })
 //   });
+// })
+
+
+// setTimeout(() => {
+//   Applicant.distinct('country').exec((err, records) => {
+//     console.log(records);
+//     console.log(records.length);
+//   })
 // })
