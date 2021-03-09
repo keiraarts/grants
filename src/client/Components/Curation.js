@@ -188,8 +188,6 @@ export default function Curation() {
     }).then(res => res.json());
   };
 
-  console.log(top);
-
   return (
     <div className='content-block' ref={ contentRef }>
       <div className='text-l text-b'>
