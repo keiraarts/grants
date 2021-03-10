@@ -156,7 +156,7 @@ export default function Gallery(props) {
         { props.viewTab === 'results' ?
           <div className='margin-top-s'>
             Approvals: { item.approvalCount }<br />
-            { item.user && 'Missing Registration' }
+            { !item.user && 'Missing Registration' }
           </div>
         :
           <div className='approve-block' onClick={ () => {
