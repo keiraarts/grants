@@ -360,43 +360,39 @@ exports.asdf = (req, res) => {
 // })
 
 // setTimeout(() => {
-//   return Applicant.find({}, (err2, data) => {
+//   return Applicant.find({ emailed: false }, (err2, data) => {
 //     if (err2) return res.status(500).json(err);
-//     let found = '';
-//     const confirm = data.splice(484, data.length);
-//     confirm.forEach(e => {
-//       // if (!e.statement || !e.name || !e.email || !e.twitter || !e.website || e.flagged.find(g => g.type === 'Artwork Issue' && g.user.equals('6035e7415f0a684942f4e17c'))) found.push(e.email);
-//       found = `${ found },${ e.email }`;
-//     })
-
-//     console.log(found);
-//   });
-// })
-
-// setTimeout(() => {
-//   return Applicant.find({}, (err2, data) => {
-//     if (err2) return res.status(500).json(err);
-//     data.forEach(e => {
-//       transporter.sendMail(templates.applicationProcess(e.email));
+//     console.log(data.length);
+//     data.forEach(async e => {
+//       console.log(e.email);
+//       // if (!e.emailed) {
+//       //   await transporter.sendMail(templates.applicationProcess(e.email), (err, info) => {
+//       //     if (err) {
+//       //       console.log('GOT ERR', err);
+//       //     } else {
+//       //       e.emailed = true;
+//       //       e.save();
+//       //     }
+//       //   });
+//       // }
 //     })
 //   });
 // })
 
 
-
+// SET STATUS
 // setTimeout(() => {
+//   console.log('WTF');
 //   return Applicant.find({}, async (err2, data) => {
 //     if (err2) return res.status(500).json(err);
 //     const found = [];
 //     let count = 0;
 //     data.forEach(async e => {
-//       const test = e.flagged.find(g => g.type === 'Artwork Issue' && g.user.equals('6035e7415f0a684942f4e17c'));
-//       if (e.approvalCount >= 2 && e.statement !== 'EMPTY' && e.name !== 'EMPTY' && e.email !== 'EMPTY' && e.twitter !== 'EMPTY' && e.website !== 'EMPTY' && !test && !test) {
-//         console.log(`${ e.approvalCount },`);
-//         count++;
-//       }
+//       if (e.user && e.approvalCount >= 3 && !e.minted) count++;
+//       // if (e.approvalCount >= 3) count++;
+//       // const test = e.flagged.find(g => g.type === 'Artwork Issue' && g.user.equals('6035e7415f0a684942f4e17c'));
 //     })
 
-//     console.log(count);
+//     console.log('YO', count);
 //   }).sort('-approvalCount');
 // });

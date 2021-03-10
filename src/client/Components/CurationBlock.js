@@ -154,7 +154,10 @@ export default function Gallery(props) {
           </div>
         </div>
         { props.viewTab === 'results' ?
-          <div className='margin-top-s'>Approvals: { item.approvalCount }</div>
+          <div className='margin-top-s'>
+            Approvals: { item.approvalCount }<br />
+            { item.user && 'Missing Registration' }
+          </div>
         :
           <div className='approve-block' onClick={ () => {
             if (props.viewTab === 'unapproved' || props.viewTab === 'approved') props.setApproval({ id: item.id }, props.index);

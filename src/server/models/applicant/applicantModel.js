@@ -106,6 +106,10 @@ const applicant = {
         type:     mongoose.Schema.ObjectId,
         ref:      'User',
     },
+    emailed: {
+        type: Boolean,
+        default: false
+    },
 };
 
 const ApplicantSchema = new Schema(applicant);
