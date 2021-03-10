@@ -383,14 +383,18 @@ exports.asdf = (req, res) => {
 // SET STATUS
 // setTimeout(() => {
 //   console.log('WTF');
-//   return Applicant.find({}, async (err2, data) => {
+//   return Applicant.find({ removed: false }, async (err2, data) => {
 //     if (err2) return res.status(500).json(err);
 //     const found = [];
 //     let count = 0;
 //     data.forEach(async e => {
-//       if (e.user && e.approvalCount >= 3 && !e.minted) count++;
+//       if (e.approvalCount) count++;
 //       // if (e.approvalCount >= 3) count++;
-//       // const test = e.flagged.find(g => g.type === 'Artwork Issue' && g.user.equals('6035e7415f0a684942f4e17c'));
+//       // const test = e.flagged.find(g => g.type === 'Already Minted');
+//       // if (test) {
+//       //   e.removed = true;
+//       //   e.save();
+//       // }
 //     })
 
 //     console.log('YO', count);
