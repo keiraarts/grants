@@ -52,6 +52,9 @@ const applicant = {
         type:  String,
     },
     thumbnail:  String,
+    title: {
+        type:  String,
+    },
     description: {
         type:  String,
     },
@@ -107,6 +110,14 @@ const applicant = {
         ref:      'User',
     },
     emailed: {
+        type: Boolean,
+        default: false
+    },
+    accepted: {
+        type: Boolean,
+        default: false
+    },
+    userAccepted: {
         type: Boolean,
         default: false
     },

@@ -22,8 +22,6 @@ export default function Genesis() {
       found.traits.forEach(trait => {
         if (trait.trait_type === 'Artist') setArtist(trait.value);
       });
-
-      console.log(found);
     }
   }, [data])
 

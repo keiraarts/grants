@@ -20,7 +20,6 @@ export default function Gallery(props) {
 
   function openLink(page)
   {
-    console.log(page);
     page = page.replace('@', '');
     if (item.twitter.substring(0, 3) === 'www') page = `https://${ page }`
     let win = window.open(page, '_blank');

@@ -151,11 +151,27 @@ exports.updateApplication = async (req, res) => {
         applicant.minted = req.body.minted;
         applicant.description = req.body.description;
         applicant.name = req.body.name;
+        applicant.title = req.body.title;
         applicant.save();
         user.artistName = req.body.name;
         user.birthYear = req.body.birthYear;
         user.save();
         return res.json('Application updated');
+      })
+    });
+  });
+};
+
+exports.acceptGenesis = async (req, res) => {
+  auth(req.headers.authorization, res, (jwt) => {
+    User.findById(jwt.id, (err, user) => {
+      if (!user) return res.status(401).json({ err: 'Authentication error' });
+      return Applicant.findOne({ user: user._id }, (err, applicant) => {
+        applicant.description = req.body.description;
+        applicant.title = req.body.title;
+        applicant.userAccepted = true;
+        applicant.save();
+        return res.json('Application accepted');
       })
     });
   });
@@ -314,10 +330,6 @@ exports.removeFlag = (req, res) => {
 };
 
 
-exports.asdf = (req, res) => {
-
-};
-
 // setTimeout(() => {
 //   return Applicant.find({}, (err, data) => {
 //     if (err) console.log('error');
@@ -379,7 +391,6 @@ exports.asdf = (req, res) => {
 //   });
 // })
 
-
 // SET STATUS
 // setTimeout(() => {
 //   console.log('WTF');
@@ -387,16 +398,18 @@ exports.asdf = (req, res) => {
 //     if (err2) return res.status(500).json(err);
 //     const found = [];
 //     let count = 0;
-//     data.forEach(async e => {
-//       if (e.approvalCount) count++;
-//       // if (e.approvalCount >= 3) count++;
-//       // const test = e.flagged.find(g => g.type === 'Already Minted');
-//       // if (test) {
-//       //   e.removed = true;
-//       //   e.save();
-//       // }
+//     let walletCount = 0;
+//     data.forEach(async (e, index) => {
+//       // if (!e.user) count++;
+//       if (!e.user && e.approvalCount >= 3) {
+//         found.push(e.email);
+//       //   await User.findOne({ _id: e.user }, (err, user) => {
+//       //     console.log(user.wallet);
+//       //     if (user.wallet) walletCount++;
+//       //   })
+//       }
 //     })
 
-//     console.log('YO', count);
+//     console.log('YO', found);
 //   }).sort('-approvalCount');
 // });
