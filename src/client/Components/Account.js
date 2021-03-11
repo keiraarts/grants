@@ -436,7 +436,7 @@ export default function Register() {
               }
               { (completeInfo && verifiedWallet && application && (application.accepted === true || application.accepted === false)) &&
                 <div>
-                  <div className='margin-top text-s'>
+                  {/* <div className='margin-top text-s'>
                     { application.accepted === true ?
                       <div>
                         Congratulations { user.first }, you've been selected as a Sevens Genesis Grantee!
@@ -473,7 +473,7 @@ export default function Register() {
                     <div className='margin-top-s text-s text-grey'>
                       Your application is being accepted..
                     </div>
-                  }
+                  } */}
                   <div className='margin-top'>
                     Artwork Details
                   </div>
