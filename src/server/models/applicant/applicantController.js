@@ -31,7 +31,7 @@ const transporter = nodemailer.createTransport({
 });
 
 exports.submitApplication = async (req, res) => {
-  // return res.json(true);
+  return res.json(true);
   const applicant = {
     name:        req.body.name,
     email:       req.body.email,
@@ -372,11 +372,41 @@ exports.removeFlag = (req, res) => {
 // })
 
 // setTimeout(() => {
-//   return Applicant.find({ emailed: false }, (err2, data) => {
+//   return Applicant.find({}, (err2, data) => {
 //     if (err2) return res.status(500).json(err);
-//     console.log(data.length);
+//     let count = 0;
+//     let reject = 0;
+//     data.forEach(e => {
+//       // if (e.approvalCount >= 3 && !e.minted && !e.removed) {
+//       //   e.accepted = true;
+//       //   count++;
+//       // } else {
+//       //   e.accepted = false;
+//       //   reject++;
+//       // }
+//       // e.save();
+//       if (e.accepted) count++;
+//       else reject++;
+//       // if (!e.emailed) {
+//       //   await transporter.sendMail(templates.applicationProcess(e.email), (err, info) => {
+//       //     if (err) {
+//       //       console.log('GOT ERR', err);
+//       //     } else {
+//       //       e.emailed = true;
+//       //       e.save();
+//       //     }
+//       //   });
+//       // }
+//     })
+
+//     console.log('COUNT', count, reject);
+//   });
+// })
+
+// setTimeout(() => {
+//   return Applicant.find({ removed: { $ne: true } }, (err2, data) => {
+//     if (err2) return res.status(500).json(err);
 //     data.forEach(async e => {
-//       console.log(e.email);
 //       // if (!e.emailed) {
 //       //   await transporter.sendMail(templates.applicationProcess(e.email), (err, info) => {
 //       //     if (err) {
@@ -390,32 +420,3 @@ exports.removeFlag = (req, res) => {
 //     })
 //   });
 // })
-
-// SET STATUS
-// setTimeout(() => {
-//   console.log('WTF');
-//   return Applicant.find({}, async (err2, data) => {
-//     if (err2) return res.status(500).json(err);
-//     const found = [];
-//     let count = 0;
-//     let walletCount = 0;
-//     data.forEach(async (e, index) => {
-//       // if (!e.user) count++;
-//       // if (e.approvalCount >= 3) {
-//         // count++;
-//         // found.push(e.email);
-//         await User.findOne({ email: e.email }, (err, user) => {
-//           if (user) {
-//             console.log(data.user, data.email, user.email);
-//             if (data.email && user.email && data.email.toLowerCase() === user.email.toLowerCase() && !data.user) {
-//               console.log('UNMATCHED', user.email);
-//             }
-//             if (user.wallet) walletCount++;
-//           }
-//         })
-//       // }
-//     })
-
-//     console.log('YO', walletCount);
-//   }).sort('-approvalCount');
-// });

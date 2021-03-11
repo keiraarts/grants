@@ -213,8 +213,8 @@ export default function Register() {
 
   const completeInfo = (data && user && application && user.username && application.name && application.description && user.artistName && user.birthYear && (application.minted !== undefined)) ? true : false;
   let status = completeInfo ? 'Awaiting Results' : 'Need Additional Info';
-  // if (application && application.accepted === true && completeInfo && verifiedWallet) status = 'Accepted';
-  // if (application && application.accepted === false && completeInfo && verifiedWallet) status = 'Declined';
+  if (application && application.accepted === true && completeInfo && verifiedWallet) status = 'Accepted';
+  if (application && application.accepted === false && completeInfo && verifiedWallet) status = 'Declined';
   if (!verifiedWallet) status = `${ status } || Need Verified Wallet`;
 
   return (
@@ -436,7 +436,7 @@ export default function Register() {
               }
               { (completeInfo && verifiedWallet && application && (application.accepted === true || application.accepted === false)) &&
                 <div>
-                  {/* <div className='margin-top text-s'>
+                  <div className='margin-top text-s'>
                     { application.accepted === true ?
                       <div>
                         Congratulations { user.first }, you've been selected as a Sevens Genesis Grantee!
@@ -473,7 +473,7 @@ export default function Register() {
                     <div className='margin-top-s text-s text-grey'>
                       Your application is being accepted..
                     </div>
-                  } */}
+                  }
                   <div className='margin-top'>
                     Artwork Details
                   </div>
@@ -505,7 +505,7 @@ export default function Register() {
                     <div className='gallery-description text-s'>
                       <div className='gallery-plate metal linear'>
                         <div className='text-s'>
-                          <strong>{ application.name }</strong> (b. 1993)<br />
+                          <strong>{ application.name }</strong> (b. { application.birthYear })<br />
                           { application.country }
                         </div>
                         <div className='margin-top-s text-s text-b'>
@@ -525,7 +525,7 @@ export default function Register() {
                           Sorry, your browser doesn't support embedded videos.
                         </video>
                       :
-                      <img src={ application.art } className='gallery-art'  />
+                        <img src={ `https://cdn.grants.art/${ application.art }` } className='gallery-art'  />
                       }
                     </div>
                   </div>
