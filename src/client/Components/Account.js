@@ -213,8 +213,8 @@ export default function Register() {
 
   const completeInfo = (data && user && application && user.username && application.name && application.description && user.artistName && user.birthYear && (application.minted !== undefined)) ? true : false;
   let status = completeInfo ? 'Awaiting Results' : 'Need Additional Info';
-  if (application && application.accepted === true && completeInfo && verifiedWallet) status = 'Accepted';
-  if (application && application.accepted === false && completeInfo && verifiedWallet) status = 'Declined';
+  // if (application && application.accepted === true && completeInfo && verifiedWallet) status = 'Accepted';
+  // if (application && application.accepted === false && completeInfo && verifiedWallet) status = 'Declined';
   if (!verifiedWallet) status = `${ status } || Need Verified Wallet`;
 
   return (

@@ -394,22 +394,28 @@ exports.removeFlag = (req, res) => {
 // SET STATUS
 // setTimeout(() => {
 //   console.log('WTF');
-//   return Applicant.find({ removed: false }, async (err2, data) => {
+//   return Applicant.find({}, async (err2, data) => {
 //     if (err2) return res.status(500).json(err);
 //     const found = [];
 //     let count = 0;
 //     let walletCount = 0;
 //     data.forEach(async (e, index) => {
 //       // if (!e.user) count++;
-//       if (!e.user && e.approvalCount >= 3) {
-//         found.push(e.email);
-//       //   await User.findOne({ _id: e.user }, (err, user) => {
-//       //     console.log(user.wallet);
-//       //     if (user.wallet) walletCount++;
-//       //   })
-//       }
+//       // if (e.approvalCount >= 3) {
+//         // count++;
+//         // found.push(e.email);
+//         await User.findOne({ email: e.email }, (err, user) => {
+//           if (user) {
+//             console.log(data.user, data.email, user.email);
+//             if (data.email && user.email && data.email.toLowerCase() === user.email.toLowerCase() && !data.user) {
+//               console.log('UNMATCHED', user.email);
+//             }
+//             if (user.wallet) walletCount++;
+//           }
+//         })
+//       // }
 //     })
 
-//     console.log('YO', found);
+//     console.log('YO', walletCount);
 //   }).sort('-approvalCount');
 // });
