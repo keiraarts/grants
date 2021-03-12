@@ -143,6 +143,7 @@ exports.updateUser = async (req, res) => {
       user.first = req.body.first;
       user.last = req.body.last;
       user.birthYear = req.body.birthYear;
+      user.artistName = req.body.artistName;
       user.country = req.body.country;
       user.countryCode = req.body.countryCode;
       user.city = req.body.city;

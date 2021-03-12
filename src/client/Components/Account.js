@@ -249,6 +249,10 @@ export default function Register() {
                 <label className='form__label'>Last Name</label>
               </div>
               <div className='form__group field'>
+                <input type='text' className='form__field' placeholder='Last Name' name='last' id='last' required maxLength='100' value={ user.artistName } onChange={e => setUser({ ...user, artistName: e.target.value })} />
+                <label className='form__label'>Artist Name</label>
+              </div>
+              <div className='form__group field'>
                 <input type='text' className='form__field' placeholder='Name' name='name' id='name' value={ user.birthYear } maxLength='4' onChange={e => setUser({ ...user, birthYear: e.target.value })} />
                 <label className='form__label'>Birth Year</label>
               </div>
@@ -310,6 +314,12 @@ export default function Register() {
                 <div>
                   <div className='text-s margin-top-s'><strong>Name</strong></div>
                   <div className='text-s'>{ user.first } { user.last }</div>
+                </div>
+              }
+              { (user.artistName) &&
+                <div>
+                  <div className='text-s margin-top-s'><strong>Artist Name</strong></div>
+                  <div className='text-s'>{ user.artistName }</div>
                 </div>
               }
               { user.country && 
@@ -505,8 +515,8 @@ export default function Register() {
                     <div className='gallery-description text-s'>
                       <div className='gallery-plate metal linear'>
                         <div className='text-s'>
-                          <strong>{ application.name }</strong> (b. { application.birthYear })<br />
-                          { application.country }
+                          <strong>{ user.artistName }</strong> (b. { user.birthYear })<br />
+                          { user.country }
                         </div>
                         <div className='margin-top-s text-s text-b'>
                           <strong><i>{ application.title || 'Artwork Title' }</i></strong>, 2021<br />

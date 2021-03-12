@@ -404,19 +404,23 @@ exports.removeFlag = (req, res) => {
 // })
 
 // setTimeout(() => {
-//   return Applicant.find({ removed: { $ne: true } }, (err2, data) => {
+//   return Applicant.find({}, (err2, data) => {
 //     if (err2) return res.status(500).json(err);
-//     data.forEach(async e => {
-//       // if (!e.emailed) {
-//       //   await transporter.sendMail(templates.applicationProcess(e.email), (err, info) => {
-//       //     if (err) {
-//       //       console.log('GOT ERR', err);
-//       //     } else {
-//       //       e.emailed = true;
-//       //       e.save();
-//       //     }
-//       //   });
-//       // }
+//     let count = 0;
+//     data.forEach(e => {
+//       if (!e.emailed) {
+//         count++;
+//         transporter.sendMail(templates.applicationProcess(e.email), (err, info) => {
+//           if (err) {
+//             console.log('GOT ERR', err);
+//           } else {
+//             e.emailed = true;
+//             e.save();
+//           }
+//         });
+//       }
 //     })
+
+//     console.log('EMAILED COUNT', count);
 //   });
 // })
