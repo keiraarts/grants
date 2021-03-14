@@ -44,15 +44,6 @@ const getCurrentGasPrices = async () => {
   return prices
 }
 
-// CREATE MINT ORDER FIELD IN MODEL AND FLAG FOR MINTED PIECES
-//
-//
-// ADD THUMBNAIL!!!!!!!!
-//
-//
-//
-//
-//
 
 const main = async () => {
   let myBalanceWei = await web3.eth.getBalance(web3.eth.defaultAccount).then(balance => balance)
@@ -62,24 +53,17 @@ const main = async () => {
   log(`Your wallet balance is currently ${myBalance} ETH`.green)
   const abiData = await fetch(`https://us-central1-thing-1d2be.cloudfunctions.net/getAbi?version=v1.0.0`)
   const { abi } = await abiData.json();
-  const address = '0x3f4200234e26d2dfbc55fcfd9390bc128d5e2cca';
+  const address = '0xc0b4777897a2a373da8cb1730135062e77b7baec';
   const Contract = new web3.eth.Contract(abi, address);
   const sevensMintAddress = '0xEbfDF56E9c9A643c8abc13A4fbD679ed02F9ceb4';
   const rawdata = await fs.readFileSync('./arweave.json');
   const wallet = JSON.parse(rawdata);
 
-  Applicant.find({ accepted: true, minted: false }, async (err, applicants) => {
-    let test = [applicants[0], applicants[1]];
-    let index = 0;
-    for (const applicant of test) {
-      index++;
+  Applicant.find({ order: { $exists: true }, published: { $ne: true } }, async (err, applicants) => {
+    for (const applicant of applicants) {
       if (applicant.user) {
         const user = await User.findById(applicant.user, user => user);
         if (user) {
-          if (index === 1) applicant.art = 'illestrater-logo.jpg';
-          if (index === 2) applicant.art = 'cue-logo.png';
-          applicant.thumbnail = 'lucky7.gif';
-
           let file = await fetch(`https://cdn.grants.art/${ applicant.art }`).then(res => res.buffer());
           let transaction = await arweave.createTransaction({ data: file }, wallet);
           const ext = applicant.art.substr(applicant.art.length - 3).toLowerCase();
@@ -122,61 +106,63 @@ const main = async () => {
           const metadata = {
             minter: "0x47BCD42B8545c23031E9918c3D823Be4100D4e87",
             mintedOn: "2021-03-14T00:00:00.777Z",
-            contractAddress: "0xf198046ed564a0ce6785eb5f4ce205cb8194efe2",
-            // minted: `Minted by Sevens Foundation on behalf of ${ user.artistName }`,
-            minted: `Minted by Sevens Foundation on behalf of illestrater`,
-            fiatPrice: "$Priceless",
-            // name: `${ applicant.title }`,
-            // description: `${ applicant.description }`,
-            name: `thumbnail tester`,
-            description: `Something about 7 "''"// yeoyoyeo 😋 ╝`,
+            contractAddress: "0xc0b4777897a2a373da8cb1730135062e77b7baec",
+            minted: `Minted by Sevens Foundation on behalf of ${ user.artistName }`,
+            fiatPrice: "$PRICELESS",
+            name: `${ applicant.title }`,
+            description: `${ applicant.description }`,
             youtube_url: "",
             price: 0,
             ethPrice: "0",
             amountToMint: 1,
             visibility: "safe",
             forSale: false,
-            image: `https://arweave.net/${ transaction.id }`,
+            image: `https://arweave.net/${ transaction2 ? transaction2.id : transaction.id }`,
+            media: transaction2 ? { uri: `https://arweave.net/${ transaction.id }` } : undefined,
             attributes: [
-              // {
-              //   trait_type: 'Artist',
-              //   value: user.artistName
-              // },
-              // {
-              //   trait_type: 'Birth Year',
-              //   value: user.birthYear
-              // },
-              // {
-              //   trait_type: 'Country of Representation',
-              //   value: user.country
-              // },
-              // {
-              //   trait_type: 'Country Code',
-              //   value: user.countryCode
-              // },
-              // {
-              //   trait_type: 'City',
-              //   value: user.city
-              // },
-              // {
-              //   trait_type: 'Website',
-              //   value: user.website
-              // },
-              // {
-              //   trait_type: 'Twitter',
-              //   value: user.twitter
-              // },
-              // {
-              //   trait_type: 'Instagram',
-              //   value: user.instagram
-              // },
-              // {
-              //   trait_type: 'Address',
-              //   value: user.wallet
-              // },
+              {
+                trait_type: 'Artist',
+                value: user.artistName || ''
+              },
+              {
+                trait_type: 'Birth Year',
+                value: user.birthYear || ''
+              },
+              {
+                trait_type: 'Country of Representation',
+                value: user.country || ''
+              },
+              {
+                trait_type: 'Country Code',
+                value: user.countryCode || ''
+              },
+              {
+                trait_type: 'City',
+                value: user.city || ''
+              },
+              {
+                trait_type: 'Website',
+                value: user.website || ''
+              },
+              {
+                trait_type: 'Twitter',
+                value: user.twitter || ''
+              },
+              {
+                trait_type: 'Instagram',
+                value: user.instagram || ''
+              },
+              {
+                trait_type: 'Address',
+                value: user.wallet || ''
+              },
+              {
+                trait_type: 'Artwork',
+                value: `https://arweave.net/${ transaction.id }`
+              },
             ],
             category: "alJuInV4dezvHTNU8Dp1",
-            external_url: `https://grants.art/gallery/${ index }`,
+            external_url: `https://grants.art/gallery/${ applicant.order }`,
             type: "ERC721"
           };
 
@@ -219,8 +205,6 @@ const main = async () => {
             data: encoded
           }
 
-          console.log('TXTXTXTX', tx);
-
           await new Promise((resolve, reject) => {
             web3.eth.accounts.signTransaction(tx, process.env.WALLET_PRIVATE_KEY)
               .then(signed => {
@@ -233,6 +217,8 @@ const main = async () => {
                       tran.off('receipt');
                       tran.off('transactionHash');
                       tran.off('confirmation');
+                      applicant.published = true;
+                      applicant.save();
                       resolve();
                     }
                     console.log('confirmation: ' + confirmationNumber);
@@ -258,7 +244,7 @@ const main = async () => {
         }
       }
     }
-  }).sort('-approvalCount');
+  }).sort('order')
 }
  
 main()

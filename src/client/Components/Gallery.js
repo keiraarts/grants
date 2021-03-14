@@ -10,7 +10,7 @@ import '../styles.scss';
 import FounderGallery from '../FounderGallery.json';
 import GalleryBlock from './GalleryBlock';
 
-const contractAddress = '0x3f4200234e26d2dfbc55fcfd9390bc128d5e2cca';
+const contractAddress = '0xc0b4777897a2a373da8cb1730135062e77b7baec';
 
 export default function Gallery() {
   const auth = useStoreState(state => state.user.auth);

@@ -9,7 +9,7 @@ import Resizer from './Tools/Resizer.js';
 
 import '../styles.scss';
 
-const contractAddress = '0x3f4200234e26d2dfbc55fcfd9390bc128d5e2cca';
+const contractAddress = '0xc0b4777897a2a373da8cb1730135062e77b7baec';
 
 export default function Genesis() {
   const small = useStoreState(state => state.app.small);
@@ -116,7 +116,7 @@ export default function Genesis() {
                     <strong><i>{ asset.name || 'Untitled' }</i></strong>, 2021<br />
                     Digital Art as NFT
                   </div>
-                  <div className='margin-top-s'>
+                  <div className='margin-top-s text-xs'>
                     { asset.description }
                   </div>
                 </div>

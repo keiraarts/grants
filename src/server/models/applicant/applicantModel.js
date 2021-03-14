@@ -129,6 +129,13 @@ const applicant = {
         type: Boolean,
         default: false
     },
+    published: {
+        type: Boolean,
+        default: false
+    },
+    order: {
+        type: Number
+    }
 };
 
 const ApplicantSchema = new Schema(applicant);
