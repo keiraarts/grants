@@ -64,7 +64,13 @@ const main = async () => {
       if (applicant.user) {
         const user = await User.findById(applicant.user, user => user);
         if (user) {
-          let file = await fetch(`https://cdn.grants.art/${ applicant.art }`).then(res => res.buffer());
+          let file = await fetch(`https://cdn.grants.art/${ applicant.art }`)
+            .then(res => res.buffer())
+            .catch(function() {
+              console.log('FETCH ERROR');
+              process.exit(1);
+            });
+
           let transaction = await arweave.createTransaction({ data: file }, wallet);
           const ext = applicant.art.substr(applicant.art.length - 3).toLowerCase();
           let responsetype;
@@ -84,7 +90,13 @@ const main = async () => {
 
           let thumbnail, transaction2;
           if (applicant.thumbnail) {
-            file = await fetch(`https://cdn.grants.art/${ applicant.thumbnail }`).then(res => res.buffer());
+            file = await fetch(`https://cdn.grants.art/${ applicant.thumbnail }`)
+              .then(res => res.buffer())
+              .catch(function() {
+                console.log('FETCH ERROR');
+                process.exit(1);
+              });
+
             transaction2 = await arweave.createTransaction({ data: file }, wallet);
             const ext = applicant.thumbnail.substr(applicant.thumbnail.length - 3).toLowerCase();
             let responsetype;

@@ -65,7 +65,7 @@ export default function Gallery() {
     }
   }, [resizing]);
 
-  console.log(data);
+  console.log('data', data);
 
   return (
     <div className='content-block'>

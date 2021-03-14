@@ -42,7 +42,7 @@ export default function Gallery(props) {
     <div className='gallery-block'>
       <div className='block-art'>
         { (!loaded) && <div className='block-loading'><div className='loading'><div></div><div></div></div></div> }
-        { item.image_preview_url.slice(-3) === 'mp4' ?
+        { (item && item.image_preview_url) && item.image_preview_url.slice(-3) === 'mp4' ?
           <video controls muted loop webkit-playsinline='true' playsInline className='block-art-image' onCanPlay={ () => didLoad(true) }>
             <source src={ item.image_preview_url }
                     type="video/mp4" />
