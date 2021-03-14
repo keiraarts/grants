@@ -90,6 +90,11 @@ canvas {
   margin-top: -0.5rem !important;
 }
 
+.side-space {
+  margin-left: 2rem;
+  margin-right: 2rem;
+}
+
 .spacer {
   height: 2rem;
 }
@@ -318,15 +323,15 @@ canvas {
 @keyframes rainbow {
   from {
     background-position-x: 0vw;
-    
   }
+
   to {
     background-position-x: 6000vw;
   }
 }
 
 .gallery-description {
-  width: 30%;
+  width: 32%;
 }
 
 .gallery-plate {
@@ -357,9 +362,62 @@ canvas {
     hsl(0,0%,70%)100%);
 }
 
-.gallery-art {
+.gallery-frame-container {
+  margin: 0 4rem;
   max-width: 80%;
+  pointer-events: none;
+}
+
+.gallery-art-container {
+  display: inline-flex;
+  pointer-events: none;
+}
+
+.gallery-art {
+  pointer-events: auto; 
+  max-width: 100%;
   max-height: 50rem;
+}
+
+.gallery-art:focus {
+  outline: none;
+}
+
+.frame {
+  pointer-events: none;
+  background-color:rgb(224, 224, 218);
+  border:solid 2rem #eee;
+  border-bottom-color:#fff;
+  border-left-color:#eee;
+  border-radius:2px;
+  border-right-color:#eee;
+  border-top-color:#ddd;
+  box-shadow:0 0 5px 0 rgba(0,0,0,.25) inset, 0 5px 10px 5px rgba(0,0,0,.25);
+  box-sizing:border-box;
+  position:relative;
+  text-align:center;
+  &:before {
+    pointer-events: none;
+    border-radius:2px;
+    bottom:-1.6rem;
+    box-shadow:0 2px 5px 0 rgba(0,0,0,.25) inset;
+    content:"";
+    left:-1.6rem;
+    position:absolute;
+    right:-1.6rem;
+    top:-1.6rem;
+  }
+  &:after {
+    pointer-events: none;
+    border-radius:2px;
+    bottom:-2rem;
+    box-shadow: 0 2px 5px 0 rgba(0,0,0,.25);
+    content:"";
+    left:-2rem;
+    position:absolute;
+    right:-2rem;
+    top:-2rem;
+  }
 }
 
 .block-loading {
@@ -480,6 +538,139 @@ canvas {
 
 .block-social:hover {
   cursor: pointer;
+}
+
+.relative {
+  position: relative;
+  cursor: pointer;
+  width: 4rem;
+}
+
+.round {
+  position: absolute;
+  border: 2px solid rgba(0, 0, 0, 0.3);
+  width: 40px;
+  height: 40px;
+  border-radius: 100%;
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+    hsla(300, 76%, 72%, 0.05),
+    hsla(275, 100%, 25%, 0.05),
+    hsla(240, 100%, 50%, 0.05),
+    hsla(120, 100%, 25%, 0.05),
+    hsla(60, 100%, 50%, 0.05),
+    hsla(39, 100%, 50%, 0.05),
+    hsla(0, 100%, 50%, 0.05),
+    hsla(300, 76%, 72%, 0.05)
+    );
+}
+
+#cta{
+  width:100%;
+  position: absolute;
+}
+
+#cta .arrow{
+  left: 30%;
+}
+.arrow {
+  position: absolute;
+  bottom: 0; 
+  margin-left:0px;
+  width: 12px;
+  height: 12px;
+  background-size: contain;
+  top:14px;
+}
+
+.arrow-right {
+  margin-left: 1rem;
+}
+
+#cta .arrow-left {
+  left: 25%;
+}
+.arrow-left {
+  position: absolute;
+  bottom: 0; 
+  margin-left:0px;
+  width: 12px;
+  height: 12px;
+  background-size: contain;
+  top:14px;
+}
+
+.segunda {
+  margin-left: 8px;
+}
+
+.next {
+  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjwhRE9DVFlQRSBzdmcgIFBVQkxJQyAnLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4nICAnaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkJz48c3ZnIGhlaWdodD0iNTEycHgiIGlkPSJMYXllcl8xIiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCA1MTIgNTEyOyIgdmVyc2lvbj0iMS4xIiB2aWV3Qm94PSIwIDAgNTEyIDUxMiIgd2lkdGg9IjUxMnB4IiB4bWw6c3BhY2U9InByZXNlcnZlIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj48cGF0aCBkPSJNMjk4LjMsMjU2TDI5OC4zLDI1NkwyOTguMywyNTZMMTMxLjEsODEuOWMtNC4yLTQuMy00LjEtMTEuNCwwLjItMTUuOGwyOS45LTMwLjZjNC4zLTQuNCwxMS4zLTQuNSwxNS41LTAuMmwyMDQuMiwyMTIuNyAgYzIuMiwyLjIsMy4yLDUuMiwzLDguMWMwLjEsMy0wLjksNS45LTMsOC4xTDE3Ni43LDQ3Ni44Yy00LjIsNC4zLTExLjIsNC4yLTE1LjUtMC4yTDEzMS4zLDQ0NmMtNC4zLTQuNC00LjQtMTEuNS0wLjItMTUuOCAgTDI5OC4zLDI1NnoiLz48L3N2Zz4=);
+}
+
+.previous {
+  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjwhRE9DVFlQRSBzdmcgIFBVQkxJQyAnLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4nICAnaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkJz48c3ZnIGhlaWdodD0iNTEycHgiIGlkPSJMYXllcl8xIiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCA1MTIgNTEyOyIgdmVyc2lvbj0iMS4xIiB2aWV3Qm94PSIwIDAgNTEyIDUxMiIgd2lkdGg9IjUxMnB4IiB4bWw6c3BhY2U9InByZXNlcnZlIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj48cGF0aCBkPSJNMjEzLjcsMjU2TDIxMy43LDI1NkwyMTMuNywyNTZMMzgwLjksODEuOWM0LjItNC4zLDQuMS0xMS40LTAuMi0xNS44bC0yOS45LTMwLjZjLTQuMy00LjQtMTEuMy00LjUtMTUuNS0wLjJMMTMxLjEsMjQ3LjkgIGMtMi4yLDIuMi0zLjIsNS4yLTMsOC4xYy0wLjEsMywwLjksNS45LDMsOC4xbDIwNC4yLDIxMi43YzQuMiw0LjMsMTEuMiw0LjIsMTUuNS0wLjJsMjkuOS0zMC42YzQuMy00LjQsNC40LTExLjUsMC4yLTE1LjggIEwyMTMuNywyNTZ6Ii8+PC9zdmc+);
+}
+
+@keyframes bounceAlpha {
+  0% {opacity: 1; transform: translateX(0px) scale(1);}
+  25%{opacity: 0; transform:translateX(10px) scale(0.9);}
+  26%{opacity: 0; transform:translateX(-10px) scale(0.9);}
+  55% {opacity: 1; transform: translateX(0px) scale(1);}
+}
+
+@keyframes bounceAlpha2 {
+  0% {opacity: 1; transform: translateX(0px) scale(1);}
+  25%{opacity: 0; transform:translateX(-10px) scale(0.9);}
+  26%{opacity: 0; transform:translateX(10px) scale(0.9);}
+  55% {opacity: 1; transform: translateX(0px) scale(1);}
+}
+
+.arrow.primera.bounceAlpha {
+  animation-name: bounceAlpha;
+  animation-duration:1.4s;
+  animation-delay:0.2s;
+  animation-iteration-count:infinite;
+  animation-timing-function:linear;
+}
+
+@media(hover: hover) and (pointer: fine) {
+  .round:hover .arrow{
+    animation-name: bounceAlpha;
+    animation-duration:1.4s;
+    animation-iteration-count:infinite;
+    animation-timing-function:linear;
+  }
+  .round:hover .arrow.primera{
+    animation-name: bounceAlpha;
+    animation-duration:1.4s;
+    animation-delay:0.2s;
+    animation-iteration-count:infinite;
+    animation-timing-function:linear;
+  }
+
+  .arrow-left.primera.bounceAlpha {
+    animation-name: bounceAlpha2;
+    animation-duration:1.4s;
+    animation-iteration-count:infinite;
+    animation-timing-function:linear;
+  }
+
+  .round:hover .arrow-left{
+    animation-name: bounceAlpha2;
+    animation-duration:1.4s;
+    animation-delay:0.2s;
+    animation-iteration-count:infinite;
+    animation-timing-function:linear;
+  }
+  .round:hover .arrow-left.primera{
+    animation-name: bounceAlpha2;
+    animation-duration:1.4s;
+    animation-delay: 0s;
+    animation-iteration-count:infinite;
+    animation-timing-function:linear;
+  }
 }
 
 .loading {
@@ -837,7 +1028,7 @@ $gray: #9b9b9b;
     align-items: center;
     margin: auto;
     justify-content: center;
-    min-width: 19rem;
+    min-width: 25rem;
     flex-grow: 1;
     margin-bottom: 2rem;
   }
@@ -902,8 +1093,13 @@ $gray: #9b9b9b;
     align-items: center;
     margin: auto;
     justify-content: center;
-    min-width: 19rem;
+    min-width: 18rem;
     flex-grow: 1;
     margin-bottom: 2rem;
+  }
+
+  .gallery-art {
+    max-width: 100%;
+    max-height: 50rem;
   }
 }

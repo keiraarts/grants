@@ -69,6 +69,10 @@ const applicant = {
         type: Boolean,
         default: false
     },
+    ineligible: {
+        type: Boolean,
+        default: false
+    },
     flagged: [{
         id: {
             type:     String,
@@ -118,6 +122,10 @@ const applicant = {
         default: false
     },
     userAccepted: {
+        type: Boolean,
+        default: false
+    },
+    walletScreened: {
         type: Boolean,
         default: false
     },

@@ -12,6 +12,15 @@ export const store = createStore(
         }
       }),
     },
+    app: {
+      small: window.innerWidth <= 1440,
+      setSmall: action((state, payload) => {
+        return {
+          ...state,
+          small: payload
+        }
+      })
+    }
   },
   {
     storage: 'localStorage'

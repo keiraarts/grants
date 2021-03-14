@@ -4,7 +4,7 @@ import { Link, Redirect } from 'react-router-dom';
 import CountryList from 'country-list';
 import { useStoreState, useStoreActions } from 'easy-peasy';
 import { apiUrl } from '../baseUrl';
-import { ethers, Contract } from 'ethers';
+import { ethers } from 'ethers';
 
 import Twitter from '../assets/twitter.png';
 import Instagram from '../assets/instagram.png';

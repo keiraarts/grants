@@ -10,15 +10,29 @@ import '../styles.scss';
 import FounderGallery from '../FounderGallery.json';
 import GalleryBlock from './GalleryBlock';
 
+const contractAddress = '0x3f4200234e26d2dfbc55fcfd9390bc128d5e2cca';
+
 export default function Gallery() {
   const auth = useStoreState(state => state.user.auth);
 
-  const { isLoading, data } = usePromise(() => getGalleryData(), {
-    resolve: true,
-    resolveCondition: []
-  });
+  // const { isLoading, data } = usePromise(() => getGalleryData(), {
+  //   resolve: true,
+  //   resolveCondition: []
+  // });
 
-  const showData = FounderGallery ? FounderGallery : null;
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    fetch(`https://api.opensea.io/api/v1/assets?asset_contract_address=${ contractAddress }`, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+    }).then(res => res.json())
+    .then(json => setData(json));
+  }, [])
+
+  // const showData = FounderGallery ? FounderGallery : null;
 
   const resize = () => {
     setResizer(true);
@@ -35,21 +49,23 @@ export default function Gallery() {
   const [resizing, setResizer] = useState(false);
 
   let initCols;
-  if (window.innerWidth <= 450) initCols = '1';
-  else if (window.innerWidth > 450 && window.innerWidth <= 700) initCols = '2';
-  else if (window.innerWidth > 700 && window.innerWidth <= 1000) initCols = '3'
-  else initCols = '4';
+  if (window.innerWidth <= 700) initCols = '1';
+  else if (window.innerWidth > 700 && window.innerWidth <= 1200) initCols = '2';
+  else initCols = '3'
+  // else if (window.innerWidth > 700 && window.innerWidth <= 1000) initCols = '3'
 
   const [cols, setCols] = useState(initCols);
   useEffect(() => {
     if (resizing) {
-      if (window.innerWidth <= 450) setCols('1');
-      else if (window.innerWidth > 450 && window.innerWidth <= 700) setCols('2');
-      else if (window.innerWidth > 700 && window.innerWidth <= 1000) setCols('3')
-      else setCols('4');
+      if (window.innerWidth <= 700) setCols('1');
+      else if (window.innerWidth > 700 && window.innerWidth <= 1200) setCols('2');
+      else setCols('3')
+      // else if (window.innerWidth > 700 && window.innerWidth <= 1000) setCols('3')
       setResizer(false);
     }
   }, [resizing]);
+
+  console.log(data);
 
   return (
     <div className='content-block'>
@@ -63,13 +79,10 @@ export default function Gallery() {
         }
       </div>
       <div className='text-s margin-top-s text-desc'>
-        Curating, educating, and funding artists' first digital signature
-      </div>
-      <div className='text-s margin-top-s text-desc'>
-        <em>Grant recipients will be highlighted below - temporary gallery of founder's favorite NFTs</em>
+        Curating, educating, and funding artists' first step into creative self-sovereignty
       </div>
       <div className='cols'>
-        { isLoading ?
+        { !data ?
           <div className='gallery-container margin-top'>
             <div className='margin-top-l'>
               <div className="loading"><div></div><div></div></div>
@@ -79,7 +92,7 @@ export default function Gallery() {
           <div className='margin-top'>
             <masonry-layout cols={ cols } >
               {
-                showData && showData.map((item, index)=>{
+                (data && data.assets) && data.assets.map((item, index)=>{
                   return (
                     <GalleryBlock item={ item } key={ index } index={ index } />
                   );

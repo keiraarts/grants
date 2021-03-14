@@ -206,7 +206,7 @@ exports.viewTopApplications = (req, res) => {
       if (err) return res.json(err);
       if (!user || !user.committee) return res.status(401).json({ err: 'Authentication error' });
       else {
-        return Applicant.find({ removed: { $ne: true } }, (err, data) => {
+        return Applicant.find({ ineligible: { $ne: true }, userAccepted: true, accepted: true, minted: { $ne: true } }, (err, data) => {
           return err ?
               res.status(500).json(err) :
               res.json(data);
@@ -331,96 +331,75 @@ exports.removeFlag = (req, res) => {
 
 
 // setTimeout(() => {
-//   return Applicant.find({}, (err, data) => {
-//     if (err) console.log('error');
-//     else {
-//       data.forEach(e => {
-//         let fixedTwitter = e.twitter.toLowerCase();
-//         fixedTwitter = fixedTwitter.replace(`www.twitter.com`, '');
-//         fixedTwitter = fixedTwitter.replace(`twitter.com`, '');
-//         fixedTwitter = fixedTwitter.replace(`https://twitter.com/`, '');
+//   return Applicant.find({ ineligible: { $ne: true }, userAccepted: { $ne: true }, accepted: true, minted: { $ne: true } }, (err2, data) => {
+//     if (err2) return res.status(500).json(err);
+//     let count = 0;
+//     data.forEach(e => {
+//       count++;
+//       if (e.user) { 
+//         console.log(e.title, e.email, e.user.wallet);
+//       }
+//     })
+
+//     console.log('COUNT', count);
+//   }).populate('user');
+// })
+
+// setTimeout(() => {
+//   return Applicant.find({ walletScreened: { $ne: true }, title: { $exists: true }, accepted: true, userAccepted: true, ineligible: { $ne: true } }, (err2, data) => {
+//     if (err2) return res.status(500).json(err);
+//     let count = 0;
+//     data.forEach(e => {
+//       count++;
+//       // e.walletScreened = true;
+//       // e.save();
+//       // if (e.user) { 
+//         console.log(e.user.wallet);
+//       // }
+//     })
+
+//     console.log('COUNT', count);
+//   }).populate('user');
+// })
+
+// setTimeout(() => {
+//   return User.find({}, (err2, data) => {
+//   // return Applicant.find({ minted: { $ne: true }, userAccepted: { $ne: true } }, (err2, data) => {
+//     if (err2) return res.status(500).json(err);
+//     let count = 0;
+//     data.forEach(e => {
+//       e.email = e.email.toLowerCase();;
+//       e.save();
+//     })
+//   });
+// })
+
+// setTimeout(() => {
+//   return User.find({}, (err2, data) => {
+//     if (err2) return res.status(500).json(err);
+//     data.forEach(e => {
+//       if (e.instagram) {
+//         let fixedTwitter = e.instagram.toLowerCase();
+//         fixedTwitter = fixedTwitter.replace(`www.instagram.com`, '');
+//         fixedTwitter = fixedTwitter.replace(`instagram.com`, '');
+//         fixedTwitter = fixedTwitter.replace(`https://instagram.com/`, '');
 //         fixedTwitter = fixedTwitter.replace(`https://`, '');
 //         fixedTwitter = fixedTwitter.replace(`http://`, '');
 //         fixedTwitter = fixedTwitter.replace(`/`, '');
+//         fixedTwitter = fixedTwitter.replace(`/`, '');
+//         fixedTwitter = fixedTwitter.replace(`/`, '');
 //         fixedTwitter = fixedTwitter.replace('@', '');
 //         if (fixedTwitter === 'na') fixedTwitter = '';
+//         if (fixedTwitter === 'none') fixedTwitter = '';
 //         if (fixedTwitter === 'n.a.') fixedTwitter = '';
 //         if (fixedTwitter === '-') fixedTwitter = '';
 //         if (fixedTwitter === '*') fixedTwitter = '';
 //         if (fixedTwitter === '.') fixedTwitter = '';
-
-//         if (e.instagram) {
-//           let fixedInstagram = e.instagram.toLowerCase();
-//           fixedInstagram = fixedInstagram.replace(`www.instagram.com`, '');
-//           fixedInstagram = fixedInstagram.replace(`instagram.com`, '');
-//           fixedInstagram = fixedInstagram.replace(`https://instagram.com/`, '');
-//           fixedInstagram = fixedInstagram.replace(`https://`, '');
-//           fixedInstagram = fixedInstagram.replace(`http://`, '');
-//           fixedInstagram = fixedInstagram.replace('\/', '');
-//           fixedInstagram = fixedInstagram.replace('@', '');
-//           if (fixedInstagram === 'na') fixedInstagram = '';
-//           if (fixedInstagram === 'n.a.') fixedInstagram = '';
-//           if (fixedInstagram === '-') fixedInstagram = '';
-//           if (fixedInstagram === '*') fixedInstagram = '';
-//           if (fixedInstagram === '.') fixedInstagram = '';
-
-//           console.log(fixedInstagram);
-//         }
-//       })
-//     }
-//   });
-// })
-
-// setTimeout(() => {
-//   return Applicant.find({}, (err2, data) => {
-//     if (err2) return res.status(500).json(err);
-//     let count = 0;
-//     let reject = 0;
-//     data.forEach(e => {
-//       // if (e.approvalCount >= 3 && !e.minted && !e.removed) {
-//       //   e.accepted = true;
-//       //   count++;
-//       // } else {
-//       //   e.accepted = false;
-//       //   reject++;
-//       // }
-//       // e.save();
-//       if (e.accepted) count++;
-//       else reject++;
-//       // if (!e.emailed) {
-//       //   await transporter.sendMail(templates.applicationProcess(e.email), (err, info) => {
-//       //     if (err) {
-//       //       console.log('GOT ERR', err);
-//       //     } else {
-//       //       e.emailed = true;
-//       //       e.save();
-//       //     }
-//       //   });
-//       // }
-//     })
-
-//     console.log('COUNT', count, reject);
-//   });
-// })
-
-// setTimeout(() => {
-//   return Applicant.find({}, (err2, data) => {
-//     if (err2) return res.status(500).json(err);
-//     let count = 0;
-//     data.forEach(e => {
-//       if (!e.emailed) {
-//         count++;
-//         transporter.sendMail(templates.applicationProcess(e.email), (err, info) => {
-//           if (err) {
-//             console.log('GOT ERR', err);
-//           } else {
-//             e.emailed = true;
-//             e.save();
-//           }
-//         });
+//         // console.log(e.instagram);
+//         console.log(`${ e.instagram }                      `, e.email);
+//         // e.instagram = fixedTwitter;
+//         // e.save();
 //       }
 //     })
-
-//     console.log('EMAILED COUNT', count);
 //   });
 // })
