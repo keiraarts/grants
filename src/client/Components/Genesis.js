@@ -130,7 +130,7 @@ export default function Genesis() {
                         Sorry, your browser doesn't support embedded videos.
                       </video>
                     }
-                    <img className={ 'hidden' } src={ metadata.artwork } onError={ (e) => setIsVideo(true) } onLoadStart={ (e) => console.log('LOADING STARTING') } />
+                    <img className={ 'hidden' } src={ metadata.artwork } onError={ (e) => setIsVideo(true) } onLoad={ (e) => console.log('LOADING STARTING') } />
                     { !isVideo && <img className='gallery-art' src={ asset.image_original_url } /> }
                   </div>
                 </div>

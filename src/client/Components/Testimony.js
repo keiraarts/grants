@@ -47,6 +47,14 @@ export default function Committee() {
           -  <span className='text-s text-grey pointer' onClick={ () => openLink('https://www.instagram.com/msistema/') }>Marc Ferrer Vives</span>
         </div>
         <div className='text-s margin-top'>
+          "Crypto Art has been the catalyst for me to not only resurface ideas I thought were once gone and forgotten, 
+          but also to dig deeper to uncover thoughts and feelings I would have never been comfortable expressing before.
+          Finally, it feels like there's a space for digital artists of any distinction to have a platform for their work to be acknowledged.
+          A space that encourages community and innovation amongst its peers like no other. A space filled with raw potential and open to anyone eager to explore the uncharted path.
+          A truly exciting moment in art."
+          -  <span className='text-s text-grey pointer' onClick={ () => openLink('https://jamesowen.co/gallery') }>Marc Ferrer Vives</span>
+        </div>
+        <div className='text-s margin-top'>
           "I would never have imagined connecting with people who I consider legends. Now I have the opportunity to
           be part of a community of the most creative and forward thinking individuals in the world, and it drives me to do something great for others."
           -  <span className='text-s text-grey pointer' onClick={ () => openLink('https://twitter.com/illestrater_') }>illestrater</span>

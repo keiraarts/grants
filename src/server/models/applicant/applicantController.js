@@ -206,7 +206,7 @@ exports.viewTopApplications = (req, res) => {
       if (err) return res.json(err);
       if (!user || !user.committee) return res.status(401).json({ err: 'Authentication error' });
       else {
-        return Applicant.find({ ineligible: { $ne: true }, userAccepted: true, accepted: true, minted: { $ne: true } }, (err, data) => {
+        return Applicant.find({ ineligible: { $ne: true }, userAccepted: true, accepted: false, minted: { $ne: true } }, (err, data) => {
           return err ?
               res.status(500).json(err) :
               res.json(data);
@@ -363,14 +363,15 @@ exports.removeFlag = (req, res) => {
 // })
 
 // setTimeout(() => {
-//   return Applicant.find({ order: { $exists: true }, published: { $ne: true } }, (err2, data) => {
+//   return Applicant.find({ ineligible: { $ne: true }, userAccepted: true, accepted: false, minted: { $ne: true }, order: { $exists: false } }, (err2, data) => {
 //     if (err2) return res.status(500).json(err);
 //     let count = 1;
 //     data.forEach(e => {
 //       if (e.user && e.user.wallet) {
-//         console.log(e.instagram);
+//         console.log(e.user.wallet);
 //         // e.order = count;
-//         // e.save();
+//         e.walletScreened = true;
+//         e.save();
 //         count++;
 //       }
 //     })

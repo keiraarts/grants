@@ -42,14 +42,14 @@ export default function Gallery(props) {
     <div className='gallery-block'>
       <div className='block-art'>
         { (!loaded) && <div className='block-loading'><div className='loading'><div></div><div></div></div></div> }
-        { (item && item.image_preview_url) && item.image_preview_url.slice(-3) === 'mp4' ?
-          <video controls muted loop webkit-playsinline='true' playsInline className='block-art-image' onCanPlay={ () => didLoad(true) }>
-            <source src={ item.image_preview_url }
+        { (item && item.image_original_url) && item.image_preview_url.slice(-3) === 'mp4' ?
+          <video muted loop autoPlay webkit-playsinline='true' playsInline className='block-art-image' onCanPlay={ () => didLoad(true) }>
+            <source src={ item.image_original_url }
                     type="video/mp4" />
             Sorry, your browser doesn't support embedded videos.
           </video>
          :
-         <img src={ item.image_preview_url } className='block-art-image' onLoad={ () => didLoad(true) } />
+         <img src={ item.image_original_url } className='block-art-image' onLoad={ () => didLoad(true) } />
         }
       </div>
       <div className='text-s'>

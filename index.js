@@ -41,7 +41,8 @@ const contract = new ethers.Contract(ENV.CONTRACT_ADDRESS, ABI, PROVIDER);
 
 let galleryData = [];
 function pollGalleryData() {
-  // contract.totalSupply().then((result) => {
+  // contract.totalSupply().then(async (result) => {
+  //   console.log('getting total supply', result);
   //   const allData = [];
   //   let totalCount = result.toNumber();
   //   console.log(totalCount);
@@ -50,6 +51,7 @@ function pollGalleryData() {
   //       const id = i;
   //       return contract.tokenByIndex(BigNumber.from(i)).then((result2) => {
   //         return contract.tokenURI(BigNumber.from(result2)).then((result3) => {
+  //           console.log(result3);
   //           return request({
   //             url: `https://ipfs.io/ipfs/${ result3.split('/')[3] }`,
   //             method: 'GET',
@@ -96,7 +98,7 @@ function pollGalleryData() {
 pollGalleryData();
 setInterval(() => {
   pollGalleryData();
-}, 6000000)
+}, 5000)
 
 app.get('/api/galleryData', (req, res) => {
   res.json(galleryData);
