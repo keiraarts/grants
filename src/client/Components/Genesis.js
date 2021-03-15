@@ -123,10 +123,16 @@ export default function Genesis() {
             { small &&
               <div className='flex-full center gallery-frame-container-small'>
                 <div className='frame gallery-art-container'>
-                  <video muted loop autoPlay webkit-playsinline='true' playsInline className='gallery-art' poster={ asset.image_url } ref={ videoRef }>
-                    <source src={ metadata.artwork } />
-                    Sorry, your browser doesn't support embedded videos.
-                  </video>
+                  <div className='frame-shadow'>
+                    { isVideo &&
+                      <video muted loop autoPlay webkit-playsinline='true' playsInline className='gallery-art' poster={ asset.image_url } ref={ videoRef }>
+                        <source src={ metadata.artwork } />
+                        Sorry, your browser doesn't support embedded videos.
+                      </video>
+                    }
+                    <img className={ 'hidden' } src={ metadata.artwork } onError={ (e) => setIsVideo(true) } onLoadStart={ (e) => console.log('LOADING STARTING') } />
+                    { !isVideo && <img className='gallery-art' src={ asset.image_original_url } /> }
+                  </div>
                 </div>
                 <div className='margin-top' />
               </div>
