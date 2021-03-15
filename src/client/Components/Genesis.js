@@ -118,15 +118,10 @@ export default function Genesis() {
             { small &&
               <div className='flex-full center gallery-frame-container-small'>
                 <div className='frame gallery-art-container'>
-                  { (asset && asset.image_url && asset.image_url.slice(-3) === 'mp4') ?
-                    <video controls muted loop autoPlay webkit-playsinline='true' playsInline className='gallery-art'>
-                      <source src={ asset.image_url }
-                              type="video/mp4" />
-                      Sorry, your browser doesn't support embedded videos.
-                    </video>
-                  :
-                    <img src={ asset.image_url } className='gallery-art'  />
-                  }
+                  <video muted loop autoPlay webkit-playsinline='true' playsInline className='gallery-art' poster={ asset.image_url } ref={ videoRef }>
+                    <source src={ metadata.artwork } />
+                    Sorry, your browser doesn't support embedded videos.
+                  </video>
                 </div>
                 <div className='margin-top' />
               </div>
