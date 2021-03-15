@@ -330,6 +330,10 @@ canvas {
   }
 }
 
+.hidden {
+  display: none;
+}
+
 .gallery-description {
   width: 32%;
   white-space: pre-line;
@@ -375,18 +379,37 @@ canvas {
 }
 
 .gallery-art {
-  pointer-events: auto; 
+  // position: relative;
+  pointer-events: auto;
   max-width: 100%;
   max-height: 50rem;
+  margin-bottom: -8px;
 }
 
 .gallery-art:focus {
   outline: none;
 }
 
+.frame-shadow {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.frame-shadow::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  box-shadow: inset 0 0 8px rgba(0,0,0,.6);
+  -moz-box-shadow: inset 0 0 8px rgba(0,0,0,.6);
+  -webkit-box-shadow: inset 0 0 8px rgba(0,0,0,.6);
+}
+
 .frame {
   pointer-events: none;
-  background-color:rgb(224, 224, 218);
   border:solid 2rem #eee;
   border-bottom-color:#fff;
   border-left-color:#eee;

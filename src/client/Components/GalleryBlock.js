@@ -36,7 +36,7 @@ export default function Gallery(props) {
     }
   }, [item])
 
-  console.log('YEO', metadata);
+  console.log('YEO', item);
 
   return (
     <div className='gallery-block'>

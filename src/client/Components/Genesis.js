@@ -30,7 +30,6 @@ export default function Genesis() {
   const [asset, setAsset] = useState({});
   const [metadata, setMetadata] = useState({});
   useEffect(() => {
-    console.log('WTF', data);
     if (data && data.assets) {
       const found = data.assets[0];
       setAsset(found);
@@ -75,7 +74,7 @@ export default function Genesis() {
   
   const videoRef = useRef();
   const previousUrl = useRef();
-
+  const [isVideo, setIsVideo] = useState(true);
   useEffect(() => {
     if (previousUrl.current !== metadata.artwork && videoRef.current) {
       videoRef.current.load();
@@ -84,7 +83,13 @@ export default function Genesis() {
     }
   }, [metadata.artwork]);
 
-  console.log('YO', metadata.artwork);
+  // useEffect(() => {
+  //   if (!isPhoto) {
+
+  //   }
+  // }, [isPhoto])
+
+  console.log('YO', asset);
 
   return (
     <div className='content-block'>
@@ -147,10 +152,16 @@ export default function Genesis() {
             { (!small && metadata.artwork) &&
               <div className='flex-full center gallery-frame-container'>
                 <div className='frame gallery-art-container'>
-                  <video muted loop autoPlay webkit-playsinline='true' playsInline className='gallery-art' poster={ asset.image_url } ref={ videoRef }>
-                    <source src={ metadata.artwork } />
-                    Sorry, your browser doesn't support embedded videos.
-                  </video>
+                  <div className='frame-shadow'>
+                    { isVideo &&
+                      <video muted loop autoPlay webkit-playsinline='true' playsInline className='gallery-art' poster={ asset.image_url } ref={ videoRef }>
+                        <source src={ metadata.artwork } />
+                        Sorry, your browser doesn't support embedded videos.
+                      </video>
+                    }
+                    <img className={ 'hidden' } src={ metadata.artwork } onError={ (e) => setIsVideo(true) } onLoadStart={ (e) => console.log('LOADING STARTING') } />
+                    { !isVideo && <img className='gallery-art' src={ asset.image_original_url } /> }
+                  </div>
                 </div>
               </div>
             }
