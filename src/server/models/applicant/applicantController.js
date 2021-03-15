@@ -368,7 +368,7 @@ exports.removeFlag = (req, res) => {
 //     let count = 1;
 //     data.forEach(e => {
 //       if (e.user && e.user.wallet) {
-//         console.log(e.order, e.email, e.user.wallet);
+//         console.log(e.instagram);
 //         // e.order = count;
 //         // e.save();
 //         count++;
@@ -395,14 +395,15 @@ exports.removeFlag = (req, res) => {
 //         fixedTwitter = fixedTwitter.replace(`/`, '');
 //         fixedTwitter = fixedTwitter.replace(`/`, '');
 //         fixedTwitter = fixedTwitter.replace('@', '');
+//         fixedTwitter = fixedTwitter.replace('\@', '');
 //         if (fixedTwitter === 'na') fixedTwitter = '';
 //         if (fixedTwitter === 'none') fixedTwitter = '';
 //         if (fixedTwitter === 'n.a.') fixedTwitter = '';
 //         if (fixedTwitter === '-') fixedTwitter = '';
 //         if (fixedTwitter === '*') fixedTwitter = '';
 //         if (fixedTwitter === '.') fixedTwitter = '';
-//         // console.log(e.instagram);
-//         console.log(`${ e.instagram }                      `, e.email);
+//         console.log(e.instagram);
+//         // console.log(`${ e.instagram }                      `, e.email);
 //         // e.instagram = fixedTwitter;
 //         // e.save();
 //       }

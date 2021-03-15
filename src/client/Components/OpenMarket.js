@@ -41,7 +41,7 @@ export default function OpenMarket(props) {
 
   useInterval(() => {
     pollBids();
-  }, 3000);
+  }, 5000);
 
   const [bids, setBids] = useState(null);
   useEffect(() => {
@@ -132,7 +132,7 @@ export default function OpenMarket(props) {
   const isOwner = (asset && asset.owner && auth && auth && asset.owner.address.toLowerCase() === auth.wallet.toLowerCase());
   if (provider) console.log(isOwner, asset.owner.address.toLowerCase(), provider.selectedAddress.toLowerCase());
 
-  console.log('YOYOYO', data, asset);
+  // console.log('YOYOYO', data, asset);
 
   let address = (asset && asset.owner && asset.owner.address) ? asset.owner.address : null;
   if (address === '0x47bcd42b8545c23031e9918c3d823be4100d4e87') address = 'Sevens Foundation';

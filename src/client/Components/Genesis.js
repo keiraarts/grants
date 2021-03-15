@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { usePromise } from 'promise-hook';
 import { useParams } from "react-router-dom";
 import { useStoreState } from 'easy-peasy';
@@ -45,7 +45,21 @@ export default function Genesis() {
           if (trait.trait_type === 'Website') loadedMetaData.website = trait.value;
           if (trait.trait_type === 'Twitter') loadedMetaData.twitter = trait.value;
           if (trait.trait_type === 'Instagram') loadedMetaData.instagram = trait.value;
+          if (trait.trait_type === 'Artwork') loadedMetaData.artwork = trait.value;
         });
+
+        if (loadedMetaData.artwork) {
+          console.log('TESTING', loadedMetaData.artwork);
+          var xhttp = new XMLHttpRequest();
+          xhttp.open('HEAD', loadedMetaData.artwork);
+          xhttp.onreadystatechange = function () {
+            console.log('GOT');
+              if (this.readyState == this.DONE) {
+                  console.log(this.status);
+                  console.log(this.getResponseHeader("Content-Type"));
+              }
+          };
+        }
 
         setMetadata(loadedMetaData);
       }
@@ -58,7 +72,19 @@ export default function Genesis() {
     else return Number(id) - 1;
   }
 
-  console.log('YO', asset);
+  
+  const videoRef = useRef();
+  const previousUrl = useRef();
+
+  useEffect(() => {
+    if (previousUrl.current !== metadata.artwork && videoRef.current) {
+      videoRef.current.load();
+      // videoRef.play();
+      previousUrl.current = metadata.artwork;
+    }
+  }, [metadata.artwork]);
+
+  console.log('YO', metadata.artwork);
 
   return (
     <div className='content-block'>
@@ -93,7 +119,7 @@ export default function Genesis() {
               <div className='flex-full center gallery-frame-container-small'>
                 <div className='frame gallery-art-container'>
                   { (asset && asset.image_url && asset.image_url.slice(-3) === 'mp4') ?
-                    <video controls muted loop autoplay webkit-playsinline='true' playsInline className='gallery-art'>
+                    <video controls muted loop autoPlay webkit-playsinline='true' playsInline className='gallery-art'>
                       <source src={ asset.image_url }
                               type="video/mp4" />
                       Sorry, your browser doesn't support embedded videos.
@@ -123,18 +149,13 @@ export default function Genesis() {
               </div>
               { (!small && asset.asset_contract) && <OpenMarket asset={ asset } /> }
             </div>
-            { !small &&
+            { (!small && metadata.artwork) &&
               <div className='flex-full center gallery-frame-container'>
                 <div className='frame gallery-art-container'>
-                  { (asset && asset.image_url && asset.image_url.slice(-3) === 'mp4') ?
-                    <video controls muted loop autoplay webkit-playsinline='true' playsInline className='gallery-art'>
-                      <source src={ asset.image_url }
-                              type="video/mp4" />
-                      Sorry, your browser doesn't support embedded videos.
-                    </video>
-                  :
-                    <img src={ asset.image_url } className='gallery-art'  />
-                  }
+                  <video muted loop autoPlay webkit-playsinline='true' playsInline className='gallery-art' poster={ asset.image_url } ref={ videoRef }>
+                    <source src={ metadata.artwork } />
+                    Sorry, your browser doesn't support embedded videos.
+                  </video>
                 </div>
               </div>
             }
