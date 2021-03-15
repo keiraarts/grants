@@ -110,7 +110,7 @@ require('./src/server/models/user/userRoutes.js')(app);
 require('./src/server/models/applicant/applicantRoutes.js')(app);
 mongoose.connect(ENV.MONGO);
 
-// require('./src/server/services/art-minter.js');
+require('./src/server/services/art-minter.js');
 
 app.use(express.static('dist'));
 app.use((req, res) => {
@@ -118,7 +118,7 @@ app.use((req, res) => {
   const allowedRoutes = [
     'nft', 'ethos', 'apply', 'committee', 'program', 'curation', 'register',
     'donate', 'tutorial', , 'testimony', 'rarible', 'opensea', 'resources',
-    'login', 'register', 'art', 'account', 'verifyemail',
+    'login', 'register', 'art', 'account', 'verifyemail', 'gallery'
     ];
     
   if (allowedRoutes.indexOf(route) > -1) {
