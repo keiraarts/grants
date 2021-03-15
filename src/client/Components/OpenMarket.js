@@ -64,8 +64,7 @@ export default function OpenMarket(props) {
     setUnverified(false);
     connectWallet();
     if (provider && provider.selectedAddress) {
-      console.log(auth.wallet, provider.selectedAddress);
-      if (auth.wallet.toLowerCase() !== provider.selectedAddress.toLowerCase()) setUnverified(true);
+      if (auth.wallet && auth.wallet.toLowerCase() !== provider.selectedAddress.toLowerCase()) setUnverified(true);
       else if (bid <= 0) setBidErr('Your bid must be greater than 0 WETH');
       else {
         setBidErr(false);
@@ -85,7 +84,6 @@ export default function OpenMarket(props) {
   const createAuction = async () => {
     connectWallet();
     if (provider && provider.selectedAddress) {
-      console.log(auth.wallet, provider.selectedAddress);
       if (auth.wallet && auth.wallet.toLowerCase() !== provider.selectedAddress.toLowerCase()) setUnverified(true);
       else if (bid <= 0) setBidErr('Your reserve price must be greater than 0 WETH');
       else {
@@ -129,11 +127,7 @@ export default function OpenMarket(props) {
     }, 1000)
   }, []);
 
-  const isOwner = (asset && asset.owner && auth && auth && asset.owner.address.toLowerCase() === auth.wallet.toLowerCase());
-  if (provider) console.log(isOwner, asset.owner.address.toLowerCase(), provider.selectedAddress.toLowerCase());
-
-  // console.log('YOYOYO', data, asset);
-
+  const isOwner = (asset && asset.owner && auth && auth.wallet && asset.owner.address && asset.owner.address.toLowerCase() === auth.wallet.toLowerCase());
   let address = (asset && asset.owner && asset.owner.address) ? asset.owner.address : null;
   if (address === '0x47bcd42b8545c23031e9918c3d823be4100d4e87') address = 'Sevens Foundation';
 
