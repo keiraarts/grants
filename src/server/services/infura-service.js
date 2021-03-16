@@ -157,9 +157,12 @@ function pollGalleryData() {
       }
 
       console.log('GOT RESULTS', results);
-      if (complete) galleryData = results;
-      else console.log('Issue pulling all data');
-      // if (complete) runCompression(galleryData);
+      if (complete) {
+        galleryData = results;
+        // runCompression(galleryData);
+        let data = JSON.stringify(galleryData);
+        fs.writeFileSync(path.join(__dirname, `./cachedGallery.json`), data);
+      } else console.log('Issue pulling all data');
     });
   });
 }
@@ -169,8 +172,18 @@ setInterval(() => {
   pollGalleryData();
 }, 60000 * 30)
 
+let cachedGalleryData;
+try {
+  const rawdata = fs.readFileSync(path.join(__dirname, `./cachedGallery.json`));
+  cachedGalleryData = rawdata ? JSON.parse(rawdata) : null;
+  console.log('YO', cachedGalleryData);
+} catch(err) {
+  console.log('Gallery data uninitialized');
+}
+
 module.exports = (app) => {
   app.get('/api/galleryData', (req, res) => {
-    res.json(shuffle(galleryData));
+    if (cachedGalleryData) res.json(cachedGalleryData);
+    else res.json([]);
   });
 };
