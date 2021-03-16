@@ -167,10 +167,11 @@ function pollGalleryData() {
   });
 }
 
-pollGalleryData();
-setInterval(() => {
-  pollGalleryData();
-}, 60000 * 30)
+// SITE CRASHED
+// pollGalleryData();
+// setInterval(() => {
+//   pollGalleryData();
+// }, 60000 * 30)
 
 let cachedGalleryData;
 try {
