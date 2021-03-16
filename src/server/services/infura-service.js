@@ -176,7 +176,7 @@ let cachedGalleryData;
 try {
   const rawdata = fs.readFileSync(path.join(__dirname, `./cachedGallery.json`));
   cachedGalleryData = rawdata ? JSON.parse(rawdata) : null;
-  console.log('YO', cachedGalleryData);
+  // console.log('YO', cachedGalleryData);
 } catch(err) {
   console.log('Gallery data uninitialized');
 }
