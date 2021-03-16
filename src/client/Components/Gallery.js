@@ -1,13 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { usePromise } from 'promise-hook';
+import React, { useState, useEffect, useRef } from 'react';
 import { useStoreState } from 'easy-peasy';
 import { Link } from 'react-router-dom';
+import { useScrollPosition } from '@n8tb1t/use-scroll-position'
 import '@appnest/masonry-layout';
 
 import { apiUrl } from '../baseUrl';
 
 import '../styles.scss';
-import FounderGallery from '../FounderGallery.json';
 import GalleryBlock from './GalleryBlock';
 
 const contractAddress = '0xc0b4777897a2a373da8cb1730135062e77b7baec';
@@ -15,14 +14,9 @@ const contractAddress = '0xc0b4777897a2a373da8cb1730135062e77b7baec';
 export default function Gallery() {
   const auth = useStoreState(state => state.user.auth);
 
-  // const { isLoading, data } = usePromise(() => getGalleryData(), {
-  //   resolve: true,
-  //   resolveCondition: []
-  // });
-
   const [data, setData] = useState([]);
   useEffect(() => {
-    fetch(`https://api.opensea.io/api/v1/assets?asset_contract_address=${ contractAddress }`, {
+    fetch(`${ apiUrl() }/galleryData`, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
@@ -32,7 +26,18 @@ export default function Gallery() {
     .then(json => setData(json));
   }, [])
 
-  // const showData = FounderGallery ? FounderGallery : null;
+  const [showData, setShowData] = useState([]);
+  const contentRef = useRef(null);
+  useEffect(() => {
+    console.log('USING EFF');
+    if (data && Array.isArray(data)) setShowData(data.slice(0, 30));
+  }, [data])
+
+  useScrollPosition(({ currPos }) => {
+    if (((-1 * currPos.y) + 1500 > contentRef.current.offsetHeight)) {
+      setShowData(data.slice(0, showData.length + 30))
+    }
+  }, [showData]);
 
   const resize = () => {
     setResizer(true);
@@ -65,10 +70,8 @@ export default function Gallery() {
     }
   }, [resizing]);
 
-  console.log('data', data);
-
   return (
-    <div className='content-block'>
+    <div className='content-block' ref={ contentRef }>
       <div className='text-l flex'>
         Sevens Genesis Grant
         <div className='flex-full' />
@@ -82,7 +85,7 @@ export default function Gallery() {
         Curating, educating, and funding artists' first step into creative self-sovereignty
       </div>
       <div className='cols'>
-        { !data ?
+        { !showData ?
           <div className='gallery-container margin-top'>
             <div className='margin-top-l'>
               <div className="loading"><div></div><div></div></div>
@@ -92,7 +95,7 @@ export default function Gallery() {
           <div className='margin-top'>
             <masonry-layout cols={ cols } >
               {
-                (data && data.assets) && data.assets.map((item, index)=>{
+                (showData) && showData.map((item, index)=>{
                   return (
                     <GalleryBlock item={ item } key={ index } index={ index } />
                   );

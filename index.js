@@ -2,7 +2,6 @@ require('dotenv').config();
 const _ = require('lodash');
 const fs = require('fs');
 const path = require('path');
-const request = require('request');
 const winston = require('winston');
 const express = require('express');
 const http = require('http');
@@ -10,10 +9,6 @@ const https = require('https');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-
-const ABI = require('./abi.json');
-
-const { ethers, BigNumber } = require('ethers');
 
 const app = express();
 app.use(cors());
@@ -36,80 +31,13 @@ logger.add(new winston.transports.Console({
   format: winston.format.simple()
 }));
 
-const PROVIDER = new ethers.providers.JsonRpcProvider(`https://mainnet.infura.io/v3/${ ENV.INFURA }`,'mainnet');
-const contract = new ethers.Contract(ENV.CONTRACT_ADDRESS, ABI, PROVIDER);
-
-let galleryData = [];
-function pollGalleryData() {
-  // contract.totalSupply().then(async (result) => {
-  //   console.log('getting total supply', result);
-  //   const allData = [];
-  //   let totalCount = result.toNumber();
-  //   console.log(totalCount);
-  //   for (let i = 0; i < result.toNumber(); i++) {
-  //     allData.push(new Promise((resolve, reject) => {
-  //       const id = i;
-  //       return contract.tokenByIndex(BigNumber.from(i)).then((result2) => {
-  //         return contract.tokenURI(BigNumber.from(result2)).then((result3) => {
-  //           console.log(result3);
-  //           return request({
-  //             url: `https://ipfs.io/ipfs/${ result3.split('/')[3] }`,
-  //             method: 'GET',
-  //           }, (err, response, body) => {
-  //             let error = false;
-  //             let json;
-  //             try {
-  //               json = JSON.parse(body);
-  //             } catch (e) {
-  //               error = true;
-  //             }
-              
-  //             if (json && !error) {
-  //               json.id = id;
-  //               if (json.animation_url) json.animation_url = json.animation_url.replace('ipfs://ipfs', 'https://ipfs.io/ipfs');
-  //               if (json.image) json.image = json.image.replace('ipfs://ipfs', 'https://ipfs.io/ipfs');
-  //               if (json.attributes) {
-  //                 json.attributes.forEach((item) => {
-  //                   json[item.key.toLowerCase()] = item.value;
-  //                 })
-  //               }
-  //               json.attributes = undefined;
-  //               return resolve(json);
-  //             } else {
-  //               return reject();
-  //             }
-  //           });
-  //         })
-  //       });
-  //     }).catch((err) => console.log('wtf', err)));
-  //   }
-
-  //   Promise.all(allData).then(results => {
-  //     let complete = true;
-  //     for (let i = 0; i < results.length; i++) {
-  //       if (!results[i]) complete = false;
-  //     }
-  //     if (complete) galleryData = results;
-  //     else console.log('Issue pulling all data');
-  //   });
-  // });
-}
-
-pollGalleryData();
-setInterval(() => {
-  pollGalleryData();
-}, 5000)
-
-app.get('/api/galleryData', (req, res) => {
-  res.json(galleryData);
-});
-
 
 require('./src/server/models/user/userModel.js');
 require('./src/server/models/applicant/applicantModel.js');
 
 require('./src/server/models/user/userRoutes.js')(app);
 require('./src/server/models/applicant/applicantRoutes.js')(app);
+require('./src/server/services/infura-service.js')(app);
 mongoose.connect(ENV.MONGO);
 
 // require('./src/server/services/art-minter.js');

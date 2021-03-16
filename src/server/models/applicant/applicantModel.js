@@ -51,7 +51,10 @@ const applicant = {
     art:  {
         type:  String,
     },
-    thumbnail:  String,
+    artWeb: {
+        type:  String,
+    },
+    thumbnail: String,
     title: {
         type:  String,
     },

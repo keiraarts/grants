@@ -8,7 +8,7 @@ import '../styles.scss';
 
 export default function Gallery(props) {
   const [loaded, didLoad] = useState(false);
-  const item = props.item;
+  const item = props.item || {};
 
   function openLink(page)
   {
@@ -16,40 +16,24 @@ export default function Gallery(props) {
     win.focus();
   }
 
-  const [metadata, setMetadata] = useState({});
-  useEffect(() => {
-    // console.log('YO', item);
-    if (item && item.traits) {
-      const loadedMetaData = {};
-      item.traits.forEach(trait => {
-        if (trait.trait_type === 'Artist') loadedMetaData.artist = trait.value;
-        if (trait.trait_type === 'Birth Year') loadedMetaData.year = trait.value;
-        if (trait.trait_type === 'Country of Representation') loadedMetaData.country = trait.value;
-        if (trait.trait_type === 'Country Code') loadedMetaData.countryCode = trait.value;
-        if (trait.trait_type === 'City') loadedMetaData.city = trait.value;
-        if (trait.trait_type === 'Website') loadedMetaData.website = trait.value;
-        if (trait.trait_type === 'Twitter') loadedMetaData.twitter = trait.value;
-        if (trait.trait_type === 'Instagram') loadedMetaData.instagram = trait.value;
-      });
-
-      setMetadata(loadedMetaData);
-    }
-  }, [item])
-
-  console.log('YEO', item);
+  console.log(item);
+  let displayArt;
+  if (item.thumbnail) displayArt = item.thumbnail;
+  else displayArt = item.imageWeb ? `https://cdn.grants.art/${ item.imageWeb }` : item.image;
+  const displayType = item.thumbnailType || item.imageType;
 
   return (
     <div className='gallery-block'>
       <div className='block-art'>
         { (!loaded) && <div className='block-loading'><div className='loading'><div></div><div></div></div></div> }
-        { (item && item.image_original_url) && item.image_preview_url.slice(-3) === 'mp4' ?
+        { (displayArt) && displayType === 'mp4' ?
           <video muted loop autoPlay webkit-playsinline='true' playsInline className='block-art-image' onCanPlay={ () => didLoad(true) }>
-            <source src={ item.image_original_url }
+            <source src={ displayArt }
                     type="video/mp4" />
             Sorry, your browser doesn't support embedded videos.
           </video>
          :
-         <img src={ item.image_original_url } className='block-art-image' onLoad={ () => didLoad(true) } />
+         <img src={ displayArt } className='block-art-image' onLoad={ () => didLoad(true) } />
         }
       </div>
       <div className='text-s'>
@@ -58,17 +42,17 @@ export default function Gallery(props) {
             <div className='block-info'>
               <div className='flex-full'>
                 <i>{ item.name }</i><br />
-                <strong>{ metadata.artist ? metadata.artist : 'Artist Unknown' }</strong>
+                <strong>{ item.artist ? item.artist : 'Artist Unknown' }</strong>
               </div>
               <div className='block-market'>
-                <Link to={ `/gallery/${ item.token_id }` } className='pointer text-grey'>View Market</Link>
+                <Link to={ `/gallery/${ item.tokenId }` } className='pointer text-grey'>View Market</Link>
               </div>
             </div>
           </div>
           <div>
-            { metadata.website && <div><img src={ Web } className='block-social-web pointer' alt='Website' onClick={ () => openLink(metadata.website) } /></div> }
-            { metadata.twitter && <div><img src={ Twitter } className='block-social' alt='Twitter' onClick={ () => openLink(`https://twitter.com/${ metadata.twitter }`) } /></div> }
-            { metadata.instagram && <div><img src={ Instagram } className='block-social' alt='Instagram' onClick={ () => openLink(`https://instagram.com/${ metadata.instagram }`) } /></div> }
+            { item.website && <div><img src={ Web } className='block-social-web pointer' alt='Website' onClick={ () => openLink(item.website) } /></div> }
+            { item.twitter && <div><img src={ Twitter } className='block-social' alt='Twitter' onClick={ () => openLink(`https://twitter.com/${ item.twitter }`) } /></div> }
+            { item.instagram && <div><img src={ Instagram } className='block-social' alt='Instagram' onClick={ () => openLink(`https://instagram.com/${ item.instagram }`) } /></div> }
           </div>
         </div>
       </div>
