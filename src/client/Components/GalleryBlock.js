@@ -27,7 +27,7 @@ export default function Gallery(props) {
       <div className='block-art'>
         { (!loaded) && <div className='block-loading'><div className='loading'><div></div><div></div></div></div> }
         { (displayArt) && displayType === 'mp4' ?
-          <video muted loop autoPlay webkit-playsinline='true' playsInline className='block-art-image' onCanPlay={ () => didLoad(true) }>
+          <video muted loop controls webkit-playsinline='true' playsInline preload='none' className='block-art-image' onCanPlay={ () => didLoad(true) }>
             <source src={ displayArt }
                     type="video/mp4" />
             Sorry, your browser doesn't support embedded videos.

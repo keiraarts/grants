@@ -19,18 +19,32 @@ const contract = new ethers.Contract(ENV.CONTRACT_ADDRESS, ABI, PROVIDER);
 
 let galleryData = [];
 
-// const spaces = s3.createClient({
-//   s3Options: {
-//     accessKeyId: ENV.SPACES_KEY,
-//     secretAccessKey: ENV.SPACES_SECRET,
-//     region: 'US',
-//     endpoint: 'nyc3.digitaloceanspaces.com'
-//   }
-// });
+const spaces = s3.createClient({
+  s3Options: {
+    accessKeyId: ENV.SPACES_KEY,
+    secretAccessKey: ENV.SPACES_SECRET,
+    region: 'US',
+    endpoint: 'nyc3.digitaloceanspaces.com'
+  }
+});
 
-// function runCompression(data) {
+fs.readdir(path.join(__dirname, `../compressed`), (err, files) => {
+  files.forEach(async file => {
+    const uploader = await spaces.uploadFile({
+      localFile: path.join(__dirname, `../compressed/${ file }`),
+      s3Params: {
+        Bucket: 'grants',
+        Key: file,
+        ACL: 'public-read'
+      }
+    })
+    console.log('done uploading', crypto.randomBytes(20).toString('hex'))
+  });
+});
+
+// function syncCompression(data) {
 //   data.forEach(async artist => {
-//     const name = crypto.randomBytes(20).toString('hex');
+//     const name = artist.image.replace('https://arweave.net/', '');
 //     if (artist.imageType === 'jpeg' || artist.imageType === 'jpg' || artist.imageType === 'png') {
 //       request(artist.image).pipe(fs.createWriteStream(path.join(__dirname, `../images/${ name }.${ artist.imageType }`))).on('close', () => {
 //         console.log('got image');
@@ -45,32 +59,35 @@ let galleryData = [];
 //   });
 // }
 
-// fs.readdir(path.join(__dirname, `../compressed`), (err, files) => {
+
+// fs.readdir(path.join(__dirname, `../images`), (err, files) => {
 //   files.forEach(async file => {
-//     const uploader = await spaces.uploadFile({
-//       localFile: path.join(__dirname, `../compressed/${ file }`),
-//       s3Params: {
-//         Bucket: 'grants',
-//         Key: file,
-//         ACL: 'public-read'
-//       }
+//     const stats = await fs.statSync(path.join(__dirname, `../images/${ file }`))
+//     const size = stats.size / (1024*1024);
+//     // console.log(file, size);
+//     let quality = 30;
+//     if (size >= 1 && size <= 10) quality = Math.ceil((0.7 / size) * 100);
+//     else if (size > 10) quality = Math.ceil((.5 / size) * 100);
+//     let upperQuality
+//     if (quality >= 60) upperQuality = 98;
+//     else upperQuality = quality + 20;
+//     setTimeout(() => {
+//       compress(
+//         path.join(__dirname, `../images/${ file }`),
+//         path.join(__dirname, `../compressed/`),
+//         { compress_force: false, statistic: true, autoupdate: true },
+//         false,
+//         { jpg: { engine: "mozjpeg", command: ["-quality", quality] } },
+//         { png: { engine: "pngquant", command: [`--quality=${ quality }-${ upperQuality }`, "-o"] } },
+//         { svg: { engine: false, command: false } },
+//         { gif: { engine: false, command: false }},
+//         (err, completed) => {
+//           if (completed) console.log('YO');
+//         }
+//       );
 //     })
 //   });
 // });
-
-// compress(
-//   path.join(__dirname, `../images/*.{jpg,JPG,jpeg,JPEG,png}`),
-//   path.join(__dirname, `../compressed/`),
-//   { compress_force: false, statistic: true, autoupdate: true },
-//   false,
-//   { jpg: { engine: "mozjpeg", command: ["-quality", "30"] } },
-//   { png: { engine: "pngquant", command: ["--quality=30-40", "-o"] } },
-//   { svg: { engine: false, command: false } },
-//   { gif: { engine: false, command: false }},
-//   (err, completed) => {
-//     if (completed) console.log('YO');
-//   }
-// )
 
 function shuffle(array) {
   var currentIndex = array.length, temporaryValue, randomIndex;
@@ -159,7 +176,7 @@ function pollGalleryData() {
       console.log('GOT RESULTS', results);
       if (complete) {
         galleryData = results;
-        // runCompression(galleryData);
+        // syncCompression(galleryData);
         let data = JSON.stringify(galleryData);
         fs.writeFileSync(path.join(__dirname, `./cachedGallery.json`), data);
       } else console.log('Issue pulling all data');
@@ -168,10 +185,10 @@ function pollGalleryData() {
 }
 
 // SITE CRASHED
-// pollGalleryData();
-// setInterval(() => {
-//   pollGalleryData();
-// }, 60000 * 30)
+pollGalleryData();
+setInterval(() => {
+  pollGalleryData();
+}, 60000 * 30)
 
 let cachedGalleryData;
 try {
