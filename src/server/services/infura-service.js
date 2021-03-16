@@ -19,28 +19,28 @@ const contract = new ethers.Contract(ENV.CONTRACT_ADDRESS, ABI, PROVIDER);
 
 let galleryData = [];
 
-const spaces = s3.createClient({
-  s3Options: {
-    accessKeyId: ENV.SPACES_KEY,
-    secretAccessKey: ENV.SPACES_SECRET,
-    region: 'US',
-    endpoint: 'nyc3.digitaloceanspaces.com'
-  }
-});
+// const spaces = s3.createClient({
+//   s3Options: {
+//     accessKeyId: ENV.SPACES_KEY,
+//     secretAccessKey: ENV.SPACES_SECRET,
+//     region: 'US',
+//     endpoint: 'nyc3.digitaloceanspaces.com'
+//   }
+// });
 
-fs.readdir(path.join(__dirname, `../compressed`), (err, files) => {
-  files.forEach(async file => {
-    const uploader = await spaces.uploadFile({
-      localFile: path.join(__dirname, `../compressed/${ file }`),
-      s3Params: {
-        Bucket: 'grants',
-        Key: file,
-        ACL: 'public-read'
-      }
-    })
-    console.log('done uploading', crypto.randomBytes(20).toString('hex'))
-  });
-});
+// fs.readdir(path.join(__dirname, `../compressed`), (err, files) => {
+//   files.forEach(async file => {
+//     const uploader = await spaces.uploadFile({
+//       localFile: path.join(__dirname, `../compressed/${ file }`),
+//       s3Params: {
+//         Bucket: 'grants',
+//         Key: file,
+//         ACL: 'public-read'
+//       }
+//     })
+//     console.log('done uploading', crypto.randomBytes(20).toString('hex'))
+//   });
+// });
 
 // function syncCompression(data) {
 //   data.forEach(async artist => {
