@@ -22,6 +22,7 @@ const mainnet = `https://mainnet.infura.io/v3/${process.env.INFURA}`
 const web3 = new Web3( new Web3.providers.HttpProvider(mainnet) )
 
 web3.eth.defaultAccount = process.env.WALLET
+const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS_NOMINEE;
 
 const getCurrentGasPrices = async () => {
   let response = await axios.get('https://ethgasstation.info/json/ethgasAPI.json')
@@ -53,13 +54,14 @@ const main = async () => {
   log(`Your wallet balance is currently ${myBalance} ETH`.green)
   const abiData = await fetch(`https://us-central1-thing-1d2be.cloudfunctions.net/getAbi?version=v1.0.0`)
   const { abi } = await abiData.json();
-  const address = '0xc0b4777897a2a373da8cb1730135062e77b7baec';
+  const address = CONTRACT_ADDRESS;
   const Contract = new web3.eth.Contract(abi, address);
   const sevensMintAddress = '0xEbfDF56E9c9A643c8abc13A4fbD679ed02F9ceb4';
   const rawdata = await fs.readFileSync('./arweave.json');
   const wallet = JSON.parse(rawdata);
 
-  Applicant.find({ order: { $exists: true }, published: { $ne: true } }, async (err, applicants) => {
+  Applicant.find({ accepted: false, order: { $exists: true }, published: { $ne: true } }, async (err, applicants) => {
+    console.log(applicants);
     for (const applicant of applicants) {
       if (applicant.user) {
         const user = await User.findById(applicant.user, user => user);
@@ -67,7 +69,7 @@ const main = async () => {
           let file = await fetch(`https://cdn.grants.art/${ applicant.art }`)
             .then(res => res.buffer())
             .catch(function() {
-              console.log('FETCH ERROR');
+              console.log('FETCH ERROR'); // Write logic to retry
               process.exit(1);
             });
 
@@ -93,7 +95,7 @@ const main = async () => {
             file = await fetch(`https://cdn.grants.art/${ applicant.thumbnail }`)
               .then(res => res.buffer())
               .catch(function() {
-                console.log('FETCH ERROR');
+                console.log('FETCH ERROR'); // Write logic to retry
                 process.exit(1);
               });
 
@@ -118,7 +120,7 @@ const main = async () => {
           const metadata = {
             minter: "0x47BCD42B8545c23031E9918c3D823Be4100D4e87",
             mintedOn: "2021-03-14T00:00:00.777Z",
-            contractAddress: "0xc0b4777897a2a373da8cb1730135062e77b7baec",
+            contractAddress: CONTRACT_ADDRESS,
             minted: `Minted by Sevens Foundation on behalf of ${ user.artistName }`,
             fiatPrice: "$PRICELESS",
             name: `${ applicant.title }`,
@@ -229,14 +231,14 @@ const main = async () => {
                       tran.off('receipt');
                       tran.off('transactionHash');
                       tran.off('confirmation');
-                      applicant.published = true;
-                      applicant.save();
                       resolve();
                     }
                     console.log('confirmation: ' + confirmationNumber);
                   });
 
                   tran.on('transactionHash', hash => {
+                    applicant.published = true;
+                    applicant.save();
                     console.log('hash');
                     console.log(hash);
                   });

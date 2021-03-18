@@ -18,8 +18,9 @@ export default function Gallery(props) {
 
   console.log(item);
   let displayArt;
-  if (item.thumbnail) displayArt = item.thumbnail;
-  else displayArt = item.imageWeb ? `https://cdn.grants.art/${ item.imageWeb }` : item.image;
+  if (item.imageWeb) displayArt = `https://cdn.grants.art/${ item.imageWeb }`;
+  else if (item.thumbnail) displayArt = item.thumbnail;
+  else displayArt = item.image;
   const displayType = item.thumbnailType || item.imageType;
 
   return (

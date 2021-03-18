@@ -363,21 +363,22 @@ exports.removeFlag = (req, res) => {
 // })
 
 // setTimeout(() => {
-//   return Applicant.find({ ineligible: { $ne: true }, userAccepted: true, accepted: false, minted: { $ne: true }, order: { $exists: false } }, (err2, data) => {
+//   return Applicant.find({ ineligible: { $ne: true }, userAccepted: true, accepted: false, minted: { $ne: true }, order: { $exists: true } }, (err2, data) => {
 //     if (err2) return res.status(500).json(err);
 //     let count = 1;
 //     data.forEach(e => {
-//       if (e.user && e.user.wallet) {
-//         console.log(e.user.wallet);
-//         // e.order = count;
-//         e.walletScreened = true;
-//         e.save();
-//         count++;
-//       }
+//       count++;
+//       console.log(e);
+//       // if (e.user && e.user.wallet && e.order >= 72) {
+//       //   // e.order = e.order + 1;
+//       //   // e.walletScreened = true;
+//       //   // e.save();
+//       // }
 //     })
 
 //     console.log('COUNTA', count);
-//   }).sort('order')
+//   }).sort('-approvalCount')
+//     .distinct('country')
 //     .populate('user');
 // })
 

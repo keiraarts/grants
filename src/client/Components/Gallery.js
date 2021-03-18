@@ -11,10 +11,27 @@ import GalleryBlock from './GalleryBlock';
 
 const contractAddress = '0xc0b4777897a2a373da8cb1730135062e77b7baec';
 
+function shuffle(array) {
+  var currentIndex = array.length, temporaryValue, randomIndex;
+
+  while (0 !== currentIndex) {
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+
+  return array;
+}
+
 export default function Gallery() {
   const auth = useStoreState(state => state.user.auth);
 
+  const [viewTab, setViewTab] = useState('grantee');
   const [data, setData] = useState([]);
+  const [nomineeData, setNomineeData] = useState([]);
   useEffect(() => {
     fetch(`${ apiUrl() }/galleryData`, {
       method: 'GET',
@@ -23,21 +40,36 @@ export default function Gallery() {
         'Content-Type': 'application/json',
       },
     }).then(res => res.json())
-    .then(json => setData(json));
+    .then(json => setData(shuffle(json)));
+
+    fetch(`${ apiUrl() }/nomineeData`, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+    }).then(res => res.json())
+    .then(json => setNomineeData(shuffle(json)));
   }, [])
 
   const [showData, setShowData] = useState([]);
   const contentRef = useRef(null);
   useEffect(() => {
-    console.log('USING EFF');
     if (data && Array.isArray(data)) setShowData(data.slice(0, 30));
   }, [data])
 
   useScrollPosition(({ currPos }) => {
     if (((-1 * currPos.y) + 1500 > contentRef.current.offsetHeight)) {
-      setShowData(data.slice(0, showData.length + 30))
+      if (viewTab === 'grantee') setShowData(data.slice(0, showData.length + 30))
+      else if (viewTab === 'nominee') setShowData(nomineeData.slice(0, showData.length + 30))
     }
   }, [showData]);
+
+  const toggleView = (view) => {
+    if (view === 'grantee') setShowData(data.slice(0, 30));
+    else if (view === 'nominee') setShowData(nomineeData.slice(0, 30));
+    setViewTab(view);
+  }
 
   const resize = () => {
     setResizer(true);
@@ -83,6 +115,15 @@ export default function Gallery() {
       </div>
       <div className='text-s margin-top-s text-desc'>
         Curating, educating, and funding artists' first step into creative self-sovereignty
+      </div>
+      <div className='flex margin-top'>
+        <div className={ viewTab === 'grantee' ? 'info-block info-block-selected' : 'info-block' } onClick={ () => toggleView('grantee') }>
+          Grantees
+        </div>
+        <div className='info-block-space' />
+        <div className={ viewTab === 'nominee' ? 'info-block info-block-selected' : 'info-block' } onClick={ () => toggleView('nominee') }>
+          Nominees
+        </div>
       </div>
       <div className='cols'>
         { !showData ?
