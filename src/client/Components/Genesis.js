@@ -16,8 +16,9 @@ export default function Genesis() {
   const small = useStoreState(state => state.app.small);
 
   const { id } = useParams();
-  const location = useLocation().pathname;
-  const address = location === 'gallery' ? contractAddress : nomineeAddress;
+  console.log('YO',useLocation().pathname.split('/')[1]);
+  const type = useLocation().pathname.split('/')[1] === 'gallery' ? 'grantee' : 'nominee';
+  const address = type === 'grantee' ? contractAddress : nomineeAddress;
   const [data, setData] = useState(null);
   useEffect(() => {
     fetch(`https://api.opensea.io/api/v1/assets?asset_contract_address=${ address }&token_ids=${ id }`, {
@@ -99,7 +100,7 @@ export default function Genesis() {
       <Resizer />
       <WalletConnect />
       <div className='text-m text-b'>
-        Genesis Grant Exhibition
+        Genesis Grant { type === 'grantee' && 'Nominee ' }Exhibition
       </div>
       <div className='margin-top flex'>
         <Link to={ `/gallery/${ switchPage('previous') }` } className='relative'>
