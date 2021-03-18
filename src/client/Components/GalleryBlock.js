@@ -9,6 +9,7 @@ import '../styles.scss';
 export default function Gallery(props) {
   const [loaded, didLoad] = useState(false);
   const item = props.item || {};
+  const type = props.viewTab;
 
   function openLink(page)
   {
@@ -16,7 +17,6 @@ export default function Gallery(props) {
     win.focus();
   }
 
-  console.log(item);
   let displayArt;
   if (item.imageWeb) displayArt = `https://cdn.grants.art/${ item.imageWeb }`;
   else if (item.thumbnail) displayArt = item.thumbnail;
@@ -46,7 +46,7 @@ export default function Gallery(props) {
                 <strong>{ item.artist ? item.artist : 'Artist Unknown' }</strong>
               </div>
               <div className='block-market'>
-                <Link to={ `/gallery/${ item.tokenId }` } className='pointer text-grey'>View Market</Link>
+                <Link to={ `/${ type === 'grantee' ? 'gallery' : 'nominee' }/${ item.tokenId }` } className='pointer text-grey'>View Market</Link>
               </div>
             </div>
           </div>

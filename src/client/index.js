@@ -59,6 +59,7 @@ const App = () => {
                 <Route path="/account" exact component={ Account } />
                 <Route path="/verifyemail/:id" component={ VerifyEmail } />
                 <Route path="/gallery/:id" component={ Genesis } />
+                <Route path="/nominee/:id" component={ Genesis } />
                 <Footer/>
               </WaitForStateRehydration>
             </div>

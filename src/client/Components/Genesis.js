@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { usePromise } from 'promise-hook';
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import { useStoreState } from 'easy-peasy';
 import { Link } from "react-router-dom";
 import OpenMarket from './OpenMarket.js';
@@ -10,14 +10,17 @@ import Resizer from './Tools/Resizer.js';
 import '../styles.scss';
 
 const contractAddress = '0xc0b4777897a2a373da8cb1730135062e77b7baec';
+const nomineeAddress = '0xf6e716ba2a2f4acb3073d79b1fc8f1424758c2aa';
 
 export default function Genesis() {
   const small = useStoreState(state => state.app.small);
 
   const { id } = useParams();
+  const location = useLocation().pathname;
+  const address = location === 'gallery' ? contractAddress : nomineeAddress;
   const [data, setData] = useState(null);
   useEffect(() => {
-    fetch(`https://api.opensea.io/api/v1/assets?asset_contract_address=${ contractAddress }&token_ids=${ id }`, {
+    fetch(`https://api.opensea.io/api/v1/assets?asset_contract_address=${ address }&token_ids=${ id }`, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
