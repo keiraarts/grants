@@ -475,10 +475,10 @@ export default function Register() {
                   }
                   { ((accepted && !acceptSubmit) || application.userAccepted === true) &&
                     <div className='margin-top-s text-s text-rainbow'>
-                      Your application has been accepted and completed! Stay tuned for minting and further details :)
+                      Your application has been accepted and completed! Please check the website for your minted piece :)
                     </div>
                   }
-                  { (!acceptSubmit && !application.userAccepted) && <div><input type='submit' value='Accept Genesis Mint' className='submit-button' onClick={ acceptMint } /></div> }
+                  {/* { (!acceptSubmit && !application.userAccepted) && <div><input type='submit' value='Accept Genesis Mint' className='submit-button' onClick={ acceptMint } /></div> } */}
                   { acceptSubmit &&
                     <div className='margin-top-s text-s text-grey'>
                       Your application is being accepted..
