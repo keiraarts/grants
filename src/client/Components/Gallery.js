@@ -66,8 +66,11 @@ export default function Gallery() {
   }, [showData]);
 
   const toggleView = (view) => {
-    if (view === 'grantee') setShowData(data.slice(0, 30));
-    else if (view === 'nominee') setShowData(nomineeData.slice(0, 30));
+    if (view === 'grantee') {
+      setShowData([]); setTimeout(() => setShowData(data.slice(0, 30)));
+    } else if (view === 'nominee') {
+      setShowData([]); setTimeout(() => setShowData(nomineeData.slice(0, 30)));
+    }
     setViewTab(view);
   }
 
