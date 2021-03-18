@@ -100,7 +100,7 @@ export default function Genesis() {
       <Resizer />
       <WalletConnect />
       <div className='text-m text-b'>
-        Genesis Grant { type === 'grantee' && 'Nominee ' }Exhibition
+        Genesis Grant { type !== 'grantee' && 'Nominee ' }Exhibition
       </div>
       <div className='margin-top flex'>
         <Link to={ `/gallery/${ switchPage('previous') }` } className='relative'>
