@@ -9,6 +9,8 @@ const request = require('request');
 const FileType = require('file-type');
 const jimp = require('jimp');
 const s3 = require('s3');
+const { videoResize } = require('node-video-resize');
+const getMediaDimensions = require('get-media-dimensions');
 const { ethers, BigNumber } = require('ethers');
 const ABI = require('./abi.json');
 const { promisify } = require('util');
@@ -48,20 +50,21 @@ function uploadCompressed() {
   });
 }
 
-function syncCompression(type, data) {
+function downloadImages(type, data) {
   data.forEach(async artist => {
+    if (artist.thumbnail) artist.image = artist.thumbnail
     const name = artist.image.replace('https://arweave.net/', '');
-    if (artist.imageType === 'jpeg' || artist.imageType === 'jpg' || artist.imageType === 'png' || artist.imageType === 'gif') {
-      request(artist.image).pipe(fs.createWriteStream(path.join(__dirname, `../images/${ name }.${ artist.imageType }`))).on('close', () => {
-        console.log('got image');
-        console.log(artist.tokenId);
-        Applicant.findOne({ accepted: type === 'grantee' ? true : false, order: artist.tokenId }, (err, applicant) => {
-          applicant.artWeb = `${ name }.${ artist.imageType }`;
-          applicant.save();
-          console.log('SAVED', applicant.order);
-        })
-      });
-    }
+    // if (artist.imageType === 'jpeg' || artist.imageType === 'jpg' || artist.imageType === 'png' || artist.imageType === 'gif') {
+    request(artist.image).pipe(fs.createWriteStream(path.join(__dirname, `../images/${ name }.${ artist.thumbnail ? artist.thumbnailType : artist.imageType }`))).on('close', () => {
+      console.log('got image');
+      console.log(artist.tokenId);
+      Applicant.findOne({ accepted: type === 'grantee' ? true : false, order: artist.tokenId }, (err, applicant) => {
+        applicant.artWeb = `${ name }.${ artist.thumbnail ? artist.thumbnailType : artist.imageType }`;
+        applicant.save();
+        console.log('SAVED', applicant.order);
+      })
+    });
+    // }
   });
 }
 
@@ -73,12 +76,15 @@ async function compressor() {
   while (index < files.length) {
     file = files[index];
 
-    if (!fs.existsSync(path.join(__dirname, `../compressed/${ file }`))) {
-      const write = fs.createWriteStream(path.join(__dirname, `../compressed/${ file }`));
+    const input = path.join(__dirname, `../images/${ file }`);
+    const output = path.join(__dirname, `../compressed/${ file }`);
+    if (!fs.existsSync(output)) {
+      const write = fs.createWriteStream(output);
 
-      if (file.split('.')[1] === 'gif') {
+      const fileType = file.split('.')[1];
+      if (fileType === 'gif') {
         console.log('DOING FILE', file);
-        const buf = fs.readFileSync((path.join(__dirname, `../images/${ file }`)));
+        const buf = fs.readFileSync(input);
         await gifResize({
           width: 400,
           optimizationLevel: 3
@@ -89,11 +95,22 @@ async function compressor() {
           console.log("'WROTE GIF'");
           return stream.pipe(write);
         });
-      }
-      else {
+      } else if (fileType === 'mp4') {
+        console.log('trying', input);
+        const dimensions = await getMediaDimensions(input, 'video');
+        const width = 400;
+        const height = Math.round((width / dimensions.width) * dimensions.height);
+        console.log(width, height);
+        await videoResize({
+          inputPath: input,
+          outputPath: output,
+          format: 'mp4',
+          size: `${ width }x${ height }`
+        })
+      } else {
         const read = promisify(fs.readFile);
 
-        await read(path.join(__dirname, `../images/${ file }`))
+        await read(input)
         .then((result) => {
             return jimp.read(result);
         })
@@ -186,8 +203,8 @@ async function pollGalleryData(type) {
           } else {
             return reject();
           }
-        }).catch(err => console.log('wtf 1', err));
-      }).catch(err => console.log('wtf 2', err)); // try again
+        }).catch(err => { console.log('wtf 1', err); reject(); });
+      }).catch(err => { console.log('wtf 1', err); reject(); }); // try again
     }).catch((err) => console.log('wtf 3', err)));
   }
 
@@ -199,7 +216,6 @@ async function pollGalleryData(type) {
 
     if (complete) {
       galleryData = results;
-      // syncCompression(type, galleryData);
       let data = JSON.stringify(galleryData);
       if (type === 'grantee') {
         console.log('SAVING GRANTEE');
@@ -213,9 +229,6 @@ async function pollGalleryData(type) {
     } else console.log('Issue pulling all data');
   });
 }
-
-// compressor();
-// uploadCompressed();
 
 // SITE CRASHED
 pollGalleryData('grantee');
@@ -234,6 +247,12 @@ try {
 } catch(err) {
   console.log('Gallery data uninitialized');
 }
+
+// compressor();
+// uploadCompressed();
+// downloadImages('grantee', cachedGalleryData);
+// downloadImages('nominee', cachedNomineeData);
+
 
 module.exports = (app) => {
   app.get('/api/galleryData', (req, res) => {
