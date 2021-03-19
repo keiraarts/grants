@@ -35,16 +35,6 @@ export default function Genesis() {
     }
   }, [gallery, id])
 
-  console.log(preload);
-
-  // useEffect(() => {
-  //   preload.forEach(nft => {
-  //     new Image().src = nft.image;
-  //   })
-
-  //   console.log('GOT PRELOAD', preload);
-  // }, [preload])
-
   const [data, setData] = useState(null);
   useEffect(() => {
     fetch(`https://api.opensea.io/api/v1/assets?asset_contract_address=${ address }&token_ids=${ id }`, {
@@ -57,49 +47,13 @@ export default function Genesis() {
     .then(json => setData(json));
   }, [id])
 
-  const [asset, setAsset] = useState({});
-  const [metadata, setMetadata] = useState({});
-  useEffect(() => {
-    if (data && data.assets) {
-      const found = data.assets[0];
-      setAsset(found);
-      if (found) {
-        const loadedMetaData = {};
-        found.traits.forEach(trait => {
-          if (trait.trait_type === 'Artist') loadedMetaData.artist = trait.value;
-          if (trait.trait_type === 'Birth Year') loadedMetaData.year = trait.value;
-          if (trait.trait_type === 'Country of Representation') loadedMetaData.country = trait.value;
-          if (trait.trait_type === 'Country Code') loadedMetaData.countryCode = trait.value;
-          if (trait.trait_type === 'City') loadedMetaData.city = trait.value;
-          if (trait.trait_type === 'Website') loadedMetaData.website = trait.value;
-          if (trait.trait_type === 'Twitter') loadedMetaData.twitter = trait.value;
-          if (trait.trait_type === 'Instagram') loadedMetaData.instagram = trait.value;
-          if (trait.trait_type === 'Artwork') loadedMetaData.artwork = trait.value;
-        });
-
-        if (loadedMetaData.artwork) {
-          console.log('TESTING', loadedMetaData.artwork);
-          var xhttp = new XMLHttpRequest();
-          xhttp.open('HEAD', loadedMetaData.artwork);
-          xhttp.onreadystatechange = function () {
-            console.log('GOT');
-              if (this.readyState == this.DONE) {
-                  console.log(this.status);
-                  console.log(this.getResponseHeader("Content-Type"));
-              }
-          };
-        }
-
-        setMetadata(loadedMetaData);
-      }
-    }
-  }, [data])
-
   function switchPage(direction) {
     if (id === '1' && direction === 'previous') return id;
     else if (direction === 'next') return Number(id) + 1
     else return Number(id) - 1;
   }
+
+  console.log('yo', preload);
 
   return (
     <div className='content-block'>
@@ -129,7 +83,6 @@ export default function Genesis() {
       </div>
       <div class='gallery-min-height'>
         { preload.map((preload, key) => {
-          console.log('TEST', Number(id), Number(preload.tokenId));
             return (
               <div className={ `${ (Number(id) !== Number(preload.tokenId)) && 'hidden' }` }>
                 <NFT key={ key } small={ small } nft={ gallery.find((e => e.tokenId === preload.tokenId)) } />

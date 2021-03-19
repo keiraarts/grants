@@ -26,8 +26,9 @@ function shuffle(array) {
 
 export default function Gallery() {
   const auth = useStoreState(state => state.user.auth);
-  const grantees = shuffle(useStoreState(state => state.grantees));
-  const nominees = shuffle(useStoreState(state => state.nominees));
+  const grantees = shuffle(useStoreState(state => state.grantees.data) || []);
+  const nominees = shuffle(useStoreState(state => state.nominees.data) || []);
+  console.log('WTF 2');
 
   const [viewTab, setViewTab] = useState('grantee');
   const [showData, setShowData] = useState([]);

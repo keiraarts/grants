@@ -22,13 +22,21 @@ export const store = createStore(
       }),
     },
     grantees: {
+      data: [],
       setGrantees: action((state, payload) => {
-        return payload
+        return {
+          ...state,
+          data: payload
+        }
       }),
     },
     nominees: {
+      data: [],
       setNominees: action((state, payload) => {
-        return payload
+        return {
+          ...state,
+          data: payload
+        }
       }),
     },
   },
