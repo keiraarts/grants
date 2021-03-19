@@ -20,7 +20,7 @@ export default function Genesis() {
   const type = useLocation().pathname.split('/')[1] === 'gallery' ? 'grantee' : 'nominee';
   const address = type === 'grantee' ? contractAddress : nomineeAddress;
 
-  const gallery = useStoreState(state => { return (type === 'grantee') ? state.grantees : state.nominees });
+  const gallery = useStoreState(state => { return (type === 'grantee') ? state.grantees.data : state.nominees.data });
   const [preload, setPreload] = useState([]);
   useEffect(() => {
     if (gallery && gallery.length) {
@@ -83,6 +83,7 @@ export default function Genesis() {
       </div>
       <div class='gallery-min-height'>
         { preload.map((preload, key) => {
+          console.log('PRELOADING', preload);
             return (
               <div className={ `${ (Number(id) !== Number(preload.tokenId)) && 'hidden' }` }>
                 <NFT key={ key } small={ small } nft={ gallery.find((e => e.tokenId === preload.tokenId)) } />

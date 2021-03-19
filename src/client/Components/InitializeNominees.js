@@ -4,21 +4,22 @@ import { usePromise } from 'promise-hook';
 import { apiUrl } from '../baseUrl';
 
 export default function InitializeData() {
-  const setGrantees = useStoreActions(dispatch => dispatch.grantees.setGrantees);
-  const { isLoading, data: grantees } = usePromise(() => getGalleryData(), {
+  const setNominees = useStoreActions(dispatch => dispatch.nominees.setNominees);
+
+  const { isLoading, data: nominees } = usePromise(() => getNomineeData(), {
     resolve: true,
     resolveCondition: []
   });
 
   useEffect(() => {
-    if (grantees && grantees.length) setGrantees(grantees);
-  }, [grantees])
+    if (nominees && nominees.length) setNominees(nominees);
+  }, [nominees])
 
   return (<></>);
 }
 
-const getGalleryData = () => {
-  return fetch(`${ apiUrl() }/galleryData`, {
+const getNomineeData = () => {
+  return fetch(`${ apiUrl() }/nomineeData`, {
     method: 'GET',
     headers: {
       'Accept': 'application/json',

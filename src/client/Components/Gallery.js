@@ -28,17 +28,16 @@ export default function Gallery() {
   const auth = useStoreState(state => state.user.auth);
   const grantees = shuffle(useStoreState(state => state.grantees.data) || []);
   const nominees = shuffle(useStoreState(state => state.nominees.data) || []);
-  console.log('WTF 2');
 
   const [viewTab, setViewTab] = useState('grantee');
   const [showData, setShowData] = useState([]);
   const contentRef = useRef(null);
   useEffect(() => {
-    if (grantees && Array.isArray(grantees)) setShowData(grantees.slice(0, 30));
+    if (grantees && grantees.length) setShowData(grantees.slice(0, 30));
   }, [grantees])
 
   useEffect(() => {
-    if (nominees && Array.isArray(nominees)) setShowData(nominees.slice(0, 30));
+    if (nominees && grantees.length) setShowData(nominees.slice(0, 30));
   }, [nominees])
 
   useScrollPosition(({ currPos }) => {
