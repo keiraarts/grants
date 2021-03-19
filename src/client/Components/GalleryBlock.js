@@ -23,9 +23,6 @@ export default function Gallery(props) {
   else displayArt = item.image;
   const displayType = item.thumbnailType || item.imageType;
 
-
-  console.log(displayArt, item.imageWeb);
-
   return (
     <div className='gallery-block'>
       <div className='block-art'>

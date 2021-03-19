@@ -6,6 +6,7 @@ import { BrowserRouter, Route } from "react-router-dom";
 import { ModalProvider } from "react-modal-hook";
 import Header from './Components/Header';
 import Footer from './Components/Footer';
+import InitializeData from "./Components/InitializeData";
 import Gallery from "./Components/Gallery";
 import Ethos from "./Components/Ethos";
 import FAQ from "./Components/FAQ";
@@ -41,6 +42,7 @@ const App = () => {
             <div className='site-content'>
               <WaitForStateRehydration>
                 <Header />
+                <InitializeData />
                 <Route path="/" exact component={ Gallery } />
                 <Route path="/ethos" exact component={ Ethos } />
                 <Route path="/nft" exact component={ FAQ } />

@@ -19,8 +19,18 @@ export const store = createStore(
           ...state,
           small: payload
         }
-      })
-    }
+      }),
+    },
+    grantees: {
+      setGrantees: action((state, payload) => {
+        return payload
+      }),
+    },
+    nominees: {
+      setNominees: action((state, payload) => {
+        return payload
+      }),
+    },
   },
   {
     storage: 'localStorage'

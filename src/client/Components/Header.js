@@ -1,5 +1,4 @@
-import React, { useEffect } from 'react';
-import { StoreComponent, store } from '../redux';
+import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useStoreState } from 'easy-peasy';
 

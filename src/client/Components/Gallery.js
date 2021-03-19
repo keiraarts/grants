@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useStoreState } from 'easy-peasy';
+import { useStoreState, useStoreActions } from 'easy-peasy';
 import { Link } from 'react-router-dom';
 import { useScrollPosition } from '@n8tb1t/use-scroll-position'
 import '@appnest/masonry-layout';
@@ -8,8 +8,6 @@ import { apiUrl } from '../baseUrl';
 
 import '../styles.scss';
 import GalleryBlock from './GalleryBlock';
-
-const contractAddress = '0xc0b4777897a2a373da8cb1730135062e77b7baec';
 
 function shuffle(array) {
   var currentIndex = array.length, temporaryValue, randomIndex;
@@ -28,48 +26,32 @@ function shuffle(array) {
 
 export default function Gallery() {
   const auth = useStoreState(state => state.user.auth);
+  const grantees = shuffle(useStoreState(state => state.grantees));
+  const nominees = shuffle(useStoreState(state => state.nominees));
 
   const [viewTab, setViewTab] = useState('grantee');
-  const [data, setData] = useState([]);
-  const [nomineeData, setNomineeData] = useState([]);
-  useEffect(() => {
-    fetch(`${ apiUrl() }/galleryData`, {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-    }).then(res => res.json())
-    .then(json => setData(shuffle(json)));
-
-    fetch(`${ apiUrl() }/nomineeData`, {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-    }).then(res => res.json())
-    .then(json => setNomineeData(shuffle(json)));
-  }, [])
-
   const [showData, setShowData] = useState([]);
   const contentRef = useRef(null);
   useEffect(() => {
-    if (data && Array.isArray(data)) setShowData(data.slice(0, 30));
-  }, [data])
+    if (grantees && Array.isArray(grantees)) setShowData(grantees.slice(0, 30));
+  }, [grantees])
+
+  useEffect(() => {
+    if (nominees && Array.isArray(nominees)) setShowData(nominees.slice(0, 30));
+  }, [nominees])
 
   useScrollPosition(({ currPos }) => {
     if (((-1 * currPos.y) + 1500 > contentRef.current.offsetHeight)) {
-      if (viewTab === 'grantee') setShowData(data.slice(0, showData.length + 30))
-      else if (viewTab === 'nominee') setShowData(nomineeData.slice(0, showData.length + 30))
+      if (viewTab === 'grantee') setShowData(grantees.slice(0, showData.length + 30))
+      else if (viewTab === 'nominee') setShowData(nominees.slice(0, showData.length + 30))
     }
   }, [showData]);
 
   const toggleView = (view) => {
     if (view === 'grantee') {
-      setShowData([]); setTimeout(() => setShowData(data.slice(0, 30)));
+      setShowData([]); setTimeout(() => setShowData(grantees.slice(0, 30)));
     } else if (view === 'nominee') {
-      setShowData([]); setTimeout(() => setShowData(nomineeData.slice(0, 30)));
+      setShowData([]); setTimeout(() => setShowData(nominees.slice(0, 30)));
     }
     setViewTab(view);
   }

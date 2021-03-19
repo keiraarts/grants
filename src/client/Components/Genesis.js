@@ -3,7 +3,7 @@ import { usePromise } from 'promise-hook';
 import { useParams, useLocation } from "react-router-dom";
 import { useStoreState } from 'easy-peasy';
 import { Link } from "react-router-dom";
-import OpenMarket from './OpenMarket.js';
+import GenesisNFT from './GenesisNFT.js';
 import WalletConnect from './WalletConnect.js';
 import Resizer from './Tools/Resizer.js';
 
@@ -12,13 +12,39 @@ import '../styles.scss';
 const contractAddress = '0xc0b4777897a2a373da8cb1730135062e77b7baec';
 const nomineeAddress = '0xf6e716ba2a2f4acb3073d79b1fc8f1424758c2aa';
 
+const NFT = React.memo(GenesisNFT);
+
 export default function Genesis() {
   const small = useStoreState(state => state.app.small);
-
   const { id } = useParams();
-  console.log('YO',useLocation().pathname.split('/')[1]);
   const type = useLocation().pathname.split('/')[1] === 'gallery' ? 'grantee' : 'nominee';
   const address = type === 'grantee' ? contractAddress : nomineeAddress;
+
+  const gallery = useStoreState(state => { return (type === 'grantee') ? state.grantees : state.nominees });
+  const [preload, setPreload] = useState([]);
+  useEffect(() => {
+    if (gallery && gallery.length) {
+      const index = Number(id);
+      let before = index - 3;
+      if (before < 0) before = 0;
+      let after = index + 2;
+      setPreload([]);
+      setTimeout(() => {
+        setPreload(gallery.slice(before, after));
+      });
+    }
+  }, [gallery, id])
+
+  console.log(preload);
+
+  // useEffect(() => {
+  //   preload.forEach(nft => {
+  //     new Image().src = nft.image;
+  //   })
+
+  //   console.log('GOT PRELOAD', preload);
+  // }, [preload])
+
   const [data, setData] = useState(null);
   useEffect(() => {
     fetch(`https://api.opensea.io/api/v1/assets?asset_contract_address=${ address }&token_ids=${ id }`, {
@@ -75,26 +101,6 @@ export default function Genesis() {
     else return Number(id) - 1;
   }
 
-  
-  const videoRef = useRef();
-  const previousUrl = useRef();
-  const [isVideo, setIsVideo] = useState(true);
-  useEffect(() => {
-    if (previousUrl.current !== metadata.artwork && videoRef.current) {
-      videoRef.current.load();
-      // videoRef.play();
-      previousUrl.current = metadata.artwork;
-    }
-  }, [metadata.artwork]);
-
-  // useEffect(() => {
-  //   if (!isPhoto) {
-
-  //   }
-  // }, [isPhoto])
-
-  console.log('YO', asset);
-
   return (
     <div className='content-block'>
       <Resizer />
@@ -121,67 +127,15 @@ export default function Genesis() {
           </div>
         </Link>
       </div>
-      <div className={ `margin-top flex full-width ${ !small && 'side-space' }` }>
-        { asset ?
-          <div className='margin-top-l gallery-container full-width'>
-            { small &&
-              <div className='flex-full center gallery-frame-container-small'>
-                <div className='frame gallery-art-container'>
-                  <div className='frame-shadow'>
-                    { isVideo &&
-                      <video muted loop autoPlay webkit-playsinline='true' playsInline className='gallery-art' poster={ asset.image_url } ref={ videoRef }>
-                        <source src={ metadata.artwork } />
-                        Sorry, your browser doesn't support embedded videos.
-                      </video>
-                    }
-                    <img className={ 'hidden' } src={ metadata.artwork } onError={ (e) => setIsVideo(true) } onLoad={ (e) => console.log('LOADING STARTING') } />
-                    { !isVideo && <img className='gallery-art' src={ asset.image_original_url } /> }
-                  </div>
-                </div>
-                <div className='margin-top' />
+      <div class='gallery-min-height'>
+        { preload.map((preload, key) => {
+          console.log('TEST', Number(id), Number(preload.tokenId));
+            return (
+              <div className={ `${ (Number(id) !== Number(preload.tokenId)) && 'hidden' }` }>
+                <NFT key={ key } small={ small } nft={ gallery.find((e => e.tokenId === preload.tokenId)) } />
               </div>
-            }
-            <div className={ `gallery-description` }>
-              <div className='text-s'>
-                <div className='gallery-plate metal linear'>
-                  <div className='text-s'>
-                    <strong>{ metadata.artist }</strong> { metadata.year && `(b. ${ metadata.year })` }<br />
-                    { metadata.country }
-                  </div>
-                  <div className='margin-top-s text-s text-b'>
-                    <strong><i>{ asset.name || 'Untitled' }</i></strong>, 2021<br />
-                    Digital Art as NFT
-                  </div>
-                  <div className='margin-top-s text-xs'>
-                    { asset.description }
-                  </div>
-                </div>
-              </div>
-              { (!small && asset.asset_contract) && <OpenMarket asset={ asset } /> }
-            </div>
-            { (!small && metadata.artwork) &&
-              <div className='flex-full center gallery-frame-container'>
-                <div className='frame gallery-art-container'>
-                  <div className='frame-shadow'>
-                    { isVideo &&
-                      <video muted loop autoPlay webkit-playsinline='true' playsInline className='gallery-art' poster={ asset.image_url } ref={ videoRef }>
-                        <source src={ metadata.artwork } />
-                        Sorry, your browser doesn't support embedded videos.
-                      </video>
-                    }
-                    <img className={ 'hidden' } src={ metadata.artwork } onError={ (e) => setIsVideo(true) } onLoadStart={ (e) => console.log('LOADING STARTING') } />
-                    { !isVideo && <img className='gallery-art' src={ asset.image_original_url } /> }
-                  </div>
-                </div>
-              </div>
-            }
-            { (small && asset.asset_contract) && <OpenMarket asset={ asset } /> }
-          </div>
-          :
-          <div className='margin-top'>
-            This NFT does not seem to exist...
-            <div className='margin-top' />
-          </div>
+            )
+          })
         }
       </div>
       <div className='margin-top-l' />
