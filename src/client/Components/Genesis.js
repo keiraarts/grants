@@ -61,7 +61,7 @@ export default function Genesis() {
         Genesis Grant { type !== 'grantee' && 'Nominee ' }Exhibition
       </div>
       <div className='margin-top flex'>
-        <Link to={ `/gallery/${ switchPage('previous') }` } className='relative'>
+        <Link to={ `/${ type === 'grantee' ? 'gallery' : 'nominee' }/${ switchPage('previous') }` } className='relative'>
           <div class='round'>
             <div id='cta'>
               <span class='arrow-left segunda previous'></span>
@@ -70,7 +70,7 @@ export default function Genesis() {
           </div>
         </Link>
         <div className='flex-full' />
-        <Link to={ `/gallery/${ switchPage('next') }` } className='relative'>
+        <Link to={ `/${ type === 'grantee' ? 'gallery' : 'nominee' }/${ switchPage('next') }` } className='relative'>
           <div class='round arrow-right'>
             <div id='cta'>
               <span class='arrow primera next'></span>
