@@ -53,8 +53,6 @@ export default function Genesis() {
     else return Number(id) - 1;
   }
 
-  console.log('yo', preload);
-
   return (
     <div className='content-block'>
       <Resizer />

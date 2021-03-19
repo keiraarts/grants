@@ -9,6 +9,8 @@ import { apiUrl } from '../baseUrl';
 import '../styles.scss';
 import GalleryBlock from './GalleryBlock';
 
+const clone = (items) => items.map(item => Array.isArray(item) ? clone(item) : item);
+
 function shuffle(array) {
   var currentIndex = array.length, temporaryValue, randomIndex;
 
@@ -26,18 +28,29 @@ function shuffle(array) {
 
 export default function Gallery() {
   const auth = useStoreState(state => state.user.auth);
-  const grantees = shuffle(useStoreState(state => state.grantees.data) || []);
-  const nominees = shuffle(useStoreState(state => state.nominees.data) || []);
+  const granteeRaw = useStoreState(state => state.grantees.data);
+  const nomineeRaw = useStoreState(state => state.nominees.data);
 
   const [viewTab, setViewTab] = useState('grantee');
   const [showData, setShowData] = useState([]);
   const contentRef = useRef(null);
+
+  const [grantees, setGrantees] = useState([]);
+  const [nominees, setNominees] = useState([]);
   useEffect(() => {
-    if (grantees && grantees.length) setShowData(grantees.slice(0, 30));
+    setGrantees(shuffle(clone(granteeRaw)));
+  }, [granteeRaw])
+
+  useEffect(() => {
+    setNominees(shuffle(clone(nomineeRaw)));
+  }, [nomineeRaw])
+
+  useEffect(() => {
+    if (grantees && grantees.length && viewTab === 'grantee') setShowData(grantees.slice(0, 30));
   }, [grantees])
 
   useEffect(() => {
-    if (nominees && grantees.length) setShowData(nominees.slice(0, 30));
+    if (nominees && nominees.length && viewTab === 'nominee') setShowData(nominees.slice(0, 30));
   }, [nominees])
 
   useScrollPosition(({ currPos }) => {
