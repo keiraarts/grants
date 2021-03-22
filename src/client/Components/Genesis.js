@@ -30,22 +30,26 @@ export default function Genesis() {
       return [...preload, value];
     } else if (type === 'update') {
       const index = preload.findIndex(e => Number(e.tokenId) === value.tokenId);
-      const updated = preload[index];
-      updated.image = value.image;
-      return [
-        ...preload.slice(0, index),
-        updated,
-        ...preload.slice(index + 1)
-      ];
+      if (index) {
+        const updated = preload[index];
+        updated.image = value.image;
+        return [
+          ...preload.slice(0, index),
+          updated,
+          ...preload.slice(index + 1)
+        ];
+      }
     } else if (type === 'remove') {
       const index = preload.findIndex(e => Number(e.tokenId) === value.tokenId);
-      return [
-        ...preload.slice(0, index),
-        ...preload.slice(index + 1)
-      ];
-    } else {
-      return preload;
+      if (index) {
+        return [
+          ...preload.slice(0, index),
+          ...preload.slice(index + 1)
+        ];
+      }
     }
+
+    return preload;
   }, []);
 
   useEffect(() => {
