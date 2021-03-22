@@ -32,12 +32,14 @@ export default function Genesis() {
       const index = preload.findIndex(e => Number(e.tokenId) === value.tokenId);
       if (index) {
         const updated = preload[index];
-        updated.image = value.image;
-        return [
-          ...preload.slice(0, index),
-          updated,
-          ...preload.slice(index + 1)
-        ];
+        if (updated) {
+          updated.image = value.image;
+          return [
+            ...preload.slice(0, index),
+            updated,
+            ...preload.slice(index + 1)
+          ];
+        }
       }
     } else if (type === 'remove') {
       const index = preload.findIndex(e => Number(e.tokenId) === value.tokenId);
