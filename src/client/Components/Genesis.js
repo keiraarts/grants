@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useReducer, useState, useRef } from 'react';
 import { usePromise } from 'promise-hook';
 import { useParams, useLocation } from "react-router-dom";
 import { useStoreState } from 'easy-peasy';
@@ -17,40 +17,101 @@ const NFT = React.memo(GenesisNFT);
 export default function Genesis() {
   const small = useStoreState(state => state.app.small);
   const { id } = useParams();
+  const tokenId = Number(id);
   const type = useLocation().pathname.split('/')[1] === 'gallery' ? 'grantee' : 'nominee';
   const address = type === 'grantee' ? contractAddress : nomineeAddress;
 
   const gallery = useStoreState(state => { return (type === 'grantee') ? state.grantees.data : state.nominees.data });
-  const [preload, setPreload] = useState([]);
-  useEffect(() => {
-    if (gallery && gallery.length) {
-      const index = Number(id);
-      let before = index - 3;
-      if (before < 0) before = 0;
-      let after = index + 2;
-      setPreload([]);
-      setTimeout(() => {
-        setPreload(gallery.slice(before, after));
-      });
+  const [preload, dispatch] = useReducer((preload, { type, value }) => {
+    if (type === 'add') {
+      return [...preload, value];
+    } else if (type === 'update') {
+      const index = preload.findIndex(e => Number(e.tokenId) === value.tokenId);
+      const updated = preload[index];
+      updated.image = value.image;
+      return [
+        ...preload.slice(0, index),
+        updated,
+        ...preload.slice(index + 1)
+      ];
+    } else if (type === 'remove') {
+      const index = preload.findIndex(e => Number(e.tokenId) === value.tokenId);
+      return [
+        ...preload.slice(0, index),
+        ...preload.slice(index + 1)
+      ];
+    } else {
+      return preload;
     }
-  }, [gallery, id])
-
-  const [data, setData] = useState(null);
+  }, []);
   useEffect(() => {
-    fetch(`https://api.opensea.io/api/v1/assets?asset_contract_address=${ address }&token_ids=${ id }`, {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-    }).then(res => res.json())
-    .then(json => setData(json));
-  }, [id])
+    if (gallery && gallery.length && !preload.length) {
+      const index = tokenId;
+      let before = index - 4;
+      if (before < 0) before = 0;
+      let after = index + 4;
+      for (let i = before; i <= after; i++) {
+        if (gallery[i - 1].imageType === 'mp4') {
+          dispatch({ type: 'add', value: { tokenId: i, image: null, isVideo: true } });
+          fetch(gallery[i - 1].image).then(async (res) => {
+            const blob = await res.blob();
+            const image = window.URL.createObjectURL(blob);
+            dispatch({ type: 'update', value: { tokenId: i, image } });
+          });
+        } else {
+          let image;
+          image = new Image();
+          image.src = gallery[i - 1].image;
+          dispatch({ type: 'add', value: { tokenId: i, image } });
+        }
+      }
+    }
+  }, [gallery])
+
+  console.log('PRELOAD UPDATE', preload);
+
+  function updatePreload(direction, currentToken) {
+    let inc;
+    if (direction === 'next') {
+      dispatch({ type: 'remove', value: { tokenId: currentToken - 4 }});
+      inc = 5;
+    } else if (direction === 'previous') {
+      dispatch({ type: 'remove', value: { tokenId: currentToken + 4 }});
+      inc = -5;
+    }
+
+    const newLoad = gallery[currentToken - 1 + inc];
+
+    if (newLoad && newLoad.imageType === 'mp4') {
+      dispatch({ type: 'add', value: { tokenId: currentToken + inc, image: null, isVideo: true } });
+      fetch(newLoad.image).then(async (res) => {
+        const blob = await res.blob();
+        const image = window.URL.createObjectURL(blob);
+        dispatch({ type: 'update', value: { tokenId: currentToken + inc, image } });
+      });
+    } else if (newLoad) {
+      const image = new Image();
+      image.src = newLoad.image;
+      dispatch({ type: 'add', value: { tokenId: currentToken + inc, image } });
+    }
+  }
 
   function switchPage(direction) {
     if (id === '1' && direction === 'previous') return id;
-    else if (direction === 'next') return Number(id) + 1
+    else if (direction === 'next') return Number(id) + 1;
     else return Number(id) - 1;
+  }
+
+  let foundSrc, src1, src2, src3;
+  if (preload && preload.length) {
+    foundSrc = preload.find(e => { return (e.isVideo && e.tokenId === (tokenId - 1)) });
+    src1 = foundSrc ? foundSrc.image : null;
+
+    foundSrc = preload.find(e => { return (e.isVideo && e.tokenId === (tokenId)) });
+    src2 = foundSrc ? foundSrc.image : null;
+
+    foundSrc = preload.find(e => { return (e.isVideo && e.tokenId === (tokenId + 1)) });
+    src3 = foundSrc ? foundSrc.image : null;
   }
 
   return (
@@ -61,7 +122,7 @@ export default function Genesis() {
         Genesis Grant { type !== 'grantee' && 'Nominee ' }Exhibition
       </div>
       <div className='margin-top flex'>
-        <Link to={ `/${ type === 'grantee' ? 'gallery' : 'nominee' }/${ switchPage('previous') }` } className='relative'>
+        <Link to={ `/${ type === 'grantee' ? 'gallery' : 'nominee' }/${ switchPage('previous') }` } className='relative' onClick={ () => updatePreload('previous', tokenId) }>
           <div class='round'>
             <div id='cta'>
               <span class='arrow-left segunda previous'></span>
@@ -70,7 +131,7 @@ export default function Genesis() {
           </div>
         </Link>
         <div className='flex-full' />
-        <Link to={ `/${ type === 'grantee' ? 'gallery' : 'nominee' }/${ switchPage('next') }` } className='relative'>
+        <Link to={ `/${ type === 'grantee' ? 'gallery' : 'nominee' }/${ switchPage('next') }` } className='relative' onClick={ () => updatePreload('next', tokenId) }>
           <div class='round arrow-right'>
             <div id='cta'>
               <span class='arrow primera next'></span>
@@ -79,16 +140,10 @@ export default function Genesis() {
           </div>
         </Link>
       </div>
-      <div class='gallery-min-height'>
-        { preload.map((preload, key) => {
-          console.log('PRELOADING', preload);
-            return (
-              <div className={ `${ (Number(id) !== Number(preload.tokenId)) && 'hidden' }` }>
-                <NFT key={ key } small={ small } nft={ gallery.find((e => e.tokenId === preload.tokenId)) } />
-              </div>
-            )
-          })
-        }
+      <div class='gallery-min-height flex'>
+        <NFT key={ tokenId - 2 } small={ small } nft={ gallery[tokenId - 2] } src={ src1 } important />
+        <NFT key={ tokenId - 1} small={ small } nft={ gallery[tokenId - 1] } src={ src2 } important />
+        <NFT key={ tokenId } small={ small } nft={ gallery[tokenId] } src={ src3 } important />
       </div>
       <div className='margin-top-l' />
     </div>

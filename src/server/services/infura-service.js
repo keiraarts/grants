@@ -231,12 +231,12 @@ async function pollGalleryData(type) {
 }
 
 // SITE CRASHED
-pollGalleryData('grantee');
-pollGalleryData('nominee');
-setInterval(() => {
-  pollGalleryData('grantee');
-  pollGalleryData('nominee');
-}, 60000 * 30)
+// pollGalleryData('grantee');
+// pollGalleryData('nominee');
+// setInterval(() => {
+//   pollGalleryData('grantee');
+//   pollGalleryData('nominee');
+// }, 60000 * 30)
 
 try {
   const rawdata = fs.readFileSync(path.join(__dirname, `./cachedGallery.json`));
