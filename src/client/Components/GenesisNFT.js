@@ -143,10 +143,10 @@ const GenesisNFT = ({ small, nft, src, important, hidden }) => {
                     Sorry, your browser doesn't support embedded videos.
                   </video>
                 }
-                { (nft.imageType !== 'mp4' && !nft.imageType === 'mov') &&
+                { (nft.imageType !== 'mp4' && nft.imageType !== 'mov') &&
                   <img className={ `gallery-art ${ !loaded && 'hidden'}` } key={ `${ nft.image }` } src={ nft.image } onLoad={ () => setLoaded(true) } />
                 }
-                { ((nft.imageType !== 'mp4' && !nft.imageType === 'mov') || nft.thumbnailType) &&
+                { ((nft.imageType !== 'mp4' && nft.imageType !== 'mov') || nft.thumbnailType) &&
                   <img className={ `gallery-art ${ loaded && 'hidden '}` } key={ `${ nft.imageWeb }` } src={ `https://cdn.grants.art/${ nft.imageWeb }` } />
                 }
               </div>
