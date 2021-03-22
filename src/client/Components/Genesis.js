@@ -19,7 +19,7 @@ export default function Genesis() {
   const { id } = useParams();
   const tokenId = Number(id);
   const location = useLocation().pathname.split('/');
-  const type = location[location.length - 1] === 'gallery' ? 'grantee' : 'nominee';
+  const type = location[location.length - 2] === 'gallery' ? 'grantee' : 'nominee';
   console.log(type);
   const address = type === 'grantee' ? contractAddress : nomineeAddress;
 
@@ -49,6 +49,7 @@ export default function Genesis() {
   }, []);
 
   useEffect(() => {
+    console.log('init', gallery);
     if (gallery && gallery.length && !preload.length) {
       const index = tokenId;
       let before = index - 4;
