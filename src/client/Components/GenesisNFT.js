@@ -131,22 +131,22 @@ const GenesisNFT = ({ small, nft, src, important, hidden }) => {
           <div className={ `flex-full center ${ small ? 'gallery-frame-container-small' : 'gallery-frame-container' }` }>
             <div className='frame gallery-art-container'>
               <div className='frame-shadow'>
-                { (nft.imageType === 'mp4')  &&
+                { (nft.imageType === 'mp4' || nft.imageType === 'mov')  &&
                   <video muted loop autoPlay webkit-playsinline='true' playsInline key={ `${ src }-1` } className={ `gallery-art ${ !loaded && 'hidden'}` } onCanPlay={ () => setLoaded(true) } ref={ video }>
                     <source src={ src } />
                     Sorry, your browser doesn't support embedded videos.
                   </video>
                 }
-                { (nft.imageType === 'mp4' && !nft.thumbnailType) &&
+                { ((nft.imageType === 'mp4' || nft.imageType === 'mov') && !nft.thumbnailType) &&
                   <video muted loop autoPlay webkit-playsinline='true' playsInline key={ `${ src }-2` } className={ `gallery-art ${ loaded && 'hidden'}` }>
                     <source src={ `https://cdn.grants.art/${ nft.imageWeb }` } />
                     Sorry, your browser doesn't support embedded videos.
                   </video>
                 }
-                { (nft.imageType !== 'mp4') &&
+                { (nft.imageType !== 'mp4' && !nft.imageType === 'mov') &&
                   <img className={ `gallery-art ${ !loaded && 'hidden'}` } key={ `${ nft.image }` } src={ nft.image } onLoad={ () => setLoaded(true) } />
                 }
-                { (nft.imageType !== 'mp4' || nft.thumbnailType) &&
+                { ((nft.imageType !== 'mp4' && !nft.imageType === 'mov') || nft.thumbnailType) &&
                   <img className={ `gallery-art ${ loaded && 'hidden '}` } key={ `${ nft.imageWeb }` } src={ `https://cdn.grants.art/${ nft.imageWeb }` } />
                 }
               </div>

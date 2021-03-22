@@ -53,7 +53,7 @@ export default function Genesis() {
       if (before < 0) before = 0;
       let after = index + 1;
       for (let i = before; i <= after; i++) {
-        if (gallery[i - 1].imageType === 'mp4') {
+        if (gallery[i - 1].imageType === 'mp4' || gallery[i - 1].imageType === 'mov') {
           dispatch({ type: 'add', value: { tokenId: i, image: null, isVideo: true } });
           fetch(gallery[i - 1].image).then(async (res) => {
             const blob = await res.blob();
@@ -82,7 +82,7 @@ export default function Genesis() {
 
     const newLoad = gallery[currentToken - 1 + inc];
 
-    if (newLoad && newLoad.imageType === 'mp4') {
+    if (newLoad && (newLoad.imageType === 'mp4' || gallery[i - 1].imageType === 'mov')) {
       dispatch({ type: 'add', value: { tokenId: currentToken + inc, image: null, isVideo: true } });
       fetch(newLoad.image).then(async (res) => {
         const blob = await res.blob();
