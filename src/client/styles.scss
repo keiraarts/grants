@@ -546,15 +546,6 @@ canvas {
   }
 }
 
-.controls {
-  z-index: -1;
-}
-
-.controls:hover {
-  z-index: -1;
-  cursor: pointer;
-}
-
 .block-loading {
   width: 100%;
   position: absolute;

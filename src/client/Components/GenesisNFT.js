@@ -24,11 +24,36 @@ const GenesisNFT = ({ small, nft, src, important, hidden }) => {
     console.log
     if (video.current) {
       video.current.muted = false;
-      video.current.webkitRequestFullScreen();
+      if (video.current.requestFullScreen) {
+        video.current.requestFullScreen();
+      } else if (video.current.webkitRequestFullScreen) {
+        video.current.webkitRequestFullScreen();
+      } else if (video.current.mozRequestFullScreen) {
+        video.current.mozRequestFullScreen();
+      } else if (video.current.msRequestFullscreen) {
+        video.current.msRequestFullscreen();
+      } else if (video.current.webkitEnterFullscreen) {
+        video.current.webkitEnterFullscreen(); //for iphone this code worked
+      }
+
       setMuted(false);
     } else {
-      if (!isFullScreen) document.documentElement.webkitRequestFullScreen();
-      else document.webkitExitFullscreen();
+      if (document.documentElement.requestFullScreen) {
+        if (isFullScreen) document.exitFullscreen();
+        else document.documentElement.requestFullScreen();
+      } else if (document.documentElement.webkitRequestFullScreen) {
+        if (isFullScreen) document.webkitExitFullscreen();
+        else document.documentElement.webkitRequestFullScreen();
+      } else if (document.documentElement.mozRequestFullScreen) {
+        if (isFullScreen) document.mozExitFullscreen();
+        else document.documentElement.mozRequestFullScreen();
+      } else if (document.documentElement.msRequestFullscreen) {
+        if (isFullScreen) document.msExitFullscreen();
+        else document.documentElement.msRequestFullscreen();
+      } else if (document.documentElement.webkitEnterFullscreen) {
+        if (isFullScreen) document.webkitExitFullscreen();
+        else document.documentElement.webkitEnterFullscreen()
+      }
       setFullScreen(!isFullScreen);
     }
   }
@@ -120,10 +145,10 @@ const GenesisNFT = ({ small, nft, src, important, hidden }) => {
                 <div className='loaderBar'></div>
               </div>
               :
-              <div className='controls flex margin-top-s'>
+              <div className='flex margin-top-s'>
                 <div className='flex-full' />
                 { video && video.current &&
-                  <div onClick={ () => toggleAudio() }>
+                  <div onClick={ () => toggleAudio() } className='pointer'>
                     { muted ?
                       <img src={ Muted } className='frame-control' />
                       :
@@ -131,12 +156,12 @@ const GenesisNFT = ({ small, nft, src, important, hidden }) => {
                     }
                   </div>
                 }
-                <div onClick={ () => fullScreen() }>
+                <div onClick={ () => fullScreen() } className='pointer'>
                   <img src={ FullScreen } className='margin-left-s frame-control' />
                 </div>
               </div>
             }
-            <div className='margin-top' />
+            <div className='margin-top-s' />
           </div>
           { (!isFullScreen && small) &&
             <div className={ `gallery-description` }>
