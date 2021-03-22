@@ -21,7 +21,6 @@ const GenesisNFT = ({ small, nft, src, important, hidden }) => {
 
   const [isFullScreen, setFullScreen] = useState(false);
   function fullScreen() {
-    console.log
     if (video.current) {
       video.current.muted = false;
       if (video.current.requestFullScreen) {
@@ -54,6 +53,8 @@ const GenesisNFT = ({ small, nft, src, important, hidden }) => {
         if (isFullScreen) document.webkitExitFullscreen();
         else document.documentElement.webkitEnterFullscreen()
       }
+
+      video.current.play();
       setFullScreen(!isFullScreen);
     }
   }
