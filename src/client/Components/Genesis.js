@@ -25,7 +25,6 @@ export default function Genesis() {
 
   const gallery = useStoreState(state => { return (type === 'grantee') ? state.grantees.data : state.nominees.data });
   const [preload, dispatch] = useReducer((preload, { type, value }) => {
-    console.log(preload, type, value);
     if (type === 'add') {
       return [...preload, value];
     } else if (type === 'update') {
@@ -49,7 +48,6 @@ export default function Genesis() {
   }, []);
 
   useEffect(() => {
-    console.log('init', gallery);
     if (gallery && gallery.length && !preload.length) {
       const index = tokenId;
       let before = index - 4;
