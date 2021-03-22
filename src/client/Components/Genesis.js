@@ -20,10 +20,12 @@ export default function Genesis() {
   const tokenId = Number(id);
   const location = useLocation().pathname.split('/');
   const type = location[location.length - 1] === 'gallery' ? 'grantee' : 'nominee';
+  console.log(type);
   const address = type === 'grantee' ? contractAddress : nomineeAddress;
 
   const gallery = useStoreState(state => { return (type === 'grantee') ? state.grantees.data : state.nominees.data });
   const [preload, dispatch] = useReducer((preload, { type, value }) => {
+    console.log(preload, type, value);
     if (type === 'add') {
       return [...preload, value];
     } else if (type === 'update') {
@@ -45,6 +47,7 @@ export default function Genesis() {
       return preload;
     }
   }, []);
+
   useEffect(() => {
     if (gallery && gallery.length && !preload.length) {
       const index = tokenId;
