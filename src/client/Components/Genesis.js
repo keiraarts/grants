@@ -20,7 +20,6 @@ export default function Genesis() {
   const tokenId = Number(id);
   const location = useLocation().pathname.split('/');
   const type = location[location.length - 2] === 'gallery' ? 'grantee' : 'nominee';
-  console.log(type);
   const address = type === 'grantee' ? contractAddress : nomineeAddress;
 
   const gallery = useStoreState(state => { return (type === 'grantee') ? state.grantees.data : state.nominees.data });
@@ -50,9 +49,9 @@ export default function Genesis() {
   useEffect(() => {
     if (gallery && gallery.length && !preload.length) {
       const index = tokenId;
-      let before = index - 4;
+      let before = index - 1;
       if (before < 0) before = 0;
-      let after = index + 4;
+      let after = index + 1;
       for (let i = before; i <= after; i++) {
         if (gallery[i - 1].imageType === 'mp4') {
           dispatch({ type: 'add', value: { tokenId: i, image: null, isVideo: true } });
@@ -124,25 +123,25 @@ export default function Genesis() {
       </div>
       <div className='margin-top flex'>
         <Link to={ `/${ type === 'grantee' ? 'gallery' : 'nominee' }/${ switchPage('previous') }` } className='relative' onClick={ () => updatePreload('previous', tokenId) }>
-          <div class='round'>
+          <div className='round'>
             <div id='cta'>
-              <span class='arrow-left segunda previous'></span>
-              <span class='arrow-left primera previous'></span>
+              <span className='arrow-left segunda previous'></span>
+              <span className='arrow-left primera previous'></span>
             </div>
           </div>
         </Link>
         <div className='flex-full' />
         <Link to={ `/${ type === 'grantee' ? 'gallery' : 'nominee' }/${ switchPage('next') }` } className='relative' onClick={ () => updatePreload('next', tokenId) }>
-          <div class='round arrow-right'>
+          <div className='round arrow-right'>
             <div id='cta'>
-              <span class='arrow primera next'></span>
-              <span class='arrow segunda next'></span>
+              <span className='arrow primera next'></span>
+              <span className='arrow segunda next'></span>
             </div>
           </div>
         </Link>
       </div>
       { gallery &&
-        <div class='gallery-min-height'>
+        <div className='gallery-min-height'>
           <NFT key={ tokenId - 2 } small={ small } nft={ gallery[tokenId - 2] } src={ src1 } important hidden />
           <NFT key={ tokenId - 1} small={ small } nft={ gallery[tokenId - 1] } src={ src2 } important />
           <NFT key={ tokenId } small={ small } nft={ gallery[tokenId] } src={ src3 } important hidden />
