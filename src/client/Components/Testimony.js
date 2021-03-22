@@ -52,7 +52,7 @@ export default function Committee() {
           Finally, it feels like there's a space for digital artists of any distinction to have a platform for their work to be acknowledged.
           A space that encourages community and innovation amongst its peers like no other. A space filled with raw potential and open to anyone eager to explore the uncharted path.
           A truly exciting moment in art."
-          -  <span className='text-s text-grey pointer' onClick={ () => openLink('https://jamesowen.co/gallery') }>James Owen</span>
+          -  <span className='text-s text-grey pointer' onClick={ () => openLink('https://twitter.com/_james_owen_') }>James Owen</span>
         </div>
         <div className='text-s margin-top'>
           "I would never have imagined connecting with people who I consider legends. Now I have the opportunity to
