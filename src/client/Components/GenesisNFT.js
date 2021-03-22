@@ -5,11 +5,21 @@ import FullScreen from '../assets/fullscreen.png';
 import MinScreen from '../assets/minscreen.png';
 import Muted from '../assets/muted.png';
 import Unmuted from '../assets/unmuted.png';
+import Twitter from '../assets/twitter.png';
+import Instagram from '../assets/instagram.png';
+import Web from '../assets/website.png';
 
 import '../styles.scss';
 
 const contractAddress = '0xc0b4777897a2a373da8cb1730135062e77b7baec';
 const nomineeAddress = '0xf6e716ba2a2f4acb3073d79b1fc8f1424758c2aa';
+
+function openLink(page)
+{
+  page = page.replace('@', '');
+  let win = window.open(page, '_blank');
+  win.focus();
+}
 
 const GenesisNFT = ({ small, nft, src, important, hidden }) => {
   const [loaded, setLoaded] = useState(false);
@@ -110,6 +120,11 @@ const GenesisNFT = ({ small, nft, src, important, hidden }) => {
                   </div>
                 </div>
               </div>
+              <div className='flex margin-top-s'>
+                { nft.website && <div><img src={ Web } className='account-social-web pointer' alt='Website' onClick={ () => openLink(nft.website) } /></div> }
+                { nft.twitter && <div><img src={ Twitter } className='account-social pointer' alt='Twitter' onClick={ () => openLink(nft.twitter.substring(0, 4) === 'http' || nft.twitter.substring(0, 3) === 'www' ? nft.twitter : `https://twitter.com/${ nft.twitter }`) } /></div> }
+                { nft.instagram && <div><img src={ Instagram } className='account-social pointer' alt='Instagram' onClick={ () => openLink(nft.instagram.substring(0, 4) === 'http' || nft.instagram.substring(0, 3) === 'www' ? nft.instagram : `https://instagram.com/${ nft.instagram }`) } /></div> }
+              </div>
               {/* { !small && <OpenMarket asset={ asset } /> } */}
             </div>
           }
@@ -181,6 +196,11 @@ const GenesisNFT = ({ small, nft, src, important, hidden }) => {
                     { nft.description }
                   </div>
                 </div>
+              </div>
+              <div className='flex margin-top-s'>
+                { nft.website && <div><img src={ Web } className='account-social-web pointer' alt='Website' onClick={ () => openLink(nft.website) } /></div> }
+                { nft.twitter && <div><img src={ Twitter } className='account-social pointer' alt='Twitter' onClick={ () => openLink(nft.twitter.substring(0, 4) === 'http' || nft.twitter.substring(0, 3) === 'www' ? nft.twitter : `https://twitter.com/${ nft.twitter }`) } /></div> }
+                { nft.instagram && <div><img src={ Instagram } className='account-social pointer' alt='Instagram' onClick={ () => openLink(nft.instagram.substring(0, 4) === 'http' || nft.instagram.substring(0, 3) === 'www' ? nft.instagram : `https://instagram.com/${ nft.instagram }`) } /></div> }
               </div>
               {/* { !small && <OpenMarket asset={ asset } /> } */}
             </div>
