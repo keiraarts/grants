@@ -54,15 +54,16 @@ const GenesisNFT = ({ small, nft, src, important, hidden }) => {
         else document.documentElement.webkitEnterFullscreen()
       }
 
-      video.current.play();
       setFullScreen(!isFullScreen);
     }
   }
 
   useEffect(() => {
     document.addEventListener('webkitfullscreenchange', (event) => {
-      if (!document.webkitIsFullScreen) setFullScreen(false);
-      else setFullScreen(true);
+      if (!document.webkitIsFullScreen) {
+        setFullScreen(false);
+        if (video.current) video.current.play();
+      } else setFullScreen(true);
     });
 
     return () => {
