@@ -82,7 +82,7 @@ export default function Genesis() {
 
     const newLoad = gallery[currentToken - 1 + inc];
 
-    if (newLoad && (newLoad.imageType === 'mp4' || gallery[i - 1].imageType === 'mov')) {
+    if (newLoad && (newLoad.imageType === 'mp4' || newLoad.imageType === 'mov')) {
       dispatch({ type: 'add', value: { tokenId: currentToken + inc, image: null, isVideo: true } });
       fetch(newLoad.image).then(async (res) => {
         const blob = await res.blob();
