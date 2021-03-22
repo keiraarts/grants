@@ -42,13 +42,7 @@ export default function Genesis() {
         }
       }
     } else if (type === 'remove') {
-      const index = preload.findIndex(e => Number(e.tokenId) === value.tokenId);
-      if (index) {
-        return [
-          ...preload.slice(0, index),
-          ...preload.slice(index + 1)
-        ];
-      }
+      return preload.filter(e => Number(e.tokenId) !== value.tokenId);
     }
 
     return preload;
