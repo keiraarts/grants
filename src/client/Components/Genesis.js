@@ -18,7 +18,8 @@ export default function Genesis() {
   const small = useStoreState(state => state.app.small);
   const { id } = useParams();
   const tokenId = Number(id);
-  const type = useLocation().pathname.split('/')[1] === 'gallery' ? 'grantee' : 'nominee';
+  const location = useLocation().pathname.split('/');
+  const type = location[location.length - 1] === 'gallery' ? 'grantee' : 'nominee';
   const address = type === 'grantee' ? contractAddress : nomineeAddress;
 
   const gallery = useStoreState(state => { return (type === 'grantee') ? state.grantees.data : state.nominees.data });
@@ -139,9 +140,9 @@ export default function Genesis() {
         </Link>
       </div>
       <div class='gallery-min-height'>
-        {/* <NFT key={ tokenId - 2 } small={ small } nft={ gallery[tokenId - 2] } src={ src1 } important /> */}
+        <NFT key={ tokenId - 2 } small={ small } nft={ gallery[tokenId - 2] } src={ src1 } important hidden />
         <NFT key={ tokenId - 1} small={ small } nft={ gallery[tokenId - 1] } src={ src2 } important />
-        {/* <NFT key={ tokenId } small={ small } nft={ gallery[tokenId] } src={ src3 } important /> */}
+        <NFT key={ tokenId } small={ small } nft={ gallery[tokenId] } src={ src3 } important hidden />
       </div>
       <div className='margin-top-l' />
     </div>

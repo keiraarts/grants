@@ -7,7 +7,7 @@ import '../styles.scss';
 const contractAddress = '0xc0b4777897a2a373da8cb1730135062e77b7baec';
 const nomineeAddress = '0xf6e716ba2a2f4acb3073d79b1fc8f1424758c2aa';
 
-const GenesisNFT = ({ small, nft, src, important }) => {
+const GenesisNFT = ({ small, nft, src, important, hidden }) => {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
@@ -15,7 +15,7 @@ const GenesisNFT = ({ small, nft, src, important }) => {
   }, [src])
 
   return (
-    <div className={ `margin-top flex full-width ${ !small && 'side-space' }` }>
+    <div className={ `margin-top flex full-width ${ !small && 'side-space' }` } style={ { display: hidden && 'none' } }>
       { nft ?
         <div className='margin-top-l gallery-container full-width'>
           { small &&
