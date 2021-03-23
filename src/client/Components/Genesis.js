@@ -50,8 +50,9 @@ export default function Genesis() {
     if (gallery && gallery.length && !preload.length) {
       const index = tokenId;
       let before = index - 1;
-      if (before < 0) before = 0;
+      if (before <= 0) before = 1;
       let after = index + 1;
+      if (after >= gallery.length) after = gallery.length;
       for (let i = before; i <= after; i++) {
         if (gallery[i - 1].imageType === 'mp4' || gallery[i - 1].imageType === 'mov') {
           dispatch({ type: 'add', value: { tokenId: i, image: null, isVideo: true } });
@@ -98,6 +99,7 @@ export default function Genesis() {
 
   function switchPage(direction) {
     if (id === '1' && direction === 'previous') return id;
+    else if (direction === 'next' && Number(id) === gallery.length) return id;
     else if (direction === 'next') return Number(id) + 1;
     else return Number(id) - 1;
   }
