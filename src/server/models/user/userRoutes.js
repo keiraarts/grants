@@ -8,4 +8,6 @@ module.exports = (app) => {
   app.post('/api/verifyWallet', user.verifyWallet);
   app.post('/api/sendEmailVerification', user.sendEmailVerification);
   app.post('/api/verifyEmail', user.verifyEmail);
+  app.post('/api/requestPassword', user.requestPassword);
+  app.post('/api/recoverPassword', user.recoverPassword);
 };

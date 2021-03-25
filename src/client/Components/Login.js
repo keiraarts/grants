@@ -71,6 +71,9 @@ export default function Register() {
               &nbsp;&nbsp;&nbsp;or&nbsp;&nbsp;<Link to='/register' className='text-m text-grey pointer'>Register an Account</Link>
             </div>
           }
+          <Link to='/forgotpassword' className='margin-top text-s text-grey pointer'>
+            Forgot your password?
+          </Link>
         </form>
         <br />
       </div>

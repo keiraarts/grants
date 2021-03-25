@@ -144,9 +144,9 @@ export default function Genesis() {
       </div>
       { gallery &&
         <div className='gallery-min-height'>
-          <NFT key={ tokenId - 2 } small={ small } nft={ gallery[tokenId - 2] } src={ src1 } important hidden />
-          <NFT key={ tokenId - 1} small={ small } nft={ gallery[tokenId - 1] } src={ src2 } important />
-          <NFT key={ tokenId } small={ small } nft={ gallery[tokenId] } src={ src3 } important hidden />
+          <NFT key={ tokenId - 2 } small={ small } nft={ gallery[tokenId - 2] } src={ src1 } contract={ address } important hidden />
+          <NFT key={ tokenId - 1} small={ small } nft={ gallery[tokenId - 1] } src={ src2 } contract={ address } important />
+          <NFT key={ tokenId } small={ small } nft={ gallery[tokenId] } src={ src3 } contract={ address } important hidden />
         </div>
       }
       <div className='margin-top-l' />

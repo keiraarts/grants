@@ -23,6 +23,8 @@ import Curation from "./Components/Curation";
 import Testimony from "./Components/Testimony";
 import Register from "./Components/Register";
 import Login from "./Components/Login";
+import Forgot from "./Components/Forgot";
+import RecoverAccount from "./Components/RecoverAccount";
 import Account from "./Components/Account";
 import Genesis from "./Components/Genesis";
 import VerifyEmail from "./Components/VerifyEmail";
@@ -60,6 +62,8 @@ const App = () => {
                 <Route path="/testimony" exact component={ Testimony } />
                 <Route path="/register" exact component={ Register } />
                 <Route path="/login" exact component={ Login } />
+                <Route path="/forgotpassword" exact component={ Forgot } />
+                <Route path="/recoveraccount/:token" exact component={ RecoverAccount } />
                 <Route path="/account" exact component={ Account } />
                 <Route path="/verifyemail/:id" component={ VerifyEmail } />
                 <Route path="/gallery/:id" component={ Genesis } />

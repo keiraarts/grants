@@ -48,7 +48,8 @@ app.use((req, res) => {
   const allowedRoutes = [
     'nft', 'ethos', 'apply', 'committee', 'program', 'curation', 'register',
     'donate', 'tutorial', , 'testimony', 'rarible', 'opensea', 'resources',
-    'login', 'register', 'art', 'account', 'verifyemail', 'gallery', 'nominee'
+    'login', 'register', 'art', 'account', 'verifyemail', 'gallery', 'nominee',
+    'recoveraccount', 'forgotpassword'
     ];
     
   if (allowedRoutes.indexOf(route) > -1) {

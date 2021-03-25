@@ -46,6 +46,12 @@ const user = {
             'Password must be six characters or more'
         ]
     },
+    recoveryToken: {
+        type: String,
+    },
+    recoveryExpiration: {
+        type: Date,
+    },
     salt: {
         type: String
     },

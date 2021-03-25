@@ -198,6 +198,48 @@ exports.verifyEmail = (req, res, next) => {
   });
 }
 
+exports.requestPassword = (req, res, next) => {
+  User.findOne({
+      $or: [
+          { email: { $regex: new RegExp(`^${ req.body.recovery.toLowerCase().trim() }$`, 'i') } },
+          { username: { $regex: new RegExp(`^${ req.body.recovery.toLowerCase().trim() }$`, 'i') } }
+      ]
+  }, (err, user) => {
+      if (err) {
+          return next(err);
+      } else if (!user) {
+          return res.status(401).json(`Could not find user: ${ req.body.username }`);
+      } else if ((user.username.toLowerCase() !== req.body.recovery.toLowerCase().trim() && user.email.toLowerCase() !== req.body.recovery.toLowerCase().trim())) {
+          return res.status(401).json(`Could not find user: ${ req.body.username }`);
+      } else {
+        user.recoveryToken = crypto.randomBytes(32).toString('hex');
+        const expires = new Date();
+        expires.setHours(expires.getHours() + 24);
+        user.recoveryExpiration = expires;
+        user.save();
+        transporter.sendMail(templates.passRecovery(user.email, user.username, user.recoveryToken));
+      }
+
+      return res.json(true);
+  });
+};
+
+exports.recoverPassword = (req, res, next) => {
+  User.findOne({ recoveryToken: req.body.token }, (err, user) => {
+      if (err) {
+          return next(err);
+      } else if (!user) {
+          return res.status(401).json({ error: `Invalid request` });
+      }
+
+      user.salt = new Buffer(crypto.randomBytes(16).toString('base64'), 'base64');
+      user.password = crypto.pbkdf2Sync(req.body.password, user.salt, 10000, 64, 'sha1').toString('base64');
+      user.save();
+
+      return res.json({ success: 'Password changed' });
+  });
+};
+
 
 
 // FIX BAD MAPPING
