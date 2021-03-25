@@ -24,20 +24,32 @@ export default function OpenMarket({ tokenId, contract }) {
   contract = '0x3f4200234e26d2dfbc55fcfd9390bc128d5e2cca';
   tokenId = 10;
 
+  const [gotAsset, setAsset] = useState({});
   const [provider, setProvider] = useState(null);
   const [seaport, setSeaport] = useState(null);
   const [bids, setBids] = useState(null);
   const [auction, setAuction] = useState(null);
   const [auctionEnd, setAuctionEnd] = useState(null);
   const [listed, setListed] = useState(null);
+  const [balance, setBalance] = useState(null);
+
+  function getAsset() {
+    fetch(`https://api.opensea.io/api/v1/assets?asset_contract_address=${ contract }&token_ids=${ tokenId }`, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+    }).then(res => res.json())
+    .then(json => setAsset(json));
+  }
+
   async function pollBids() {
     if (seaport) {
       const { count, orders } = await seaport.api.getOrders({
         asset_contract_address: contract,
         token_id: tokenId,
       })
-
-      console.log(count, orders);
 
       let newBids = [];
       let end;
@@ -82,6 +94,7 @@ export default function OpenMarket({ tokenId, contract }) {
           setAuction(null);
         }
 
+        if (newBids && bids && newBids.length !== bids.length) getAsset();
         setBids(_.orderBy(newBids, ['value'], ['desc']));
       }
 
@@ -93,16 +106,18 @@ export default function OpenMarket({ tokenId, contract }) {
     }
   }
 
-  const [gotAsset, setAsset] = useState({});
+  async function getBalance(accountAddress, existingSeaport) {
+    console.log(accountAddress);
+    const balanceOfWETH = await existingSeaport.getTokenBalance({
+      accountAddress,
+      tokenAddress: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'
+    })
+
+    setBalance(Number(Web3.utils.fromWei(balanceOfWETH.toString(), 'ether')));
+  }
+
   useEffect(() => {
-    fetch(`https://api.opensea.io/api/v1/assets?asset_contract_address=${ contract }&token_ids=${ tokenId }`, {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-    }).then(res => res.json())
-    .then(json => setAsset(json));
+    getAsset();
   }, [])
 
 
@@ -206,8 +221,27 @@ export default function OpenMarket({ tokenId, contract }) {
           if (listed) order = listed;
         }
 
-        console.log('cancelling', auction, provider.selectedAddress);
-        await seaport.cancelOrder({
+        if (auction) {     
+          let win = window.open(`https://opensea.io/assets/${ contract }/${ tokenId }`, '_blank');
+          win.focus();
+        } else {
+          await seaport.cancelOrder({
+            order,
+            accountAddress: provider.selectedAddress,
+          });
+        }
+      }
+    }
+  }
+
+  const purchase = async (order) => {
+    connectWallet();
+    if (provider && provider.selectedAddress) {
+      if (auth.wallet && auth.wallet.toLowerCase() !== provider.selectedAddress.toLowerCase()) setUnverified(true);
+      else {
+        console.log('purchasing', listed, provider.selectedAddress);
+        if (!order) order = listed;
+        await seaport.fulfillOrder({
           order,
           accountAddress: provider.selectedAddress,
         })
@@ -217,7 +251,6 @@ export default function OpenMarket({ tokenId, contract }) {
 
   const [listener, setListener] = useState(null);
   async function connectWallet() {
-    console.log('SETTING', window.etherem);
     if (window.ethereum) {
       const createdProvider = window.web3.currentProvider;
       if (!createdProvider.selectedAddress) window.ethereum.enable();
@@ -234,10 +267,26 @@ export default function OpenMarket({ tokenId, contract }) {
           setSellOpen(false);
           console.info('CONFIRMED', { transactionHash, event })
         });
+        createdSeaport.addListener(EventType.TransactionCreated, ({ transactionHash, event }) => {
+          console.info({ transactionHash, event })
+        })
+        createdSeaport.addListener(EventType.TransactionConfirmed, ({ transactionHash, event }) => {
+          console.info({ transactionHash, event })
+        })
+        createdSeaport.addListener(EventType.OrderDenied, ({ order, accountAddress }) => {
+          console.info({ order, accountAddress })
+        })
+        createdSeaport.addListener(EventType.MatchOrders, ({ buy, sell, accountAddress }) => {
+          console.info({ buy, sell, accountAddress })
+        })
+        createdSeaport.addListener(EventType.CancelOrder, ({ order, accountAddress }) => {
+          console.info({ order, accountAddress })
+        })
 
         setListener(listener);
         setProvider(createdProvider);
         setSeaport(createdSeaport);
+        getBalance(createdProvider.selectedAddress, createdSeaport);
       }
     }
   }
@@ -273,7 +322,6 @@ export default function OpenMarket({ tokenId, contract }) {
   let err = false, reserveMet = 0;
   if (reserve && viewTab === 'auction' && reserve < 1.07) err = 'Your minimum bid must start at 1.07WETH';
   if (auction && bids && bids.length && bids[0].value >= Number(Web3.utils.fromWei((Math.round(auction.basePrice.toNumber().toFixed(2) * 1000) / 100).toString(), 'ether')).toFixed(2)) {
-    console.log(bids[0].value, Number(Web3.utils.fromWei((Math.round(auction.basePrice.toNumber().toFixed(2) * 1000) / 100).toString(), 'ether')).toFixed(2))
     reserveMet = bids[0].value;
   }
 
@@ -354,16 +402,16 @@ export default function OpenMarket({ tokenId, contract }) {
         <div className='flex'> 
           <div className='form__group field'>
             <input type='number' className='form__field' placeholder='Bid Amount' name='amount' id='amount' required maxLength='100' onChange={e => { setBid(e.target.value); setBidErr(null); } } />
-            <label className='form__label_s'>Bid Amount (WETH)</label>
+            <label className='form__label_s'>Bid Amount { balance ? `(${ balance } WETH)` : '(WETH)' }</label>
           </div>
           &nbsp;<input type='submit' value='Place Bid' className='small-button' onClick={ placeBid } />
         </div>
         :
-        <div className='flex'>
+        <div className='flex margin-top-s'>
           { (!auction && !listed) ?
             <input type='submit' value='List on Market' className='small-button' onClick={ () => setSellOpen(true) } />
             :
-            <input type='submit' value='Cancel Listing' className='small-button' onClick={ cancelOrder } />
+            <input type='submit' value='Cancel Listing' className='small-button' onClick={ () => cancelOrder() } />
           }
         </div>
       }
@@ -385,9 +433,13 @@ export default function OpenMarket({ tokenId, contract }) {
         </div>
       }
       { listed &&
-        <div className='margin-top-s'>
-          <div className='text-s'>List Price</div>
-          Ξ{ Web3.utils.fromWei(listed.currentPrice.toString(), 'ether') }
+        <div className='margin-top-s flex'>
+          <div>
+            <div className='text-s'>List Price</div>
+            Ξ{ Web3.utils.fromWei(listed.currentPrice.toString(), 'ether') }
+          </div>
+          <div className='flex-full' />
+          { listed.maker.toLowerCase() !== provider.selectedAddress.toLowerCase() && <input type='submit' value='Purchase Artwork' className='small-button' onClick={ purchase } /> }
         </div>
       }
       <div className='text-s margin-top-s'>
@@ -396,10 +448,16 @@ export default function OpenMarket({ tokenId, contract }) {
             return (
               <div className='margin-top-s' key={ index }>
                 { index === 0 ?
-                  <div><strong>Bid of Ξ{ bid.value }</strong></div>
+                  <div>
+                    <strong>Bid of Ξ{ bid.value }</strong>
+                    { (bid.maker.toLowerCase() === provider.selectedAddress.toLowerCase()) && <span className='text-s text-grey pointer' onClick={ () => cancelOrder(bid) }>&nbsp;- Cancel</span> }
+                    { (isOwner && bid.maker.toLowerCase() !== provider.selectedAddress.toLowerCase()) && <span className='text-s text-grey pointer' onClick={ () => purchase(bid) }>&nbsp;- Accept</span> }
+                  </div>
                   :
                   <div>
-                    Bid of Ξ{ bid.value }{ (bid.maker.toLowerCase() === provider.selectedAddress.toLowerCase()) && <span className='text-s text-grey pointer' onClick={ () => cancelOrder(bid) }> - Cancel</span> }
+                    Bid of Ξ{ bid.value }
+                    { (bid.maker.toLowerCase() === provider.selectedAddress.toLowerCase()) && <span className='text-s text-grey pointer' onClick={ () => cancelOrder(bid) }>&nbsp;- Cancel</span> }
+                    { (isOwner && bid.maker.toLowerCase() !== provider.selectedAddress.toLowerCase()) && <span className='text-s text-grey pointer' onClick={ () => purchase(bid) }>&nbsp;- Accept</span> }
                   </div>
                 }
                 <span className='text-xs'>{ (bid.maker.toLowerCase() === provider.selectedAddress.toLowerCase()) ? 'You - ' : '' }{ bid.user }</span>
@@ -410,14 +468,4 @@ export default function OpenMarket({ tokenId, contract }) {
       </div>
     </div>
   );
-}
-
-const getOrderBook = (contract, id) => {
-  return fetch(`https://api.opensea.io/wyvern/v1/orders?bundled=false&include_bundled=false&include_invalid=false&limit=20&offset=0&order_by=created_date&order_direction=desc&asset_contract_address=${ contract }&token_ids=${ id }`, {
-    method: 'GET',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-    },
-  }).then(res => res.json());
 }

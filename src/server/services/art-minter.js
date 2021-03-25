@@ -22,7 +22,10 @@ const mainnet = `https://mainnet.infura.io/v3/${process.env.INFURA}`
 const web3 = new Web3( new Web3.providers.HttpProvider(mainnet) )
 
 web3.eth.defaultAccount = process.env.WALLET
-const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS_NOMINEE;
+const grantee = false;
+let CONTRACT_ADDRESS
+if (grantee) CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS;
+else CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS_NOMINEE;
 
 const getCurrentGasPrices = async () => {
   let response = await axios.get('https://ethgasstation.info/json/ethgasAPI.json')
@@ -60,7 +63,7 @@ const main = async () => {
   const rawdata = await fs.readFileSync('./arweave.json');
   const wallet = JSON.parse(rawdata);
 
-  Applicant.find({ accepted: false, order: { $exists: true }, published: { $ne: true } }, async (err, applicants) => {
+  Applicant.find({ accepted: grantee, order: { $exists: true }, published: { $ne: true } }, async (err, applicants) => {
     console.log(applicants);
     for (const applicant of applicants) {
       if (applicant.user) {

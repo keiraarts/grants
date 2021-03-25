@@ -311,7 +311,7 @@ canvas {
   background-color: rgba(255, 255, 255, 0.2);
   // box-shadow: 2px 2px 4px rgb(223, 223, 223);
   // background-color: rgba(255, 255, 255, 0.4);
-  padding: 0.6rem;
+  // padding: 0.6rem;
   margin: 0.5rem 0;
 }
 
@@ -367,8 +367,6 @@ canvas {
 .gallery-plate {
   border-radius: 0.2rem;
   flex-grow: 1;
-  // box-shadow: 0 0 1rem rgba(0, 0, 0, 0.2);
-  // background-color: rgba(255, 255, 255, 0.05);
   padding: 2rem 2rem 2rem 2rem;
 }
 
@@ -584,6 +582,7 @@ canvas {
 
 .block-art-image {
   width: 100%;
+  margin-bottom: -0.5rem;
 }
 
 .curation-art {
@@ -983,8 +982,7 @@ input[type=number] {
   box-shadow: 3px 3px 5px #ccc;
   background-color: rgba(255, 255, 255, 0.5);
   border-radius: 1rem;
-  padding: 0.6rem;
-  margin-top: 1rem;
+  padding: 0.8rem;
   min-width: 6rem;
 }
 
