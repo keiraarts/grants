@@ -113,11 +113,11 @@ export default function Application() {
               </strong>
             </div>
             <div className='margin-top'>
-              <div className='ethos-text'>
+              <div className='text-s line-breaks'>
                 { programInfo.description }
-                <div className='margin-top-l text-s'>
+                <div className='margin-top-l text-s line-breaks'>
                   <strong>Grant Logistics</strong>
-                  <div className='margin-top-s'>
+                  <div className='margin-top-s line-breaks'>
                     { programInfo.logistics }
                   </div>
                 </div>
