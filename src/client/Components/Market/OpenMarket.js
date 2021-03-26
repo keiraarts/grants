@@ -5,14 +5,12 @@ import { useStoreState } from 'easy-peasy';
 import useInterval from '@use-it/interval';
 import { OpenSeaPort, Network, EventType } from 'opensea-js';
 import ReactModal from 'react-modal';
-// import DatePicker from "react-datepicker";
 import DatePicker from 'react-mobile-datepicker';
 import Web3 from 'web3';
 import moment from 'moment';
 
 import OpenSeaLogo from '../../assets/opensea.png';
 import AuctionTimer from './AuctionTimer';
-import 'react-datepicker/dist/react-datepicker.css';
 import '../../styles.scss';
 
 function openLink(page)

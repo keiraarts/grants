@@ -51,7 +51,6 @@
     "promise-hook": "^0.1.4",
     "query-string": "^6.14.1",
     "react": "next",
-    "react-datepicker": "^3.6.0",
     "react-dom": "next",
     "react-icons": "^3.5.0",
     "react-mobile-datepicker": "^4.0.2",
