@@ -18,7 +18,7 @@ export default function Committee() {
         We are endlessly grateful for all of our donors
       </div>
       <div className='text-s margin-top text-desc'>
-        Sevens Genesis Grant is a non-profit organization committed to helping artists.
+        Sevens Foundation is a non-profit organization committed to helping artists.
         Our donation address is <span className='text-s text-rainbow pointer' onClick={ () => openLink('https://etherscan.io/address/genesisart.eth') }>genesisart.eth</span> and intend to transition this to a decentralized autonomous organization. 
       </div>
       <div className='page-container'>

@@ -31,19 +31,19 @@ export default function Header() {
       <div className='nav-container'>
         <div className='flex-full' />
         <div className='header-nav'>
-          <Link to='/ethos' className= { `header-margin remove-a ${ location.pathname === '/ethos' && 'header-selected' }` }>
+          <Link to='/ethos' rel='canonical' className= { `header-margin remove-a ${ location.pathname === '/ethos' && 'header-selected' }` }>
             Ethos
           </Link>
-          <Link to='/nft' className={ `header-margin remove-a ${ location.pathname === '/nft' && 'header-selected' }` }>
+          <Link to='/nft' rel='canonical' className={ `header-margin remove-a ${ location.pathname === '/nft' && 'header-selected' }` }>
             FAQ
           </Link>
-          <Link to='/resources' className={ `header-margin remove-a ${ location.pathname === '/resources' && 'header-selected' }` }>
+          <Link to='/resources' rel='canonical' className={ `header-margin remove-a ${ location.pathname === '/resources' && 'header-selected' }` }>
             Resources
           </Link>
-          <Link to='/testimony' className={ `header-margin remove-a ${ location.pathname === '/testimony' && 'header-selected' }` }>
+          <Link to='/testimony' rel='canonical' className={ `header-margin remove-a ${ location.pathname === '/testimony' && 'header-selected' }` }>
             Testimonies
           </Link>
-          <Link to='/program' className={ `header-margin remove-a ${ (location.pathname === '/program' || location.pathname === '/apply') && 'header-selected' }` }>
+          <Link to='/program' rel='canonical' className={ `header-margin remove-a ${ (location.pathname === '/program' || location.pathname === '/apply') && 'header-selected' }` }>
             Apply
           </Link>
         </div>
