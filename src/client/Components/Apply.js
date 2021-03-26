@@ -1,31 +1,66 @@
-import React, { useState, Select } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from "react-router-dom";
-import CountryList from 'country-list';
+import { useStoreState } from 'easy-peasy';
 import { apiUrl } from '../baseUrl';
+import Resizer from './Tools/Resizer.js';
 
 import '../styles.scss';
 
+function openLink(page)
+{
+  let win = window.open(page, '_blank');
+  win.focus();
+}
+
 export default function Application() {
   const { program } = useParams();
+  const auth = useStoreState(state => state.user.auth);
+  const small = useStoreState(state => state.app.small);
+
+  const [user, setUser] = useState(null);
+  const [programInfo, setProgram] = useState(null);
+  useEffect(() => {
+    fetch(`${ apiUrl() }/program/getProgram`, {
+      method: 'POST',
+      body: JSON.stringify({ url: program }),
+      headers: { 'Content-Type': 'application/json' },
+    }).then(res => res.json())
+    .then(json => setProgram(json));
+
+    if (auth && auth.token) {
+      fetch(`${ apiUrl() }/getAccount`, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': auth.token
+        },
+      }).then(res => res.json())
+      .then(json => setUser(json));
+    }
+  }, [])
+
+  console.log(programInfo);
+
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [err, setErr] = useState(false);
   const submit = e => {
     e.preventDefault();
-    if (!data.country || !data.countryCode) setErr('Please select your Country of Representation');
-    else if (!data.name) setErr('Please include an artist name');
-    else if (!data.email) setErr('Please include an email');
-    else if (!data.twitter) setErr('Please include a Twitter handle');
-    else if (!data.website) setErr('Please include a URL reference');
-    else if (!data.art) setErr('No artwork selected');
+    if (!data.art) setErr('No artwork selected');
     else if (!data.statement) setErr('Please write a statement of intent');
     else {
       setErr(false);
       setSubmitting(true);
-      fetch(`${ apiUrl() }/submitApplication`, {
+      fetch(`${ apiUrl() }/program/submitApplication`, {
         method: 'POST',
-        body: JSON.stringify(data),
-        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...data, program: programInfo._id }),
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': auth.token
+        },
+  
       })
         .then(res => res.json())
         .then(json => setSubmitted(true))
@@ -34,7 +69,7 @@ export default function Application() {
 
 
   const [data, setData] = useState({});
-  const uploadHandler = (target, type) => {
+  const uploadHandler = (target) => {
     setErr(false);
     const file = target.files[0];
     const reader = new FileReader();
@@ -48,10 +83,9 @@ export default function Application() {
       if (ext === 'ebp') responsetype = 'image/webp';
       if (ext === 'mp4') responsetype = 'video/mp4';
 
-      if ((type === 'art' && file.size < 120000000) || (type === 'thumbnail' && file.size < 32000000)) {
+      if (file.size < 120000000 || (type === 'thumbnail' && file.size < 32000000)) {
         if (responsetype) {
-          if (type === 'art') setData({ ...data, art: reader.result })
-          if (type === 'thumbnail') setData({ ...data, thumbnail: reader.result })
+          setData({ ...data, art: reader.result, ext })
         } else {
           setErr('File type unsupported');
         }
@@ -61,126 +95,58 @@ export default function Application() {
     }
   };
 
+  const dropdownDefault = data.minted === undefined ? 'default' : `${ data.minted }`;
+
   return (
     <div className='content-block'>
-      <div className='text-l text-b'>
-        { program === 'genesis' && 'Sevens Genesis Grant' }
-        { program === 'giving-back' && '"Giving Back" Exhibition' }
-      </div>
-      <div className='text-s margin-top-s'>
-        Curated by&nbsp;
-        <strong>
-          { program === 'genesis' && 'Sevens Foundation' }
-          { program === 'giving-back' && 'Sevens Foundation' }
-        </strong>
-      </div>
-      <div className='margin-top'>
-        { program === 'genesis' &&
+      <Resizer />
+      <div>
+        { programInfo &&
           <div>
-            <div className='ethos-text'>
-              Sevens Genesis Grant is for digital artists who have not sold an NFT before. 
-              We will mint and transfer your single editioned artwork to you as part of the Sevens Genesis Grant exhibition
-              as well as provide additional funds to proceed with your first ever sale.
-              <br /><br />
-              We will highlight you and your work as being a grant recipient and provide the means necessary in order for you to become
-              an independent and self-sustainable artist on various NFT platforms available.
-              <br /><br />
-              Not only will you receive funding and resources but also special NFTs and gifts by commissioned or donating artists
-              as well as an invitation to a community of your fellow recipients and a grand welcome into the industry.
-              <br /><br />
-              We seek quality work with a proven track record of a passion for art, regardless of your current recognition with a preference
-              to those who are determined to seek aid for starting their self-sovereign career.
+            <div className='text-l text-b'>
+              { programInfo.name }
             </div>
-            <div className='margin-top-l text-s'>
-              <strong>Grant Logistics</strong>
-              <div className='margin-top-s'>
-                - Sevens takes 0% of profits and no artwork resale royalties are distributed<br /><br />
-                - We may promote your artwork on our @SevensGrant social media accounts on Instagram and Twitter<br /><br />
-                - Applications are accepted on a weekly basis (approximately) and you will receive your artwork as an NFT minted by Sevens Foundation as well as ~$100 of Ether to complete your sale
-              </div>
+            <div className='text-s margin-top-s'>
+              Curated by&nbsp;
+              <strong>
+                <span className='text-rainbow pointer' onClick={ () => openLink(programInfo.website) }>{ programInfo.organizer }</span>
+              </strong>
             </div>
-            <div className='margin-top text-s'>
-              <strong>Application Criteria</strong>
-              <div className='margin-top-s'>
-                - You have not sold an NFT before<br /><br />
-                - You believe you are disadvantaged from either finances, social media visibility, or sociopolitically.
-              </div>
-            </div>
-          </div>
-        }
-        { program === 'giving-back' &&
-          <div className='ethos-text'>
-            Sevens was founded under the premise of giving back to the community in which we quickly evolved to understand how important the integrity of this creative space is
-            for our collective future. It is our mission to represent the ethos of empowering digital artists in our fight against traditional predatory practices and perceptions
-            of creative work and compensation.
-            <br /><br />
-            The "Giving Back" Exhibition is the first open application & community driven curated NFT art show in history. Through this exhibition we strive to lead by example
-            by setting a precedent of healthy & community involvement, integrity, and art - in the spirit of blockchain and decentralization.
-            <div className='margin-top-l text-s'>
-              <strong>Grant Logistics</strong>
-              <div className='margin-top-s'>
-                - Sevens takes 0% of profits and no artwork resale royalties are distributed<br /><br />
-                - We may promote your artwork on our social media accounts @SevensGrant on Instagram and Twitter<br /><br />
-                - Applications will close on May 7th and the decisions will be out by May 11th
-              </div>
-            </div>
-            <div className='margin-top text-s'>
-              <strong>Application Criteria</strong>
-              <div className='margin-top-s'>
-                - The artwork must represent the theme of "Giving Back" in some way, shape, or form<br /><br />
+            <div className='margin-top'>
+              <div className='ethos-text'>
+                { programInfo.description }
+                <div className='margin-top-l text-s'>
+                  <strong>Grant Logistics</strong>
+                  <div className='margin-top-s'>
+                    { programInfo.logistics }
+                  </div>
+                </div>
+                <div className='margin-top text-s'>
+                  <strong>Application Criteria</strong>
+                  <div className='margin-top-s'>
+                    { programInfo.criteria }
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         }
         <div className='margin-top text-l'>Application Form</div>
         <form onSubmit={ submit }>
-          {/* <div className='select-dropdown'>
-            <select name='Country' defaultValue='default' required onChange={e => setData({ ...data, country: e.target.value, countryCode: CountryList.getCode(e.target.value) })}>
-              <option value='default' disabled hidden> 
-                Minted an NFT before?
-              </option>
-                <option value='Yes'>Yes</option>
-                <option value='No'>No</option>
-            </select>
+          { program === 'genesis' &&
+          <div>
+            <div className='text-s margin-top form__title'>Have you sold your own NFT before?</div>
+            <div className='select-dropdown margin-top-minus'>
+              <select name='Mint' className='text-black' defaultValue={ dropdownDefault } value={ dropdownDefault } required onChange={e => setData({ ...data, minted: e.target.value })}>
+                <option value='default' disabled hidden>
+                  Select an option
+                </option>
+                <option value='false'>No</option>
+                <option value='true'>Yes</option>
+              </select>
+            </div>
           </div>
-          <div className='form__group field'>
-            <input type='text' className='form__field' placeholder='Name' name='name' id='name' required maxLength='100' onChange={e => setData({ ...data, name: e.target.value })} />
-            <label className='form__label'>Artist Name</label>
-          </div>
-          <div className='select-dropdown'>
-            <select name='Country' defaultValue='default' required onChange={e => setData({ ...data, country: e.target.value, countryCode: CountryList.getCode(e.target.value) })}>
-              <option value='default' disabled hidden> 
-                Country of Representation
-              </option> 
-              {CountryList.getNames().map((fbb, key) =>
-                <option key={ key } value={ fbb }>{ fbb }</option>
-              )};
-            </select>
-          </div>
-          <div className='form__group field'>
-            <input type='text' className='form__field' placeholder='City' name='city' id='city' maxLength='100' onChange={e => setData({ ...data, city: e.target.value })} />
-            <label className='form__label'>City*</label>
-          </div>
-          <div className='form__group field'>
-            <input type='email' className='form__field' placeholder='Email' name='email' id='email' required maxLength='100' onChange={e => setData({ ...data, email: e.target.value })} />
-            <label className='form__label'>Email</label>
-          </div>
-          <div className='form__group field'>
-            <input type='url' className='form__field' placeholder='URL' name='url' id='url' required maxLength='100' onChange={e => setData({ ...data, website: e.target.value })} />
-            <label className='form__label'>Website / Artwork URL</label>
-          </div>
-          <div className='form__group field'>
-            <input type='text' className='form__field' placeholder='Twitter' name='twitter' id='twitter' required maxLength='100' onChange={e => setData({ ...data, twitter: e.target.value })} />
-            <label className='form__label'>Twitter @Handle</label>
-          </div>
-          <div className='form__group field'>
-            <input type='text' className='form__field' placeholder='Instagram' name='instagram' id='instagram' maxLength='100' onChange={e => setData({ ...data, instagram: e.target.value })} />
-            <label className='form__label'>Instagram @Handle*</label>
-          </div> */}
-          <div className='form__group field'>
-            <input type='url' className='form__field' placeholder='URL' name='url' id='url' required maxLength='100' onChange={e => setData({ ...data, reference: e.target.value })} />
-            <label className='form__label'>Portfolio Reference URL</label>
-          </div>
+          }
           <div className='form__group field'>
             <textarea type='text' className='form__field intent-field' placeholder='Intent' name='intent' id='intent' required maxLength='2000' onChange={e => setData({ ...data, statement: e.target.value })} />
             <label className='form__label'>Statement of Intent (2000 chars)</label>
@@ -199,28 +165,83 @@ export default function Application() {
           </div>
           <div className='form__group field'>
             <label className='file__label'>Art Submission (JPG, PNG, GIF, WEBP, or MP4 - Max 77MB)</label>
-            <input type='file' className='form__field' placeholder='Artwork' name='artwork' id='name' accept='image/jpeg, image/png, image/gif, image/webp, video/mp4' required onChange={ (e) => uploadHandler(e.target, 'art') } />
+            <input type='file' className='form__field' placeholder='Artwork' name='artwork' id='name' accept='image/jpeg, image/png, image/gif, image/webp, video/mp4' required onChange={ (e) => uploadHandler(e.target) } />
           </div>
-          {/* <div className='form__group field'>
-            <label className='file__label'>Thumbnail GIF for MP4* - Square Size Recommended (WEBP, GIF - Max 33MB)</label>
-            <input type='file' className='form__field' placeholder='Artwork' name='artwork' id='name' accept='image/gif, image/webp' onChange={ (e) => uploadHandler(e.target, 'thumbnail') } />
-          </div> */}
+          <div className='margin-top-l'>Submission Preview</div>
+          { user &&
+            <div className='margin-top gallery-container full-width'>
+              { !small &&
+                <div className='gallery-description'>
+                  <div className='text-s'>
+                    <div className='gallery-plate metal linear'>
+                      <div className='text-s'>
+                        <strong>{ user.user.artistName }</strong><br />
+                        { user.user.country } { user.user.birthYear && `(b. ${ user.user.birthYear })` }
+                      </div>
+                      <div className='margin-top-s text-s text-b'>
+                        <strong><i>{ data.title || 'Untitled' }</i></strong>, 2021<br />
+                        { data.ext } as NFT
+                      </div>
+                      <div className='margin-top-s text-xs'>
+                        { data.description }
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              }
+              { data.art &&
+                <div className={ `flex-full center ${ small ? 'gallery-frame-container-small' : 'gallery-frame-container' }` }>
+                  <div className='frame gallery-art-container'>
+                    <div className='frame-shadow'>
+                      { (data.ext === 'mp4' || data.ext === 'mov') ?
+                        <video muted loop autoPlay webkit-playsinline='true' playsInline className='gallery-art'>
+                          <source src={ data.art } />
+                          Sorry, your browser doesn't support embedded videos.
+                        </video>
+                        :
+                        <img className='gallery-art' src={ data.art } />
+                      }
+                    </div>
+                  </div>
+                </div>
+              }
+              { small &&
+                <div className='margin-top gallery-description'>
+                  <div className='text-s'>
+                    <div className='gallery-plate metal linear'>
+                      <div className='text-s'>
+                        <strong>{ user.user.artistName }</strong><br />
+                        { user.user.country } { user.user.birthYear && `(b. ${ user.user.birthYear })` }
+                      </div>
+                      <div className='margin-top-s text-s text-b'>
+                        <strong><i>{ data.title || 'Untitled' }</i></strong>, 2021<br />
+                        { data.ext } as NFT
+                      </div>
+                      <div className='margin-top-s text-xs'>
+                        { data.description }
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+          }
           { err ? 
-            <div className='margin-top-s text-s text-err'>
+            <div className='margin-top text-s text-err'>
               { err }
             </div>
           :
-            <div className='margin-top-s text-s text-grey'>
+            <div className='margin-top text-s text-grey'>
               <i>Applications are currently closed until early April</i>
             </div>
           }
           { (submitting && !submitted) &&
-            <div className='margin-top-s text-s text-grey'>
+            <div className='margin-top text-s text-grey'>
               Your application is being submitted..
             </div>
           }
           { submitted &&
-            <div className='margin-top-s text-s text-rainbow'>
+            <div className='margin-top text-s text-rainbow'>
               Thank you for submitting your application!<br />
               We will get back to you once we announce an acceptance date via e-mail or social direct message.
             </div>

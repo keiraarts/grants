@@ -18,6 +18,7 @@ import OpenSea from "./Components/Tutorials/OpenSea";
 import Committee from "./Components/Committee";
 import Donate from "./Components/Donate";
 import Program from "./Components/Program";
+import CreateProgram from "./Components/CreateProgram";
 import Apply from "./Components/Apply";
 import Curation from "./Components/Curation";
 import Testimony from "./Components/Testimony";
@@ -57,6 +58,7 @@ const App = () => {
                 <Route path="/committee" exact component={ Committee } />
                 <Route path="/donate" exact component={ Donate } />
                 <Route path="/program" exact component={ Program } />
+                <Route path="/create-program" exact component={ CreateProgram } />
                 <Route path="/apply/:program" exact component={ Apply } />
                 <Route path="/curation" exact component = {Curation } />
                 <Route path="/testimony" exact component={ Testimony } />

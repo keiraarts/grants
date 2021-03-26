@@ -1,9 +1,22 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from "react-router-dom";
+import { apiUrl } from '../baseUrl';
 
 import '../styles.scss';
 
 export default function Program() {
+
+  const [programs, setPrograms] = useState([]);
+  useEffect(() => {
+    fetch(`${ apiUrl() }/program/getPrograms`, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+    }).then(res => res.json())
+    .then(json => setPrograms(json));
+  }, [])
+
+  console.log(programs);
+
   return (
     <div className='content-block'>
       <div className='text-l text-b'>
@@ -27,14 +40,15 @@ export default function Program() {
           <strong>Apply for a Grant</strong>
         </div>
         <div className='flex-wrap'>
-          <Link className='button' to='/apply/genesis'>
-            <div className='text-xs'>Sevens Foundation</div>
-            <span>Sevens Genesis Grant</span>
-          </Link>
-          <Link className='button' to='/apply/giving-back'>
-            <div className='text-xs'>Sevens Foundation</div>
-            <span>Exhibition: "Giving Back"</span>
-          </Link>
+          { programs.map((program, index) => {
+              return (
+                <Link key={ index } className='button' to={ `/apply/${ program.url }` }>
+                  <div className='text-xs'>{ program.organizer }</div>
+                  <span>{ program.name }</span>
+                </Link>
+              );
+            })
+          }
         </div>
         <br />
       </div>
