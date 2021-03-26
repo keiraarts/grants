@@ -114,8 +114,8 @@ export default function Application() {
             for our collective future. It is our mission to represent the ethos of empowering digital artists in our fight against traditional predatory practices and perceptions
             of creative work and compensation.
             <br /><br />
-            The "Giving Back" Exhibition is the first open application & community driven curated NFT art shows in history. Through this exhibition we would like to lead by example
-            by setting a precedent of healthy & community involvement, integrity, and art, in the spirit of blockchain and decentralization.
+            The "Giving Back" Exhibition is the first open application & community driven curated NFT art show in history. Through this exhibition we strive to lead by example
+            by setting a precedent of healthy & community involvement, integrity, and art - in the spirit of blockchain and decentralization.
             <div className='margin-top-l text-s'>
               <strong>Grant Logistics</strong>
               <div className='margin-top-s'>
