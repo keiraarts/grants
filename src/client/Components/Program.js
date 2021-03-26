@@ -10,22 +10,31 @@ export default function Program() {
         Grants Program
       </div>
       <div className='text-s margin-top-s text-desc'>
-        Why should an artist apply?
+        What is an art grant?
       </div>
       <div className='page-container margin-top ethos-text'>
-        Sevens Genesis Grant will mint and transfer your single editioned artwork to you as part of The Sevens Genesis Grant collection
-        as well as provide additional funds to proceed with your first ever sale.
+        Sevens Foundation provides both arists and curators tools for creating opportunities to connect through art exhibitions.
         <br /><br />
-        We will highlight you and your work as being a grant recipient and provide the means necessary in order for you to become
-        an independent and self-sustainable artist on various NFT platforms available.
+        Grants, at the minimum, covers all costs for publishing artworks as part of a show and create a global and collaborative environment for
+        curators and artists alike to connect through an integral goal. This allows any digital artist, regardless of your background or prior success,
+        the potential for their artwork to speak directly to an organization or entity and their outreach.
         <br /><br />
-        Not only will you receive funding and resources but also special NFTs and gifts by commissioned or donating artists
-        as well as an invitation to a community of your fellow recipients and a grand welcome into the industry.
+        Our first grants program, Genesis Grant, included a cohort of 318 artists from 60 different countries - most of whom have been disadvantaged by means beyond their control.
+        This is an ongoing program for any artist who have not yet minted an NFT before.
         <br /><br />
-        We seek quality work with a proven track record of a passion for art, regardless of your current recognition with a preference
-        to those who are determined to seek aid for starting their self-sovereign career.
-        <div className='text-s margin-top'>
-          <span className='text-grey remove-a'>Applications are closed</span>
+        All participants share passions for providing equal opportunities and lifting others up through visibility, providing for others, and a love for creative expression.
+        <div className='text-m margin-top-l'>
+          <strong>Apply for a Grant</strong>
+        </div>
+        <div className='flex-wrap'>
+          <Link className='button' to='/apply/genesis'>
+            <div className='text-xs'>Sevens Foundation</div>
+            <span>Sevens Genesis Grant</span>
+          </Link>
+          <Link className='button' to='/apply/giving-back'>
+            <div className='text-xs'>Sevens Foundation</div>
+            <span>Exhibition: "Giving Back"</span>
+          </Link>
         </div>
         <br />
       </div>

@@ -363,7 +363,7 @@ exports.removeFlag = (req, res) => {
 // })
 
 // setTimeout(() => {
-//   return Applicant.find({ ineligible: { $ne: true }, userAccepted: true, accepted: false, minted: { $ne: true }, order: { $exists: true } }, (err2, data) => {
+//   return Applicant.find({ ineligible: { $ne: true }, userAccepted: true, order: { $exists: true } }, (err2, data) => {
 //     if (err2) return res.status(500).json(err);
 //     let count = 1;
 //     data.forEach(e => {
@@ -378,7 +378,7 @@ exports.removeFlag = (req, res) => {
 
 //     console.log('COUNTA', count);
 //   }).sort('-approvalCount')
-//     .distinct('country')
+//     // .distinct('country')
 //     .populate('user');
 // })
 

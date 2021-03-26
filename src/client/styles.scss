@@ -56,6 +56,11 @@ canvas {
   justify-content: center;
 }
 
+.flex-wrap {
+  display: flex;
+  flex-wrap: wrap;
+}
+
 .center {
   text-align: center;
   justify-content: center;
@@ -264,8 +269,8 @@ canvas {
 }
 
 .info-block:active {
-  transform: translate(3px, 3px);
-  box-shadow: 1px 1px 1px rgb(255, 255, 255);
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 1px #ccc;
 }
 
 .info-block-selected {
@@ -1008,6 +1013,46 @@ input[type=number] {
 
 .button-min-size {
   min-width: 6rem;
+}
+
+.button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  font-family: 'Roboto Slab', sans-serif;
+  white-space: normal;
+  border: none;
+  text-decoration: none;
+  color: black;
+  justify-content: center;
+  align-items: center;
+  display: inline-block;
+  font-size: 1.4rem;
+  min-width: 6rem;
+  padding: 2rem;
+  margin: 2rem;
+  outline: none;
+  box-shadow: 3px 3px 5px #ccc;
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 1rem;
+}
+
+.button:hover {
+  background-image: repeating-linear-gradient(45deg, violet, indigo, blue, green, yellow, orange, red, violet);
+  background-clip: text;
+  color: transparent;
+  outline: none;
+  cursor: pointer;
+  animation: rainbow 3000s alternate-reverse linear infinite;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.button:active {
+  border: none;
+  outline: none;
+  transform: translate(3px, 3px);
+  box-shadow: 1px 1px 1px #ccc;
 }
 
 .submit-button {

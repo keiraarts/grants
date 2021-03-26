@@ -19,8 +19,8 @@ export default function Ethos() {
         Origins, motivations, and vision
       </div>
       <div className='page-container margin-top ethos-text'>
-        Sevens Genesis Grant was founded by Tim Kang through the heart of Mike Darlington.
-        We are a global <Link to='/committee' className='text-rainbow remove-a'>committee</Link> with a mission to spotlight emerging artists and share their creativity with the world.
+        Sevens Foundation was founded by Tim Kang through the heart of Mike Darlington.
+        We are a global <Link to='/committee' className='text-rainbow remove-a'>committee</Link> and 501c3 non-profit organization with a mission to spotlight emerging artists and share their creativity with the world.
         <br /><br />
         Since its inception digital art as a medium has not received the respect or renown it deserves in the traditional fine art world.
         We believe this paradigm is at a crucial tipping point with the advent of blockchain technology designed to allow digital creations to be securely authenticated, sold and owned.

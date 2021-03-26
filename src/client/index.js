@@ -57,7 +57,7 @@ const App = () => {
                 <Route path="/committee" exact component={ Committee } />
                 <Route path="/donate" exact component={ Donate } />
                 <Route path="/program" exact component={ Program } />
-                <Route path="/apply" exact component={ Apply } />
+                <Route path="/apply/:program" exact component={ Apply } />
                 <Route path="/curation" exact component = {Curation } />
                 <Route path="/testimony" exact component={ Testimony } />
                 <Route path="/register" exact component={ Register } />
