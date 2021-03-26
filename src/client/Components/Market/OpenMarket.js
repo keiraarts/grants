@@ -5,11 +5,14 @@ import { useStoreState } from 'easy-peasy';
 import useInterval from '@use-it/interval';
 import { OpenSeaPort, Network, EventType } from 'opensea-js';
 import ReactModal from 'react-modal';
+// import DatePicker from "react-datepicker";
+import DatePicker from 'react-mobile-datepicker';
 import Web3 from 'web3';
 import moment from 'moment';
 
 import OpenSeaLogo from '../../assets/opensea.png';
 import AuctionTimer from './AuctionTimer';
+import 'react-datepicker/dist/react-datepicker.css';
 import '../../styles.scss';
 
 function openLink(page)
@@ -18,11 +21,63 @@ function openLink(page)
   win.focus();
 }
 
+function roundNext15Min(date) {
+  var intervals = Math.floor(date.minutes() / 15);
+  if(date.minutes() % 15 != 0) intervals++;
+  if(intervals == 4) {
+    date.add('hours', 1);
+      intervals = 0;
+  }
+
+  date.minutes(intervals * 15);
+  date.seconds(0);
+  return date;
+}
+
+const monthMap = {
+	'1': 'Jan',
+	'2': 'Feb',
+	'3': 'Mar',
+	'4': 'Apr',
+	'5': 'May',
+	'6': 'Jun',
+	'7': 'Jul',
+	'8': 'Aug',
+	'9': 'Sep',
+	'10': 'Oct',
+	'11': 'Nov',
+	'12': 'Dec',
+};
+
+const dateConfig = {
+	'month': {
+		format: value => monthMap[value.getMonth() + 1],
+		caption: 'Month',
+		step: 1,
+	},
+	'date': {
+		format: 'DD',
+		caption: 'Day',
+		step: 1,
+	},
+  'hour': {
+    format: 'hh',
+    caption: 'Hour',
+    step: 1,
+  },
+  'minute': {
+    format: 'mm',
+    caption: 'Min',
+    step: 15,
+  },
+};
+
+
 export default function OpenMarket({ tokenId, contract }) {
   const auth = useStoreState(state => state.user.auth);
 
-  contract = '0x3f4200234e26d2dfbc55fcfd9390bc128d5e2cca';
-  tokenId = 10;
+  // contract = '0x3f4200234e26d2dfbc55fcfd9390bc128d5e2cca';
+  // tokenId = 10;
 
   const [gotAsset, setAsset] = useState({});
   const [provider, setProvider] = useState(null);
@@ -86,9 +141,9 @@ export default function OpenMarket({ tokenId, contract }) {
             }
           })
 
-          const diff = moment.duration(moment(time + extended).diff(moment()));
-          console.log(moment(end).format('h:mm:s'), moment(time + extended).format('h:mm:s'), newBids);
-          console.log('TIME LEFT:', diff.minutes(), diff.seconds())
+          // const diff = moment.duration(moment(time + extended).diff(moment()));
+          // console.log(moment(end).format('h:mm:s'), moment(time + extended).format('h:mm:s'), newBids);
+          // console.log('TIME LEFT:', diff.minutes(), diff.seconds())
           setAuctionEnd(time + extended)
         } else {
           setAuction(null);
@@ -96,7 +151,7 @@ export default function OpenMarket({ tokenId, contract }) {
 
         if (newBids && bids && newBids.length !== bids.length) getAsset();
         setBids(_.orderBy(newBids, ['value'], ['desc']));
-      }
+      } else setBids([]);
 
       if (!foundListed) {
         setAuction(null);
@@ -107,7 +162,6 @@ export default function OpenMarket({ tokenId, contract }) {
   }
 
   async function getBalance(accountAddress, existingSeaport) {
-    console.log(accountAddress);
     const balanceOfWETH = await existingSeaport.getTokenBalance({
       accountAddress,
       tokenAddress: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'
@@ -166,6 +220,8 @@ export default function OpenMarket({ tokenId, contract }) {
   const [sellOpen, setSellOpen] = React.useState(false);
   const [infoOpen, setInfoOpen] = React.useState(false);
   const [reserve, setReserve] = useState(1.07);
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [date, setDate] = useState(roundNext15Min(moment(new Date())).add(1, 'day').toDate());
   const createAuction = async () => {
     connectWallet();
     if (provider && provider.selectedAddress) {
@@ -182,7 +238,7 @@ export default function OpenMarket({ tokenId, contract }) {
           englishAuctionReservePrice: reserve,
           startAmount: reserve / 10,
           paymentTokenAddress: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-          expirationTime: Math.round(Date.now() / 1000 + 60 * 12),
+          expirationTime: Math.round(date.getTime() / 1000),
           waitForHighestBid: true
         })
       }
@@ -239,7 +295,6 @@ export default function OpenMarket({ tokenId, contract }) {
     if (provider && provider.selectedAddress) {
       if (auth.wallet && auth.wallet.toLowerCase() !== provider.selectedAddress.toLowerCase()) setUnverified(true);
       else {
-        console.log('purchasing', listed, provider.selectedAddress);
         if (!order) order = listed;
         await seaport.fulfillOrder({
           order,
@@ -265,23 +320,7 @@ export default function OpenMarket({ tokenId, contract }) {
 
         const listener = createdSeaport.addListener(EventType.CreateOrder, ({ transactionHash, event }) => {
           setSellOpen(false);
-          console.info('CONFIRMED', { transactionHash, event })
         });
-        createdSeaport.addListener(EventType.TransactionCreated, ({ transactionHash, event }) => {
-          console.info({ transactionHash, event })
-        })
-        createdSeaport.addListener(EventType.TransactionConfirmed, ({ transactionHash, event }) => {
-          console.info({ transactionHash, event })
-        })
-        createdSeaport.addListener(EventType.OrderDenied, ({ order, accountAddress }) => {
-          console.info({ order, accountAddress })
-        })
-        createdSeaport.addListener(EventType.MatchOrders, ({ buy, sell, accountAddress }) => {
-          console.info({ buy, sell, accountAddress })
-        })
-        createdSeaport.addListener(EventType.CancelOrder, ({ order, accountAddress }) => {
-          console.info({ order, accountAddress })
-        })
 
         setListener(listener);
         setProvider(createdProvider);
@@ -339,7 +378,7 @@ export default function OpenMarket({ tokenId, contract }) {
             <div className='small-button' onClick={ () => toggleView('fixed') }>
               Fixed Price
             </div>
-            <div className='info-block-space' />
+            <div className='small-space' />
             <div className='small-button' onClick={ () => toggleView('auction') }>
               Auction
             </div>
@@ -353,7 +392,7 @@ export default function OpenMarket({ tokenId, contract }) {
                     <label className='form__label_s'>List Price (WETH)</label>
                   </div>
                 </div>
-                <div className='block-market'>
+                <div className='align-end'>
                   <input type='submit' value='Create Listing' className='submit-button' onClick={ listArt } />
                 </div>
               </div>
@@ -366,14 +405,33 @@ export default function OpenMarket({ tokenId, contract }) {
                     <label className='form__label_s'>Reserve Price (WETH)</label>
                   </div>
                 </div>
+                <div className='margin-top-s'>
+                  <strong>End Time</strong><br/>
+                  { date ? moment(date).format('ddd MMM Do h:mm A') : '' }
+                </div>
+                <div className='margin-top-xs'>
+                  <input type='submit' value='Change Time' className='small-button' onClick={ () => setShowDatePicker(true) } />  
+                </div>
+                <DatePicker
+                  dateConfig={ dateConfig }
+                  isOpen={ showDatePicker }
+                  confirmText='Confirm'
+                  cancelText='Cancel'
+                  min={ new Date() }
+                  showHeader={ true }
+                  value={ date }
+                  headerFormat='YYYY/MM/DD hh:mm'
+                  onChange={ (e) => setDate(e) }
+                  onSelect={ () => setShowDatePicker(false) }
+                  onCancel={ () => setShowDatePicker(false) }
+                  isPopup={ true }
+                />
                 { err &&
                   <div className='margin-top-s text-s text-err'>
                     { err }
                   </div>
                 }
-                <div className='block-market'>
-                  <input type='submit' value='Create Auction' className='submit-button' onClick={ createAuction } />
-                </div>
+                <input type='submit' value='Create Auction' className='submit-button' onClick={ createAuction } />
               </div>
             }
           </div>
@@ -394,78 +452,92 @@ export default function OpenMarket({ tokenId, contract }) {
       <div className='text-mid'>
         <strong>Market</strong>
       </div>
-      <div className='text-xs margin-top-s'>
-        <strong>Owner:</strong> { address }
-        <img src={ OpenSeaLogo } className='block-social' alt='OpenSea' onClick={ () => openLink(asset.permalink) } />
-      </div>
-      { !isOwner ?
-        <div className='flex'> 
-          <div className='form__group field'>
-            <input type='number' className='form__field' placeholder='Bid Amount' name='amount' id='amount' required maxLength='100' onChange={e => { setBid(e.target.value); setBidErr(null); } } />
-            <label className='form__label_s'>Bid Amount { balance ? `(${ balance } WETH)` : '(WETH)' }</label>
+      { bids !== null ?
+        <div>
+          <div className='text-xs margin-top-s'>
+            <strong>Owner:</strong> { address }
+            <img src={ OpenSeaLogo } className='block-social' alt='OpenSea' onClick={ () => openLink(asset.permalink) } />
           </div>
-          &nbsp;<input type='submit' value='Place Bid' className='small-button' onClick={ placeBid } />
+          { !isOwner ?
+            <div className='flex'> 
+              <div className='form__group field'>
+                <input type='number' className='form__field' placeholder='Bid Amount' name='amount' id='amount' required maxLength='100' onChange={e => { setBid(e.target.value); setBidErr(null); } } />
+                <label className='form__label_s'>Bid Amount { balance ? `(${ balance } WETH)` : '(WETH)' }</label>
+              </div>
+              &nbsp;<input type='submit' value='Place Bid' className='button-min-size small-button' onClick={ placeBid } />
+            </div>
+            :
+            <div className='flex margin-top-s'>
+              { (!auction && !listed) ?
+                <input type='submit' value='List on Market' className='small-button' onClick={ () => setSellOpen(true) } />
+                :
+                <input type='submit' value='Cancel Listing' className='small-button' onClick={ () => cancelOrder() } />
+              }
+            </div>
+          }
+          { unverified && <Link to='/account' className='text-grey margin-top-s'>Verify your wallet to place a bid</Link> }
+          { bidErr && 
+            <div className='text-err text-mid margin-top-s'>
+              { bidErr }
+            </div>
+          }
+          { (auction && auctionEnd) &&
+            <div className='margin-top'>
+              <div className='text-s'>Live Auction</div>
+              <div className='margin-top-xs text-mid'>
+                <span className='text-grey pointer' onClick={ () => setInfoOpen(true) }>
+                  <strong>Ξ{ Number(Web3.utils.fromWei((Math.round(auction.basePrice.toNumber().toFixed(2) * 1000) / 100).toString(), 'ether')).toFixed(2) } Reserve { reserveMet === 0 ? 'Price' : 'Met' }</strong>
+                </span>
+              </div>
+              <AuctionTimer time={ auctionEnd } />
+            </div>
+          }
+          { listed &&
+            <div className='margin-top-s flex'>
+              <div>
+                <div className='text-s'>List Price</div>
+                Ξ{ Web3.utils.fromWei(listed.currentPrice.toString(), 'ether') }
+              </div>
+              <div className='flex-full' />
+              { listed.maker.toLowerCase() !== provider.selectedAddress.toLowerCase() && <input type='submit' value='Purchase Artwork' className='small-button' onClick={ purchase } /> }
+            </div>
+          }
+          <div className='text-s margin-top-s'>
+            { (bids && bids.length) ?
+              bids.map((bid, index)=>{
+                return (
+                  <div className='margin-top-s' key={ index }>
+                    { index === 0 ?
+                      <div>
+                        <strong>Bid of Ξ{ bid.value }</strong>
+                        { (bid.maker.toLowerCase() === provider.selectedAddress.toLowerCase()) && <span className='text-s text-grey pointer' onClick={ () => cancelOrder(bid) }>&nbsp;- Cancel</span> }
+                        { (isOwner && bid.maker.toLowerCase() !== provider.selectedAddress.toLowerCase()) && <span className='text-s text-grey pointer' onClick={ () => purchase(bid) }>&nbsp;- Accept</span> }
+                      </div>
+                      :
+                      <div>
+                        Bid of Ξ{ bid.value }
+                        { (bid.maker.toLowerCase() === provider.selectedAddress.toLowerCase()) && <span className='text-s text-grey pointer' onClick={ () => cancelOrder(bid) }>&nbsp;- Cancel</span> }
+                        { (isOwner && bid.maker.toLowerCase() !== provider.selectedAddress.toLowerCase()) && <span className='text-s text-grey pointer' onClick={ () => purchase(bid) }>&nbsp;- Accept</span> }
+                      </div>
+                    }
+                    <span className='text-xs'>{ (bid.maker.toLowerCase() === provider.selectedAddress.toLowerCase()) ? 'You - ' : '' }{ bid.user }</span>
+                  </div>
+                );
+              })
+              :
+              <div className='margin-top text-mid'>
+                No active bids
+              </div>
+            }
+          </div>
         </div>
         :
-        <div className='flex margin-top-s'>
-          { (!auction && !listed) ?
-            <input type='submit' value='List on Market' className='small-button' onClick={ () => setSellOpen(true) } />
-            :
-            <input type='submit' value='Cancel Listing' className='small-button' onClick={ () => cancelOrder() } />
-          }
-        </div>
-      }
-      { unverified && <Link to='/account' className='text-grey margin-top-s'>Verify your wallet to place a bid</Link> }
-      { bidErr && 
-        <div className='text-err text-mid margin-top-s'>
-          { bidErr }
-        </div>
-      }
-      { (auction && auctionEnd) &&
-        <div className='margin-top'>
-          <div className='text-s'>Live Auction</div>
-          <div className='margin-top-xs text-mid'>
-            <span className='text-grey pointer' onClick={ () => setInfoOpen(true) }>
-              <strong>Ξ{ Number(Web3.utils.fromWei((Math.round(auction.basePrice.toNumber().toFixed(2) * 1000) / 100).toString(), 'ether')).toFixed(2) } Reserve { reserveMet === 0 ? 'Price' : 'Met' }</strong>
-            </span>
+        <div className='flex'>
+          <div className='flex-full center'>
+            <div className="loading"><div></div><div></div></div>
           </div>
-          <AuctionTimer time={ auctionEnd } />
         </div>
       }
-      { listed &&
-        <div className='margin-top-s flex'>
-          <div>
-            <div className='text-s'>List Price</div>
-            Ξ{ Web3.utils.fromWei(listed.currentPrice.toString(), 'ether') }
-          </div>
-          <div className='flex-full' />
-          { listed.maker.toLowerCase() !== provider.selectedAddress.toLowerCase() && <input type='submit' value='Purchase Artwork' className='small-button' onClick={ purchase } /> }
-        </div>
-      }
-      <div className='text-s margin-top-s'>
-        { bids &&
-          bids.map((bid, index)=>{
-            return (
-              <div className='margin-top-s' key={ index }>
-                { index === 0 ?
-                  <div>
-                    <strong>Bid of Ξ{ bid.value }</strong>
-                    { (bid.maker.toLowerCase() === provider.selectedAddress.toLowerCase()) && <span className='text-s text-grey pointer' onClick={ () => cancelOrder(bid) }>&nbsp;- Cancel</span> }
-                    { (isOwner && bid.maker.toLowerCase() !== provider.selectedAddress.toLowerCase()) && <span className='text-s text-grey pointer' onClick={ () => purchase(bid) }>&nbsp;- Accept</span> }
-                  </div>
-                  :
-                  <div>
-                    Bid of Ξ{ bid.value }
-                    { (bid.maker.toLowerCase() === provider.selectedAddress.toLowerCase()) && <span className='text-s text-grey pointer' onClick={ () => cancelOrder(bid) }>&nbsp;- Cancel</span> }
-                    { (isOwner && bid.maker.toLowerCase() !== provider.selectedAddress.toLowerCase()) && <span className='text-s text-grey pointer' onClick={ () => purchase(bid) }>&nbsp;- Accept</span> }
-                  </div>
-                }
-                <span className='text-xs'>{ (bid.maker.toLowerCase() === provider.selectedAddress.toLowerCase()) ? 'You - ' : '' }{ bid.user }</span>
-              </div>
-            );
-          })
-        }
-      </div>
     </div>
   );
 }

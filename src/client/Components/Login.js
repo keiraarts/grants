@@ -69,11 +69,12 @@ export default function Register() {
             <div>
               <input type='submit' value='Log In' className='submit-button' />
               &nbsp;&nbsp;&nbsp;or&nbsp;&nbsp;<Link to='/register' className='text-m text-grey pointer'>Register an Account</Link>
+              <br />
+              <Link to='/forgotpassword' className='margin-top text-s text-grey pointer'>
+                Forgot your password?
+              </Link>
             </div>
           }
-          <Link to='/forgotpassword' className='margin-top text-s text-grey pointer'>
-            Forgot your password?
-          </Link>
         </form>
         <br />
       </div>

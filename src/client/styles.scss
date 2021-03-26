@@ -51,14 +51,18 @@ canvas {
   font-family: 'Roboto Slab', sans-serif;
 }
 
+.flex {
+  display: flex;
+  justify-content: center;
+}
+
 .center {
   text-align: center;
   justify-content: center;
 }
 
-.flex {
-  display: flex;
-  justify-content: center;
+.align-end {
+  align-items: flex-end;
 }
 
 .font {
@@ -110,6 +114,11 @@ canvas {
 .side-space {
   margin-left: 2rem;
   margin-right: 2rem;
+}
+
+.small-space {
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
 }
 
 .spacer {
@@ -563,11 +572,10 @@ canvas {
 
 .block-loading {
   width: 100%;
-  position: absolute;
+  min-height: 10rem;
+  padding-top: 5rem;
+  padding-bottom: 5rem;
   pointer-events: none;
-  margin-left: auto;
-  margin-right: auto;
-  padding-top: 15%;
 }
 
 .block-art {
@@ -667,11 +675,6 @@ canvas {
   cursor: pointer;
   mask-image: linear-gradient(rgb(255, 0, 0));
   -webkit-mask-image: linear-gradient(rgb(255, 0, 0));
-}
-
-.block-market {
-  padding-top: 0.8rem;
-  align-items: flex-end;
 }
 
 .pointer:hover {
@@ -983,7 +986,6 @@ input[type=number] {
   background-color: rgba(255, 255, 255, 0.5);
   border-radius: 1rem;
   padding: 0.8rem;
-  min-width: 6rem;
 }
 
 .small-button:hover {
@@ -1002,6 +1004,10 @@ input[type=number] {
   outline: none;
   transform: translate(3px, 3px);
   box-shadow: 1px 1px 1px #ccc;
+}
+
+.button-min-size {
+  min-width: 6rem;
 }
 
 .submit-button {

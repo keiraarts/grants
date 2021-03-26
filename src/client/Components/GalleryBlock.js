@@ -1,8 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link } from "react-router-dom";
-import Twitter from '../assets/twitter.png';
-import Instagram from '../assets/instagram.png';
-import Web from '../assets/website.png';
 
 import '../styles.scss';
 
@@ -10,12 +7,6 @@ export default function Gallery(props) {
   const [loaded, didLoad] = useState(false);
   const item = props.item || {};
   const type = props.viewTab;
-
-  function openLink(page)
-  {
-    let win = window.open(page, '_blank');
-    win.focus();
-  }
 
   let displayArt;
   if (item.imageWeb) displayArt = `https://cdn.grants.art/${ item.imageWeb }`;
