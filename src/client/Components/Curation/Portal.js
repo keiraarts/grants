@@ -175,11 +175,11 @@ export default function Portal() {
             </div>
             <div className='info-block-space' />
             <div className={ viewTab === 'approved' ? 'info-block info-block-selected' : 'info-block' } onClick={ () => setViewTab('approved') }>
-              Approved
+              Accepted
             </div>
             <div className='info-block-space' />
             <div className={ viewTab === 'rejected' ? 'info-block info-block-selected' : 'info-block' } onClick={ () => setViewTab('rejected') }>
-              Rejected
+              Passed
             </div>
           </div>
           { (viewTab === 'curate') &&
@@ -189,11 +189,11 @@ export default function Portal() {
                   Remaining: { applicants.unapproved.length }
                   <div className='flex margin-top-s'>
                     <div className='small-button' onClick={ () => decide('approve') }>
-                      Approve
+                      Accept
                     </div>
                     <div className='info-block-space' />
                     <div className='small-button' onClick={ () => decide('reject') }>
-                      Reject
+                      Pass
                     </div>
                   </div>
                   <React.Fragment key={ applicants.unapproved[0].id }>
@@ -202,7 +202,7 @@ export default function Portal() {
                 </div>
               :
                 <div className='margin-top center'>
-                  Whew, you've gone through all of the applicants!
+                  Whew, you've gone through all of the submissions!
                   <div className='margin-top' />
                 </div>
               }

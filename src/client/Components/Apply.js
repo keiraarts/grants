@@ -161,7 +161,7 @@ export default function Application() {
                     </div>
                   </div>
                   <div className='margin-top text-s'>
-                    <strong>Application Criteria</strong>
+                    <strong>Submission Criteria</strong>
                     <div className='margin-top-s'>
                       { programInfo.criteria }
                     </div>
