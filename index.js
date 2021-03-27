@@ -51,7 +51,7 @@ app.use((req, res) => {
     'nft', 'ethos', 'apply', 'committee', 'program', 'curation', 'register',
     'donate', 'tutorial', , 'testimony', 'rarible', 'opensea', 'resources',
     'login', 'register', 'art', 'account', 'verifyemail', 'gallery', 'nominee',
-    'recoveraccount', 'forgotpassword'
+    'recoveraccount', 'forgotpassword', 'curator', 'create-program'
     ];
     
   if (allowedRoutes.indexOf(route) > -1) {
