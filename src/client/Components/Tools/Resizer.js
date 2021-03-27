@@ -3,6 +3,7 @@ import { useStoreActions } from 'easy-peasy';
 
 export default function Resizer() {
   const setSmall = useStoreActions(dispatch => dispatch.app.setSmall);
+  const setCols = useStoreActions(dispatch => dispatch.app.setCols);
 
   const resize = () => {
     setResizer(true);
@@ -22,6 +23,10 @@ export default function Resizer() {
       if (window.innerWidth <= 1440) setSmall(true);
       else setSmall(false);
 
+      if (window.innerWidth <= 700) setCols('1');
+      else if (window.innerWidth > 700 && window.innerWidth <= 1200) setCols('2');
+      else setCols('3')
+
       setResizer(false);
     }
   }, [resizing]);
@@ -29,6 +34,10 @@ export default function Resizer() {
   useEffect(() => {
     if (window.innerWidth <= 1440) setSmall(true);
     else setSmall(false);
+
+    if (window.innerWidth <= 700) setCols('1');
+    else if (window.innerWidth > 700 && window.innerWidth <= 1200) setCols('2');
+    else setCols('3')
   }, [])
 
   return (null);

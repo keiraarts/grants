@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { usePromise } from 'promise-hook';
 import { useStoreState } from 'easy-peasy';
-import { apiUrl } from '../baseUrl';
+import { apiUrl } from '../../baseUrl';
 import { useScrollPosition } from '@n8tb1t/use-scroll-position'
 
-import CurationBlock from './CurationBlock';
+import CurationBlock from '../CurationBlock';
 
-import '../styles.scss';
+import '../../styles.scss';
 
 export default function Curation() {
   const auth = useStoreState(state => state.user.auth);
@@ -191,10 +191,10 @@ export default function Curation() {
   return (
     <div className='content-block' ref={ contentRef }>
       <div className='text-l text-b'>
-        Committee Curation
+        Curation Portal
       </div>
       <div className='text-s margin-top-s'>
-        Let's move people forward.
+        Let's highlight great art.
       </div>
       <div className='flex margin-top'>
         <div className={ viewTab === 'unapproved' ? 'info-block info-block-selected' : 'info-block' } onClick={ () => toggleView('unapproved') }>

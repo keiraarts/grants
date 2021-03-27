@@ -53,12 +53,15 @@ canvas {
 
 .flex {
   display: flex;
-  justify-content: center;
 }
 
 .flex-wrap {
   display: flex;
   flex-wrap: wrap;
+}
+
+.inline {
+  display: inline-block;
 }
 
 .center {
@@ -138,6 +141,10 @@ canvas {
   margin-left: 1rem;
 }
 
+.margin-right-s {
+  margin-right: 1rem;
+}
+
 .grey {
   color: grey;
 }
@@ -184,6 +191,12 @@ canvas {
   text-align: left;
   align-items: flex-start;
   justify-content: flex-start;
+}
+
+.text-right {
+  text-align: right;
+  align-items: flex-end;
+  justify-content: flex-end;
 }
 
 .dim-gradient {
@@ -259,7 +272,7 @@ canvas {
   align-items: center;
   justify-content: center;
   flex-grow: 1;
-  height: 3rem;
+  min-height: 3rem;
   font-size: 1.5rem;
   box-shadow: 3px 3px 5px #ccc;
   background-color: rgba(255, 255, 255, 1);
@@ -1034,7 +1047,7 @@ input[type=number] {
   font-size: 1.4rem;
   min-width: 6rem;
   padding: 2rem;
-  margin: 2rem;
+  margin: 1rem 2rem;
   outline: none;
   box-shadow: 3px 3px 5px #ccc;
   background-color: rgba(255, 255, 255, 0.5);

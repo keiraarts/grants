@@ -6,8 +6,9 @@ import '@appnest/masonry-layout';
 
 import { apiUrl } from '../baseUrl';
 
-import '../styles.scss';
+import Resizer from './Tools/Resizer.js';
 import GalleryBlock from './GalleryBlock';
+import '../styles.scss';
 
 const clone = (items) => items.map(item => Array.isArray(item) ? clone(item) : item);
 
@@ -28,6 +29,7 @@ function shuffle(array) {
 
 export default function Gallery() {
   const auth = useStoreState(state => state.user.auth);
+  const cols = useStoreState(state => state.app.cols);
   const granteeRaw = useStoreState(state => state.grantees.data) || [];
   const nomineeRaw = useStoreState(state => state.nominees.data) || [];
 
@@ -69,45 +71,15 @@ export default function Gallery() {
     setViewTab(view);
   }
 
-  const resize = () => {
-    setResizer(true);
-  }
-
-  const [listener, setListener] = useState(false);
-  useEffect(() => {
-    if (!listener) {
-      window.addEventListener('resize', resize);
-      setListener(true);
-    }
-  }, [listener]);
-
-  const [resizing, setResizer] = useState(false);
-
-  let initCols;
-  if (window.innerWidth <= 700) initCols = '1';
-  else if (window.innerWidth > 700 && window.innerWidth <= 1200) initCols = '2';
-  else initCols = '3'
-  // else if (window.innerWidth > 700 && window.innerWidth <= 1000) initCols = '3'
-
-  const [cols, setCols] = useState(initCols);
-  useEffect(() => {
-    if (resizing) {
-      if (window.innerWidth <= 700) setCols('1');
-      else if (window.innerWidth > 700 && window.innerWidth <= 1200) setCols('2');
-      else setCols('3')
-      // else if (window.innerWidth > 700 && window.innerWidth <= 1000) setCols('3')
-      setResizer(false);
-    }
-  }, [resizing]);
-
   return (
     <div className='content-block' ref={ contentRef }>
+      <Resizer />
       <div className='text-l flex'>
         Sevens Genesis Grant
         <div className='flex-full' />
-        { auth.committee && <div className='text-s flex'>
-          <div className='flex-full' />
-            <Link to='/curation' className='text-grey pointer'>Committee Curation</Link>
+        { auth.committee &&
+          <div className='text-s center'>
+            <Link to='/curation' className='text-grey pointer text-right'>Curation Portal</Link>
           </div>
         }
       </div>
@@ -136,7 +108,9 @@ export default function Gallery() {
               {
                 (showData) && showData.map((item, index)=>{
                   return (
-                    <GalleryBlock item={ item } key={ index } index={ index } viewTab={ viewTab } />
+                    <React.Fragment key={ index }>
+                      <GalleryBlock item={ item } index={ index } viewTab={ viewTab } />
+                    </React.Fragment>
                   );
                 })
               }

@@ -15,7 +15,7 @@ const auth = require('../../services/authorization-service');
 const templates = require('../../emails/templates');
 
 const Program = require('mongoose').model('Program');
-const Applicant = require('mongoose').model('ProgramApplicant');
+const ProgramApplicant = require('mongoose').model('ProgramApplicant');
 const User = require('mongoose').model('User');
 
 const spaces = s3.createClient({
@@ -71,8 +71,8 @@ exports.createProgram = async (req, res) => {
     website:      req.body.website,
     twitter:      req.body.twitter,
     instagram:    req.body.instagram,
-    curators:     [{ user: jwt.id }],
-    admins:       [{ user: jwt.id }],
+    curators:     [jwt.id],
+    admins:       [jwt.id],
     active:       false,
   });
 
@@ -86,7 +86,7 @@ exports.createProgram = async (req, res) => {
 
 exports.updateProgram = async (req, res) => {
   const jwt = auth(req.headers.authorization, res, (jwt) => jwt);
-  const program = await Program.findOne({ _id: req.body.program, admin: jwt.id });
+  const program = await Program.findOne({ _id: req.body._id, admins: jwt.id });
   if (!program) return res.json({ error: 'Authentication error' });
 
   program.organizer = req.body.organizer;
@@ -176,13 +176,11 @@ const compressor = async (file, fileWeb) => {
           return stream.pipe(write);
       })
       .then((data) => {
-          // console.log(data);
+        resolve();
       })
       .catch((err) => {
           console.log('error', err);
       });
-
-      resolve();
     }
   });
 }
@@ -217,7 +215,7 @@ exports.submitApplication = async (req, res) => {
       const saveImage = promisify(fs.writeFile);
       await saveImage(path.join(__dirname, `../../images/${ applicant.art }`), buf)
       await compressor(applicant.art, applicant.artWeb);
-      
+
       const uploader = await spaces.uploadFile({
         localFile: path.join(__dirname, `../../images/${ applicant.art }`),
         s3Params: {
@@ -257,7 +255,7 @@ exports.submitApplication = async (req, res) => {
     }
   });
 
-  const newApplicant = new Applicant(applicant);
+  const newApplicant = new ProgramApplicant(applicant);
   newApplicant.save((err, data) => {
     if (err) return res.status(500).json(err);
     else {
@@ -270,7 +268,7 @@ exports.updateApplication = async (req, res) => {
   auth(req.headers.authorization, res, (jwt) => {
     User.findById(jwt.id, (err, user) => {
       if (!user) return res.status(401).json({ err: 'Authentication error' });
-      return Applicant.findOne({ user: user._id }, (err, applicant) => {
+      return ProgramApplicant.findOne({ user: user._id }, (err, applicant) => {
         applicant.minted = req.body.minted;
         applicant.description = req.body.description;
         applicant.name = req.body.name;
@@ -285,15 +283,23 @@ exports.updateApplication = async (req, res) => {
   });
 };
 
+exports.getCurationPrograms = async (req, res) => {
+  const jwt = auth(req.headers.authorization, res, (jwt) => jwt);
+  const programs = await Program.find({ curators: jwt.id }).select('organizer name url');
+  if (!programs.length) return res.status(401).json({ error: 'Authentication error' });
+
+  return res.json({ success: programs });
+};
+
 exports.viewAllApplications = async (req, res) => {
   const jwt = auth(req.headers.authorization, res, (jwt) => jwt);
   const user = await User.findById(jwt.id);
   if (!user) return res.json({ error: 'Authentication error' });
 
-  const isCommittee = await Program.find({ curators: user._id });
-  if (!isCommittee) return res.json({ error: 'Authentication error' });
+  const isCurator = await Program.find({ curators: user._id });
+  if (!isCurator) return res.json({ error: 'Authentication error' });
 
-  return Applicant.find({ program: req.body.program, ineligible: { $ne: true } }, (err, data) => {
+  return ProgramApplicant.find({ program: req.body.program, ineligible: { $ne: true } }, (err, data) => {
     const unapproved = [], approved = [], rejected = [];
     data.forEach(e => {
       if (e.approved.find(g => g._id.equals(jwt.id))) approved.push(e);
@@ -304,7 +310,7 @@ exports.viewAllApplications = async (req, res) => {
     return err ?
         res.status(500).json(err) :
         res.json({ unapproved, approved, rejected });
-  })
+  }).populate('user', 'artistName birthYear country city website twitter instagram')
 };
 
 exports.viewTopApplications = (req, res) => {
@@ -313,7 +319,7 @@ exports.viewTopApplications = (req, res) => {
       if (err) return res.json(err);
       if (!user || !user.committee) return res.status(401).json({ err: 'Authentication error' });
       else {
-        return Applicant.find({ ineligible: { $ne: true }, userAccepted: true, accepted: false, minted: { $ne: true } }, (err, data) => {
+        return ProgramApplicant.find({ ineligible: { $ne: true }, userAccepted: true, accepted: false, minted: { $ne: true } }, (err, data) => {
           return err ?
               res.status(500).json(err) :
               res.json(data);
@@ -323,68 +329,68 @@ exports.viewTopApplications = (req, res) => {
   });
 };
 
-exports.approveApplicant = (req, res) => {
-  auth(req.headers.authorization, res, (jwt) => {
-    User.findById(jwt.id, (err, user) => {
-      if (err) return res.json(err);
-      if (!user || !user.committee) return res.status(401).json({ err: 'Authentication error' }); 
-      else {
-        return Applicant.findById(req.body.id, (err2, data) => {
-          if (err2) return res.status(500).json(err);
-          else {
-            const approvedIndex = data.approved.findIndex(e => e.equals(jwt.id));
-            if (req.body.type === 'approve') {
-              if (approvedIndex < 0) {
-                data.approved.push(jwt.id);
-                data.approvalCount++;
-                data.save();
-              }
-            } else if (req.body.type === 'unapprove') {
-              if (approvedIndex >= 0) {
-                data.approved.splice(approvedIndex, 1);
-                data.approvalCount--;
-                data.save();
-              }
-            }
+exports.approveOrReject = async (req, res) => {
+  const jwt = auth(req.headers.authorization, res, (jwt) => jwt);
+  const user = await User.findById(jwt.id);
+  if (!user) return res.json({ error: 'Authentication error' });
 
-            return res.json(true);
-          }
-        })
+  const isCurator = await Program.find({ curators: user._id });
+  if (!isCurator) return res.json({ error: 'Authentication error' });
+
+  return ProgramApplicant.findById(req.body.id, (err2, data) => {
+    if (err2) return res.status(500).json(err);
+    else {
+      if (req.body.type === 'approve') {
+        const index = data.approved.findIndex(e => e.equals(jwt.id));
+        if (index < 0) {
+          data.approved.push(jwt.id);
+          data.approvalCount++;
+          data.save();
+        }
+      } else if (req.body.type === 'reject') {
+        const index = data.rejected.findIndex(e => e.equals(jwt.id));
+        if (index < 0) {
+          data.rejected.push(jwt.id);
+          data.rejectCount++;
+          data.save();
+        }
       }
-    });
-  });
+
+      return res.json(true);
+    }
+  })
 };
 
-exports.rejectApplicant = (req, res) => {
-  auth(req.headers.authorization, res, (jwt) => {
-    User.findById(jwt.id, (err, user) => {
-      if (err) return res.json(err);
-      if (!user || !user.committee) return res.status(401).json({ err: 'Authentication error' }); 
-      else {
-        return Applicant.findById(req.body.id, (err2, data) => {
-          if (err2) return res.status(500).json(err);
-          else {
-            const rejected = data.rejected.findIndex(e => e.equals(jwt.id));
-            if (req.body.type === 'reject') {
-              if (rejected < 0) {
-                data.rejected.push(jwt.id);
-                data.rejectCount++;
-                data.save();
-              }
-            } else if (req.body.type === 'unreject') {
-              if (rejected >= 0) {
-                data.rejected.splice(rejected, 1);
-                data.rejectCount--;
-                data.save();
-              }
-            }
+exports.undoApplicant = async (req, res) => {
+  const jwt = auth(req.headers.authorization, res, (jwt) => jwt);
+  const user = await User.findById(jwt.id);
+  if (!user) return res.json({ error: 'Authentication error' });
 
-            return res.json(true);
-          }
-        })
+  const isCurator = await Program.find({ curators: user._id });
+  if (!isCurator) return res.json({ error: 'Authentication error' });
+
+  return ProgramApplicant.findById(req.body.id, (err2, data) => {
+    if (err2) return res.status(500).json(err);
+    else {
+      if (req.body.type === 'approve') {
+        const index = data.approved.findIndex(e => e.equals(jwt.id));
+        if (index >= 0) {
+          data.approved.splice(index, 1);
+          data.approvalCount--;
+          data.save();
+        }
+      } else if (req.body.type === 'reject') {
+        const index = data.rejected.findIndex(e => e.equals(jwt.id));
+        if (index >= 0) {
+          data.rejected.splice(index, 1);
+          data.rejectCount--;
+          data.save();
+        }
       }
-    });
-  });
+
+      return res.json(true);
+    }
+  })
 };
 
 
@@ -394,7 +400,7 @@ exports.flagApplicant = (req, res) => {
       if (err) return res.json(err);
       if (!user || !user.committee) return res.status(401).json({ err: 'Authentication error' }); 
       else {
-        return Applicant.findById(req.body.id, (err2, data) => {
+        return ProgramApplicant.findById(req.body.id, (err2, data) => {
           if (err2) return res.status(500).json(err);
           else if (data) {
             data.flagged.push({
@@ -420,7 +426,7 @@ exports.removeFlag = (req, res) => {
       if (err) return res.json(err);
       if (!user || !user.committee) return res.status(401).json({ err: 'Authentication error' }); 
       else {
-        return Applicant.findById(req.body.id, (err2, data) => {
+        return ProgramApplicant.findById(req.body.id, (err2, data) => {
           if (err2) return res.status(500).json(err);
           else {
             const flaggedIndex = data.flagged.findIndex(e => e.equals(req.body.flagId));

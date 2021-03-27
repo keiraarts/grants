@@ -20,7 +20,7 @@ import Donate from "./Components/Donate";
 import Program from "./Components/Program";
 import CreateProgram from "./Components/CreateProgram";
 import Apply from "./Components/Apply";
-import Curation from "./Components/Curation";
+import Curation from "./Components/Curation/Portal";
 import Testimony from "./Components/Testimony";
 import Register from "./Components/Register";
 import Login from "./Components/Login";

@@ -19,6 +19,7 @@ export default function Application() {
 
   const [user, setUser] = useState(null);
   const [programInfo, setProgram] = useState(null);
+  const [editing, setEditing] = useState(false);
   useEffect(() => {
     fetch(`${ apiUrl() }/program/getProgram`, {
       method: 'POST',
@@ -40,30 +41,32 @@ export default function Application() {
     }
   }, [])
 
-  console.log(programInfo);
-
-  const [submitting, setSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-  const [err, setErr] = useState(false);
-  const submit = e => {
+  const [programSubmitting, setProgramSubmitting] = useState(false);
+  const [updateErr, setUpdateErr] = useState(false);
+  const updateProgram = e => {
     e.preventDefault();
-    if (!data.art) setErr('No artwork selected');
-    else if (!data.statement) setErr('Please write a statement of intent');
+    if (!programInfo.organizer || !programInfo.name || !programInfo.url || !programInfo.description || !programInfo.logistics || !programInfo.criteria) setErr('Please fill out all required fields');
     else {
       setErr(false);
-      setSubmitting(true);
-      fetch(`${ apiUrl() }/program/submitApplication`, {
+      setProgramSubmitting(true);
+      fetch(`${ apiUrl() }/program/updateProgram`, {
         method: 'POST',
-        body: JSON.stringify({ ...data, program: programInfo._id }),
+        body: JSON.stringify(programInfo),
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
           'Authorization': auth.token
         },
-  
       })
         .then(res => res.json())
-        .then(json => setSubmitted(true))
+        .then(json => {
+          if (json.success) {
+            setEditing(false);
+            setProgramSubmitting(false);
+          } else {
+            setUpdateErr(json.error);
+          }
+        })
     }
   }
 
@@ -95,7 +98,36 @@ export default function Application() {
     }
   };
 
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [err, setErr] = useState(false);
+  const submit = e => {
+    e.preventDefault();
+    if (!data.art) setErr('No artwork selected');
+    else if (!data.statement) setErr('Please write a statement of intent');
+    else {
+      setErr(false);
+      setSubmitting(true);
+      fetch(`${ apiUrl() }/program/submitApplication`, {
+        method: 'POST',
+        body: JSON.stringify({ ...data, program: programInfo._id }),
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': auth.token
+        },
+  
+      })
+        .then(res => res.json())
+        .then(json => setSubmitted(true));
+    }
+  }
+
   const dropdownDefault = data.minted === undefined ? 'default' : `${ data.minted }`;
+  let isAdmin = false;
+  if (programInfo) isAdmin = (auth && programInfo.admins.findIndex(admin => admin === auth.id) >= 0)
+
+  console.log(programInfo);
 
   return (
     <div className='content-block'>
@@ -103,8 +135,14 @@ export default function Application() {
       <div>
         { programInfo &&
           <div>
-            <div className='text-l text-b'>
+            <div className='text-l flex'>
               { programInfo.name }
+              <div className='flex-full' />
+              { isAdmin &&
+                <div className='text-s center text-grey pointer' onClick={ () => setEditing(true) }>
+                  Edit Program
+                </div>
+              }
             </div>
             <div className='text-s margin-top-s'>
               Curated by&nbsp;
@@ -113,21 +151,92 @@ export default function Application() {
               </strong>
             </div>
             <div className='margin-top'>
-              <div className='text-s line-breaks'>
-                { programInfo.description }
-                <div className='margin-top-l text-s line-breaks'>
-                  <strong>Grant Logistics</strong>
-                  <div className='margin-top-s line-breaks'>
-                    { programInfo.logistics }
+              { !editing &&
+                <div className='text-s line-breaks'>
+                  { programInfo.description }
+                  <div className='margin-top-l text-s line-breaks'>
+                    <strong>Grant Logistics</strong>
+                    <div className='margin-top-s line-breaks'>
+                      { programInfo.logistics }
+                    </div>
+                  </div>
+                  <div className='margin-top text-s'>
+                    <strong>Application Criteria</strong>
+                    <div className='margin-top-s'>
+                      { programInfo.criteria }
+                    </div>
                   </div>
                 </div>
-                <div className='margin-top text-s'>
-                  <strong>Application Criteria</strong>
-                  <div className='margin-top-s'>
-                    { programInfo.criteria }
+              }
+              { editing &&
+                <form onSubmit={ updateProgram }>
+                  <div className='form__group field'>
+                    <input type='text' className='form__field' placeholder='Organizer Name' name='organizer' id='organizer' required maxLength='100' value={ programInfo.organizer } onChange={e => setProgram({ ...programInfo, organizer: e.target.value })} />
+                    <label className='form__label'>Program Creator / Entity Name</label>
                   </div>
-                </div>
-              </div>
+                  <div className='form__group field'>
+                    <input type='text' className='form__field' placeholder='Program Name' name='name' id='name' required maxLength='100' value={ programInfo.name } onChange={e => setProgram({ ...programInfo, name: e.target.value })} />
+                    <label className='form__label'>Program Name</label>
+                  </div>
+                  <div className='form__group field'>
+                    <input type='text' className='form__field' placeholder='Program Name' name='name' id='name' required maxLength='100' value={ programInfo.url } onChange={e => setProgram({ ...programInfo, url: e.target.value })} />
+                    <label className='form__label'>URL Permalink</label>
+                  </div>
+                  <div className='text-s margin-top-s'>
+                    Program Applicant URL: { `https://grants.art/apply/${ programInfo.url ? programInfo.url : '' } ` }
+                  </div>
+                  <div className='form__group field'>
+                    <textarea type='text' className='form__field intent-field' placeholder='Intent' name='intent' id='intent' required maxLength='2000' value={ programInfo.description } onChange={e => setProgram({ ...programInfo, description: e.target.value })} />
+                    <label className='form__label'>Program Description (2000 Chars)</label>
+                  </div>
+                  <div className='form__group field'>
+                    <textarea type='text' className='form__field intent-field' placeholder='Intent' name='intent' id='intent' required maxLength='2000' value={ programInfo.logistics } onChange={e => setProgram({ ...programInfo, logistics: e.target.value })} />
+                    <label className='form__label'>Grant Logistics (2000 Chars)</label>
+                  </div>
+                  <div className='form__group field'>
+                    <textarea type='text' className='form__field intent-field' placeholder='Intent' name='intent' id='intent' required maxLength='2000' value={ programInfo.criteria } onChange={e => setProgram({ ...programInfo, criteria: e.target.value })} />
+                    <label className='form__label'>Applicant Criteria (2000 Chars)</label>
+                  </div>
+                  <div className='form__group field'>
+                    <input type='email' className='form__field' placeholder='Email' name='email' id='email' required maxLength='100' value={ programInfo.email } onChange={e => setProgram({ ...programInfo, email: e.target.value })} />
+                    <label className='form__label'>Program Organizer Email</label>
+                  </div>
+                  <div className='form__group field'>
+                    <input type='url' className='form__field' placeholder='URL' name='url' id='url' required maxLength='100' value={ programInfo.website } onChange={e => setProgram({ ...programInfo, website: e.target.value })} />
+                    <label className='form__label'>Program Website*</label>
+                  </div>
+                  <div className='form__group field'>
+                    <input type='text' className='form__field' placeholder='Twitter' name='twitter' id='twitter' required maxLength='100' value={ programInfo.twitter } onChange={e => setProgram({ ...programInfo, twitter: e.target.value })} />
+                    <label className='form__label'>Program Twitter*</label>
+                  </div>
+                  <div className='text-s'>
+                    @{ data.twitter }
+                  </div>
+                  <div className='form__group field'>
+                    <input type='text' className='form__field' placeholder='Instagram' name='instagram' id='instagram' maxLength='100' value={ programInfo.instagram }  onChange={e => setProgram({ ...programInfo, instagram: e.target.value })} />
+                    <label className='form__label'>Program Instagram*</label>
+                  </div>
+                  <div className='text-s'>
+                    @{ data.instagram }
+                  </div>
+                  { updateErr &&
+                    <div className='margin-top text-s text-err'>
+                      { updateErr }
+                    </div>
+                  }
+                  { (programSubmitting) &&
+                    <div className='margin-top text-s text-grey'>
+                      Your program is being updated..
+                    </div>
+                  }
+                  { (!programSubmitting) && 
+                  <div>
+                    <input type='submit' value='Cancel' className='submit-button' onClick={ () => setEditing(false) } />&nbsp;
+                    <input type='submit' value='Update Program Info' className='submit-button' />
+                  </div>
+                  }
+                </form>
+              }
             </div>
           </div>
         }
@@ -232,7 +341,7 @@ export default function Application() {
             </div>
           :
             <div className='margin-top text-s text-grey'>
-              <i>Applications are currently closed until early April</i>
+              {/* <i>Applications are currently closed until early April</i> */}
             </div>
           }
           { (submitting && !submitted) &&

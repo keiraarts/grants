@@ -20,6 +20,13 @@ export const store = createStore(
           small: payload
         }
       }),
+      cols: '1',
+      setCols: action((state, payload) => {
+        return {
+          ...state,
+          cols: payload
+        }
+      }),
     },
     grantees: {
       data: [],

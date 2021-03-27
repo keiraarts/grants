@@ -51,16 +51,12 @@ const program = {
         trim:  true,
     },
     curators: [{
-        user: {
-            type:     mongoose.Schema.ObjectId,
-            ref:      'User',
-        },
+        type:     mongoose.Schema.ObjectId,
+        ref:      'User',
     }],
     admins: [{
-        user: {
-            type:     mongoose.Schema.ObjectId,
-            ref:      'User',
-        },
+        type:     mongoose.Schema.ObjectId,
+        ref:      'User',
     }],
     active: {
         type: Boolean,
