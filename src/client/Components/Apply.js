@@ -341,7 +341,7 @@ export default function Application() {
             </div>
           :
             <div className='margin-top text-s text-grey'>
-              {/* <i>Applications are currently closed until early April</i> */}
+              <i>Applications are currently closed until early April</i>
             </div>
           }
           { (submitting && !submitted) &&
