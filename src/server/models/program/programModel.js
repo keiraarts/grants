@@ -1,12 +1,66 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const program = {
-    organizer: {
+const organizer = {
+    admins: [{
+        type:     mongoose.Schema.ObjectId,
+        ref:      'User',
+    }],
+    name: {
         type:  String,
         trim:  true,
         required: true,
     },
+    url: {
+        type:  String,
+        trim:  true,
+        required: true,
+    },
+    logo: {
+        type: String,
+    },
+    about: {
+        type:  String,
+        trim:  true,
+        required: true,
+    },
+    email: {
+        type:  String,
+        trim:  true,
+        required: true,
+    },
+    website: {
+        type:  String,
+        trim:  true,
+        required: true,
+    },
+    twitter: {
+        type:  String,
+        trim:  true,
+    },
+    instagram: {
+        type:  String,
+        trim:  true,
+    },
+}
+
+
+const OrganizerSchema = new Schema(organizer);
+
+OrganizerSchema.set('toJSON', {
+    getters:  true,
+    virtuals: true
+});
+
+mongoose.model('Organizer', OrganizerSchema);
+
+
+
+const program = {
+    organizers: [{
+        type:     mongoose.Schema.ObjectId,
+        ref:      'Organizer',
+    }],
     name: {
         type:  String,
         trim:  true,
@@ -32,29 +86,7 @@ const program = {
         trim:  true,
         required: true,
     },
-    email: {
-        type:  String,
-        trim:  true,
-        required: true,
-    },
-    website: {
-        type:  String,
-        trim:  true,
-        required: true,
-    },
-    twitter: {
-        type:  String,
-        trim:  true,
-    },
-    instagram: {
-        type:  String,
-        trim:  true,
-    },
     curators: [{
-        type:     mongoose.Schema.ObjectId,
-        ref:      'User',
-    }],
-    admins: [{
         type:     mongoose.Schema.ObjectId,
         ref:      'User',
     }],

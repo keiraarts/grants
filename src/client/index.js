@@ -20,6 +20,7 @@ import Donate from "./Components/Donate";
 import Program from "./Components/Program";
 import CreateProgram from "./Components/CreateProgram";
 import Apply from "./Components/Apply";
+import Organizer from "./Components/Organizer";
 import Curation from "./Components/Curation/Portal";
 import Testimony from "./Components/Testimony";
 import Register from "./Components/Register";
@@ -60,6 +61,7 @@ const App = () => {
                 <Route path="/program" exact component={ Program } />
                 <Route path="/create-program" exact component={ CreateProgram } />
                 <Route path="/apply/:program" exact component={ Apply } />
+                <Route path="/curator/:org" exact component={ Organizer } />
                 <Route path="/curation" exact component = {Curation } />
                 <Route path="/testimony" exact component={ Testimony } />
                 <Route path="/register" exact component={ Register } />

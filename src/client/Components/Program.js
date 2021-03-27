@@ -15,6 +15,8 @@ export default function Program() {
     .then(json => setPrograms(json));
   }, [])
 
+  console.log(programs);
+
   return (
     <div className='content-block'>
       <div className='text-l text-b'>
@@ -41,7 +43,7 @@ export default function Program() {
           { programs.map((program, index) => {
               return (
                 <Link key={ index } className='button' to={ `/apply/${ program.url }` }>
-                  <div className='text-xs'>{ program.organizer }</div>
+                  <div className='text-xs'>{ program.organizers[0].name }</div>
                   <span>{ program.name }</span>
                 </Link>
               );

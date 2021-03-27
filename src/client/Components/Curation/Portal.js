@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useStoreState } from 'easy-peasy';
-import { Link } from "react-router-dom";
 import { apiUrl } from '../../baseUrl';
 
 import Resizer from '../Tools/Resizer.js';
@@ -138,6 +137,8 @@ export default function Portal() {
     .then(json => {})
   }
 
+  console.log(programs);
+
   return (
     <div className='content-block'>
       <Resizer />
@@ -151,7 +152,7 @@ export default function Portal() {
         programs.map((program, index) => {
           return (
             <div key={ index } className='button' onClick={ () => loadCuration(program) } >
-              <div className='text-xs'>{ program.organizer }</div>
+              <div className='text-xs'>{ program.organizers[0].name }</div>
               <span>{ program.name }</span>
             </div>
           );
@@ -161,9 +162,12 @@ export default function Portal() {
           <div className='margin-right-s'>
             <div className='small-button' onClick={ () => setSelectedProgram(null) }>Back</div>
           </div>
-          <div>
+          <div className='flex-full center'>
             <div className='text-xs'>{ selectedProgram.organizer }</div>
-            <span>{ selectedProgram.name }</span>
+            <div className='text-m'>{ selectedProgram.name }</div>
+          </div>
+          <div>
+            <div className='small-button' onClick={ () => setSelectedProgram(null) }>Results</div>
           </div>
         </div>
       }
@@ -179,7 +183,7 @@ export default function Portal() {
             </div>
             <div className='info-block-space' />
             <div className={ viewTab === 'rejected' ? 'info-block info-block-selected' : 'info-block' } onClick={ () => setViewTab('rejected') }>
-              Passed
+              Rejected
             </div>
           </div>
           { (viewTab === 'curate') &&
@@ -193,7 +197,7 @@ export default function Portal() {
                     </div>
                     <div className='info-block-space' />
                     <div className='small-button' onClick={ () => decide('reject') }>
-                      Pass
+                      Reject
                     </div>
                   </div>
                   <React.Fragment key={ applicants.unapproved[0].id }>

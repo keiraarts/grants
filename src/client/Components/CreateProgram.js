@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useStoreState } from 'easy-peasy';
+import { Link } from "react-router-dom";
 import { apiUrl } from '../baseUrl';
 import Resizer from './Tools/Resizer.js';
 
@@ -8,6 +9,21 @@ import '../styles.scss';
 export default function Application() {
   const auth = useStoreState(state => state.user.auth);
 
+  const [org, setOrg] = useState(null);
+  useEffect(() => {
+    fetch(`${ apiUrl() }/program/getMyOrgs`, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': auth.token
+      },
+    }).then(res => res.json())
+    .then(json => {
+      if (!json.error) setOrg(json)
+    });
+  }, [])
+
   const [data, setData] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -15,13 +31,15 @@ export default function Application() {
   const submit = e => {
     console.log(data);
     e.preventDefault();
-    if (!data.organizer || !data.name || !data.url || !data.description || !data.logistics || !data.criteria) setErr('Please complete all required fields');
+    if (org && (!data.name || !data.url || !data.description || !data.logistics || !data.criteria)) setErr('Please complete all required fields!');
+    else if (!org && (!data.orgName || !data.about || !data.email || !data.website || !data.name ||
+             !data.url || !data.description || !data.logistics || !data.criteria)) setErr('Please complete all required fields');
     else {
       setErr(false);
       setSubmitting(true);
       fetch(`${ apiUrl() }/program/createProgram`, {
         method: 'POST',
-        body: JSON.stringify(data),
+        body: JSON.stringify({ ...data, existing: org ? org.id : undefined }),
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
@@ -33,6 +51,8 @@ export default function Application() {
     }
   }
 
+  console.log(org);
+
   return (
     <div className='content-block'>
       <Resizer />
@@ -41,14 +61,53 @@ export default function Application() {
       </div>
       <div className='margin-top'>
         <div className='ethos-text'>
-          Sevens Genesis Grant is for digital artists who have not sold an NFT before. 
-          We will mint and transfer your single editioned artwork to you as part of the Sevens Genesis Grant exhibition
-          as well as provide additional funds to proceed with your first ever sale.
+          Sevens Foundation is purely focused on artistic and social integrity. Participating exhibitions must have either a community upbringing, charitable, or humanitarian cause.
+          Providing grants, at the minimum, must cover all costs for minting recipients' NFTs.
         </div>
         <form onSubmit={ submit }>
-          <div className='form__group field'>
-            <input type='text' className='form__field' placeholder='Organizer Name' name='organizer' id='organizer' required maxLength='100' onChange={e => setData({ ...data, organizer: e.target.value })} />
-            <label className='form__label'>Program Creator / Entity Name</label>
+          <div className='margin-top'>
+            Program Curator or Organization
+          </div>
+          { org ?
+            <div>
+              <Link className='text-rainbow' to={ `/curator/${ org.url }` }>{ org.name }</Link>
+            </div>
+          :
+            <div>
+              <div className='form__group field'>
+                <input type='text' className='form__field' placeholder='Organizer Name' name='organizer' id='organizer' required maxLength='100' onChange={e => setData({ ...data, orgName: e.target.value })} />
+                <label className='form__label'>Name</label>
+              </div>
+              <div className='form__group field'>
+                <textarea type='text' className='form__field intent-field' placeholder='Intent' name='intent' id='intent' required maxLength='2000' onChange={e => setData({ ...data, about: e.target.value })} />
+                <label className='form__label'>About (2000 Chars)</label>
+              </div>
+              <div className='form__group field'>
+                <input type='email' className='form__field' placeholder='Email' name='email' id='email' required maxLength='100' onChange={e => setData({ ...data, email: e.target.value })} />
+                <label className='form__label'>Public / Contact Email</label>
+              </div>
+              <div className='form__group field'>
+                <input type='url' className='form__field' placeholder='URL' name='url' id='url' required maxLength='100' onChange={e => setData({ ...data, website: e.target.value })} />
+                <label className='form__label'>Website</label>
+              </div>
+              <div className='form__group field'>
+                <input type='text' className='form__field' placeholder='Twitter' name='twitter' id='twitter' required maxLength='100' onChange={e => setData({ ...data, twitter: e.target.value })} />
+                <label className='form__label'>Twitter*</label>
+              </div>
+              <div className='text-s'>
+                @{ data.twitter }
+              </div>
+              <div className='form__group field'>
+                <input type='text' className='form__field' placeholder='Instagram' name='instagram' id='instagram' maxLength='100' onChange={e => setData({ ...data, instagram: e.target.value })} />
+                <label className='form__label'>Instagram*</label>
+              </div>
+              <div className='text-s'>
+                @{ data.instagram }
+              </div>
+            </div>
+          }
+          <div className='margin-top'>
+            Program Details
           </div>
           <div className='form__group field'>
             <input type='text' className='form__field' placeholder='Program Name' name='name' id='name' required maxLength='100' onChange={e => setData({ ...data, name: e.target.value })} />
@@ -72,28 +131,6 @@ export default function Application() {
           <div className='form__group field'>
             <textarea type='text' className='form__field intent-field' placeholder='Intent' name='intent' id='intent' required maxLength='2000' onChange={e => setData({ ...data, criteria: e.target.value })} />
             <label className='form__label'>Applicant Criteria (2000 Chars)</label>
-          </div>
-          <div className='form__group field'>
-            <input type='email' className='form__field' placeholder='Email' name='email' id='email' required maxLength='100' onChange={e => setData({ ...data, email: e.target.value })} />
-            <label className='form__label'>Program Organizer Email</label>
-          </div>
-          <div className='form__group field'>
-            <input type='url' className='form__field' placeholder='URL' name='url' id='url' required maxLength='100' onChange={e => setData({ ...data, website: e.target.value })} />
-            <label className='form__label'>Program Website*</label>
-          </div>
-          <div className='form__group field'>
-            <input type='text' className='form__field' placeholder='Twitter' name='twitter' id='twitter' required maxLength='100' onChange={e => setData({ ...data, twitter: e.target.value })} />
-            <label className='form__label'>Program Twitter*</label>
-          </div>
-          <div className='text-s'>
-            @{ data.twitter }
-          </div>
-          <div className='form__group field'>
-            <input type='text' className='form__field' placeholder='Instagram' name='instagram' id='instagram' maxLength='100' onChange={e => setData({ ...data, instagram: e.target.value })} />
-            <label className='form__label'>Program Instagram*</label>
-          </div>
-          <div className='text-s'>
-            @{ data.instagram }
           </div>
           { err ? 
             <div className='margin-top text-s text-err'>

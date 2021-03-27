@@ -3,6 +3,9 @@ const program = require('./programController');
 module.exports = (app) => {
   app.get('/api/program/getPrograms', program.getPrograms);
   app.post('/api/program/getProgram', program.getProgram);
+  app.post('/api/program/getMyOrgs', program.getMyOrgs);
+  app.post('/api/program/getOrg', program.getOrg);
+  app.post('/api/program/updateOrg', program.updateOrg);
   app.post('/api/program/createProgram', program.createProgram);
   app.post('/api/program/updateProgram', program.updateProgram);
   app.post('/api/program/submitApplication', program.submitApplication);

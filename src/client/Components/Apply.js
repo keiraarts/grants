@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from "react-router-dom";
 import { useStoreState } from 'easy-peasy';
 import { apiUrl } from '../baseUrl';
+import { Link } from "react-router-dom";
 import Resizer from './Tools/Resizer.js';
 
 import '../styles.scss';
@@ -10,6 +11,13 @@ function openLink(page)
 {
   let win = window.open(page, '_blank');
   win.focus();
+}
+
+function doDashes(str) {
+  var re = /[^a-z0-9]+/gi; // global and case insensitive matching of non-char/non-numeric
+  var re2 = /^-*|-*$/g;     // get rid of any leading/trailing dashes
+  str = str.replace(re, '-');  // perform the 1st regexp
+  return str.replace(re2, '').toLowerCase(); // ..aaand the second + return lowercased result
 }
 
 export default function Application() {
@@ -45,13 +53,13 @@ export default function Application() {
   const [updateErr, setUpdateErr] = useState(false);
   const updateProgram = e => {
     e.preventDefault();
-    if (!programInfo.organizer || !programInfo.name || !programInfo.url || !programInfo.description || !programInfo.logistics || !programInfo.criteria) setErr('Please fill out all required fields');
+    if (!programInfo.name || !programInfo.url || !programInfo.description || !programInfo.logistics || !programInfo.criteria) setUpdateErr('Please fill out all required fields');
     else {
-      setErr(false);
+      setUpdateErr(false);
       setProgramSubmitting(true);
       fetch(`${ apiUrl() }/program/updateProgram`, {
         method: 'POST',
-        body: JSON.stringify(programInfo),
+        body: JSON.stringify({ ...programInfo, org: programInfo.organizers[0].id }),
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
@@ -125,7 +133,7 @@ export default function Application() {
 
   const dropdownDefault = data.minted === undefined ? 'default' : `${ data.minted }`;
   let isAdmin = false;
-  if (programInfo) isAdmin = (auth && programInfo.admins.findIndex(admin => admin === auth.id) >= 0)
+  if (programInfo) isAdmin = (auth && programInfo.organizers[0].admins.findIndex(admin => admin === auth.id) >= 0)
 
   console.log(programInfo);
 
@@ -147,7 +155,7 @@ export default function Application() {
             <div className='text-s margin-top-s'>
               Curated by&nbsp;
               <strong>
-                <span className='text-rainbow pointer' onClick={ () => openLink(programInfo.website) }>{ programInfo.organizer }</span>
+                <Link className='text-rainbow pointer' to={ `/curator/${ doDashes(programInfo.organizers[0].name) }` }>{ programInfo.organizers[0].name }</Link>
               </strong>
             </div>
             <div className='margin-top'>
@@ -171,10 +179,6 @@ export default function Application() {
               { editing &&
                 <form onSubmit={ updateProgram }>
                   <div className='form__group field'>
-                    <input type='text' className='form__field' placeholder='Organizer Name' name='organizer' id='organizer' required maxLength='100' value={ programInfo.organizer } onChange={e => setProgram({ ...programInfo, organizer: e.target.value })} />
-                    <label className='form__label'>Program Creator / Entity Name</label>
-                  </div>
-                  <div className='form__group field'>
                     <input type='text' className='form__field' placeholder='Program Name' name='name' id='name' required maxLength='100' value={ programInfo.name } onChange={e => setProgram({ ...programInfo, name: e.target.value })} />
                     <label className='form__label'>Program Name</label>
                   </div>
@@ -197,28 +201,6 @@ export default function Application() {
                     <textarea type='text' className='form__field intent-field' placeholder='Intent' name='intent' id='intent' required maxLength='2000' value={ programInfo.criteria } onChange={e => setProgram({ ...programInfo, criteria: e.target.value })} />
                     <label className='form__label'>Applicant Criteria (2000 Chars)</label>
                   </div>
-                  <div className='form__group field'>
-                    <input type='email' className='form__field' placeholder='Email' name='email' id='email' required maxLength='100' value={ programInfo.email } onChange={e => setProgram({ ...programInfo, email: e.target.value })} />
-                    <label className='form__label'>Program Organizer Email</label>
-                  </div>
-                  <div className='form__group field'>
-                    <input type='url' className='form__field' placeholder='URL' name='url' id='url' required maxLength='100' value={ programInfo.website } onChange={e => setProgram({ ...programInfo, website: e.target.value })} />
-                    <label className='form__label'>Program Website*</label>
-                  </div>
-                  <div className='form__group field'>
-                    <input type='text' className='form__field' placeholder='Twitter' name='twitter' id='twitter' required maxLength='100' value={ programInfo.twitter } onChange={e => setProgram({ ...programInfo, twitter: e.target.value })} />
-                    <label className='form__label'>Program Twitter*</label>
-                  </div>
-                  <div className='text-s'>
-                    @{ data.twitter }
-                  </div>
-                  <div className='form__group field'>
-                    <input type='text' className='form__field' placeholder='Instagram' name='instagram' id='instagram' maxLength='100' value={ programInfo.instagram }  onChange={e => setProgram({ ...programInfo, instagram: e.target.value })} />
-                    <label className='form__label'>Program Instagram*</label>
-                  </div>
-                  <div className='text-s'>
-                    @{ data.instagram }
-                  </div>
                   { updateErr &&
                     <div className='margin-top text-s text-err'>
                       { updateErr }
@@ -232,7 +214,7 @@ export default function Application() {
                   { (!programSubmitting) && 
                   <div>
                     <input type='submit' value='Cancel' className='submit-button' onClick={ () => setEditing(false) } />&nbsp;
-                    <input type='submit' value='Update Program Info' className='submit-button' />
+                    <input type='submit' value='Update Program' className='submit-button' />
                   </div>
                   }
                 </form>

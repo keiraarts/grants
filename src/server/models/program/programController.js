@@ -14,6 +14,8 @@ const gifResize = require('@gumlet/gif-resize');
 const auth = require('../../services/authorization-service');
 const templates = require('../../emails/templates');
 
+const Applicant = require('mongoose').model('Applicant');
+const Organizer = require('mongoose').model('Organizer');
 const Program = require('mongoose').model('Program');
 const ProgramApplicant = require('mongoose').model('ProgramApplicant');
 const User = require('mongoose').model('User');
@@ -40,11 +42,12 @@ const transporter = nodemailer.createTransport({
 
 
 exports.getPrograms = async (req, res) => {
-  return Program.find({ active: true }, (err, data) => {
+  return Program.find({ active: false }, (err, data) => {
     return err ?
         res.status(500).json(err) :
         res.json(data);
-  }).select('organizer name url');
+  }).select('organizers name url')
+  .populate('organizers');
 };
 
 exports.getProgram = async (req, res) => {
@@ -52,27 +55,68 @@ exports.getProgram = async (req, res) => {
     return err ?
         res.status(500).json(err) :
         res.json(data);
-  });
+  }).populate('organizers');
 };
+
+exports.getMyOrgs = async (req, res) => {
+  const jwt = auth(req.headers.authorization, res, (jwt) => jwt);
+  const user = await User.findById(jwt.id);
+  if (!user) return res.json({ error: 'Authentication error' });
+
+  const org = await Organizer.findOne({ admins: jwt.id });
+  if (!org) return res.json({ success: null });
+
+  return res.json(org);
+};
+
+exports.getOrg = async (req, res) => {
+  return Organizer.findOne({ url: req.body.url }, (err, data) => {
+    return err ?
+        res.status(500).json(err) :
+        res.json(data);
+  }).populate('organizers');
+};
+
+
+function doDashes(str) {
+  var re = /[^a-z0-9]+/gi; // global and case insensitive matching of non-char/non-numeric
+  var re2 = /^-*|-*$/g;     // get rid of any leading/trailing dashes
+  str = str.replace(re, '-');  // perform the 1st regexp
+  return str.replace(re2, '').toLowerCase(); // ..aaand the second + return lowercased result
+}
 
 exports.createProgram = async (req, res) => {
   const jwt = auth(req.headers.authorization, res, (jwt) => jwt);
   const user = await User.findById(jwt.id);
   if (!user) return res.json({ error: 'Authentication error' });
 
+  let org;
+  if (req.body.existing) {
+    org = await Organizer.findById(req.body.existing);
+    if (!org) return res.json({ error: 'That org does not seem to exist' });
+  } else {
+    org = new Organizer({
+      admins:       [jwt.id],
+      name:         req.body.orgName,
+      url:          doDashes(req.body.orgName),
+      about:        req.body.about,
+      email:        req.body.email,
+      website:      req.body.website,
+      twitter:      req.body.twitter,
+      instagram:    req.body.instagram,
+    })
+
+    org.save();
+  }
+
   const newProgram = new Program({
-    organizer:    req.body.organizer,
+    organizers:   [org._id],
     name:         req.body.name,
     url:          req.body.url,
     description:  req.body.description,
     logistics:    req.body.logistics,
     criteria:     req.body.criteria,
-    email:        req.body.email,
-    website:      req.body.website,
-    twitter:      req.body.twitter,
-    instagram:    req.body.instagram,
     curators:     [jwt.id],
-    admins:       [jwt.id],
     active:       false,
   });
 
@@ -84,21 +128,68 @@ exports.createProgram = async (req, res) => {
   });
 };
 
+exports.updateOrg = async (req, res) => {
+  const jwt = auth(req.headers.authorization, res, (jwt) => jwt);
+  const org = await Organizer.findOne({ _id: req.body._id, admins: jwt.id });
+  if (!org) return res.json({ error: 'Authentication error' });
+
+  org.name = req.body.name;
+  org.url = doDashes(req.body.name);
+  org.logo = req.body.logo;
+  org.about = req.body.about;
+  org.email = req.body.email,
+  org.website = req.body.website;
+  org.twitter = req.body.twitter;
+  org.instagram = req.body.instagram;
+
+  await Object.keys(req.body).forEach(async (item) => {
+    if (item === 'logo') {
+      let ext, image;
+      ext = req.body[item].split(';')[0].match(/jpeg|jpg|png|gif/)[0];
+      image = req.body[item].replace(/^data:image\/\w+;base64,/, '');
+      image = image.replace(/^data:video\/mp4;base64,/, '');
+      const buf = new Buffer.from(image, 'base64');
+      const name = crypto.randomBytes(20).toString('hex');
+
+      org.logo = `${ name }.${ ext }`;
+
+      await fs.writeFileSync(path.join(__dirname, `../../images/${ org.logo }`), buf);
+      const uploader = await spaces.uploadFile({
+        localFile: path.join(__dirname, `../../images/${ org.logo }`),
+        s3Params: {
+          Bucket: 'grants',
+          Key: `${ org.logo }`,
+          ACL: 'public-read'
+        }
+      });
+
+      uploader.on('end', () => {
+        fs.unlink(path.join(__dirname, `../../images/${ org.logo }`), (err2) => {
+          if (err2 !== null) {
+            console.log(err2);
+          }
+          return null;
+        });
+      });
+    }
+  });
+
+  org.save();
+  return res.json({ success: 'Program updated' })
+};
+
 exports.updateProgram = async (req, res) => {
   const jwt = auth(req.headers.authorization, res, (jwt) => jwt);
-  const program = await Program.findOne({ _id: req.body._id, admins: jwt.id });
+  const organizer = await Organizer.findOne({ _id: req.body.org, admins: jwt.id });
+  if (!organizer) return res.json({ error: 'Authentication error' });
+  const program = await Program.findById(req.body.id);
   if (!program) return res.json({ error: 'Authentication error' });
 
-  program.organizer = req.body.organizer;
   program.name = req.body.name;
   program.url = req.body.url;
   program.description = req.body.description;
   program.logistics = req.body.logistics;
   program.criteria = req.body.criteria;
-  program.email = req.body.email,
-  program.website = req.body.website;
-  program.twitter = req.body.twitter;
-  program.instagram = req.body.instagram;
   program.save();
   return res.json({ success: 'Program updated' })
 };
@@ -285,7 +376,7 @@ exports.updateApplication = async (req, res) => {
 
 exports.getCurationPrograms = async (req, res) => {
   const jwt = auth(req.headers.authorization, res, (jwt) => jwt);
-  const programs = await Program.find({ curators: jwt.id }).select('organizer name url');
+  const programs = await Program.find({ curators: jwt.id }).select('organizer name url').populate('organizers');
   if (!programs.length) return res.status(401).json({ error: 'Authentication error' });
 
   return res.json({ success: programs });
@@ -441,6 +532,10 @@ exports.removeFlag = (req, res) => {
     });
   });
 };
+
+// setTimeout(() => {
+//   Applicant.find({})
+// })
 
 
 // setTimeout(() => {
