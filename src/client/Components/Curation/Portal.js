@@ -137,7 +137,7 @@ export default function Portal() {
     .then(json => {})
   }
 
-  console.log(programs);
+  console.log(selectedProgram);
 
   return (
     <div className='content-block'>
@@ -163,29 +163,36 @@ export default function Portal() {
             <div className='small-button' onClick={ () => setSelectedProgram(null) }>Back</div>
           </div>
           <div className='flex-full center'>
-            <div className='text-xs'>{ selectedProgram.organizer }</div>
+            <div className='text-xs'>{ selectedProgram.organizers[0].name }</div>
             <div className='text-m'>{ selectedProgram.name }</div>
           </div>
+          <div className='small-space' />
           <div>
-            <div className='small-button' onClick={ () => setSelectedProgram(null) }>Results</div>
+            { viewTab === 'results' ?
+              <div className='small-button' onClick={ () => setViewTab('curate') }>Curation</div>
+            :
+              <div className='small-button' onClick={ () => setViewTab('results') }>Results</div>
+            }
           </div>
         </div>
       }
       { selectedProgram &&
         <div>
-          <div className='flex margin-top-s'>
-            <div className={ viewTab === 'curate' ? 'info-block info-block-selected' : 'info-block' } onClick={ () => setViewTab('curate') }>
-              Curate
+          { viewTab !== 'results' &&
+            <div className='flex margin-top-s'>
+              <div className={ viewTab === 'curate' ? 'info-block info-block-selected' : 'info-block' } onClick={ () => setViewTab('curate') }>
+                Curate
+              </div>
+              <div className='info-block-space' />
+              <div className={ viewTab === 'approved' ? 'info-block info-block-selected' : 'info-block' } onClick={ () => setViewTab('approved') }>
+                Approved
+              </div>
+              <div className='info-block-space' />
+              <div className={ viewTab === 'rejected' ? 'info-block info-block-selected' : 'info-block' } onClick={ () => setViewTab('rejected') }>
+                Declined
+              </div>
             </div>
-            <div className='info-block-space' />
-            <div className={ viewTab === 'approved' ? 'info-block info-block-selected' : 'info-block' } onClick={ () => setViewTab('approved') }>
-              Accepted
-            </div>
-            <div className='info-block-space' />
-            <div className={ viewTab === 'rejected' ? 'info-block info-block-selected' : 'info-block' } onClick={ () => setViewTab('rejected') }>
-              Rejected
-            </div>
-          </div>
+          }
           { (viewTab === 'curate') &&
             <div className='margin-top-s'>
               { (applicants && applicants.unapproved && applicants.unapproved.length) ?
@@ -193,11 +200,11 @@ export default function Portal() {
                   Remaining: { applicants.unapproved.length }
                   <div className='flex margin-top-s'>
                     <div className='small-button' onClick={ () => decide('approve') }>
-                      Accept
+                      Approve
                     </div>
                     <div className='info-block-space' />
                     <div className='small-button' onClick={ () => decide('reject') }>
-                      Reject
+                      Decline
                     </div>
                   </div>
                   <React.Fragment key={ applicants.unapproved[0].id }>

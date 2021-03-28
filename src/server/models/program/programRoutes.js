@@ -12,7 +12,7 @@ module.exports = (app) => {
   app.post('/api/program/updateApplication', program.updateApplication);
   app.post('/api/program/getCurationPrograms', program.getCurationPrograms);
   app.post('/api/program/viewAllApplications', program.viewAllApplications);
-  app.get('/api/program/viewTopApplications', program.viewTopApplications);
+  app.get('/api/program/viewResults', program.viewResults);
   app.post('/api/program/approveOrReject', program.approveOrReject);
   app.post('/api/program/undoApplicant', program.undoApplicant);
   app.post('/api/program/flagApplicant', program.flagApplicant);

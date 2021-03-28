@@ -42,7 +42,7 @@ const transporter = nodemailer.createTransport({
 
 
 exports.getPrograms = async (req, res) => {
-  return Program.find({ active: false }, (err, data) => {
+  return Program.find({ active: true }, (err, data) => {
     return err ?
         res.status(500).json(err) :
         res.json(data);
@@ -404,20 +404,16 @@ exports.viewAllApplications = async (req, res) => {
   }).populate('user', 'artistName birthYear country city website twitter instagram')
 };
 
-exports.viewTopApplications = (req, res) => {
-  auth(req.headers.authorization, res, (jwt) => {
-    User.findById(jwt.id, (err, user) => {
-      if (err) return res.json(err);
-      if (!user || !user.committee) return res.status(401).json({ err: 'Authentication error' });
-      else {
-        return ProgramApplicant.find({ ineligible: { $ne: true }, userAccepted: true, accepted: false, minted: { $ne: true } }, (err, data) => {
-          return err ?
-              res.status(500).json(err) :
-              res.json(data);
-        }).sort('-approvalCount')
-      }
-    });
-  });
+exports.viewResults = async (req, res) => {
+  const jwt = auth(req.headers.authorization, res, (jwt) => jwt);
+  const user = await User.findById(jwt.id);
+  if (!user) return res.json({ error: 'Authentication error' });
+
+  return ProgramApplicant.find({ ineligible: { $ne: true }, userAccepted: true, accepted: false, minted: { $ne: true } }, (err, data) => {
+    return err ?
+        res.status(500).json(err) :
+        res.json(data);
+  }).sort('-approvalCount')
 };
 
 exports.approveOrReject = async (req, res) => {
@@ -534,94 +530,51 @@ exports.removeFlag = (req, res) => {
 };
 
 // setTimeout(() => {
-//   Applicant.find({})
+//   Applicant.find({ order: { $exists: true } }, (err, applicants) => {
+//     applicants.forEach(applicant => {
+//       const transfer = {
+//         user:           applicant.user,
+//         program:        '605f948be26eb64b749bbc09',
+//         url:            applicant.website,
+//         statement:      applicant.statement,
+//         additional:     applicant.additional,
+//         title:          applicant.title,
+//         description:    applicant.description,
+//         art:            applicant.art,
+//         artWeb:         applicant.artWeb,
+//         ineligible:     applicant.ineligible,
+//         flagged:        applicant.flagged,
+//         approvalCount:  applicant.approvalCount,
+//         rejectCount:    applicant.rejectCount,
+//         approved:       applicant.approved,
+//         rejected:       applicant.rejected,
+//         emailed:        applicant.emailed,
+//         accepted:       applicant.accepted,
+//         published:      applicant.published,
+//         order:          applicant.order,
+//       };
+
+//       if (!transfer.artWeb) console.log('WTF', transfer);
+//       // const newApplicant = new ProgramApplicant(transfer);
+//       // newApplicant.save((err, data) => {
+//       //   if (err) console.log('WTF', err);
+//       // });
+//       // console.log(applicant.email);
+//     })
+//   })
 // })
 
 
 // setTimeout(() => {
-//   return Applicant.find({ ineligible: { $ne: true }, userAccepted: { $ne: true }, accepted: true, minted: { $ne: true } }, (err2, data) => {
-//     if (err2) return res.status(500).json(err);
+//   return ProgramApplicant.find({ program: '605f948be26eb64b749bbc09', accepted: false }, (err2, data) => {
 //     let count = 0;
 //     data.forEach(e => {
+//       e.program = '605fef70830ed668addb44ab';
+//       e.accepted = true;
+//       e.save();
 //       count++;
-//       if (e.user) { 
-//         console.log(e.title, e.email, e.user.wallet);
-//       }
 //     })
 
 //     console.log('COUNT', count);
-//   }).populate('user');
+//   })
 // })
-
-// setTimeout(() => {
-//   return Applicant.find({ walletScreened: { $ne: true }, title: { $exists: true }, accepted: true, userAccepted: true, ineligible: { $ne: true } }, (err2, data) => {
-//     if (err2) return res.status(500).json(err);
-//     let count = 0;
-//     data.forEach(e => {
-//       count++;
-//       // e.walletScreened = true;
-//       // e.save();
-//       // if (e.user) { 
-//         console.log(e.user.wallet);
-//       // }
-//     })
-
-//     console.log('COUNT', count);
-//   }).populate('user');
-// })
-
-// setTimeout(() => {
-//   return Applicant.find({ ineligible: { $ne: true }, userAccepted: true, order: { $exists: true } }, (err2, data) => {
-//     if (err2) return res.status(500).json(err);
-//     let count = 1;
-//     data.forEach(e => {
-//       count++;
-//       console.log(e);
-//       // if (e.user && e.user.wallet && e.order >= 72) {
-//       //   // e.order = e.order + 1;
-//       //   // e.walletScreened = true;
-//       //   // e.save();
-//       // }
-//     })
-
-//     console.log('COUNTA', count);
-//   }).sort('-approvalCount')
-//     // .distinct('country')
-//     .populate('user');
-// })
-
-// setTimeout(() => {
-//   return User.find({}, (err2, data) => {
-//     if (err2) return res.status(500).json(err);
-//     data.forEach(e => {
-//       if (e.instagram) {
-//         let fixedTwitter = e.instagram.toLowerCase();
-//         fixedTwitter = fixedTwitter.replace(`www.instagram.com`, '');
-//         fixedTwitter = fixedTwitter.replace(`instagram.com`, '');
-//         fixedTwitter = fixedTwitter.replace(`https://instagram.com/`, '');
-//         fixedTwitter = fixedTwitter.replace(`https://`, '');
-//         fixedTwitter = fixedTwitter.replace(`http://`, '');
-//         fixedTwitter = fixedTwitter.replace(`/`, '');
-//         fixedTwitter = fixedTwitter.replace(`/`, '');
-//         fixedTwitter = fixedTwitter.replace(`/`, '');
-//         fixedTwitter = fixedTwitter.replace('@', '');
-//         fixedTwitter = fixedTwitter.replace('\@', '');
-//         fixedTwitter = fixedTwitter.replace(' ', '.');
-//         if (fixedTwitter === 'na') fixedTwitter = '';
-//         if (fixedTwitter === 'none') fixedTwitter = '';
-//         if (fixedTwitter === 'n.a.') fixedTwitter = '';
-//         if (fixedTwitter === '-') fixedTwitter = '';
-//         if (fixedTwitter === '*') fixedTwitter = '';
-//         // if (fixedTwitter === '.') fixedTwitter = '';
-//         console.log(e.instagram);
-//         // console.log(`${ e.instagram }                      `, e.email);
-//         e.instagram = fixedTwitter;
-//         e.save();
-//       }
-//     })
-//   });
-// })
-
-
-// TO DO:
-// Fix instagram spaces to auto populate with period (parsing error)

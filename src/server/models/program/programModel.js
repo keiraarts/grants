@@ -90,8 +90,13 @@ const program = {
         type:     mongoose.Schema.ObjectId,
         ref:      'User',
     }],
-    active: {
+    active: { // Shown in application list
+        type:    Boolean,
+        default: false,
+    },
+    open: {   // Applications open
         type: Boolean,
+        default: false,
     },
 }
 
