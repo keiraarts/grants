@@ -26,7 +26,7 @@ export default function Program() {
         What is an art grant?
       </div>
       <div className='page-container margin-top ethos-text'>
-        Sevens Foundation provides both arists and curators tools for creating opportunities to connect through art exhibitions.
+        Sevens Foundation provides both artists and curators tools for creating opportunities to connect through art exhibitions.
         <br /><br />
         Grants, at the minimum, covers all costs for publishing artworks as part of a show and create a global and collaborative environment for
         curators and artists alike to connect through an integral goal. This allows any digital artist, regardless of your background or prior success,
