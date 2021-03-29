@@ -8,6 +8,6 @@ module.exports = (token, res, callback) => {
         return callback(jwtUser);
     } catch (err) {
         console.log('JWT ERROR: ', err.message);
-        return res.status(500).json('Authorization error');
+        return res.status(500).json({ error: 'Authorization error' });
     }
 };
