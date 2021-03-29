@@ -7,19 +7,6 @@ import Logo from '../assets/logo.png';
 
 export default function Header() {
   const auth = useStoreState(state => state.user.auth);
-
-  function openLink(page)
-  {
-    let win;
-    if (page === 'twitter') {
-      win = window.open('https://twitter.com/genesisgrants', '_blank');
-    } else if (page === 'instagram') {
-      win = window.open('https://instagram.com/genesisgrants', '_blank');
-    }
-
-    win.focus();
-  }
-
   const location = useLocation();
 
   return (

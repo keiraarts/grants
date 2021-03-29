@@ -20,7 +20,7 @@ export default function Application() {
       },
     }).then(res => res.json())
     .then(json => {
-      if (!json.error) setOrg(json)
+      if (json && !json.error) setOrg(json)
     });
   }, [])
 

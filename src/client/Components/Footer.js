@@ -22,8 +22,8 @@ export default function Header() {
         Developed by <a className='text-rainbow pointer' onClick={ () => openLink('https://twitter.com/illestrater_') }>illestrater</a><br />
       </div>
       <div className='social-icons margin-top flex center'>
-        <img src={ Twitter } className='social-icon' alt='Twitter' onClick={ () => openLink('https://twitter.com/genesisgrants') } />
-        <img src={ Instagram } className='social-icon' alt='Instagram' onClick={ () => openLink('https://instagram.com/genesisgrants') } />
+        <img src={ Twitter } className='social-icon' alt='Twitter' onClick={ () => openLink('https://twitter.com/sevensgrant') } />
+        <img src={ Instagram } className='social-icon' alt='Instagram' onClick={ () => openLink('https://instagram.com/sevensgrant') } />
         <img src={ Discord } className='social-icon' alt='Instagram' onClick={ () => openLink('https://discord.gg/YB4HDKwxyc') } />
         <a href='mailto:tim@grants.art'><img src={ Email } className='social-icon' alt='Email' /></a>
       </div>

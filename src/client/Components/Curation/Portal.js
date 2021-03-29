@@ -29,7 +29,6 @@ export default function Portal() {
   const auth = useStoreState(state => state.user.auth);
 
   const [programs, setPrograms] = useState([]);
-  const [selectedProgram, setSelectedProgram] = useState(null);
   const [viewTab, setViewTab] = useState('curate');
   const [resultsTab, setResultsTab] = useState('unminted');
   const [adminTab, setAdminTab] = useState(false);
@@ -47,8 +46,11 @@ export default function Portal() {
 
   const [applicants, setApplicants] = useState({});
   const [results, setResults] = useState([]);
+  const [selectedProgram, setSelectedProgram] = useState(null);
+  const [newCriteria, setNewCriteria] = useState(false);
   const loadCuration = async program => {
     setSelectedProgram(program);
+    setNewCriteria({ passByVotes: program.passByVotes, blindVoting: program.blindVoting, topThreshold: program.topThreshold, voteThreshold: program.voteThreshold });
     setApplicants({});
     await fetch(`${ apiUrl() }/program/viewAllApplications`, {
       method: 'POST',
@@ -95,6 +97,21 @@ export default function Portal() {
       .then(json => setProgramAdmin(json))
     }
   }, [adminTab]);
+
+  const saveCriteria = () => {
+    setSelectedProgram({ ...selectedProgram, passByVotes: newCriteria.passByVotes, blindVoting: newCriteria.blindVoting, topThreshold: newCriteria.topThreshold, voteThreshold: newCriteria.voteThreshold });
+    setCriteria(false);
+    fetch(`${ apiUrl() }/program/updateCurationCriteria`, {
+      method: 'POST',
+      body: JSON.stringify({ ...newCriteria, id: selectedProgram.id, org: selectedProgram.organizers[0].id }),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': auth.token
+      },
+    }).then(res => res.json())
+    .then(json => {});
+  }
 
   const decide = (type) => {
     const id = applicants.unapproved[0].id;
@@ -226,7 +243,7 @@ export default function Portal() {
   }
 
   console.log(selectedProgram);
-  const isAdmin = selectedProgram && selectedProgram.organizers[0].admins.find(e => e === auth.id)
+  const isAdmin = selectedProgram && selectedProgram.organizers[0].admins.find(e => e === auth.id);
 
   return (
     <div className='content-block'>
@@ -285,14 +302,21 @@ export default function Portal() {
                 <div>Top { selectedProgram.topThreshold } Submissions</div>
               }
             </div>
-            <div className='small-button margin-left-s' onClick={ () => setCriteria(!criteria) }>{ criteria ? 'Save' : 'Edit' }</div>
+            { criteria ?
+              <div>
+                <div className='small-button margin-left-s' onClick={ () => setCriteria(!criteria) }>Cancel</div>
+                <div className='small-button margin-left-s' onClick={ () => saveCriteria() }>Save</div>
+              </div>
+              :
+              <div className='small-button margin-left-s' onClick={ () => setCriteria(!criteria) }>Edit</div>
+            }
             <div className='flex-full' />
           </div>
           { criteria &&
             <div>
               <div className='text-s margin-top form__title'>Selection Type</div>
               <div className='select-dropdown margin-top-minus'>
-                <select name='Mint' className='text-black' defaultValue={ `${ selectedProgram.passByVotes }` } value={ `${ selectedProgram.passByVotes }` } required onChange={e => setNewCriteria({ ...newCriteria, passByVotes: e.target.value })}>
+                <select name='Mint' className='text-black' defaultValue={ `${ newCriteria.passByVotes }` } value={ `${ newCriteria.passByVotes }` } required onChange={e => setNewCriteria({ ...newCriteria, passByVotes: (e.target.value === 'true') })}>
                   <option value='default' disabled hidden>
                     Select an option
                   </option>
@@ -300,9 +324,26 @@ export default function Portal() {
                   <option value='true'>Vote Count</option>
                 </select>
               </div>
-              <div className='form__group field'>
-                <input type='number' className='form__field' placeholder='Number' name='number' id='number' maxLength='4' onChange={e => setNewCriteria({ ...newCriteria, number: e.target.value }) } />
-                <label className='form__label'>Number</label>
+              { newCriteria.passByVotes ?
+                <div className='form__group field'>
+                  <input type='number' className='form__field' placeholder='Number' name='number' id='number' maxLength='4' value={ `${ newCriteria.voteThreshold }` } onChange={e => setNewCriteria({ ...newCriteria, voteThreshold: Number(e.target.value) }) } />
+                  <label className='form__label'>Needed Votes Count</label>
+                </div>
+                :
+                <div className='form__group field'>
+                  <input type='number' className='form__field' placeholder='Number' name='number' id='number' maxLength='4' value={ `${ newCriteria.topThreshold }` } onChange={e => setNewCriteria({ ...newCriteria, topThreshold: Number(e.target.value) }) } />
+                  <label className='form__label'>Top Artworks Threshold Count</label>
+                </div>
+              }
+              <div className='text-s margin-top form__title'>Blind Curation</div>
+              <div className='select-dropdown margin-top-minus'>
+                <select name='Mint' className='text-black' defaultValue={ `${ newCriteria.blindVoting }` } value={ `${ newCriteria.blindVoting }` } required onChange={e => setNewCriteria({ ...newCriteria, blindVoting: (e.target.value === 'true') })}>
+                  <option value='default' disabled hidden>
+                    Select an option
+                  </option>
+                  <option value='false'>Show Artist Info</option>
+                  <option value='true'>Hide Artist Info</option>
+                </select>
               </div>
             </div>
           }
@@ -389,7 +430,7 @@ export default function Portal() {
                   <masonry-layout cols={ cols }>
                     { results.map((item, index) => {
                         if ((resultsTab === 'minted' && item.published) || (resultsTab === 'unminted' && !item.published))
-                          return (<DecidedBlock key={ index } nft={ item } undo={ undo } type='approve' />);
+                          return (<DecidedBlock key={ index } nft={ item } undo={ undo } blind={ selectedProgram.blindVoting } type='approve' />);
                     }) }
                   </masonry-layout>
                 </React.Fragment>
@@ -411,7 +452,7 @@ export default function Portal() {
                     </div>
                   </div>
                   <React.Fragment key={ applicants.unapproved[0].id }>
-                    <Curation nft={ applicants.unapproved[0] } small={ small } />
+                    <Curation nft={ applicants.unapproved[0] } small={ small } blind={ selectedProgram.blindVoting } />
                   </React.Fragment>
                 </div>
               :

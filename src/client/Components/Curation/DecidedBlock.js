@@ -1,13 +1,66 @@
 import React, { useState } from 'react';
+import ReactModal from 'react-modal';
 
+import Twitter from '../../assets/twitter.png';
+import Instagram from '../../assets/instagram.png';
+import Web from '../../assets/website.png';
 import '../../styles.scss';
 
-export default function Gallery({ nft, undo, type }) {
+export default function Gallery({ nft, undo, type, blind }) {
   const [loaded, didLoad] = useState(false);
+  const [infoOpen, setInfoOpen] = useState(false);
   const imageType = nft.artWeb.split('.')[1];
 
   return (
     <div className='margin-top-minus'>
+      <ReactModal
+        isOpen={ infoOpen }
+        style={{ content: { margin: 'auto', width: '80%', height: '80%' } }}
+        onRequestClose={ () => setInfoOpen(false) }
+        shouldCloseOnOverlayClick={ true }
+        ariaHideApp={ false }
+      >
+        <div className='white-space center'>
+          <div className='text-s'>
+            <div className='gallery-plate metal linear'>
+              { !blind ?
+                <div className='text-s'>
+                  <strong>{ nft.user.artistName }</strong><br />
+                  { nft.user.country } { nft.user.birthYear && `(b. ${ nft.user.birthYear })` }
+                </div>
+              :
+                <div className='text-s'>
+                  <strong>Artist Info Hidden</strong><br />
+                </div>
+              }
+              <div className='margin-top-s text-s text-b'>
+                <strong><i>{ nft.title || 'Untitled' }</i></strong>, 2021<br />
+                { imageType.toUpperCase() } as NFT
+              </div>
+              <div className='margin-top-s text-xs'>
+                { nft.description }
+              </div>
+            </div>
+          </div>
+          { !blind &&
+            <div className='flex margin-top-s'>
+              { nft.user.website && <div><img src={ Web } className='account-social-web pointer' alt='Website' onClick={ () => openLink(nft.user.website) } /></div> }
+              { nft.user.twitter && <div><img src={ Twitter } className='account-social pointer' alt='Twitter' onClick={ () => openLink(`https://twitter.com/${ nft.user.twitter }`) } /></div> }
+              { nft.user.instagram && <div><img src={ Instagram } className='account-social pointer' alt='Instagram' onClick={ () => openLink(`https://instagram.com/${ nft.user.instagram }`) } /></div> }
+            </div>
+          }
+          <div className='margin-top-s text-s'>
+            <div className='text-m'>Statement of Intent</div>
+            { nft.statement }
+          </div>
+          { nft.additional &&
+            <div className='margin-top-s text-s'>
+              <div className='text-m'>Additional Info</div>
+              { nft.additional }
+            </div>
+          }
+        </div>
+      </ReactModal>
       <div className='gallery-block'>
         { (!loaded) && <div className='block-loading'><div className='loading'><div></div><div></div></div></div> }
         { imageType === 'mp4' ?
@@ -25,7 +78,7 @@ export default function Gallery({ nft, undo, type }) {
           Undo
         </div>
         <div className='small-space' />
-        <div className='small-button flex-full'>
+        <div className='small-button flex-full' onClick={ () => setInfoOpen(true) }>
           View Info
         </div>        
       </div>

@@ -17,7 +17,7 @@ function openLink(page)
   win.focus();
 }
 
-export default function Curation({ nft, small }) {
+export default function Curation({ nft, small, blind }) {
   const [loaded, setLoaded] = useState(false);
   const video = useRef();
 
@@ -90,10 +90,16 @@ export default function Curation({ nft, small }) {
             <div className={ `gallery-description` }>
               <div className='text-s'>
                 <div className='gallery-plate metal linear'>
-                  <div className='text-s'>
-                    <strong>{ nft.user.artistName }</strong><br />
-                    { nft.user.country } { nft.user.birthYear && `(b. ${ nft.user.birthYear })` }
-                  </div>
+                  { !blind ?
+                    <div className='text-s'>
+                      <strong>{ nft.user.artistName }</strong><br />
+                      { nft.user.country } { nft.user.birthYear && `(b. ${ nft.user.birthYear })` }
+                    </div>
+                  :
+                    <div className='text-s'>
+                      <strong>Artist Info Hidden</strong><br />
+                    </div>
+                  }
                   <div className='margin-top-s text-s text-b'>
                     <strong><i>{ nft.title || 'Untitled' }</i></strong>, 2021<br />
                     { imageType.toUpperCase() } as NFT
@@ -103,11 +109,13 @@ export default function Curation({ nft, small }) {
                   </div>
                 </div>
               </div>
-              <div className='flex margin-top-s'>
-                { nft.user.website && <div><img src={ Web } className='account-social-web pointer' alt='Website' onClick={ () => openLink(nft.user.website) } /></div> }
-                { nft.user.twitter && <div><img src={ Twitter } className='account-social pointer' alt='Twitter' onClick={ () => openLink(`https://twitter.com/${ nft.user.twitter }`) } /></div> }
-                { nft.user.instagram && <div><img src={ Instagram } className='account-social pointer' alt='Instagram' onClick={ () => openLink(`https://instagram.com/${ nft.user.instagram }`) } /></div> }
-              </div>
+              { !blind &&
+                <div className='flex margin-top-s'>
+                  { nft.user.website && <div><img src={ Web } className='account-social-web pointer' alt='Website' onClick={ () => openLink(nft.user.website) } /></div> }
+                  { nft.user.twitter && <div><img src={ Twitter } className='account-social pointer' alt='Twitter' onClick={ () => openLink(`https://twitter.com/${ nft.user.twitter }`) } /></div> }
+                  { nft.user.instagram && <div><img src={ Instagram } className='account-social pointer' alt='Instagram' onClick={ () => openLink(`https://instagram.com/${ nft.user.instagram }`) } /></div> }
+                </div>
+              }
               <div className='margin-top-s text-s'>
                 <div className='text-m'>Statement of Intent</div>
                 { nft.statement }

@@ -64,7 +64,7 @@ exports.getMyOrgs = async (req, res) => {
   if (!user) return res.json({ error: 'Authentication error' });
 
   const org = await Organizer.findOne({ admins: jwt.id });
-  if (!org) return res.json({ success: null });
+  if (!org) return res.json(null);
 
   return res.json(org);
 };
@@ -192,6 +192,21 @@ exports.updateProgram = async (req, res) => {
   program.criteria = req.body.criteria;
   program.save();
   return res.json({ success: 'Program updated' })
+};
+
+exports.updateCurationCriteria = async (req, res) => {
+  const jwt = auth(req.headers.authorization, res, (jwt) => jwt);
+  const organizer = await Organizer.findOne({ _id: req.body.org, admins: jwt.id });
+  if (!organizer) return res.json({ error: 'Authentication error' });
+  const program = await Program.findById(req.body.id);
+  if (!program) return res.json({ error: 'Authentication error' });
+
+  program.passByVotes = req.body.passByVotes;
+  program.blindVoting = req.body.blindVoting;
+  program.topThreshold = req.body.topThreshold;
+  program.voteThreshold = req.body.voteThreshold;
+  program.save();
+  return res.json({ success: true });
 };
 
 exports.getProgramAdmin = async (req, res) => {
@@ -419,7 +434,7 @@ exports.updateApplication = async (req, res) => {
 
 exports.getCurationPrograms = async (req, res) => {
   const jwt = auth(req.headers.authorization, res, (jwt) => jwt);
-  const programs = await Program.find({ curators: jwt.id }).select('organizer name url perpetual passByVotes topThreshold voteThreshold').populate('organizers');
+  const programs = await Program.find({ curators: jwt.id }).select('organizer name url perpetual passByVotes topThreshold voteThreshold blindVoting').populate('organizers');
   if (!programs.length) return res.status(401).json({ error: 'Authentication error' });
 
   return res.json({ success: programs });
