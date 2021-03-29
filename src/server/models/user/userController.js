@@ -133,6 +133,20 @@ exports.getAccount = (req, res, next) => {
   });
 }
 
+exports.searchUsers = (req, res) => {
+  User.find({
+      $or: [
+          { username: new RegExp(req.body.user, 'i') },
+          { first: new RegExp(req.body.user, 'i') },
+          { last: new RegExp(req.body.user, 'i') }
+      ]
+  }, (err, users) => {
+    if (err) res.status(500).json({ error: errorMessages.parse(err) });
+    return res.json(users);
+  }).select('id first last username')
+  .limit(10)
+};
+
 exports.updateUser = async (req, res) => {
   auth(req.headers.authorization, res, (jwt) => {
     User.findById(jwt.id, (err, user) => {

@@ -21,11 +21,11 @@ export default function Gallery({ nft, undo, type }) {
         }
       </div>
       <div className='flex'>
-        <div className='small-button' onClick={ () => undo(nft.id, type) }>
+        <div className='small-button flex-full' onClick={ () => undo(nft.id, type) }>
           Undo
         </div>
         <div className='small-space' />
-        <div className='small-button'>
+        <div className='small-button flex-full'>
           View Info
         </div>        
       </div>

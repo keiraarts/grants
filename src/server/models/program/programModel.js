@@ -98,6 +98,26 @@ const program = {
         type: Boolean,
         default: false,
     },
+    perpetual: {
+        type: Boolean,
+        default: false
+    },
+    passByVotes: {
+        type: Boolean,
+        default: true,
+    },
+    blindVoting: {
+        type: Boolean,
+        default: true,
+    },
+    topThreshold: {
+        type: Number,
+        default: 10,
+    },
+    voteThreshold: {
+        type: Number,
+        default: 3,
+    },
 }
 
 const ProgramSchema = new Schema(program);

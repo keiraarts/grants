@@ -194,6 +194,49 @@ exports.updateProgram = async (req, res) => {
   return res.json({ success: 'Program updated' })
 };
 
+exports.getProgramAdmin = async (req, res) => {
+  const jwt = auth(req.headers.authorization, res, (jwt) => jwt);
+  const organizer = await Organizer.findOne({ admins: jwt.id });
+  if (!organizer) return res.json({ error: 'Authentication error' });
+
+  return Program.findById(req.body.program, (err, data) => {
+    if (!data.organizers.find(e => e.equals(organizer._id))) return res.json({ error: 'Authentication error' });
+    return err ?
+        res.status(500).json(err) :
+        res.json(data);
+  }).populate('curators', 'first last username');
+};
+
+
+exports.addRemoveCurator = async (req, res) => {
+  const jwt = auth(req.headers.authorization, res, (jwt) => jwt);
+  const organizer = await Organizer.findOne({ admins: jwt.id });
+  if (!organizer) return res.json({ error: 'Authentication error' });
+
+  if (jwt.id === req.body.curator) return res.json({ error: 'You cannot add or remove yourself' });
+
+  return Program.findById(req.body.program, (err, data) => {
+    if (!data.organizers.find(e => e.equals(organizer._id))) return res.json({ error: 'Authentication error' });
+
+    const index = data.curators.findIndex(e => e.equals(req.body.curator));
+    if (req.body.type === 'remove') {
+      if (index >= 0) {
+        data.curators.splice(index, 1);
+        data.save();
+        return res.json({ success: 'Curator removed' });
+      }
+    } else if (req.body.type === 'add') {
+      if (index < 0) {
+        data.curators.push(req.body.curator);
+        data.save();
+        return res.json({ success: 'Curator added' });
+      }
+    }
+
+    return res.json({ error: 'Could not find curator' });
+  });
+};
+
 // exports.addAdmin = async (req, res) => {
 //   const jwt = auth(req.headers.authorization, res, (jwt) => jwt);
 //   if (jwt.id !== '6035e7415f0a684942f4e17c') return res.json({ error: 'Authentication error' });
@@ -376,7 +419,7 @@ exports.updateApplication = async (req, res) => {
 
 exports.getCurationPrograms = async (req, res) => {
   const jwt = auth(req.headers.authorization, res, (jwt) => jwt);
-  const programs = await Program.find({ curators: jwt.id }).select('organizer name url').populate('organizers');
+  const programs = await Program.find({ curators: jwt.id }).select('organizer name url perpetual passByVotes topThreshold voteThreshold').populate('organizers');
   if (!programs.length) return res.status(401).json({ error: 'Authentication error' });
 
   return res.json({ success: programs });
@@ -409,11 +452,12 @@ exports.viewResults = async (req, res) => {
   const user = await User.findById(jwt.id);
   if (!user) return res.json({ error: 'Authentication error' });
 
-  return ProgramApplicant.find({ ineligible: { $ne: true }, userAccepted: true, accepted: false, minted: { $ne: true } }, (err, data) => {
+  return ProgramApplicant.find({ program: req.body.program }, (err, data) => {
     return err ?
         res.status(500).json(err) :
         res.json(data);
   }).sort('-approvalCount')
+  .select('-approved -rejected')
 };
 
 exports.approveOrReject = async (req, res) => {

@@ -1006,7 +1006,7 @@ input[type=number] {
   align-items: center;
   justify-content: center;
   outline: none;
-  flex-grow: 1;
+  // flex-grow: 1;
   font-size: 1rem;
   box-shadow: 3px 3px 5px #ccc;
   background-color: rgba(255, 255, 255, 0.5);
@@ -1213,6 +1213,10 @@ input[type=number] {
   
   .text-m {
     font-size: 1.6rem;
+  }
+
+  .text-mid {
+    font-size: 1.4rem;
   }
   
   .text-s {
