@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { useStoreState } from 'easy-peasy';
 import { apiUrl } from '../baseUrl';
 import { Link } from "react-router-dom";
+import ReactAutolinker from 'react-autolinker';
 import Resizer from './Tools/Resizer.js';
 
 import '../styles.scss';
@@ -161,17 +162,17 @@ export default function Application() {
             <div className='margin-top'>
               { !editing &&
                 <div className='text-s line-breaks'>
-                  { programInfo.description }
+                  <ReactAutolinker text={ programInfo.description } />
                   <div className='margin-top-l text-s line-breaks'>
                     <strong>Grant Logistics</strong>
                     <div className='margin-top-s line-breaks'>
-                      { programInfo.logistics }
+                      <ReactAutolinker text={ programInfo.logistics } />
                     </div>
                   </div>
                   <div className='margin-top text-s'>
                     <strong>Submission Criteria</strong>
                     <div className='margin-top-s'>
-                      { programInfo.criteria }
+                      <ReactAutolinker text={ programInfo.criteria } />
                     </div>
                   </div>
                 </div>

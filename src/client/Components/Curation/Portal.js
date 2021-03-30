@@ -46,13 +46,34 @@ export default function Portal() {
 
   const [applicants, setApplicants] = useState({});
   const [results, setResults] = useState([]);
+  const [filteredResults, setFilteredResults] = useState({ mintable: [], unmintable: [] });
   const [selectedProgram, setSelectedProgram] = useState(null);
   const [newCriteria, setNewCriteria] = useState(false);
-  const loadCuration = async program => {
+
+  useEffect(() => {
+    let filtered = { mintable: [], unmintable: [] };
+    if (results && results.length && selectedProgram) {
+      let i = 0;
+      results.forEach(result => {
+        if (selectedProgram.passByVotes && !result.published) {
+          if (result.approvalCount >= selectedProgram.voteThreshold) filtered.mintable.push(result);
+          else filtered.unmintable.push(result);
+        } else if (!result.published) {
+          if (i < selectedProgram.topThreshold) filtered.mintable.push(result);
+          else filtered.unmintable.push(result);
+          i++;
+        }
+      });
+    } else filtered = { mintable: [], unmintable: [] }
+
+    setFilteredResults(filtered);
+  }, [results, selectedProgram]);
+
+  const loadCuration = program => {
     setSelectedProgram(program);
     setNewCriteria({ passByVotes: program.passByVotes, blindVoting: program.blindVoting, topThreshold: program.topThreshold, voteThreshold: program.voteThreshold });
     setApplicants({});
-    await fetch(`${ apiUrl() }/program/viewAllApplications`, {
+    fetch(`${ apiUrl() }/program/viewAllApplications`, {
       method: 'POST',
       body: JSON.stringify({ program: program._id }),
       headers: {
@@ -67,7 +88,7 @@ export default function Portal() {
       unapproved: shuffle(json.unapproved),
     }))
 
-    await fetch(`${ apiUrl() }/program/viewResults`, {
+    fetch(`${ apiUrl() }/program/viewResults`, {
       method: 'POST',
       body: JSON.stringify({ program: program._id }),
       headers: {
@@ -101,6 +122,9 @@ export default function Portal() {
   const saveCriteria = () => {
     setSelectedProgram({ ...selectedProgram, passByVotes: newCriteria.passByVotes, blindVoting: newCriteria.blindVoting, topThreshold: newCriteria.topThreshold, voteThreshold: newCriteria.voteThreshold });
     setCriteria(false);
+    const index = programs.findIndex(e => e.id === selectedProgram.id)
+    programs[index] = { ...programs[index], passByVotes: newCriteria.passByVotes, blindVoting: newCriteria.blindVoting, topThreshold: newCriteria.topThreshold, voteThreshold: newCriteria.voteThreshold };
+    setPrograms(programs);
     fetch(`${ apiUrl() }/program/updateCurationCriteria`, {
       method: 'POST',
       body: JSON.stringify({ ...newCriteria, id: selectedProgram.id, org: selectedProgram.organizers[0].id }),
@@ -124,6 +148,10 @@ export default function Portal() {
         unapproved,
         approved
       }
+
+      const index = results.findIndex(e => e.id === id)
+      results[index].approvalCount++;
+      setResults([...results]);
     } else if (type === 'reject') {
       const rejected = [applicants.unapproved[0], ...applicants.rejected];
       update = {
@@ -160,6 +188,10 @@ export default function Portal() {
           ...applicants.approved.slice(index + 1)
         ]
       }
+
+      const rIndex = results.findIndex(e => e.id === id)
+      results[rIndex].approvalCount--;
+      setResults([...results]);
     } else if (type === 'reject') {
       const index = applicants.rejected.findIndex(e => e.id === id);
       const unapproved = [applicants.rejected[index], ...applicants.unapproved];
@@ -172,7 +204,7 @@ export default function Portal() {
         ]
       }
     }
-    console.log(type, update);
+
     setApplicants(update);
     fetch(`${ apiUrl() }/program/undoApplicant`, {
       method: 'POST',
@@ -242,7 +274,7 @@ export default function Portal() {
     .then(json => {})
   }
 
-  console.log(selectedProgram);
+  console.log(filteredResults);
   const isAdmin = selectedProgram && selectedProgram.organizers[0].admins.find(e => e === auth.id);
 
   return (
@@ -271,27 +303,34 @@ export default function Portal() {
         })
       :
         <div className='margin-top flex'>
-          <div className='margin-right-s'>
-            <div className='small-button' onClick={ () => { setSelectedProgram(null); setAdminTab(false); } }>Back</div>
-          </div>
+          { !adminTab &&
+            <div className='margin-right-s'>
+              <div className='small-button' onClick={ () => { setSelectedProgram(null); setAdminTab(false); } }>Close</div>
+            </div>
+          }
           <div className='flex-full center'>
             <div className='text-xs'>{ selectedProgram.organizers[0].name }</div>
-            <div className='text-m'>{ selectedProgram.name }{ viewTab === 'results' ? ' Results' : ' Curation' }</div>
-          </div>
-          <div className='small-space' />
-          <div>
-            { viewTab === 'results' ?
-              <div className='small-button' onClick={ () => setViewTab('curate') }>Curation</div>
+            { adminTab ?
+              <div className='text-m'>{ selectedProgram.name } Settings</div>
             :
-              <div className='small-button' onClick={ () => setViewTab('results') }>Results</div>
+              <div className='text-m'>{ selectedProgram.name }{ viewTab === 'results' ? ' Results' : ' Curation' }</div>
             }
           </div>
+          <div className='small-space' />
+          { !adminTab &&
+            <div>
+              { viewTab === 'results' ?
+                <div className='small-button' onClick={ () => setViewTab('curate') }>Curation</div>
+              :
+                <div className='small-button' onClick={ () => setViewTab('results') }>Results</div>
+              }
+            </div>
+          }
         </div>
       }
       { (selectedProgram && adminTab) &&
         <div className='margin-top'>
-          Curation Settings
-          <div className='margin-top text-mid flex'>
+          <div className='text-mid flex'>
             <div>
               <div className='text-s'>
                 Exhibition Criteria
@@ -425,16 +464,41 @@ export default function Portal() {
                   Minted
                 </div>
               </div>
-              <div className='margin-top-s'>
-                <React.Fragment key={ results.length }>
-                  <masonry-layout cols={ cols }>
-                    { results.map((item, index) => {
-                        if ((resultsTab === 'minted' && item.published) || (resultsTab === 'unminted' && !item.published))
+              { resultsTab === 'unminted' ?
+                <div>
+                  <div className='margin-top'>{ selectedProgram.passByVotes ? `Received ${ selectedProgram.voteThreshold } Votes` : `Top ${ selectedProgram.topThreshold } Artworks` }</div>
+                  <div className='margin-top-s'>
+                    <React.Fragment key={ filteredResults.mintable.length }>
+                      <masonry-layout cols={ cols }>
+                        { filteredResults.mintable.map((item, index) => {
                           return (<DecidedBlock key={ index } nft={ item } undo={ undo } blind={ selectedProgram.blindVoting } type='approve' />);
-                    }) }
-                  </masonry-layout>
-                </React.Fragment>
-              </div>
+                        }) }
+                      </masonry-layout>
+                    </React.Fragment>
+                  </div>
+                  <div className='margin-top'>Criteria Unmet</div>
+                  <div className='margin-top-s'>
+                    <React.Fragment key={ filteredResults.unmintable.length }>
+                      <masonry-layout cols={ cols }>
+                        { filteredResults.unmintable.map((item, index) => {
+                            return (<DecidedBlock key={ index } nft={ item } undo={ undo } blind={ selectedProgram.blindVoting } type='approve' />);
+                        }) }
+                      </masonry-layout>
+                    </React.Fragment>
+                  </div>
+                </div>
+              :
+                <div className='margin-top-s'>
+                  <React.Fragment key={ results.length }>
+                    <masonry-layout cols={ cols }>
+                      { results.map((item, index) => {
+                          if (item.published)
+                            return (<DecidedBlock key={ index } nft={ item } undo={ undo } blind={ selectedProgram.blindVoting } type='approve' />);
+                      }) }
+                    </masonry-layout>
+                  </React.Fragment>
+                </div>
+              }
             </div>
           }
           { (viewTab === 'curate') &&

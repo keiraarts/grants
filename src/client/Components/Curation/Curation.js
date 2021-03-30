@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
+import ReactAutolinker from 'react-autolinker';
 
 import FullScreen from '../../assets/fullscreen.png';
 import MinScreen from '../../assets/minscreen.png';
@@ -118,12 +119,12 @@ export default function Curation({ nft, small, blind }) {
               }
               <div className='margin-top-s text-s'>
                 <div className='text-m'>Statement of Intent</div>
-                { nft.statement }
+                <ReactAutolinker text={ nft.statement } />
               </div>
               { nft.additional &&
                 <div className='margin-top-s text-s'>
                   <div className='text-m'>Additional Info</div>
-                  { nft.additional }
+                  <ReactAutolinker text={ nft.additional } />
                 </div>
               }
             </div>

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import ReactModal from 'react-modal';
+import ReactAutolinker from 'react-autolinker';
 
 import Twitter from '../../assets/twitter.png';
 import Instagram from '../../assets/instagram.png';
@@ -51,12 +52,12 @@ export default function Gallery({ nft, undo, type, blind }) {
           }
           <div className='margin-top-s text-s'>
             <div className='text-m'>Statement of Intent</div>
-            { nft.statement }
+            <ReactAutolinker text={ nft.statement } />
           </div>
           { nft.additional &&
             <div className='margin-top-s text-s'>
               <div className='text-m'>Additional Info</div>
-              { nft.additional }
+              <ReactAutolinker text={ nft.additional } />
             </div>
           }
         </div>
