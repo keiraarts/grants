@@ -274,6 +274,19 @@ export default function Portal() {
     .then(json => {})
   }
 
+  const mint = () => {
+    fetch(`${ apiUrl() }/program/mint`, {
+      method: 'POST',
+      body: JSON.stringify({ id: selectedProgram.id, org: selectedProgram.organizers[0].id }),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': auth.token
+      },
+    }).then(res => res.json())
+    .then(json => {});
+  }
+
   console.log(filteredResults);
   const isAdmin = selectedProgram && selectedProgram.organizers[0].admins.find(e => e === auth.id);
 
@@ -466,7 +479,11 @@ export default function Portal() {
               </div>
               { resultsTab === 'unminted' ?
                 <div>
-                  <div className='margin-top'>{ selectedProgram.passByVotes ? `Received ${ selectedProgram.voteThreshold } Votes` : `Top ${ selectedProgram.topThreshold } Artworks` }</div>
+                  <div className='flex margin-top'>
+                    <div>{ selectedProgram.passByVotes ? `Received ${ selectedProgram.voteThreshold } Votes` : `Top ${ selectedProgram.topThreshold } Artworks` }</div>
+                    <div className='flex-full' />
+                    <div className='small-button' onClick={ () => mint() }>Mint</div>
+                  </div>
                   <div className='margin-top-s'>
                     <React.Fragment key={ filteredResults.mintable.length }>
                       <masonry-layout cols={ cols }>

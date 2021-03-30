@@ -589,11 +589,11 @@ exports.removeFlag = (req, res) => {
 };
 
 // setTimeout(() => {
-//   Applicant.find({ order: { $exists: true } }, (err, applicants) => {
+//   Applicant.find({ email: 'kastroy13@gmail.com' }, (err, applicants) => {
 //     applicants.forEach(applicant => {
 //       const transfer = {
 //         user:           applicant.user,
-//         program:        '605f948be26eb64b749bbc09',
+//         program:        '605fef70830ed668addb44ab',
 //         url:            applicant.website,
 //         statement:      applicant.statement,
 //         additional:     applicant.additional,
@@ -613,7 +613,7 @@ exports.removeFlag = (req, res) => {
 //         order:          applicant.order,
 //       };
 
-//       if (!transfer.artWeb) console.log('WTF', transfer);
+//       console.log('WTF', transfer);
 //       // const newApplicant = new ProgramApplicant(transfer);
 //       // newApplicant.save((err, data) => {
 //       //   if (err) console.log('WTF', err);

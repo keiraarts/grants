@@ -7,8 +7,13 @@ const log = require('ololog').configure({ time: true })
 const Arweave = require('arweave');
 const fetch = require('node-fetch');
 
+const auth = require('./authorization-service');
+
 const Applicant = require('mongoose').model('Applicant');
 const User = require('mongoose').model('User');
+const Organizer = require('mongoose').model('Organizer');
+const Program = require('mongoose').model('Program');
+const ProgramApplicant = require('mongoose').model('ProgramApplicant');
 
 const arweave = Arweave.init({
   host: 'arweave.net',// Hostname or IP address for a Arweave host
@@ -49,7 +54,7 @@ const getCurrentGasPrices = async () => {
 }
 
 
-const main = async () => {
+const mint = async (applicants) => {
   let myBalanceWei = await web3.eth.getBalance(web3.eth.defaultAccount).then(balance => balance)
   let myBalance = await web3.utils.fromWei(myBalanceWei, 'ether');
   const block = await web3.eth.getBlock('latest');
@@ -63,205 +68,229 @@ const main = async () => {
   const rawdata = await fs.readFileSync('./arweave.json');
   const wallet = JSON.parse(rawdata);
 
-  Applicant.find({ accepted: grantee, order: { $exists: true }, published: { $ne: true } }, async (err, applicants) => {
-    console.log(applicants);
-    for (const applicant of applicants) {
-      if (applicant.user) {
-        const user = await User.findById(applicant.user, user => user);
-        if (user) {
-          let file = await fetch(`https://cdn.grants.art/${ applicant.art }`)
+  for (const applicant of applicants) {
+    if (applicant.user) {
+      const user = await User.findById(applicant.user, user => user);
+      if (user) {
+        let file = await fetch(`https://cdn.grants.art/${ applicant.art }`)
+          .then(res => res.buffer())
+          .catch(function() {
+            console.log('FETCH ERROR'); // Write logic to retry
+            process.exit(1);
+          });
+
+        let transaction = await arweave.createTransaction({ data: file }, wallet);
+        const ext = applicant.art.substr(applicant.art.length - 3).toLowerCase();
+        let responsetype;
+        if (ext === 'jpg' || ext === 'jpeg') responsetype = 'image/jpeg';
+        if (ext === 'png') responsetype = 'image/png';
+        if (ext === 'gif') responsetype = 'image/gif';
+        if (ext === 'ebp') responsetype = 'image/webp';
+        if (ext === 'mp4') responsetype = 'video/mp4';
+        transaction.addTag('Content-Type', responsetype);
+        await arweave.transactions.sign(transaction, wallet);
+        let uploader = await arweave.transactions.getUploader(transaction);
+
+        while (!uploader.isComplete) {
+          await uploader.uploadChunk();
+          console.log(`${uploader.pctComplete}% complete, ${uploader.uploadedChunks}/${uploader.totalChunks}`);
+        }
+
+        let thumbnail, transaction2;
+        if (applicant.thumbnail) {
+          file = await fetch(`https://cdn.grants.art/${ applicant.thumbnail }`)
             .then(res => res.buffer())
             .catch(function() {
               console.log('FETCH ERROR'); // Write logic to retry
               process.exit(1);
             });
 
-          let transaction = await arweave.createTransaction({ data: file }, wallet);
-          const ext = applicant.art.substr(applicant.art.length - 3).toLowerCase();
+          transaction2 = await arweave.createTransaction({ data: file }, wallet);
+          const ext = applicant.thumbnail.substr(applicant.thumbnail.length - 3).toLowerCase();
           let responsetype;
           if (ext === 'jpg' || ext === 'jpeg') responsetype = 'image/jpeg';
           if (ext === 'png') responsetype = 'image/png';
           if (ext === 'gif') responsetype = 'image/gif';
           if (ext === 'ebp') responsetype = 'image/webp';
           if (ext === 'mp4') responsetype = 'video/mp4';
-          transaction.addTag('Content-Type', responsetype);
-          await arweave.transactions.sign(transaction, wallet);
-          let uploader = await arweave.transactions.getUploader(transaction);
+          transaction2.addTag('Content-Type', responsetype);
+          await arweave.transactions.sign(transaction2, wallet);
+          let uploader = await arweave.transactions.getUploader(transaction2);
 
           while (!uploader.isComplete) {
             await uploader.uploadChunk();
             console.log(`${uploader.pctComplete}% complete, ${uploader.uploadedChunks}/${uploader.totalChunks}`);
           }
-
-          let thumbnail, transaction2;
-          if (applicant.thumbnail) {
-            file = await fetch(`https://cdn.grants.art/${ applicant.thumbnail }`)
-              .then(res => res.buffer())
-              .catch(function() {
-                console.log('FETCH ERROR'); // Write logic to retry
-                process.exit(1);
-              });
-
-            transaction2 = await arweave.createTransaction({ data: file }, wallet);
-            const ext = applicant.thumbnail.substr(applicant.thumbnail.length - 3).toLowerCase();
-            let responsetype;
-            if (ext === 'jpg' || ext === 'jpeg') responsetype = 'image/jpeg';
-            if (ext === 'png') responsetype = 'image/png';
-            if (ext === 'gif') responsetype = 'image/gif';
-            if (ext === 'ebp') responsetype = 'image/webp';
-            if (ext === 'mp4') responsetype = 'video/mp4';
-            transaction2.addTag('Content-Type', responsetype);
-            await arweave.transactions.sign(transaction2, wallet);
-            let uploader = await arweave.transactions.getUploader(transaction2);
-
-            while (!uploader.isComplete) {
-              await uploader.uploadChunk();
-              console.log(`${uploader.pctComplete}% complete, ${uploader.uploadedChunks}/${uploader.totalChunks}`);
-            }
-          }
-
-          const metadata = {
-            minter: "0x47BCD42B8545c23031E9918c3D823Be4100D4e87",
-            mintedOn: "2021-03-14T00:00:00.777Z",
-            contractAddress: CONTRACT_ADDRESS,
-            minted: `Minted by Sevens Foundation on behalf of ${ user.artistName }`,
-            fiatPrice: "$PRICELESS",
-            name: `${ applicant.title }`,
-            description: `${ applicant.description }`,
-            youtube_url: "",
-            price: 0,
-            ethPrice: "0",
-            amountToMint: 1,
-            visibility: "safe",
-            forSale: false,
-            image: `https://arweave.net/${ transaction2 ? transaction2.id : transaction.id }`,
-            media: transaction2 ? { uri: `https://arweave.net/${ transaction.id }` } : undefined,
-            attributes: [
-              {
-                trait_type: 'Artist',
-                value: user.artistName || ''
-              },
-              {
-                trait_type: 'Birth Year',
-                value: user.birthYear || ''
-              },
-              {
-                trait_type: 'Country of Representation',
-                value: user.country || ''
-              },
-              {
-                trait_type: 'Country Code',
-                value: user.countryCode || ''
-              },
-              {
-                trait_type: 'City',
-                value: user.city || ''
-              },
-              {
-                trait_type: 'Website',
-                value: user.website || ''
-              },
-              {
-                trait_type: 'Twitter',
-                value: user.twitter || ''
-              },
-              {
-                trait_type: 'Instagram',
-                value: user.instagram || ''
-              },
-              {
-                trait_type: 'Address',
-                value: user.wallet || ''
-              },
-              {
-                trait_type: 'Artwork',
-                value: `https://arweave.net/${ transaction.id }`
-              },
-            ],
-            category: "alJuInV4dezvHTNU8Dp1",
-            external_url: `https://grants.art/gallery/${ applicant.order }`,
-            type: "ERC721"
-          };
-
-          let metadataTx = await arweave.createTransaction({ data: Buffer.from(JSON.stringify(metadata)) }, wallet);
-          metadataTx.addTag('Content-Type', 'application/json');
-
-          await arweave.transactions.sign(metadataTx, wallet);
-
-          let metadataUploader = await arweave.transactions.getUploader(metadataTx);
-
-          while (!metadataUploader.isComplete) {
-            await metadataUploader.uploadChunk();
-            console.log(`${metadataUploader.pctComplete}% complete, ${metadataUploader.uploadedChunks}/${metadataUploader.totalChunks}`);
-          }
-
-          console.log(metadataTx.id);
-
-          const batchMint = Contract.methods.batchMint('0x47BCD42B8545c23031E9918c3D823Be4100D4e87', Number(1), metadataTx.id, Number(0), false)
-          const encoded = batchMint.encodeABI();
-
-          let nonce = await web3.eth.getTransactionCount(web3.eth.defaultAccount);
-
-          let gasPrices = await getCurrentGasPrices()
-
-          let details = {
-            "to": process.env.DESTINATION_WALLET_ADDRESS,
-            "gas": 26520,
-            "gasPrice": gasPrices.super * 1000000000, // converts the gwei price to wei
-            "chainId": 4 // EIP 155 chainId - mainnet: 1, rinkeby: 4
-          }
-          log(`The outgoing transaction count for your wallet address is: ${nonce}`.magenta)
-
-          var tx = {
-            nonce,
-            to: address,
-            from: sevensMintAddress,
-            gas: 500000,
-            gasLimit: block.gasLimit,
-            gasPrice: details.gasPrice,
-            data: encoded
-          }
-
-          await new Promise((resolve, reject) => {
-            web3.eth.accounts.signTransaction(tx, process.env.WALLET_PRIVATE_KEY)
-              .then(signed => {
-                console.log('signed', signed);
-                var tran = web3.eth.sendSignedTransaction(signed.rawTransaction);
-
-                  tran.on('confirmation', (confirmationNumber, receipt) => {
-                    if (confirmationNumber > 1) {
-                      tran.off('error');
-                      tran.off('receipt');
-                      tran.off('transactionHash');
-                      tran.off('confirmation');
-                      resolve();
-                    }
-                    console.log('confirmation: ' + confirmationNumber);
-                  });
-
-                  tran.on('transactionHash', hash => {
-                    applicant.published = true;
-                    applicant.save();
-                    console.log('hash');
-                    console.log(hash);
-                  });
-
-                  tran.on('receipt', receipt => {
-                    console.log('reciept');
-                    console.log(receipt);
-                  });
-
-                  tran.on('error', error => {
-                    console.log(error.toString());
-                    process.exit();
-                    reject();
-                  });
-              });
-          });
         }
+
+        const metadata = {
+          minter: "0x47BCD42B8545c23031E9918c3D823Be4100D4e87",
+          mintedOn: "2021-03-14T00:00:00.777Z",
+          contractAddress: CONTRACT_ADDRESS,
+          minted: `Minted by Sevens Foundation on behalf of ${ user.artistName }`,
+          fiatPrice: "$PRICELESS",
+          name: `${ applicant.title }`,
+          description: `${ applicant.description }`,
+          youtube_url: "",
+          price: 0,
+          ethPrice: "0",
+          amountToMint: 1,
+          visibility: "safe",
+          forSale: false,
+          image: `https://arweave.net/${ transaction2 ? transaction2.id : transaction.id }`,
+          media: transaction2 ? { uri: `https://arweave.net/${ transaction.id }` } : undefined,
+          attributes: [
+            {
+              trait_type: 'Artist',
+              value: user.artistName || ''
+            },
+            {
+              trait_type: 'Birth Year',
+              value: user.birthYear || ''
+            },
+            {
+              trait_type: 'Country of Representation',
+              value: user.country || ''
+            },
+            {
+              trait_type: 'Country Code',
+              value: user.countryCode || ''
+            },
+            {
+              trait_type: 'City',
+              value: user.city || ''
+            },
+            {
+              trait_type: 'Website',
+              value: user.website || ''
+            },
+            {
+              trait_type: 'Twitter',
+              value: user.twitter || ''
+            },
+            {
+              trait_type: 'Instagram',
+              value: user.instagram || ''
+            },
+            {
+              trait_type: 'Address',
+              value: user.wallet || ''
+            },
+            {
+              trait_type: 'Artwork',
+              value: `https://arweave.net/${ transaction.id }`
+            },
+          ],
+          category: "alJuInV4dezvHTNU8Dp1",
+          external_url: `https://grants.art/gallery/${ applicant.order }`,
+          type: "ERC721"
+        };
+
+        let metadataTx = await arweave.createTransaction({ data: Buffer.from(JSON.stringify(metadata)) }, wallet);
+        metadataTx.addTag('Content-Type', 'application/json');
+
+        await arweave.transactions.sign(metadataTx, wallet);
+
+        let metadataUploader = await arweave.transactions.getUploader(metadataTx);
+
+        while (!metadataUploader.isComplete) {
+          await metadataUploader.uploadChunk();
+          console.log(`${metadataUploader.pctComplete}% complete, ${metadataUploader.uploadedChunks}/${metadataUploader.totalChunks}`);
+        }
+
+        console.log(metadataTx.id);
+
+        const batchMint = Contract.methods.batchMint('0x47BCD42B8545c23031E9918c3D823Be4100D4e87', Number(1), metadataTx.id, Number(0), false)
+        const encoded = batchMint.encodeABI();
+
+        let nonce = await web3.eth.getTransactionCount(web3.eth.defaultAccount);
+
+        let gasPrices = await getCurrentGasPrices()
+
+        let details = {
+          "to": process.env.DESTINATION_WALLET_ADDRESS,
+          "gas": 26520,
+          "gasPrice": gasPrices.super * 1000000000, // converts the gwei price to wei
+          "chainId": 4 // EIP 155 chainId - mainnet: 1, rinkeby: 4
+        }
+        log(`The outgoing transaction count for your wallet address is: ${nonce}`.magenta)
+
+        var tx = {
+          nonce,
+          to: address,
+          from: sevensMintAddress,
+          gas: 500000,
+          gasLimit: block.gasLimit,
+          gasPrice: details.gasPrice,
+          data: encoded
+        }
+
+        await new Promise((resolve, reject) => {
+          web3.eth.accounts.signTransaction(tx, process.env.WALLET_PRIVATE_KEY)
+            .then(signed => {
+              console.log('signed', signed);
+              var tran = web3.eth.sendSignedTransaction(signed.rawTransaction);
+
+                tran.on('confirmation', (confirmationNumber, receipt) => {
+                  if (confirmationNumber > 1) {
+                    tran.off('error');
+                    tran.off('receipt');
+                    tran.off('transactionHash');
+                    tran.off('confirmation');
+                    resolve();
+                  }
+                  console.log('confirmation: ' + confirmationNumber);
+                });
+
+                tran.on('transactionHash', hash => {
+                  applicant.published = true;
+                  applicant.save();
+                  console.log('hash');
+                  console.log(hash);
+                });
+
+                tran.on('receipt', receipt => {
+                  console.log('reciept');
+                  console.log(receipt);
+                });
+
+                tran.on('error', error => {
+                  console.log(error.toString());
+                  process.exit();
+                });
+            });
+        });
       }
     }
-  }).sort('order')
+  }
 }
  
-main()
+// main()
+
+module.exports = (app) => {
+  app.post('/api/program/mint', async (req, res) => {
+    const jwt = auth(req.headers.authorization, res, (jwt) => jwt);
+    const organizer = await Organizer.findOne({ _id: req.body.org, admins: jwt.id });
+    if (!organizer) return res.json({ error: 'Authentication error' });
+    const program = await Program.findById(req.body.id);
+    if (!program) return res.json({ error: 'Authentication error' });
+
+    const exists = await ProgramApplicant.find({ published: true, program: req.body.id });
+    if (program.passByVotes) {
+      ProgramApplicant.find({ program: req.body.id, published: { $ne: true }, approvalCount: { $gte: program.voteThreshold } }, (err, applicants) => {
+        let order = exists.length + 1;
+        applicants.forEach(applicant => {
+          applicant.order = order;
+          applicant.save();
+          order++;
+        })
+
+        console.log('wtf', applicants);
+
+        // mint(applicants);
+      })
+    } else {
+      ProgramApplicant.find({ })
+    }
+  });
+};
