@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import OpenMarket from './Market/OpenMarket.js';
 
+import Download from '../assets/download.png';
 import FullScreen from '../assets/fullscreen.png';
 import MinScreen from '../assets/minscreen.png';
 import Muted from '../assets/muted.png';
@@ -156,10 +157,12 @@ const GenesisNFT = ({ small, nft, src, important, hidden, contract }) => {
             }
             { !loaded ?
               <div className='loader margin-top-l'>
+                <img src={ Download } className='margin-top-s frame-control pointer' onClick={ () => openLink(nft.image) } />
                 <div className='loaderBar'></div>
               </div>
               :
               <div className='flex margin-top-s'>
+                <img src={ Download } className='margin-top-xs frame-control pointer' onClick={ () => openLink(nft.image) } />
                 <div className='flex-full' />
                 { video && video.current &&
                   <div onClick={ () => toggleAudio() } className='pointer'>

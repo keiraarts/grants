@@ -1023,6 +1023,10 @@ input[type=number] {
   padding: 0.8rem;
 }
 
+.button-green {
+  background-color: rgb(52, 196, 64);
+}
+
 .small-button:hover {
   background-image: repeating-linear-gradient(45deg, violet, indigo, blue, green, yellow, orange, red, violet);
   background-clip: text;

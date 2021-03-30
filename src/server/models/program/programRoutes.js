@@ -10,6 +10,7 @@ module.exports = (app) => {
   app.post('/api/program/updateProgram', program.updateProgram);
   app.post('/api/program/updateCurationCriteria', program.updateCurationCriteria);
   app.post('/api/program/getProgramAdmin', program.getProgramAdmin);
+  app.post('/api/program/mintToArtist', program.mintToArtist);
   app.post('/api/program/addRemoveCurator', program.addRemoveCurator);
   app.post('/api/program/submitApplication', program.submitApplication);
   app.post('/api/program/updateApplication', program.updateApplication);

@@ -274,7 +274,22 @@ export default function Portal() {
     .then(json => {})
   }
 
+  const updateMintTo = (mintToArtist) => {
+    setProgramAdmin({ ...programAdmin, mintToArtist })
+    fetch(`${ apiUrl() }/program/mintToArtist`, {
+      method: 'POST',
+      body: JSON.stringify({ program: selectedProgram.id, mintToArtist }),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': auth.token
+      },
+    }).then(res => res.json())
+    .then(json => {});
+  }
+
   const mint = () => {
+    setSelectedProgram({ ...selectedProgram, mintInProgress: true })
     fetch(`${ apiUrl() }/program/mint`, {
       method: 'POST',
       body: JSON.stringify({ id: selectedProgram.id, org: selectedProgram.organizers[0].id }),
@@ -287,7 +302,7 @@ export default function Portal() {
     .then(json => {});
   }
 
-  console.log(filteredResults);
+  console.log(selectedProgram);
   const isAdmin = selectedProgram && selectedProgram.organizers[0].admins.find(e => e === auth.id);
 
   return (
@@ -341,7 +356,7 @@ export default function Portal() {
           }
         </div>
       }
-      { (selectedProgram && adminTab) &&
+      { (selectedProgram && adminTab && programAdmin) &&
         <div className='margin-top'>
           <div className='text-mid flex'>
             <div>
@@ -362,7 +377,6 @@ export default function Portal() {
               :
               <div className='small-button margin-left-s' onClick={ () => setCriteria(!criteria) }>Edit</div>
             }
-            <div className='flex-full' />
           </div>
           { criteria &&
             <div>
@@ -399,6 +413,45 @@ export default function Portal() {
               </div>
             </div>
           }
+          <div className='margin-top text-mid flex'>
+            <div>
+              <div className='text-s'>
+                Exhibition Contract
+              </div>
+              { programAdmin.contractAddress ?
+                <div>{ programAdmin.contractAddress }</div>
+                :
+                <div>Not Created</div>
+              }
+            </div>
+            { !programAdmin.contractAddress &&
+              <div className='small-button margin-left-s'>Create</div>
+            }
+          </div>
+          <div className='margin-top text-mid flex'>
+            <div>
+              <div className='text-s'>
+                Mint to Artist or Curator
+              </div>
+              <div className='select-dropdown margin-top-minus'>
+                <select name='Mint' className='text-black' defaultValue={ `${ programAdmin.mintToArtist }` } value={ `${ programAdmin.mintToArtist }` } required onChange={e => updateMintTo(e.target.value === "true") }>
+                  <option value='default' disabled hidden>
+                    Select an option
+                  </option>
+                  <option value='true'>Artist&nbsp;&nbsp;&nbsp;&nbsp;</option>
+                  <option value='false'>Curator&nbsp;&nbsp;&nbsp;&nbsp;</option>
+                </select>
+              </div>
+              { !programAdmin.mintToArtist && 
+                <div className='margin-top-s'>
+                  <div className='text-xs'>
+                    Address
+                  </div>
+                  <div className='text-s'>{ selectedProgram.organizers[0].wallet }</div>
+                </div>
+              }
+            </div>
+          </div>
           <div className='margin-top text-mid'>
             Curators:
             <div className='small-button margin-left-s' onClick={ () => setSearch(!search) }>{ search ? 'Close' : 'Add' }</div>
@@ -482,7 +535,11 @@ export default function Portal() {
                   <div className='flex margin-top'>
                     <div>{ selectedProgram.passByVotes ? `Received ${ selectedProgram.voteThreshold } Votes` : `Top ${ selectedProgram.topThreshold } Artworks` }</div>
                     <div className='flex-full' />
-                    <div className='small-button' onClick={ () => mint() }>Mint</div>
+                    { selectedProgram.mintInProgress ? 
+                      <div className='text-s'>Minting In Progress</div>
+                      :
+                      <div className='button-green small-button' onClick={ () => mint() }>Mint</div>
+                    }
                   </div>
                   <div className='margin-top-s'>
                     <React.Fragment key={ filteredResults.mintable.length }>
@@ -506,6 +563,8 @@ export default function Portal() {
                 </div>
               :
                 <div className='margin-top-s'>
+                  Total: { results.length }
+                  <div className='margin-top-s' />
                   <React.Fragment key={ results.length }>
                     <masonry-layout cols={ cols }>
                       { results.map((item, index) => {

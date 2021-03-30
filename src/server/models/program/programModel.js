@@ -42,6 +42,13 @@ const organizer = {
         type:  String,
         trim:  true,
     },
+    wallet: {
+        type: String,
+    },
+    active: {
+        type: Boolean,
+        default: false
+    }
 }
 
 
@@ -94,9 +101,11 @@ const program = {
         type:    Boolean,
         default: false,
     },
-    open: {   // Applications open
-        type: Boolean,
-        default: false,
+    open: {
+        type: Date,
+    },
+    close: {
+        type: Date,
     },
     perpetual: {
         type: Boolean,
@@ -118,6 +127,19 @@ const program = {
         type: Number,
         default: 3,
     },
+    contractAddress: {
+        type: String
+    },
+    mintToArtist: {
+        type: Boolean,
+        default: false,
+    },
+    curatorAddress: {
+        type: String
+    },
+    mintInProgress: {
+        type: Boolean,
+    }
 }
 
 const ProgramSchema = new Schema(program);

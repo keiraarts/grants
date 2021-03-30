@@ -223,6 +223,23 @@ exports.getProgramAdmin = async (req, res) => {
 };
 
 
+exports.mintToArtist = async (req, res) => {
+  const jwt = auth(req.headers.authorization, res, (jwt) => jwt);
+  const organizer = await Organizer.findOne({ admins: jwt.id });
+  if (!organizer) return res.json({ error: 'Authentication error' });
+
+  return Program.findById(req.body.program, (err, program) => {
+    if (!program.organizers.find(e => e.equals(organizer._id))) return res.json({ error: 'Authentication error' });
+
+    program.mintToArtist = req.body.mintToArtist;
+    program.save();
+    return err ?
+        res.status(500).json(err) :
+        res.json({ success: 'Updated' });
+  });
+};
+
+
 exports.addRemoveCurator = async (req, res) => {
   const jwt = auth(req.headers.authorization, res, (jwt) => jwt);
   const organizer = await Organizer.findOne({ admins: jwt.id });
@@ -434,7 +451,7 @@ exports.updateApplication = async (req, res) => {
 
 exports.getCurationPrograms = async (req, res) => {
   const jwt = auth(req.headers.authorization, res, (jwt) => jwt);
-  const programs = await Program.find({ curators: jwt.id }).select('organizer name url perpetual passByVotes topThreshold voteThreshold blindVoting').populate('organizers');
+  const programs = await Program.find({ curators: jwt.id }).select('organizer name url perpetual passByVotes topThreshold voteThreshold blindVoting mintInProgress').populate('organizers');
   if (!programs.length) return res.status(401).json({ error: 'Authentication error' });
 
   return res.json({ success: programs });

@@ -74,8 +74,8 @@ const dateConfig = {
 export default function OpenMarket({ tokenId, contract }) {
   const auth = useStoreState(state => state.user.auth);
 
-  // contract = '0x3f4200234e26d2dfbc55fcfd9390bc128d5e2cca';
-  // tokenId = 10;
+  contract = '0x3f4200234e26d2dfbc55fcfd9390bc128d5e2cca';
+  tokenId = 10;
 
   const [gotAsset, setAsset] = useState({});
   const [provider, setProvider] = useState(null);
@@ -109,6 +109,7 @@ export default function OpenMarket({ tokenId, contract }) {
       let foundListed = false;
       if (orders && orders.length) {
         orders.forEach(order => {
+          console.log(new Date(order.expirationTime.toNumber() * 1000))
           if (order.side === 1 && order.waitingForBestCounterOrder) {
             end = order.listingTime.toNumber() * 1000;
             foundListed = true;
@@ -123,6 +124,8 @@ export default function OpenMarket({ tokenId, contract }) {
             newBids.push(order);
           }
         })
+
+        console.log(orders);
 
         if (end) {
           newBids = _.orderBy(newBids, ['time'], ['asc']);

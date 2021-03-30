@@ -11,17 +11,19 @@ export default function Application() {
 
   const [org, setOrg] = useState(null);
   useEffect(() => {
-    fetch(`${ apiUrl() }/program/getMyOrgs`, {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': auth.token
-      },
-    }).then(res => res.json())
-    .then(json => {
-      if (json && !json.error) setOrg(json)
-    });
+    if (auth && auth.token) {
+      fetch(`${ apiUrl() }/program/getMyOrgs`, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': auth.token
+        },
+      }).then(res => res.json())
+      .then(json => {
+        if (json && !json.error) setOrg(json)
+      });
+    }
   }, [])
 
   const [data, setData] = useState({});
@@ -34,6 +36,7 @@ export default function Application() {
     if (org && (!data.name || !data.url || !data.description || !data.logistics || !data.criteria)) setErr('Please complete all required fields!');
     else if (!org && (!data.orgName || !data.about || !data.email || !data.website || !data.name ||
              !data.url || !data.description || !data.logistics || !data.criteria)) setErr('Please complete all required fields');
+    else if (!auth || !auth.username) setErr('You must be logged in to submit');
     else {
       setErr(false);
       setSubmitting(true);
@@ -51,7 +54,7 @@ export default function Application() {
     }
   }
 
-  console.log(org);
+  console.log(auth);
 
   return (
     <div className='content-block'>
@@ -64,6 +67,7 @@ export default function Application() {
           Sevens Foundation is purely focused on artistic and social integrity. Participating exhibitions must have either a community upbringing, charitable, or humanitarian cause.
           Providing grants, at the minimum, must cover all costs for minting recipients' NFTs.
         </div>
+        { (!auth || !auth.username) && <Link to='/login' className='margin-top text-mid text-grey'>You must have an account to submit a program</Link> }
         <form onSubmit={ submit }>
           <div className='margin-top'>
             Program Curator or Organization
@@ -132,13 +136,9 @@ export default function Application() {
             <textarea type='text' className='form__field intent-field' placeholder='Intent' name='intent' id='intent' required maxLength='2000' onChange={e => setData({ ...data, criteria: e.target.value })} />
             <label className='form__label'>Applicant Criteria (2000 Chars)</label>
           </div>
-          { err ? 
+          { err &&
             <div className='margin-top text-s text-err'>
               { err }
-            </div>
-          :
-            <div className='margin-top text-s text-grey'>
-              {/* <i>Applications are currently closed until early April</i> */}
             </div>
           }
           { (submitting && !submitted) &&
