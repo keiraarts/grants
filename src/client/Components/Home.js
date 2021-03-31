@@ -131,13 +131,3 @@ export default function Gallery() {
     </div>
   );
 }
-
-const getGalleryData = () => {
-  return fetch(`${ apiUrl() }/galleryData`, {
-    method: 'GET',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    },
-  }).then(res => res.json());
-}

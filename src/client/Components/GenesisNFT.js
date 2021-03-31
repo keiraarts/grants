@@ -70,7 +70,11 @@ const GenesisNFT = ({ small, nft, src, important, hidden, contract }) => {
     document.addEventListener('webkitfullscreenchange', (event) => {
       if (!document.webkitIsFullScreen) {
         setFullScreen(false);
-        if (video.current) video.current.play();
+        if (video.current) {
+          setTimeout(() => {
+            video.current.play();
+          });
+        }
       } else setFullScreen(true);
     });
 
@@ -154,7 +158,7 @@ const GenesisNFT = ({ small, nft, src, important, hidden, contract }) => {
             { (isFullScreen && !video.current) &&
               <div className='fullscreen-container'>
                 <img src={ MinScreen } className='frame-exit pointer' onClick={ () => fullScreen() } />
-                <img className='gallery-art-fullscreen' src={ nft.image } />
+                <img className='gallery-art-fullscreen' src={ `https://cdn.grants.art/${ nft.art }` } />
               </div>
             }
             { !loaded ?

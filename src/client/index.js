@@ -47,8 +47,6 @@ const App = () => {
             <div className='site-content'>
               <WaitForStateRehydration>
                 <Header />
-                <InitializeData />
-                <InitializeNominees />
                 <Switch>
                   <Route path="/" exact component={ Gallery } />
                   <Route path="/ethos" exact component={ Ethos } />
