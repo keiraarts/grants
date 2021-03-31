@@ -31,7 +31,6 @@ export default function Application() {
   const [submitted, setSubmitted] = useState(false);
   const [err, setErr] = useState(false);
   const submit = e => {
-    console.log(data);
     e.preventDefault();
     if (org && (!data.name || !data.url || !data.description || !data.logistics || !data.criteria)) setErr('Please complete all required fields!');
     else if (!org && (!data.orgName || !data.about || !data.email || !data.website || !data.name ||
@@ -53,8 +52,6 @@ export default function Application() {
         .then(json => setSubmitted(true))
     }
   }
-
-  console.log(auth);
 
   return (
     <div className='content-block'>

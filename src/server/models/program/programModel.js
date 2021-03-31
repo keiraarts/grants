@@ -251,6 +251,9 @@ const programApplicant = {
     },
     order: {
         type: Number
+    },
+    arweave: {
+        type: String,
     }
 };
 

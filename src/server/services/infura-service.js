@@ -17,7 +17,7 @@ const { promisify } = require('util');
 const { Duplex } = require('stream');
 const gifResize = require('@gumlet/gif-resize');
 
-const Applicant = require('mongoose').model('Applicant');
+const ProgramApplicant = require('mongoose').model('ProgramApplicant');
 
 const PROVIDER = new ethers.providers.JsonRpcProvider(`https://mainnet.infura.io/v3/${ ENV.INFURA }`,'mainnet');
 const contract = new ethers.Contract(ENV.CONTRACT_ADDRESS, ABI, PROVIDER);
@@ -50,22 +50,23 @@ function uploadCompressed() {
   });
 }
 
-function downloadImages(type, data) {
-  data.forEach(async artist => {
-    if (artist.thumbnail) artist.image = artist.thumbnail
+async function downloadImages(type, applicants) {
+  for (const artist of applicants) {
+    // if (artist.thumbnail) artist.image = artist.thumbnail
     const name = artist.image.replace('https://arweave.net/', '');
     // if (artist.imageType === 'jpeg' || artist.imageType === 'jpg' || artist.imageType === 'png' || artist.imageType === 'gif') {
-    request(artist.image).pipe(fs.createWriteStream(path.join(__dirname, `../images/${ name }.${ artist.thumbnail ? artist.thumbnailType : artist.imageType }`))).on('close', () => {
+    // request(artist.image).pipe(fs.createWriteStream(path.join(__dirname, `../images/${ name }.${ artist.thumbnail ? artist.thumbnailType : artist.imageType }`))).on('close', () => {
+    await request(artist.image).pipe(fs.createWriteStream(path.join(__dirname, `../images/${ name }.${ artist.imageType }`))).on('close', async () => {
       console.log('got image');
       console.log(artist.tokenId);
-      Applicant.findOne({ accepted: type === 'grantee' ? true : false, order: artist.tokenId }, (err, applicant) => {
-        applicant.artWeb = `${ name }.${ artist.thumbnail ? artist.thumbnailType : artist.imageType }`;
+      await ProgramApplicant.findOne({ program: type === 'grantee' ? '605f948be26eb64b749bbc09' : '605fef70830ed668addb44ab', order: artist.tokenId }, (err, applicant) => {
+        // applicant.artWeb = `${ name }.${ artist.thumbnail ? artist.thumbnailType : artist.imageType }`;
+        applicant.artWeb = `${ name }.${ artist.imageType }`;
         applicant.save();
         console.log('SAVED', applicant.order);
       })
     });
-    // }
-  });
+  }
 }
 
 
@@ -86,7 +87,7 @@ async function compressor() {
         console.log('DOING FILE', file);
         const buf = fs.readFileSync(input);
         await gifResize({
-          width: 400,
+          width: 600,
           optimizationLevel: 3
         })(buf).then(data => {
           const stream = new Duplex();
@@ -98,7 +99,7 @@ async function compressor() {
       } else if (fileType === 'mp4') {
         console.log('trying', input);
         const dimensions = await getMediaDimensions(input, 'video');
-        const width = 400;
+        const width = 600;
         const height = Math.round((width / dimensions.width) * dimensions.height);
         console.log(width, height);
         await videoResize({
@@ -115,7 +116,7 @@ async function compressor() {
             return jimp.read(result);
         })
         .then((img) => {
-            const r = img.resize(400, jimp.AUTO);
+            const r = img.resize(600, jimp.AUTO);
             const b = promisify(r.getBuffer.bind(r));
             return b(jimp.AUTO);
         })
@@ -180,8 +181,10 @@ async function pollGalleryData(type) {
             const fileType = await FileType.fromStream(stream);
             respond.imageType = fileType.ext.toLowerCase();
 
-            const applicant = await Applicant.findOne({ accepted: type === 'grantee' ? true : false, order: result2.toNumber() });
+            const applicant = await ProgramApplicant.findOne({ program: type === 'grantee' ? '605f948be26eb64b749bbc09' : '605fef70830ed668addb44ab', order: result2.toNumber() });
             if (applicant && applicant.artWeb) respond.imageWeb = applicant.artWeb;
+            applicant.arweave = respond.image.split('/')[3];
+            applicant.save();
 
             if (json.attributes) {
               json.attributes.forEach((trait) => {

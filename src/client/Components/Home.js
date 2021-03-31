@@ -30,8 +30,6 @@ function shuffle(array) {
 export default function Gallery() {
   const auth = useStoreState(state => state.user.auth);
   const cols = useStoreState(state => state.app.cols);
-  const granteeRaw = useStoreState(state => state.grantees.data) || [];
-  const nomineeRaw = useStoreState(state => state.nominees.data) || [];
 
   const [viewTab, setViewTab] = useState('grantee');
   const [showData, setShowData] = useState([]);
@@ -40,12 +38,24 @@ export default function Gallery() {
   const [grantees, setGrantees] = useState([]);
   const [nominees, setNominees] = useState([]);
   useEffect(() => {
-    setGrantees(shuffle(clone(granteeRaw)));
-  }, [granteeRaw])
+    fetch(`${ apiUrl() }/program/getGallery`, {
+      method: 'POST',
+      body: JSON.stringify({ program: 'gallery' }),
+      headers: { 'Content-Type': 'application/json' },
+    }).then(res => res.json())
+    .then(json => {
+      if (json && json.gallery) setGrantees(shuffle(json.gallery))
+    });
 
-  useEffect(() => {
-    setNominees(shuffle(clone(nomineeRaw)));
-  }, [nomineeRaw])
+    fetch(`${ apiUrl() }/program/getGallery`, {
+      method: 'POST',
+      body: JSON.stringify({ program: 'nominee' }),
+      headers: { 'Content-Type': 'application/json' },
+    }).then(res => res.json())
+    .then(json => {
+      if (json && json.gallery) setNominees(shuffle(json.gallery))
+    });
+  }, [])
 
   useEffect(() => {
     if (grantees && grantees.length && viewTab === 'grantee') setShowData(grantees.slice(0, 30));

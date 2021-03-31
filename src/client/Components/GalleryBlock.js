@@ -8,16 +8,13 @@ export default function Gallery(props) {
   const item = props.item || {};
   const type = props.viewTab;
 
-  let displayArt;
-  if (item.imageWeb) displayArt = `https://cdn.grants.art/${ item.imageWeb }`;
-  else if (item.thumbnail) displayArt = item.thumbnail;
-  else displayArt = item.image;
-  const displayType = item.thumbnailType || item.imageType;
+  const displayArt = `https://cdn.grants.art/${ item.artWeb }`;
+  const displayType = item.artWeb.split('.')[1];
 
   return (
     <div className='margin-top-minus'>
       <div className='gallery-block'>
-        <Link to={ `/${ type === 'grantee' ? 'gallery' : 'nominee' }/${ item.tokenId }` } className='block-art pointer'>
+        <Link to={ `/${ type === 'grantee' ? 'gallery' : 'nominee' }/${ item.order }` } className='block-art pointer'>
           { (!loaded) && <div className='block-loading'><div className='loading'><div></div><div></div></div></div> }
           { (displayArt) && displayType === 'mp4' ?
             <video muted loop autoPlay webkit-playsinline='true' playsInline preload='none' className='block-art-image' onCanPlay={ () => didLoad(true) }>

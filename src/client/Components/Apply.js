@@ -136,8 +136,6 @@ export default function Application() {
   let isAdmin = false;
   if (programInfo) isAdmin = (auth && programInfo.organizers[0].admins.findIndex(admin => admin === auth.id) >= 0)
 
-  console.log(programInfo);
-
   return (
     <div className='content-block'>
       <Resizer />
@@ -324,7 +322,7 @@ export default function Application() {
             </div>
           :
             <div className='margin-top text-s text-grey'>
-              <i>Applications are currently closed until early April</i>
+              {/* <i>Applications are currently closed until early April</i> */}
             </div>
           }
           { (submitting && !submitted) &&
@@ -338,7 +336,7 @@ export default function Application() {
               We will get back to you once we announce an acceptance date via e-mail or social direct message.
             </div>
           }
-          {/* { (!submitting && !submitted) && <input type='submit' value='Submit Application' className='submit-button' /> } */}
+          { (!submitting && !submitted) && <input type='submit' value='Submit Application' className='submit-button' /> }
         </form>
         <br />
       </div>

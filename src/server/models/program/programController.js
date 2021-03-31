@@ -449,6 +449,20 @@ exports.updateApplication = async (req, res) => {
   });
 };
 
+exports.getGallery = async (req, res) => {
+  const program = await Program.findOne({ url: req.body.program });
+  return ProgramApplicant.find({ program: program._id, published: true }, (err, gallery) => {
+    gallery.forEach(e => {
+      e.tokenId = e.order
+    });
+    return err ?
+    res.status(500).json(err) :
+    res.json({ gallery, contract: program.contractAddress });
+  }).select('-approved -rejected -program -statement -additional -ineligible -flagged -approvalCount -rejectCount -emailed -accepted')
+  .populate('user', 'artistName birthYear country city website twitter instagram')
+  .sort('order');
+};
+
 exports.getCurationPrograms = async (req, res) => {
   const jwt = auth(req.headers.authorization, res, (jwt) => jwt);
   const programs = await Program.find({ curators: jwt.id }).select('organizer name url perpetual passByVotes topThreshold voteThreshold blindVoting mintInProgress').populate('organizers');

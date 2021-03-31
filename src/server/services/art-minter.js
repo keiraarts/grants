@@ -96,31 +96,31 @@ const mint = async (applicants, program, organizer) => {
             console.log(`${uploader.pctComplete}% complete, ${uploader.uploadedChunks}/${uploader.totalChunks}`);
           }
 
-          let thumbnail, transaction2;
-          if (applicant.thumbnail) {
-            file = await fetch(`https://cdn.grants.art/${ applicant.thumbnail }`)
-              .then(res => res.buffer())
-              .catch(function() {
-                throw new Error('FETCH ERROR');
-              });
+          // let thumbnail, transaction2;
+          // if (applicant.thumbnail) {
+          //   file = await fetch(`https://cdn.grants.art/${ applicant.thumbnail }`)
+          //     .then(res => res.buffer())
+          //     .catch(function() {
+          //       throw new Error('FETCH ERROR');
+          //     });
 
-            transaction2 = await arweave.createTransaction({ data: file }, wallet);
-            const ext = applicant.thumbnail.substr(applicant.thumbnail.length - 3).toLowerCase();
-            let responsetype;
-            if (ext === 'jpg' || ext === 'jpeg') responsetype = 'image/jpeg';
-            if (ext === 'png') responsetype = 'image/png';
-            if (ext === 'gif') responsetype = 'image/gif';
-            if (ext === 'ebp') responsetype = 'image/webp';
-            if (ext === 'mp4') responsetype = 'video/mp4';
-            transaction2.addTag('Content-Type', responsetype);
-            await arweave.transactions.sign(transaction2, wallet);
-            let uploader = await arweave.transactions.getUploader(transaction2);
+          //   transaction2 = await arweave.createTransaction({ data: file }, wallet);
+          //   const ext = applicant.thumbnail.substr(applicant.thumbnail.length - 3).toLowerCase();
+          //   let responsetype;
+          //   if (ext === 'jpg' || ext === 'jpeg') responsetype = 'image/jpeg';
+          //   if (ext === 'png') responsetype = 'image/png';
+          //   if (ext === 'gif') responsetype = 'image/gif';
+          //   if (ext === 'ebp') responsetype = 'image/webp';
+          //   if (ext === 'mp4') responsetype = 'video/mp4';
+          //   transaction2.addTag('Content-Type', responsetype);
+          //   await arweave.transactions.sign(transaction2, wallet);
+          //   let uploader = await arweave.transactions.getUploader(transaction2);
 
-            while (!uploader.isComplete) {
-              await uploader.uploadChunk();
-              console.log(`${uploader.pctComplete}% complete, ${uploader.uploadedChunks}/${uploader.totalChunks}`);
-            }
-          }
+          //   while (!uploader.isComplete) {
+          //     await uploader.uploadChunk();
+          //     console.log(`${uploader.pctComplete}% complete, ${uploader.uploadedChunks}/${uploader.totalChunks}`);
+          //   }
+          // }
 
           const metadata = {
             minter: "0x47BCD42B8545c23031E9918c3D823Be4100D4e87",
@@ -138,8 +138,8 @@ const mint = async (applicants, program, organizer) => {
             amountToMint: 1,
             visibility: "safe",
             forSale: false,
-            image: `https://arweave.net/${ transaction2 ? transaction2.id : transaction.id }`,
-            media: transaction2 ? { uri: `https://arweave.net/${ transaction.id }` } : undefined,
+            image: `https://arweave.net/${ transaction.id }`,
+            // media: transaction2 ? { uri: `https://arweave.net/${ transaction.id }` } : undefined,
             attributes: [
               {
                 trait_type: 'Artist',
@@ -199,7 +199,7 @@ const mint = async (applicants, program, organizer) => {
             console.log(`${metadataUploader.pctComplete}% complete, ${metadataUploader.uploadedChunks}/${metadataUploader.totalChunks}`);
           }
 
-          console.log(metadataTx.id);
+          applicant.arweave = transaction.id;
 
           const mintTo = program.mintToArtist ? user.wallet : organizer.wallet;
           const batchMint = Contract.methods.batchMint(mintTo, Number(1), metadataTx.id, Number(0), false)

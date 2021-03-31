@@ -15,8 +15,6 @@ export default function Program() {
     .then(json => setPrograms(json));
   }, [])
 
-  console.log(programs);
-
   return (
     <div className='content-block'>
       <div className='text-l text-b'>

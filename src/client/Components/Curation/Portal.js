@@ -1,4 +1,5 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
+import ReactModal from 'react-modal';
 import { useStoreState } from 'easy-peasy';
 import { apiUrl } from '../../baseUrl';
 
@@ -288,7 +289,9 @@ export default function Portal() {
     .then(json => {});
   }
 
+  const [mintConfirm, setMintConfirm] = useState(false);
   const mint = () => {
+    setMintConfirm(false);
     setSelectedProgram({ ...selectedProgram, mintInProgress: true })
     fetch(`${ apiUrl() }/program/mint`, {
       method: 'POST',
@@ -302,12 +305,37 @@ export default function Portal() {
     .then(json => {});
   }
 
-  console.log(selectedProgram);
+  const closePage = () => {
+    setSelectedProgram(null);
+    setAdminTab(false);
+    setViewTab('curate')
+    setFilteredResults({ mintable: [], unmintable: [] });
+  }
+
   const isAdmin = selectedProgram && selectedProgram.organizers[0].admins.find(e => e === auth.id);
 
   return (
     <div className='content-block'>
       <Resizer />
+      <ReactModal
+        isOpen={ mintConfirm }
+        style={{ content: { margin: 'auto', width: '15rem', height: '23rem' } }}
+        onRequestClose={ () => setMintConfirm(false) }
+        shouldCloseOnOverlayClick={ true }
+        ariaHideApp={ false }
+      >
+        { selectedProgram && selectedProgram.organizers &&
+          <div className='text-s font'>
+            Are you sure you want to mint to your exhibition?<br /><br />
+            You will be minting { filteredResults.mintable.length } artworks that will
+            end up in the <strong>{ programAdmin.mintToArtist ? 'artist wallets' : 'curator wallet' }</strong><br /><br />
+            <div className='center'>
+              <div className='small-button' onClick={ () => setMintConfirm(false) }>Cancel</div><br /><br />
+              <div className='margin-top-s small-button button-green' onClick={ () => mint() }>Confirm</div>
+            </div>
+          </div>
+        }
+      </ReactModal>
       <div className='text-l flex'>
         Curation Portal
         <div className='flex-full' />
@@ -333,7 +361,7 @@ export default function Portal() {
         <div className='margin-top flex'>
           { !adminTab &&
             <div className='margin-right-s'>
-              <div className='small-button' onClick={ () => { setSelectedProgram(null); setAdminTab(false); } }>Close</div>
+              <div className='small-button' onClick={ () => closePage() }>Close</div>
             </div>
           }
           <div className='flex-full center'>
@@ -538,7 +566,7 @@ export default function Portal() {
                     { selectedProgram.mintInProgress ? 
                       <div className='text-s'>Minting In Progress</div>
                       :
-                      <div className='button-green small-button' onClick={ () => mint() }>Mint</div>
+                      <div className='button-green small-button' onClick={ () => setMintConfirm(true) }>Mint</div>
                     }
                   </div>
                   <div className='margin-top-s'>

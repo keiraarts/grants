@@ -14,6 +14,7 @@ module.exports = (app) => {
   app.post('/api/program/addRemoveCurator', program.addRemoveCurator);
   app.post('/api/program/submitApplication', program.submitApplication);
   app.post('/api/program/updateApplication', program.updateApplication);
+  app.post('/api/program/getGallery', program.getGallery);
   app.post('/api/program/getCurationPrograms', program.getCurationPrograms);
   app.post('/api/program/viewAllApplications', program.viewAllApplications);
   app.post('/api/program/viewResults', program.viewResults);

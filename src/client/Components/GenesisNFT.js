@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import OpenMarket from './Market/OpenMarket.js';
 
-import Download from '../assets/download.png';
+import Secure from '../assets/secure.png';
 import FullScreen from '../assets/fullscreen.png';
 import MinScreen from '../assets/minscreen.png';
 import Muted from '../assets/muted.png';
@@ -24,7 +24,7 @@ const GenesisNFT = ({ small, nft, src, important, hidden, contract }) => {
   const video = useRef();
 
   useEffect(() => {
-    if (src) { setLoaded(true); console.log('LOADED', src) }
+    if (src) { setLoaded(true); }
   }, [src])
 
   const [isFullScreen, setFullScreen] = useState(false);
@@ -97,6 +97,8 @@ const GenesisNFT = ({ small, nft, src, important, hidden, contract }) => {
     }
   }, [hidden])
 
+  if (nft && nft.art) nft.imageType = nft.art.split('.')[1];
+
   return (
     <div className={ `margin-top flex full-width ${ !small && 'side-space' }` } style={ { display: hidden && 'none' } }>
       { nft ?
@@ -106,8 +108,8 @@ const GenesisNFT = ({ small, nft, src, important, hidden, contract }) => {
               <div className='text-s'>
                 <div className='gallery-plate metal linear'>
                   <div className='text-s'>
-                    <strong>{ nft.artist }</strong><br />
-                    { nft.country } { nft.year && `(b. ${ nft.year })` }
+                    <strong>{ nft.user.artistName }</strong><br />
+                    { nft.user.country } { nft.user.birthYear && `(b. ${ nft.user.birthYear })` }
                   </div>
                   <div className='margin-top-s text-s text-b'>
                     <strong><i>{ nft.name || 'Untitled' }</i></strong>, 2021<br />
@@ -135,17 +137,17 @@ const GenesisNFT = ({ small, nft, src, important, hidden, contract }) => {
                     Sorry, your browser doesn't support embedded videos.
                   </video>
                 }
-                { ((nft.imageType === 'mp4' || nft.imageType === 'mov') && !nft.thumbnailType) &&
+                { (nft.imageType === 'mp4' || nft.imageType === 'mov') &&
                   <video muted loop autoPlay webkit-playsinline='true' playsInline key={ `${ src }-2` } className={ `gallery-art ${ loaded && 'hidden'}` }>
-                    <source src={ `https://cdn.grants.art/${ nft.imageWeb }` } />
+                    <source src={ `https://cdn.grants.art/${ nft.artWeb }` } />
                     Sorry, your browser doesn't support embedded videos.
                   </video>
                 }
                 { (nft.imageType !== 'mp4' && nft.imageType !== 'mov') &&
-                  <img className={ `gallery-art ${ !loaded && 'hidden'}` } key={ `${ nft.image }` } src={ nft.image } onLoad={ () => setLoaded(true) } />
+                  <img className={ `gallery-art ${ !loaded && 'hidden'}` } key={ `${ nft.art }` } src={ `https://cdn.grants.art/${ nft.art }` } onLoad={ () => setLoaded(true) } />
                 }
-                { ((nft.imageType !== 'mp4' && nft.imageType !== 'mov') || nft.thumbnailType) &&
-                  <img className={ `gallery-art ${ loaded && 'hidden '}` } key={ `${ nft.imageWeb }` } src={ `https://cdn.grants.art/${ nft.imageWeb }` } />
+                { (nft.imageType !== 'mp4' && nft.imageType !== 'mov') &&
+                  <img className={ `gallery-art ${ loaded && 'hidden '}` } key={ `${ nft.artWeb }` } src={ `https://cdn.grants.art/${ nft.artWeb }` } />
                 }
               </div>
             </div>
@@ -157,12 +159,11 @@ const GenesisNFT = ({ small, nft, src, important, hidden, contract }) => {
             }
             { !loaded ?
               <div className='loader margin-top-l'>
-                <img src={ Download } className='margin-top-s frame-control pointer' onClick={ () => openLink(nft.image) } />
                 <div className='loaderBar'></div>
               </div>
               :
               <div className='flex margin-top-s'>
-                <img src={ Download } className='margin-top-xs frame-control pointer' onClick={ () => openLink(nft.image) } />
+                <img src={ Secure } className='margin-top-xs frame-control pointer' onClick={ () => openLink(`https://arweave.net/${ nft.arweave }`) } />
                 <div className='flex-full' />
                 { video && video.current &&
                   <div onClick={ () => toggleAudio() } className='pointer'>

@@ -86,8 +86,6 @@ export default function Organizer() {
   let isAdmin = false;
   if (organizer) isAdmin = (auth && organizer.admins.findIndex(admin => admin === auth.id) >= 0)
 
-  console.log(organizer);
-
   return (
     <div className='content-block'>
       <Resizer />
