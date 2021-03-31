@@ -83,20 +83,6 @@ const GenesisNFT = ({ small, nft, src, important, hidden, contract }) => {
     }
   }, [])
 
-  useEffect(() => {
-    if (video && video.current) {
-      video.current.addEventListener('webkitendfullscreen', function(){
-        setTimeout(() => {
-          video.current.play();
-        });
-      }, false);
-
-      return () => {
-        video.current.removeEventListener('webkitendfullscreen', () => {});
-      }
-    }
-  }, [video])
-
   const [muted, setMuted] = useState(true);
   function toggleAudio() {
     video.current.muted = !video.current.muted;
