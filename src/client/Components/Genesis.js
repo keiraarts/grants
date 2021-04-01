@@ -131,8 +131,8 @@ export default function Genesis() {
   }
 
   const handlers = useSwipeable({
-    onSwipedRight: (eventData) => { updatePreload('next', order); history.push(`/${ url }/${ switchPage('next') }`) },
-    onSwipedLeft: (eventData) => { updatePreload('previous', order); history.push(`/${ url }/${ switchPage('previous') }`) },
+    onSwipedRight: (eventData) => { updatePreload('previous', order); history.push(`/${ url }/${ switchPage('previous') }`) },
+    onSwipedLeft: (eventData) => { updatePreload('next', order); history.push(`/${ url }/${ switchPage('next') }`) },
     preventDefaultTouchmoveEvent: true,
   });
 
