@@ -344,11 +344,11 @@ export default function Application() {
                 We will get back to you once we announce an acceptance date via e-mail or social direct message.
               </div>
             }
-            <div>
+            {/* <div>
               { (!user) && <Link to='/login' className='margin-top text-mid text-grey'>You must be logged in to submit an artwork</Link> }
               { (user && auth && (!auth.wallet || !user.user.emailVerified)) && <Link to='/account' className='margin-top text-mid text-grey'>You must verify a wallet and email to submit an artwork</Link> }
             </div>
-            {/* { (!submitting && !submitted && user) && <input type='submit' value='Submit Artwork' className='submit-button' onClick={ submit } /> } */}
+            { (!submitting && !submitted && user) && <input type='submit' value='Submit Artwork' className='submit-button' onClick={ submit } /> } */}
           </form>
         :
           <div>
