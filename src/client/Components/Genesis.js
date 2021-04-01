@@ -1,6 +1,6 @@
 import React, { useEffect, useReducer, useState, useRef } from 'react';
-import { usePromise } from 'promise-hook';
-import { useParams, useLocation } from "react-router-dom";
+import { useSwipeable } from 'react-swipeable';
+import { useParams, useLocation, useHistory } from "react-router-dom";
 import { useStoreState } from 'easy-peasy';
 import { Link } from "react-router-dom";
 import GenesisNFT from './GenesisNFT.js';
@@ -13,6 +13,7 @@ import '../styles.scss';
 const NFT = React.memo(GenesisNFT);
 
 export default function Genesis() {
+  const history = useHistory();
   const small = useStoreState(state => state.app.small);
   const { url, id } = useParams();
   const order = Number(id);
@@ -129,8 +130,13 @@ export default function Genesis() {
     src3 = foundSrc ? foundSrc.image : null;
   }
 
+  const handlers = useSwipeable({
+    onSwipedRight: (eventData) => { updatePreload('next', order); history.push(`/${ url }/${ switchPage('next') }`) },
+    onSwipedLeft: (eventData) => { updatePreload('previous', order); history.push(`/${ url }/${ switchPage('previous') }`) },
+  });
+
   return (
-    <div className='content-block'>
+    <div className='content-block' { ...handlers }>
       <Resizer />
       <WalletConnect />
       <div className='text-m text-b'>

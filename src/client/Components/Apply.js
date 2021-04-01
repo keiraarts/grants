@@ -114,6 +114,10 @@ export default function Application() {
     e.preventDefault();
     if (!data.art) setErr('No artwork selected');
     else if (!data.statement) setErr('Please write a statement of intent');
+    else if (!data.title || !data.description) setErr('Please provide an artwork title and description');
+    else if (!user) setErr('Please log in to submit');
+    else if (auth && !auth.wallet) setErr('Please verify a wallet to submit');
+    else if (user && !user.user.emailVerified) setErr('Please verify your email to submit');
     else {
       setErr(false);
       setSubmitting(true);
@@ -135,6 +139,9 @@ export default function Application() {
   const dropdownDefault = data.minted === undefined ? 'default' : `${ data.minted }`;
   let isAdmin = false;
   if (programInfo) isAdmin = (auth && programInfo.organizers[0].admins.findIndex(admin => admin === auth.id) >= 0)
+  let applied;
+  if (user && user.applications && programInfo) applied = user.applications.find(e => e.program === programInfo.id);
+  console.log('APPLIED', user);
 
   return (
     <div className='content-block'>
@@ -221,44 +228,136 @@ export default function Application() {
             </div>
           </div>
         }
-        <div className='margin-top text-l'>Application Form</div>
-        <form onSubmit={ submit }>
-          { program === 'genesis' &&
-          <div>
-            <div className='text-s margin-top form__title'>Have you sold your own NFT before?</div>
-            <div className='select-dropdown margin-top-minus'>
-              <select name='Mint' className='text-black' defaultValue={ dropdownDefault } value={ dropdownDefault } required onChange={e => setData({ ...data, minted: e.target.value })}>
-                <option value='default' disabled hidden>
-                  Select an option
-                </option>
-                <option value='false'>No</option>
-                <option value='true'>Yes</option>
-              </select>
+        { !applied ?
+          <form onSubmit={ submit }>
+            <div className='margin-top text-l'>Art Submission Form</div>
+            { program === 'genesis' &&
+            <div>
+              <div className='text-s margin-top form__title'>Have you sold your own NFT before?</div>
+              <div className='select-dropdown margin-top-minus'>
+                <select name='Mint' className='text-black' defaultValue={ dropdownDefault } value={ dropdownDefault } required onChange={e => setData({ ...data, minted: e.target.value })}>
+                  <option value='default' disabled hidden>
+                    Select an option
+                  </option>
+                  <option value='false'>No</option>
+                  <option value='true'>Yes</option>
+                </select>
+              </div>
             </div>
-          </div>
-          }
-          <div className='form__group field'>
-            <textarea type='text' className='form__field intent-field' placeholder='Intent' name='intent' id='intent' required maxLength='2000' onChange={e => setData({ ...data, statement: e.target.value })} />
-            <label className='form__label'>Statement of Intent (2000 chars)</label>
-          </div>
-          <div className='form__group field'>
-            <textarea type='text' className='form__field intent-field' placeholder='Additional' name='additional' id='additional' maxLength='2000' onChange={e => setData({ ...data, additional: e.target.value })} />
-            <label className='form__label'>Additional Information (Optional 2000 chars)</label>
-          </div>
-          <div className='form__group field'>
-            <input type='text' className='form__field' placeholder='Name' name='name' id='name' maxLength='100' onChange={e => setData({ ...data, title: e.target.value })} />
-            <label className='form__label'>Artwork Title</label>
-          </div>
-          <div className='form__group field'>
-            <textarea type='text' className='form__field intent-field' placeholder='Description' name='description' id='description' maxLength='1000' onChange={e => setData({ ...data, description: e.target.value })} />
-            <label className='form__label'>Artwork Description</label>
-          </div>
-          <div className='form__group field'>
-            <label className='file__label'>Art Submission (JPG, PNG, GIF, WEBP, or MP4 - Max 77MB)</label>
-            <input type='file' className='form__field' placeholder='Artwork' name='artwork' id='name' accept='image/jpeg, image/png, image/gif, image/webp, video/mp4' required onChange={ (e) => uploadHandler(e.target) } />
-          </div>
-          <div className='margin-top-l'>Submission Preview</div>
-          { user &&
+            }
+            <div className='form__group field'>
+              <textarea type='text' className='form__field intent-field' placeholder='Intent' name='intent' id='intent' required maxLength='2000' onChange={e => setData({ ...data, statement: e.target.value })} />
+              <label className='form__label'>Statement of Intent (2000 chars)</label>
+            </div>
+            <div className='form__group field'>
+              <textarea type='text' className='form__field intent-field' placeholder='Additional' name='additional' id='additional' maxLength='2000' onChange={e => setData({ ...data, additional: e.target.value })} />
+              <label className='form__label'>Additional Information (Optional 2000 chars)</label>
+            </div>
+            <div className='form__group field'>
+              <input type='text' className='form__field' placeholder='Name' name='name' id='name' maxLength='100' onChange={e => setData({ ...data, title: e.target.value })} />
+              <label className='form__label'>Artwork Title</label>
+            </div>
+            <div className='form__group field'>
+              <textarea type='text' className='form__field intent-field' placeholder='Description' name='description' id='description' maxLength='1000' onChange={e => setData({ ...data, description: e.target.value })} />
+              <label className='form__label'>Artwork Description</label>
+            </div>
+            <div className='form__group field'>
+              <label className='file__label'>Art Submission (JPG, PNG, GIF, WEBP, or MP4 - Max 77MB)</label>
+              <input type='file' className='form__field' placeholder='Artwork' name='artwork' id='name' accept='image/jpeg, image/png, image/gif, image/webp, video/mp4' required onChange={ (e) => uploadHandler(e.target) } />
+            </div>
+            <div className='margin-top-l'>Submission Preview</div>
+            { user &&
+              <div className='margin-top gallery-container full-width'>
+                { !small &&
+                  <div className='gallery-description'>
+                    <div className='text-s'>
+                      <div className='gallery-plate metal linear'>
+                        <div className='text-s'>
+                          <strong>{ user.user.artistName }</strong><br />
+                          { user.user.country } { user.user.birthYear && `(b. ${ user.user.birthYear })` }
+                        </div>
+                        <div className='margin-top-s text-s text-b'>
+                          <strong><i>{ data.title || 'Untitled' }</i></strong>, 2021<br />
+                          { data.ext } as NFT
+                        </div>
+                        <div className='margin-top-s text-xs'>
+                          { data.description }
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                }
+                { data.art &&
+                  <div className={ `flex-full center ${ small ? 'gallery-frame-container-small' : 'gallery-frame-container' }` }>
+                    <div className='frame gallery-art-container'>
+                      <div className='frame-shadow'>
+                        { (data.ext === 'mp4' || data.ext === 'mov') ?
+                          <video muted loop autoPlay webkit-playsinline='true' playsInline className='gallery-art'>
+                            <source src={ data.art } />
+                            Sorry, your browser doesn't support embedded videos.
+                          </video>
+                          :
+                          <img className='gallery-art' src={ data.art } />
+                        }
+                      </div>
+                    </div>
+                  </div>
+                }
+                { small &&
+                  <div className='margin-top gallery-description'>
+                    <div className='text-s'>
+                      <div className='gallery-plate metal linear'>
+                        <div className='text-s'>
+                          <strong>{ user.user.artistName }</strong><br />
+                          { user.user.country } { user.user.birthYear && `(b. ${ user.user.birthYear })` }
+                        </div>
+                        <div className='margin-top-s text-s text-b'>
+                          <strong><i>{ data.title || 'Untitled' }</i></strong>, 2021<br />
+                          { data.ext } as NFT
+                        </div>
+                        <div className='margin-top-s text-xs'>
+                          { data.description }
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+            { err ? 
+              <div className='margin-top text-s text-err'>
+                { err }
+              </div>
+            :
+              <div className='margin-top text-s text-grey'>
+                {/* <i>Submissions are currently closed until early April</i> */}
+              </div>
+            }
+            { (submitting && !submitted) &&
+              <div className='margin-top text-s text-grey'>
+                Your artwork is being submitted..
+              </div>
+            }
+            { submitted &&
+              <div className='margin-top text-s text-rainbow'>
+                Thank you for submitting your artwork!<br />
+                We will get back to you once we announce an acceptance date via e-mail or social direct message.
+              </div>
+            }
+            <div>
+              { (!user) && <Link to='/login' className='margin-top text-mid text-grey'>You must be logged in to submit an artwork</Link> }
+              { (user && auth && (!auth.wallet || !user.user.emailVerified)) && <Link to='/account' className='margin-top text-mid text-grey'>You must verify a wallet and email to submit an artwork</Link> }
+            </div>
+            { (!submitting && !submitted && user) && <input type='submit' value='Submit Artwork' className='submit-button' onClick={ submit } /> }
+          </form>
+        :
+          <div>
+            <div className='margin-top-l'>Art Submission</div>
+            { applied.published ?
+              <div className='margin-top'><Link to={ `/${ programInfo.url }/${ applied.order }` } className='text-rainbow'>Minted In Exhibition</Link></div>
+              :
+              <div className='margin-top text-mid'>Status: { applied.accepted ? 'Accepted!' : 'Pending Curation Review' }</div>
+            }
             <div className='margin-top gallery-container full-width'>
               { !small &&
                 <div className='gallery-description'>
@@ -269,27 +368,27 @@ export default function Application() {
                         { user.user.country } { user.user.birthYear && `(b. ${ user.user.birthYear })` }
                       </div>
                       <div className='margin-top-s text-s text-b'>
-                        <strong><i>{ data.title || 'Untitled' }</i></strong>, 2021<br />
-                        { data.ext } as NFT
+                        <strong><i>{ applied.title || 'Untitled' }</i></strong>, 2021<br />
+                        {  applied.art.split('.')[1].toUpperCase() } as NFT
                       </div>
                       <div className='margin-top-s text-xs'>
-                        { data.description }
+                        { applied.description }
                       </div>
                     </div>
                   </div>
                 </div>
               }
-              { data.art &&
+              { applied.art &&
                 <div className={ `flex-full center ${ small ? 'gallery-frame-container-small' : 'gallery-frame-container' }` }>
                   <div className='frame gallery-art-container'>
                     <div className='frame-shadow'>
-                      { (data.ext === 'mp4' || data.ext === 'mov') ?
+                      { (applied.art.split('.')[1] === 'mp4' || applied.art.split('.')[1] === 'mov') ?
                         <video muted loop autoPlay webkit-playsinline='true' playsInline className='gallery-art'>
-                          <source src={ data.art } />
+                          <source src={ `https://cdn.grants.art/${ applied.art }` } />
                           Sorry, your browser doesn't support embedded videos.
                         </video>
                         :
-                        <img className='gallery-art' src={ data.art } />
+                        <img className='gallery-art' src={ `https://cdn.grants.art/${ applied.art }` } />
                       }
                     </div>
                   </div>
@@ -304,40 +403,19 @@ export default function Application() {
                         { user.user.country } { user.user.birthYear && `(b. ${ user.user.birthYear })` }
                       </div>
                       <div className='margin-top-s text-s text-b'>
-                        <strong><i>{ data.title || 'Untitled' }</i></strong>, 2021<br />
-                        { data.ext } as NFT
+                        <strong><i>{ applied.title || 'Untitled' }</i></strong>, 2021<br />
+                        { applied.art.split('.')[1].toUpperCase() } as NFT
                       </div>
                       <div className='margin-top-s text-xs'>
-                        { data.description }
+                        { applied.description }
                       </div>
                     </div>
                   </div>
                 </div>
               }
             </div>
-          }
-          { err ? 
-            <div className='margin-top text-s text-err'>
-              { err }
-            </div>
-          :
-            <div className='margin-top text-s text-grey'>
-              {/* <i>Applications are currently closed until early April</i> */}
-            </div>
-          }
-          { (submitting && !submitted) &&
-            <div className='margin-top text-s text-grey'>
-              Your application is being submitted..
-            </div>
-          }
-          { submitted &&
-            <div className='margin-top text-s text-rainbow'>
-              Thank you for submitting your application!<br />
-              We will get back to you once we announce an acceptance date via e-mail or social direct message.
-            </div>
-          }
-          { (!submitting && !submitted) && <input type='submit' value='Submit Application' className='submit-button' /> }
-        </form>
+          </div>
+        }
         <br />
       </div>
     </div>

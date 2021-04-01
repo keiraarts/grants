@@ -141,13 +141,13 @@ const GenesisNFT = ({ small, nft, src, important, hidden, contract }) => {
               <div className='frame-shadow'>
                 { (nft.imageType === 'mp4' || nft.imageType === 'mov')  &&
                   <video muted loop autoPlay webkit-playsinline='true' playsInline key={ `${ src }-1` } className={ `gallery-art ${ !loaded && 'hidden'}` } onCanPlay={ () => setLoaded(true) } ref={ video }>
-                    <source src={ src } />
+                    <source src={ src } type={ `video/${ nft.imageType }` } />
                     Sorry, your browser doesn't support embedded videos.
                   </video>
                 }
                 { (nft.imageType === 'mp4' || nft.imageType === 'mov') &&
                   <video muted loop autoPlay webkit-playsinline='true' playsInline key={ `${ src }-2` } className={ `gallery-art ${ loaded && 'hidden'}` }>
-                    <source src={ `https://cdn.grants.art/${ nft.artWeb }` } />
+                    <source src={ `https://cdn.grants.art/${ nft.artWeb }` } type={ `video/${ nft.imageType }` } />
                     Sorry, your browser doesn't support embedded videos.
                   </video>
                 }

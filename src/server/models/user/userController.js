@@ -1,5 +1,6 @@
 const User = require('mongoose').model('User');
 const Applicant = require('mongoose').model('Applicant');
+const ProgramApplicant = require('mongoose').model('ProgramApplicant');
 const jsonwebtoken = require('jsonwebtoken');
 const crypto = require('crypto');
 const ethers = require('ethers');
@@ -124,9 +125,9 @@ exports.getAccount = (req, res, next) => {
       if (err) return res.json(err);
       if (!user) return res.status(401).json({ err: 'Authentication error' }); 
       else {
-        return Applicant.findOne({ user: user._id }, (err2, data) => {
+        return ProgramApplicant.find({ user: user._id }, (err2, data) => {
           if (err2) return res.status(500).json(err);
-          return res.json({ user, application: data });
+          return res.json({ user, applications: data });
         }).select('-flagged -approvalCount -rejectCount -rejected -approved')
       }
     }).select('-password -salt -emailToken -committee');
