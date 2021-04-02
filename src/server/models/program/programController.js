@@ -98,7 +98,7 @@ exports.createProgram = async (req, res) => {
     org = new Organizer({
       admins:       [jwt.id],
       name:         req.body.orgName,
-      url:          doDashes(req.body.orgName),
+      url:          doDashes(req.body.url),
       about:        req.body.about,
       email:        req.body.email,
       website:      req.body.website,

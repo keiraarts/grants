@@ -6,6 +6,13 @@ import Resizer from './Tools/Resizer.js';
 
 import '../styles.scss';
 
+function doDashes(str) {
+  var re = /[^a-z0-9]+/gi; // global and case insensitive matching of non-char/non-numeric
+  var re2 = /^-*|-*$/g;     // get rid of any leading/trailing dashes
+  str = str.replace(re, '-');  // perform the 1st regexp
+  return str.replace(re2, '').toLowerCase(); // ..aaand the second + return lowercased result
+}
+
 export default function Application() {
   const auth = useStoreState(state => state.user.auth);
 
@@ -115,7 +122,7 @@ export default function Application() {
             <label className='form__label'>Program Name</label>
           </div>
           <div className='form__group field'>
-            <input type='text' className='form__field' placeholder='Program Name' name='name' id='name' required maxLength='100' onChange={e => setData({ ...data, url: e.target.value })} />
+            <input type='text' className='form__field' placeholder='Program Name' name='name' id='name' required maxLength='100' onChange={e => setData({ ...data, url: doDashes(e.target.value) })} />
             <label className='form__label'>URL Permalink</label>
           </div>
           <div className='text-s margin-top-s'>
