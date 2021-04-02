@@ -13,7 +13,7 @@ export default function Ethos() {
   return (
     <div className='content-block'>
       <div className='text-l text-b'>
-        Ethos
+        <strong>Ethos</strong>
       </div>
       <div className='text-s margin-top-s'>
         Origins, motivations, and vision
@@ -31,7 +31,7 @@ export default function Ethos() {
         Currently, the available resources for artists looking to become informed and take their first steps into this world are scattered, daunting, and expensive.
         Sevens Foundation will provide these tools and initial fundings to newcomers who are eager to participate and jump start their journey exploring their passion for creativity.
         <br /><br />
-        Sevens Foundation understands and shares the concerns regarding blockchains carbon footprint; this will be resolved in the near future on a systemic level when platforms migrate to scalable solutions.
+        Sevens Foundation understands and shares the concerns regarding blockchains' carbon footprint; this will be resolved in the near future on a systemic level when platforms migrate to scalable solutions.
         In the meantime we will offset the emissions produced by each and every NFT we mint by planting trees in partnership with <span className='text-grey remove-a pointer' onClick={ () => openLink('https://teamtrees.org/') }>#teamtrees</span>.
         We are also deeply committed to equality and will focus on promoting and advancing the creative output of the BIPOC and LGBTQ+ communities.
         <br /><br />

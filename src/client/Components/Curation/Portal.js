@@ -341,7 +341,7 @@ export default function Portal() {
         }
       </ReactModal>
       <div className='text-l flex'>
-        Curation Portal
+        <strong>Curation Portal</strong>
         <div className='flex-full' />
         { isAdmin &&
           <div className='text-s center'>

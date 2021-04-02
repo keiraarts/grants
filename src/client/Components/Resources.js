@@ -13,7 +13,7 @@ export default function Committee() {
   return (
     <div className='content-block'>
       <div className='text-l text-b'>
-        Resources
+        <strong>Resources</strong>
       </div>
       <div className='text-s margin-top-s'>
         Learn more about NFTs

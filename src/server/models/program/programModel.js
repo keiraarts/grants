@@ -101,6 +101,13 @@ const program = {
         type:    Boolean,
         default: false,
     },
+    isProtected: {
+        type: Boolean,
+        default: false
+    },
+    passcode: {
+        type: String,
+    },
     open: {
         type: Date,
     },

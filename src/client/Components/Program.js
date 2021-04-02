@@ -6,19 +6,23 @@ import '../styles.scss';
 
 export default function Program() {
 
+  const [loaded, setLoaded] = useState(false);
   const [programs, setPrograms] = useState([]);
   useEffect(() => {
     fetch(`${ apiUrl() }/program/getPrograms`, {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' },
     }).then(res => res.json())
-    .then(json => setPrograms(json));
+    .then(json => {
+      setPrograms(json);
+      setLoaded(true);
+    });
   }, [])
 
   return (
     <div className='content-block'>
       <div className='text-l text-b'>
-        Grants Program
+        <strong>Grants Program</strong>
       </div>
       <div className='text-s margin-top-s text-desc'>
         What is an art grant?
@@ -37,17 +41,26 @@ export default function Program() {
         <div className='text-m margin-top-l'>
           <strong>Apply for a Grant</strong>
         </div>
-        <div className='flex-wrap margin-top'>
-          { programs.map((program, index) => {
-              return (
-                <Link key={ index } className='button' to={ `/apply/${ program.url }` }>
-                  <div className='text-xs'>{ program.organizers[0].name }</div>
-                  <span>{ program.name }</span>
-                </Link>
-              );
-            })
-          }
-        </div>
+        { (!loaded) ?
+          <div className='center flex'>
+            <div className='margin-top center'>
+              <div className="loading"><div></div><div></div></div>
+            </div>
+          </div>
+        :
+          <div className='flex-wrap margin-top'>
+            {
+              programs.map((program, index) => {
+                return (
+                  <Link key={ index } className='button' to={ `/apply/${ program.url }` }>
+                    <div className='text-xs'>{ program.organizers[0].name }</div>
+                    <span>{ program.name }</span>
+                  </Link>
+                );
+              })
+            }
+          </div>
+        }
         <br />
       </div>
     </div>

@@ -188,7 +188,7 @@ export default function Application() {
       })
         .then(res => res.json())
         .then(json => {
-          if (json && json.error) setErr(json.error);
+          if (json && json.error) { setErr(json.error); setSubmitting(false); }
           else setSubmitted(true);
         });
     }
@@ -247,7 +247,7 @@ export default function Application() {
               isPopup={ true }
             />
             <div className='text-l flex'>
-              { programInfo.name }
+              <strong>{ programInfo.name }</strong>
               <div className='flex-full' />
               { isAdmin &&
                 <div className='text-s center text-grey pointer' onClick={ () => setEditing(true) }>
@@ -304,6 +304,10 @@ export default function Application() {
                     <textarea type='text' className='form__field intent-field' placeholder='Intent' name='intent' id='intent' required maxLength='2000' value={ programInfo.criteria } onChange={e => setProgram({ ...programInfo, criteria: e.target.value })} />
                     <label className='form__label'>Applicant Criteria (2000 Chars)</label>
                   </div>
+                  <div className='form__group field'>
+                    <input type='text' className='form__field' placeholder='Intent' name='intent' id='intent' required maxLength='50' value={ programInfo.passcode } onChange={e => setProgram({ ...programInfo, passcode: e.target.value, isProtected: e.target.value ? true : false })} />
+                    <label className='form__label'>Secret phrase in order to submit</label>
+                  </div>
                   <div className='margin-top-s text-s'>
                     <strong>Submissions Open Time</strong><br/>
                     { programInfo.open ? moment(programInfo.open).format('ddd MMM Do h:mm A') : '' }
@@ -355,6 +359,12 @@ export default function Application() {
                 </select>
               </div>
             </div>
+            }
+            { (programInfo && programInfo.isProtected) &&
+              <div className='form__group field'>
+                <input type='text' className='form__field' placeholder='Name' name='name' id='name' maxLength='100' onChange={e => setData({ ...data, passcode: e.target.value })} />
+                <label className='form__label'>Secret Phrase</label>
+              </div>
             }
             <div className='form__group field'>
               <textarea type='text' className='form__field intent-field' placeholder='Intent' name='intent' id='intent' required maxLength='2000' onChange={e => setData({ ...data, statement: e.target.value })} />

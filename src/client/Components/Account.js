@@ -136,7 +136,7 @@ export default function Register() {
     <div className='content-block'>
       { logout && <Redirect to='/' /> }
       <div className='text-l flex'>
-        Sevens Account
+        <strong>Sevens Account</strong>
         <div className='flex-full' />
         <div className='text-s flex'>
           <div className='flex-full' />
@@ -222,6 +222,13 @@ export default function Register() {
                   <input type='submit' value='Cancel' className='submit-button' onClick={ () => setEditingAccount(false) } />
                 </div>
               }
+            </div>
+          }
+          { isLoading &&
+            <div className='center flex'>
+              <div className='margin-top center'>
+                <div className="loading"><div></div><div></div></div>
+              </div>
             </div>
           }
           { (!editingAccount && data && user) &&

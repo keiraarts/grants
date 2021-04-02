@@ -55,7 +55,8 @@ exports.getProgram = async (req, res) => {
     return err ?
         res.status(500).json(err) :
         res.json(data);
-  }).populate('organizers');
+  })
+  .populate('organizers');
 };
 
 exports.getMyOrgs = async (req, res) => {
@@ -187,6 +188,8 @@ exports.updateProgram = async (req, res) => {
 
   program.name = req.body.name;
   program.url = req.body.url;
+  program.passcode = req.body.passcode;
+  program.isProtected = req.body.passcode ? true : false;
   program.description = req.body.description;
   program.logistics = req.body.logistics;
   program.criteria = req.body.criteria;
@@ -362,6 +365,7 @@ exports.submitApplication = async (req, res) => {
 
   const program = await Program.findById(req.body.program);
   if (!program) return res.json({ error: 'Program does not exist' });
+  if (program.isProtected && req.body.passcode !== program.passcode) return res.json({ error: 'The secret phrase was incorrect' });
   if (new Date() < program.open || new Date() > program.close) return res.json({ error: 'Submissions are closed' });
 
   const applicant = {

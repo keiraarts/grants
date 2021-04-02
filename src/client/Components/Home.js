@@ -28,13 +28,13 @@ function shuffle(array) {
 }
 
 export default function Gallery() {
-  const auth = useStoreState(state => state.user.auth);
   const cols = useStoreState(state => state.app.cols);
 
   const [viewTab, setViewTab] = useState('grantee');
   const [showData, setShowData] = useState([]);
   const contentRef = useRef(null);
 
+  const [loaded, setLoaded] = useState(false);
   const [grantees, setGrantees] = useState([]);
   const [nominees, setNominees] = useState([]);
   useEffect(() => {
@@ -45,6 +45,7 @@ export default function Gallery() {
     }).then(res => res.json())
     .then(json => {
       if (json && json.gallery) setGrantees(shuffle(json.gallery))
+      setLoaded(true);
     });
 
     fetch(`${ apiUrl() }/program/getGallery`, {
@@ -85,7 +86,7 @@ export default function Gallery() {
     <div className='content-block' ref={ contentRef }>
       <Resizer />
       <div className='text-l flex'>
-        Sevens Genesis Grant
+        <strong>Sevens Foundation</strong>
         <div className='flex-full' />
         <div className='text-s center'>
           <Link to='/curation' className='small-button text-grey'>Curation</Link>
@@ -96,15 +97,15 @@ export default function Gallery() {
       </div>
       <div className='flex margin-top'>
         <div className={ viewTab === 'grantee' ? 'info-block info-block-selected' : 'info-block' } onClick={ () => toggleView('grantee') }>
-          Grantees
+          Genesis Grant
         </div>
         <div className='info-block-space' />
         <div className={ viewTab === 'nominee' ? 'info-block info-block-selected' : 'info-block' } onClick={ () => toggleView('nominee') }>
-          Nominees
+          Genesis Nominee
         </div>
       </div>
       <div className='cols'>
-        { !showData ?
+        { !showData || !showData.length ?
           <div className='gallery-container margin-top'>
             <div className='margin-top-l'>
               <div className="loading"><div></div><div></div></div>

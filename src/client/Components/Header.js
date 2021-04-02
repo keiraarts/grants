@@ -18,21 +18,23 @@ export default function Header() {
       <div className='nav-container'>
         <div className='flex-full' />
         <div className='header-nav'>
-          <Link to='/ethos' rel='canonical' className= { `header-margin remove-a ${ location.pathname === '/ethos' && 'header-selected' }` }>
-            Ethos
-          </Link>
-          <Link to='/nft' rel='canonical' className={ `header-margin remove-a ${ location.pathname === '/nft' && 'header-selected' }` }>
-            FAQ
-          </Link>
-          <Link to='/resources' rel='canonical' className={ `header-margin remove-a ${ location.pathname === '/resources' && 'header-selected' }` }>
-            Resources
-          </Link>
-          <Link to='/testimony' rel='canonical' className={ `header-margin remove-a ${ location.pathname === '/testimony' && 'header-selected' }` }>
-            Testimonies
-          </Link>
-          <Link to='/program' rel='canonical' className={ `header-margin remove-a ${ (location.pathname === '/program' || location.pathname === '/apply') && 'header-selected' }` }>
-            Apply
-          </Link>
+          <strong>
+            <Link to='/ethos' rel='canonical' className= { `header-margin remove-a ${ location.pathname === '/ethos' && 'header-selected' }` }>
+              Ethos
+            </Link>
+            <Link to='/nft' rel='canonical' className={ `header-margin remove-a ${ location.pathname === '/nft' && 'header-selected' }` }>
+              FAQ
+            </Link>
+            <Link to='/resources' rel='canonical' className={ `header-margin remove-a ${ location.pathname === '/resources' && 'header-selected' }` }>
+              Resources
+            </Link>
+            <Link to='/testimony' rel='canonical' className={ `header-margin remove-a ${ location.pathname === '/testimony' && 'header-selected' }` }>
+              Testimonies
+            </Link>
+            <Link to='/program' rel='canonical' className={ `header-margin remove-a ${ (location.pathname === '/program' || location.pathname === '/apply') && 'header-selected' }` }>
+              Apply
+            </Link>
+          </strong>
         </div>
         <div className='flex-full' />
         { (auth && auth.username) ?

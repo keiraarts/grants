@@ -13,7 +13,7 @@ export default function FAQ() {
   return (
     <div className='content-block'>
       <div className='text-l text-b'>
-        NFT FAQ
+        <strong>NFT FAQ</strong>
       </div>
       <div className='text-s margin-top-s'>
         There's a new future for art?

@@ -140,10 +140,10 @@ export default function Genesis() {
     <div className='content-block' { ...handlers }>
       <Resizer />
       <WalletConnect />
-      <div className='text-m text-b'>
-        Genesis Grant { type !== 'grantee' && 'Nominee ' }Exhibition
+      <div className='center text-m text-b'>
+        <strong>Genesis Grant { type !== 'grantee' && 'Nominee ' }Exhibition</strong>
       </div>
-      <div className='margin-top flex'>
+      <div className='margin-top-s flex'>
         <Link to={ `/${ url }/${ switchPage('previous') }` } className='relative' onClick={ () => updatePreload('previous', order) }>
           <div className='round'>
             <div id='cta'>

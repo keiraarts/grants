@@ -12,7 +12,7 @@ export default function Committee() {
   return (
     <div className='content-block'>
       <div className='text-l text-b'>
-        Testimonies
+        <strong>Testimonies</strong>
       </div>
       <div className='text-s margin-top-s'>
         Artist lives are changing drastically through NFTs
