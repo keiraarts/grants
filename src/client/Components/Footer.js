@@ -18,8 +18,8 @@ export default function Header() {
   return (
     <div className='footer'>
       <div className='center text-s'>
-        Curated by <Link to='/committee' className='remove-a'><div className=''>Sevens Foundation Committee</div></Link><br /><br />
-        Developed by <a className='pointer' onClick={ () => openLink('https://twitter.com/illestrater_') }>illestrater</a><br />
+        Curated by <Link to='/committee' className='remove-a'><div className='text-grey'>Sevens Foundation Committee</div></Link><br /><br />
+        Developed by <a className='text-rainbow pointer' onClick={ () => openLink('https://twitter.com/illestrater_') }>illestrater</a><br />
       </div>
       <div className='social-icons margin-top flex center'>
         <img src={ Twitter } className='social-icon' alt='Twitter' onClick={ () => openLink('https://twitter.com/sevensgrant') } />

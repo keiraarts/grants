@@ -41,14 +41,14 @@ export default function Header() {
           <div>
             <div className='text-s flex'>
               <div className='flex-full' />
-              Logged in as&nbsp;<Link to='/account' className='pointer'><div className=''>{ auth.username }</div></Link>
+              Logged in as&nbsp;<Link to='/account' className='pointer'><div className='text-grey'>{ auth.username }</div></Link>
             </div>
           </div>
           :
           <div>
             <div className='text-s flex'>
               <div className='flex-full' />
-              <Link to='/login' className='pointer'><div className=''>Log In</div></Link>
+              <Link to='/login' className='pointer'><div className='text-grey'>Log In</div></Link>
             </div>
           </div>
         }
