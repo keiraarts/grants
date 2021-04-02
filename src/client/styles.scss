@@ -1184,7 +1184,7 @@ input[type=number] {
 
 @media (max-width: 90rem) {
   .header {
-    margin: 2rem;
+    padding: 2rem;
     font-size: 2rem;
   }
 
@@ -1219,7 +1219,7 @@ input[type=number] {
   .content-block {
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
-    margin: 2rem 2rem;
+    padding: 2rem 2rem;
   }
 
   .text-l {
@@ -1304,7 +1304,7 @@ input[type=number] {
   }
 
   .header {
-    margin: 1rem;
+    padding: 1rem;
     font-size: 2rem;
   }
 
