@@ -44,38 +44,38 @@ const App = () => {
       <StoreComponent store={ store }>
         <div className='App'>
           <div class="wrapper">
-          <div className='dim-gradient'>
-            <div className='site-content'>
-              <WaitForStateRehydration>
-                <Header />
-                <Switch>
-                  <Route path="/" exact component={ Gallery } />
-                  <Route path="/ethos" exact component={ Ethos } />
-                  <Route path="/nft" exact component={ FAQ } />
-                  <Route path="/resources" exact component={ Resources } />
-                  <Route path="/tutorial" exact component={ Tutorial } />
-                  <Route path="/rarible" exact component={ Rarible } />
-                  <Route path="/opensea" exact component={ OpenSea } />
-                  <Route path="/committee" exact component={ Committee } />
-                  <Route path="/donate" exact component={ Donate } />
-                  <Route path="/program" exact component={ Program } />
-                  <Route path="/create-program" exact component={ CreateProgram } />
-                  <Route path="/apply/:program" exact component={ Apply } />
-                  <Route path="/curator/:org" exact component={ Organizer } />
-                  <Route path="/curation" exact component = {Curation } />
-                  <Route path="/testimony" exact component={ Testimony } />
-                  <Route path="/register" exact component={ Register } />
-                  <Route path="/login" exact component={ Login } />
-                  <Route path="/forgotpassword" exact component={ Forgot } />
-                  <Route path="/recoveraccount/:token" exact component={ RecoverAccount } />
-                  <Route path="/account" exact component={ Account } />
-                  <Route path="/verifyemail/:id" component={ VerifyEmail } />
-                  <Route path="/:url/:id" component={ Genesis } />
-                </Switch>
-                <Footer/>
-              </WaitForStateRehydration>
+            <div className='dim-gradient'>
+              <div className='site-content'>
+                <WaitForStateRehydration>
+                  <Header />
+                  <Switch>
+                    <Route path="/" exact component={ Gallery } />
+                    <Route path="/ethos" exact component={ Ethos } />
+                    <Route path="/nft" exact component={ FAQ } />
+                    <Route path="/resources" exact component={ Resources } />
+                    <Route path="/tutorial" exact component={ Tutorial } />
+                    <Route path="/rarible" exact component={ Rarible } />
+                    <Route path="/opensea" exact component={ OpenSea } />
+                    <Route path="/committee" exact component={ Committee } />
+                    <Route path="/donate" exact component={ Donate } />
+                    <Route path="/program" exact component={ Program } />
+                    <Route path="/create-program" exact component={ CreateProgram } />
+                    <Route path="/apply/:program" exact component={ Apply } />
+                    <Route path="/curator/:org" exact component={ Organizer } />
+                    <Route path="/curation" exact component = {Curation } />
+                    <Route path="/testimony" exact component={ Testimony } />
+                    <Route path="/register" exact component={ Register } />
+                    <Route path="/login" exact component={ Login } />
+                    <Route path="/forgotpassword" exact component={ Forgot } />
+                    <Route path="/recoveraccount/:token" exact component={ RecoverAccount } />
+                    <Route path="/account" exact component={ Account } />
+                    <Route path="/verifyemail/:id" component={ VerifyEmail } />
+                    <Route path="/:url/:id" component={ Genesis } />
+                  </Switch>
+                  <Footer/>
+                </WaitForStateRehydration>
+              </div>
             </div>
-          </div>
           </div>
         </div>
       </StoreComponent>
