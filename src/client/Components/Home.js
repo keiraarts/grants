@@ -106,8 +106,8 @@ export default function Gallery() {
       </div>
       <div className='cols'>
         { !showData || !showData.length ?
-          <div className='gallery-container margin-top'>
-            <div className='margin-top-l'>
+          <div className='center flex'>
+            <div className='margin-top center'>
               <div className="loading"><div></div><div></div></div>
             </div>
           </div>

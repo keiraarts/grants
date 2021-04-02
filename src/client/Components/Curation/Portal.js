@@ -370,7 +370,7 @@ export default function Portal() {
             })
           :
             <div className='margin-top-l center'>
-              You are not a curator for any exhibitions!
+              { loaded && 'You are not a curator for any exhibitions!' }
               <div className='spacer' />
             </div>
           }
