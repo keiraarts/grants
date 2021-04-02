@@ -74,8 +74,8 @@ const dateConfig = {
 export default function OpenMarket({ tokenId, contract }) {
   const auth = useStoreState(state => state.user.auth);
 
-  // contract = '0x3f4200234e26d2dfbc55fcfd9390bc128d5e2cca';
-  // tokenId = 10;
+  contract = '0x3f4200234e26d2dfbc55fcfd9390bc128d5e2cca';
+  tokenId = 10;
 
   const [gotAsset, setAsset] = useState({});
   const [provider, setProvider] = useState(null);
@@ -83,6 +83,7 @@ export default function OpenMarket({ tokenId, contract }) {
   const [bids, setBids] = useState(null);
   const [auction, setAuction] = useState(null);
   const [auctionEnd, setAuctionEnd] = useState(null);
+  const [seaportOrders, setSeaportOrders] = useState([]);
   const [listed, setListed] = useState(null);
   const [balance, setBalance] = useState(null);
 
@@ -111,70 +112,72 @@ export default function OpenMarket({ tokenId, contract }) {
     }
   }, [retryAsset])
 
-  function getAuctionEnd() {
-    fetch(`https://api.opensea.io/wyvern/v1/orders?asset_contract_address=${ contract }&token_ids=${ tokenId }`, {
+  const [retryAuction, setRetryAuction] = useState(0);
+  useEffect(() => {
+    if (retryAuction) {
+      const retry = setTimeout(() => pollBids(), 1000);
+      return () => clearTimeout(retry);
+    }
+  }, [retryAuction])
+
+  console.log(bids, seaportOrders);
+
+  async function pollBids() {
+    const orders = await fetch(`https://api.opensea.io/wyvern/v1/orders?asset_contract_address=${ contract }&token_ids=${ tokenId }`, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
       },
     }).then(res => res.json())
-    .then(json => {
+    .then(async json => {
       if (json.detail) setRetryAuction(retryAuction + 1);
       else if (json.orders && json.orders.length) {
         setRetryAuction(0);
         const auction = json.orders.find(order => order.side === 1);
         if (auction) setAuctionEnd(new Date(`${ auction.closing_date }.000Z`).getTime());
+
+        return json.orders
       }
     })
-  }
 
-  const [retryAuction, setRetryAuction] = useState(0);
-  useEffect(() => {
-    if (retryAuction) {
-      const retry = setTimeout(() => getAuctionEnd(), 1000);
-      return () => clearTimeout(retry);
-    }
-  }, [retryAuction])
-
-  async function pollBids() {
-    if (seaport) {
-      const { count, orders } = await seaport.api.getOrders({
-        asset_contract_address: contract,
-        token_id: tokenId,
+    let newBids = [];
+    let end;
+    let foundListed = false;
+    if (orders && orders.length) {
+      let foundEnd = false;
+      orders.forEach(order => {
+        if (order.side === 1 && order.closing_date && !foundEnd) {
+          setAuctionEnd(new Date(`${ order.closing_date }.000Z`).getTime());
+          foundListed = true;
+          setAuction(order);
+        } else if (order.side === 1) {
+          foundListed = true;
+          setListed(order);
+        } else if (order.side === 0) {
+          order.value = Number(Web3.utils.fromWei(order.base_price, 'ether'));
+          order.user = (order.maker && order.maker.user) ? order.maker.user.username : 'Anonymous';
+          order.time = order.listing_time * 1000;
+          newBids.push(order);
+        }
       })
 
-      let newBids = [];
-      let end;
-      let foundListed = false;
-      if (orders && orders.length) {
-        orders.forEach(order => {
-          if (order.side === 1 && order.waitingForBestCounterOrder) {
-            end = order.listingTime.toNumber() * 1000;
-            foundListed = true;
-            setAuction(order);
-          } else if (order.side === 1 && !order.waitingForBestCounterOrder) {
-            foundListed = true;
-            setListed(order);
-          } else if (order.side === 0) {
-            order.value = Number(Web3.utils.fromWei(order.basePrice.toString(), 'ether'));
-            order.user = (order.makerAccount && order.makerAccount.user) ? order.makerAccount.user.username : 'Anonymous';
-            order.time = order.listingTime.toNumber() * 1000;
-            newBids.push(order);
-          }
-        })
-        
-        if (!end) {
-          setAuction(null);
-        } else if (newBids && bids && newBids.length !== bids.length) getAuctionEnd();
-        setBids(_.orderBy(newBids, ['value'], ['desc']));
-      } else setBids([]);
+      if (newBids && bids && newBids.length !== bids.length && seaport) {
+        const { count, orders } = await seaport.api.getOrders({
+          asset_contract_address: contract,
+          token_id: tokenId,
+        });
 
-      if (!foundListed) {
-        setAuction(null);
-        setListed(null);
-        setAuctionEnd(null);
+        setSeaportOrders(orders);
       }
+
+      setBids(_.orderBy(newBids, ['value'], ['desc']));
+    }
+
+    if (!foundListed) {
+      setAuction(null);
+      setListed(null);
+      setAuctionEnd(null);
     }
   }
 
@@ -190,13 +193,9 @@ export default function OpenMarket({ tokenId, contract }) {
   useEffect(() => {
     if (contract) {
       getAsset();
-      getAuctionEnd();
+      pollBids();
     }
   }, [contract])
-
-  useEffect(() => {
-    pollBids();
-  }, [seaport])
 
   useInterval(() => {
     pollBids();
@@ -289,7 +288,7 @@ export default function OpenMarket({ tokenId, contract }) {
   const cancelOrder = async (order) => {
     connectWallet();
     if (provider && provider.selectedAddress) {
-      if (order && order.maker.toLowerCase() !== provider.selectedAddress.toLowerCase()) setUnverified(true);
+      if (order && order.maker.address.toLowerCase() !== provider.selectedAddress.toLowerCase()) setUnverified(true);
       else {
         let cancelAuction = false;
         if (!order) {
@@ -304,8 +303,9 @@ export default function OpenMarket({ tokenId, contract }) {
           let win = window.open(`https://opensea.io/assets/${ contract }/${ tokenId }`, '_blank');
           win.focus();
         } else {
+          const foundOrder = seaportOrders.find(o => o.hash.toLowerCase() === order.order_hash);
           await seaport.cancelOrder({
-            order,
+            order: foundOrder,
             accountAddress: provider.selectedAddress,
           });
         }
@@ -319,8 +319,9 @@ export default function OpenMarket({ tokenId, contract }) {
       if (auth.wallet && auth.wallet.toLowerCase() !== provider.selectedAddress.toLowerCase()) setUnverified(true);
       else {
         if (!order) order = listed;
+        const foundOrder = seaportOrders.find(o => o.hash.toLowerCase() === order.order_hash);
         await seaport.fulfillOrder({
-          order,
+          order: foundOrder,
           accountAddress: provider.selectedAddress,
         })
       }
@@ -344,6 +345,15 @@ export default function OpenMarket({ tokenId, contract }) {
         const listener = createdSeaport.addListener(EventType.CreateOrder, ({ transactionHash, event }) => {
           setSellOpen(false);
         });
+
+        if (createdSeaport) {
+          const { count, orders } = await createdSeaport.api.getOrders({
+            asset_contract_address: contract,
+            token_id: tokenId,
+          });
+
+          setSeaportOrders(orders);
+        }
 
         setListener(listener);
         setProvider(createdProvider);
@@ -383,9 +393,11 @@ export default function OpenMarket({ tokenId, contract }) {
 
   let err = false, reserveMet = 0;
   if (reserve && viewTab === 'auction' && reserve < 1.07) err = 'Your minimum bid must start at 1.07WETH';
-  if (auction && bids && bids.length && bids[0].value >= Number(Web3.utils.fromWei((Math.round(auction.basePrice.toNumber().toFixed(2) * 1000) / 100).toString(), 'ether')).toFixed(2)) {
+  if (auction && bids && bids.length && bids[0].value >= Number(Web3.utils.fromWei((Math.round(Number(auction.base_price).toFixed(2) * 1000) / 100).toString(), 'ether')).toFixed(2)) {
     reserveMet = bids[0].value;
   }
+
+  const connectedAddress = (provider && provider.selectedAddress) ? provider.selectedAddress.toLowerCase() : null;
 
   return (
     <div className='margin-top-s'>
@@ -472,6 +484,18 @@ export default function OpenMarket({ tokenId, contract }) {
           Each new highest bid within 10 minutes of the auction ending will add an additional 10 minutes to the clock.
         </div>
       </ReactModal>
+      <ReactModal
+        isOpen={ infoOpen }
+        style={{ content: { margin: 'auto', width: '15rem', height: '23rem' } }}
+        onRequestClose={ () => setInfoOpen(false) }
+        shouldCloseOnOverlayClick={ true }
+        ariaHideApp={ false }
+      >
+        <div className='text-mid font'>
+          Auction.<br /><br />
+          Each new highest bid within 10 minutes of the auction ending will add an additional 10 minutes to the clock.
+        </div>
+      </ReactModal>
       <div className='text-mid'>
         <strong>Market</strong>
       </div>
@@ -509,7 +533,7 @@ export default function OpenMarket({ tokenId, contract }) {
               <div className='text-s'>Live Auction</div>
               <div className='margin-top-xs text-mid'>
                 <span className='text-grey pointer' onClick={ () => setInfoOpen(true) }>
-                  <strong>Ξ{ Number(Web3.utils.fromWei((Math.round(auction.basePrice.toNumber().toFixed(2) * 1000) / 100).toString(), 'ether')).toFixed(2) } Reserve { reserveMet === 0 ? 'Price' : 'Met' }</strong>
+                  <strong>Ξ{ Number(Web3.utils.fromWei((Math.round(Number(auction.base_price).toFixed(2) * 1000) / 100).toString(), 'ether')).toFixed(2) } Reserve { reserveMet === 0 ? 'Price' : 'Met' }</strong>
                 </span>
               </div>
               <AuctionTimer time={ auctionEnd } />
@@ -519,10 +543,10 @@ export default function OpenMarket({ tokenId, contract }) {
             <div className='margin-top-s flex'>
               <div>
                 <div className='text-s'>List Price</div>
-                Ξ{ Web3.utils.fromWei(listed.currentPrice.toString(), 'ether') }
+                Ξ{ Web3.utils.fromWei(listed.current_price, 'ether') }
               </div>
               <div className='flex-full' />
-              { listed.maker.toLowerCase() !== provider.selectedAddress.toLowerCase() && <input type='submit' value='Purchase Artwork' className='small-button' onClick={ purchase } /> }
+              { listed.maker.address.toLowerCase() !== connectedAddress && <input type='submit' value='Purchase Artwork' className='small-button' onClick={ purchase } /> }
             </div>
           }
           <div className='text-s margin-top-s'>
@@ -533,17 +557,17 @@ export default function OpenMarket({ tokenId, contract }) {
                     { index === 0 ?
                       <div>
                         <strong>Bid of Ξ{ bid.value }</strong>
-                        { (bid.maker.toLowerCase() === provider.selectedAddress.toLowerCase()) && <span className='text-s text-grey pointer' onClick={ () => cancelOrder(bid) }>&nbsp;- Cancel</span> }
-                        { (isOwner && bid.maker.toLowerCase() !== provider.selectedAddress.toLowerCase()) && <span className='text-s text-grey pointer' onClick={ () => purchase(bid) }>&nbsp;- Accept</span> }
+                        { (bid.maker.address.toLowerCase() === connectedAddress) && <span className='text-s text-grey pointer' onClick={ () => cancelOrder(bid) }>&nbsp;- Cancel</span> }
+                        { (isOwner && bid.maker.address.toLowerCase() !== connectedAddress) && <span className='text-s text-grey pointer' onClick={ () => purchase(bid) }>&nbsp;- Accept</span> }
                       </div>
                       :
                       <div>
                         Bid of Ξ{ bid.value }
-                        { (bid.maker.toLowerCase() === provider.selectedAddress.toLowerCase()) && <span className='text-s text-grey pointer' onClick={ () => cancelOrder(bid) }>&nbsp;- Cancel</span> }
-                        { (isOwner && bid.maker.toLowerCase() !== provider.selectedAddress.toLowerCase()) && <span className='text-s text-grey pointer' onClick={ () => purchase(bid) }>&nbsp;- Accept</span> }
+                        { (bid.maker.address.toLowerCase() === connectedAddress) && <span className='text-s text-grey pointer' onClick={ () => cancelOrder(bid) }>&nbsp;- Cancel</span> }
+                        { (isOwner && bid.maker.address.toLowerCase() !== connectedAddress) && <span className='text-s text-grey pointer' onClick={ () => purchase(bid) }>&nbsp;- Accept</span> }
                       </div>
                     }
-                    <span className='text-xs'>{ (bid.maker.toLowerCase() === provider.selectedAddress.toLowerCase()) ? 'You - ' : '' }{ bid.user }</span>
+                    <span className='text-xs'>{ (bid.maker.address.toLowerCase() === connectedAddress) ? 'You - ' : '' }{ bid.user }</span>
                   </div>
                 );
               })
