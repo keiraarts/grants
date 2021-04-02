@@ -374,9 +374,6 @@ a {
   animation: rainbow 3000s alternate-reverse linear infinite;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  backface-visibility: hidden;
-  -webkit-font-smoothing: antialiased;
-  -webkit-backface-visibility: hidden;
 }
 
 .text-grey {
@@ -389,13 +386,6 @@ a {
   animation: rainbow 3000s alternate-reverse linear infinite;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  backface-visibility: hidden;
-  -webkit-font-smoothing: antialiased;
-  -webkit-backface-visibility: hidden;
-}
-
-.app * {
-  transform-style: preserve-3d;
 }
 
 .text-black {
@@ -408,7 +398,7 @@ a {
   }
 
   to {
-    background-position-x: 2000vw;
+    background-position-x: 6000vw;
   }
 }
 
