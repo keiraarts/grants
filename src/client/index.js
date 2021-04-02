@@ -43,6 +43,7 @@ const App = () => {
     <BrowserRouter onChange={() => { window.scrollTo(0, 0); console.log('YEO') }}>
       <StoreComponent store={ store }>
         <div className='App'>
+          <div class="wrapper"></div>
           <div className='dim-gradient'>
             <div className='site-content'>
               <WaitForStateRehydration>
