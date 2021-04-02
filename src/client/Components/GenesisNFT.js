@@ -107,8 +107,6 @@ const GenesisNFT = ({ small, nft, src, important, hidden, contract }) => {
   if (nft && nft.user && nft.user.twitter) twitter = nft.user.twitter;
   if (nft && nft.user && nft.user.instagram) website = nft.user.instagram;
 
-  console.log(nft);
-
   return (
     <div className={ `margin-top flex full-width ${ !small && 'side-space' }` } style={ { display: hidden && 'none' } }>
       { nft ?
@@ -135,7 +133,7 @@ const GenesisNFT = ({ small, nft, src, important, hidden, contract }) => {
                 { twitter && <div><img src={ Twitter } className='account-social pointer' alt='Twitter' onClick={ () => openLink(twitter.substring(0, 4) === 'http' || twitter.substring(0, 3) === 'www' ? twitter : `https://twitter.com/${ twitter }`) } /></div> }
                 { instagram && <div><img src={ Instagram } className='account-social pointer' alt='Instagram' onClick={ () => openLink(instagram.substring(0, 4) === 'http' || instagram.substring(0, 3) === 'www' ? instagram : `https://instagram.com/${ instagram }`) } /></div> }
               </div>
-              {/* { (!small && !hidden) && <OpenMarket tokenId={ nft.tokenId } contract={ contract } /> } */}
+              { (!small && !hidden) && <OpenMarket tokenId={ nft.order } contract={ contract } /> }
             </div>
           }
           <div className={ `flex-full center ${ small ? 'gallery-frame-container-small' : 'gallery-frame-container' }` }>
@@ -213,7 +211,7 @@ const GenesisNFT = ({ small, nft, src, important, hidden, contract }) => {
                 { twitter && <div><img src={ Twitter } className='account-social pointer' alt='Twitter' onClick={ () => openLink(twitter.substring(0, 4) === 'http' || twitter.substring(0, 3) === 'www' ? twitter : `https://twitter.com/${ twitter }`) } /></div> }
                 { instagram && <div><img src={ Instagram } className='account-social pointer' alt='Instagram' onClick={ () => openLink(instagram.substring(0, 4) === 'http' || instagram.substring(0, 3) === 'www' ? instagram : `https://instagram.com/${ instagram }`) } /></div> }
               </div>
-              {/* { (small && !hidden) && <OpenMarket tokenId={ nft.tokenId } contract={ contract } /> } */}
+              { (small && !hidden) && <OpenMarket tokenId={ nft.order } contract={ contract } /> }
             </div>
           }
         </div>

@@ -74,8 +74,8 @@ const dateConfig = {
 export default function OpenMarket({ tokenId, contract }) {
   const auth = useStoreState(state => state.user.auth);
 
-  contract = '0x3f4200234e26d2dfbc55fcfd9390bc128d5e2cca';
-  tokenId = 10;
+  // contract = '0x3f4200234e26d2dfbc55fcfd9390bc128d5e2cca';
+  // tokenId = 10;
 
   const [gotAsset, setAsset] = useState({});
   const [provider, setProvider] = useState(null);
@@ -94,8 +94,48 @@ export default function OpenMarket({ tokenId, contract }) {
         'Content-Type': 'application/json',
       },
     }).then(res => res.json())
-    .then(json => setAsset(json));
+    .then(json => {
+      if (json.detail) setRetryAsset(retryAsset + 1);
+      else {
+        setAsset(json);
+        setRetryAsset(0);
+      }
+    });
   }
+
+  const [retryAsset, setRetryAsset] = useState(0);
+  useEffect(() => {
+    if (retryAsset) {
+      const retry = setTimeout(() => getAsset(), 1000);
+      return () => clearTimeout(retry);
+    }
+  }, [retryAsset])
+
+  function getAuctionEnd() {
+    fetch(`https://api.opensea.io/wyvern/v1/orders?asset_contract_address=${ contract }&token_ids=${ tokenId }`, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+    }).then(res => res.json())
+    .then(json => {
+      if (json.detail) setRetryAuction(retryAuction + 1);
+      else if (json.orders && json.orders.length) {
+        setRetryAuction(0);
+        const auction = json.orders.find(order => order.side === 1);
+        if (auction) setAuctionEnd(new Date(`${ auction.closing_date }.000Z`).getTime());
+      }
+    })
+  }
+
+  const [retryAuction, setRetryAuction] = useState(0);
+  useEffect(() => {
+    if (retryAuction) {
+      const retry = setTimeout(() => getAuctionEnd(), 1000);
+      return () => clearTimeout(retry);
+    }
+  }, [retryAuction])
 
   async function pollBids() {
     if (seaport) {
@@ -109,7 +149,6 @@ export default function OpenMarket({ tokenId, contract }) {
       let foundListed = false;
       if (orders && orders.length) {
         orders.forEach(order => {
-          console.log(new Date(order.expirationTime.toNumber() * 1000))
           if (order.side === 1 && order.waitingForBestCounterOrder) {
             end = order.listingTime.toNumber() * 1000;
             foundListed = true;
@@ -124,33 +163,10 @@ export default function OpenMarket({ tokenId, contract }) {
             newBids.push(order);
           }
         })
-
-        console.log(orders);
-
-        if (end) {
-          newBids = _.orderBy(newBids, ['time'], ['asc']);
-          const ten = (1000 * 60 * 10);
-          let time = end;
-          let extended = 0;
-          let highestBid = 0;
-          newBids.forEach(bid => {
-            if ((bid.time + ten > time) && Number(bid.value) > highestBid) {
-              // if (extended === 0) extended = ten;
-              // else if (extended === ten) extended = 0;
-              time += ten;
-              highestBid = Number(bid.value);
-            }
-          })
-
-          // const diff = moment.duration(moment(time + extended).diff(moment()));
-          // console.log(moment(end).format('h:mm:s'), moment(time + extended).format('h:mm:s'), newBids);
-          // console.log('TIME LEFT:', diff.minutes(), diff.seconds())
-          setAuctionEnd(time + extended)
-        } else {
+        
+        if (!end) {
           setAuction(null);
-        }
-
-        if (newBids && bids && newBids.length !== bids.length) getAsset();
+        } else if (newBids && bids && newBids.length !== bids.length) getAuctionEnd();
         setBids(_.orderBy(newBids, ['value'], ['desc']));
       } else setBids([]);
 
@@ -172,9 +188,11 @@ export default function OpenMarket({ tokenId, contract }) {
   }
 
   useEffect(() => {
-    getAsset();
-  }, [])
-
+    if (contract) {
+      getAsset();
+      getAuctionEnd();
+    }
+  }, [contract])
 
   useEffect(() => {
     pollBids();
@@ -271,14 +289,18 @@ export default function OpenMarket({ tokenId, contract }) {
   const cancelOrder = async (order) => {
     connectWallet();
     if (provider && provider.selectedAddress) {
-      if (auth.wallet && auth.wallet.toLowerCase() !== provider.selectedAddress.toLowerCase()) setUnverified(true);
+      if (order && order.maker.toLowerCase() !== provider.selectedAddress.toLowerCase()) setUnverified(true);
       else {
+        let cancelAuction = false;
         if (!order) {
-          if (auction) order = auction;
+          if (auction) {
+            order = auction;
+            cancelAuction = true;
+          }
           if (listed) order = listed;
         }
 
-        if (auction) {     
+        if (cancelAuction) {     
           let win = window.open(`https://opensea.io/assets/${ contract }/${ tokenId }`, '_blank');
           win.focus();
         } else {

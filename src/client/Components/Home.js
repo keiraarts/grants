@@ -27,7 +27,7 @@ function shuffle(array) {
   return array;
 }
 
-export default function Gallery() {
+export default function Gallery({ scrollRef }) {
   const cols = useStoreState(state => state.app.cols);
 
   const [viewTab, setViewTab] = useState('grantee');
@@ -67,11 +67,11 @@ export default function Gallery() {
   }, [nominees])
 
   useScrollPosition(({ currPos }) => {
-    if (((-1 * currPos.y) + 1500 > contentRef.current.offsetHeight)) {
+    if ((currPos.y + 1500 > contentRef.current.offsetHeight)) {
       if (viewTab === 'grantee') setShowData(grantees.slice(0, showData.length + 30))
       else if (viewTab === 'nominee') setShowData(nominees.slice(0, showData.length + 30))
     }
-  }, [showData]);
+  }, [showData], null, true);
 
   const toggleView = (view) => {
     if (view === 'grantee') {

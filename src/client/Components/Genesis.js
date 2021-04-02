@@ -136,8 +136,6 @@ export default function Genesis() {
     preventDefaultTouchmoveEvent: true,
   });
 
-  console.log('WTF');
-
   return (
     <div className='content-block' { ...handlers }>
       <Resizer />
