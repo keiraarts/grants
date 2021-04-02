@@ -18,7 +18,7 @@ export default function Header() {
   return (
     <div className='footer'>
       <div className='center text-s'>
-        Curated by <Link to='/committee' className='text-grey remove-a'>Sevens Foundation Committee</Link><br /><br />
+        Curated by <Link to='/committee' className='remove-a'><div className='text-grey'>Sevens Foundation Committee</div></Link><br /><br />
         Developed by <a className='text-rainbow pointer' onClick={ () => openLink('https://twitter.com/illestrater_') }>illestrater</a><br />
       </div>
       <div className='social-icons margin-top flex center'>

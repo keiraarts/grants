@@ -48,7 +48,7 @@ export default function Header() {
           <div>
             <div className='text-s flex'>
               <div className='flex-full' />
-              <Link to='/login' className='text-grey pointer'>Log In</Link>
+              <Link to='/login' className='pointer'><div className='text-grey'>Log In</div></Link>
             </div>
           </div>
         }
