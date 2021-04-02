@@ -43,7 +43,7 @@ const App = () => {
     <BrowserRouter onChange={() => { window.scrollTo(0, 0); console.log('YEO') }}>
       <StoreComponent store={ store }>
         <div className='App'>
-          <div class="wrapper"></div>
+          <div class="wrapper">
           <div className='dim-gradient'>
             <div className='site-content'>
               <WaitForStateRehydration>
@@ -75,6 +75,7 @@ const App = () => {
                 <Footer/>
               </WaitForStateRehydration>
             </div>
+          </div>
           </div>
         </div>
       </StoreComponent>
