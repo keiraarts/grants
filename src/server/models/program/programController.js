@@ -190,6 +190,8 @@ exports.updateProgram = async (req, res) => {
   program.description = req.body.description;
   program.logistics = req.body.logistics;
   program.criteria = req.body.criteria;
+  program.open = req.body.open;
+  program.close = req.body.close;
   program.save();
   return res.json({ success: 'Program updated' })
 };
@@ -355,10 +357,15 @@ exports.submitApplication = async (req, res) => {
   const jwt = auth(req.headers.authorization, res, (jwt) => jwt);
   const user = await User.findById(jwt.id);
   if (!user || !jwt) return res.json({ error: 'Authentication error' });
+  if (!user.artistName || !user.city || !user.country || !user.twitter || !user.instagram || !user.website || !user.emailVerified || !user.wallet) return res.json({ error: 'User profile incomplete' });
+  if (!req.body.program || !req.body.statement || !req.body.title || !req.body.description || !req.body.art) return res.json({ error: 'Application incomplete' });
+
+  const program = await Program.findById(req.body.program);
+  if (!program) return res.json({ error: 'Program does not exist' });
+  if (new Date() < program.open || new Date() > program.close) return res.json({ error: 'Submissions are closed' });
 
   const applicant = {
     user:        jwt.id,
-    url:         req.body.url,
     program:     req.body.program,
     statement:   req.body.statement,
     additional:  req.body.additional,

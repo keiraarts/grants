@@ -29,6 +29,7 @@ export default function Portal() {
   const cols = useStoreState(state => state.app.cols);
   const auth = useStoreState(state => state.user.auth);
 
+  const [loaded, setLoaded] = useState(false);
   const [programs, setPrograms] = useState([]);
   const [viewTab, setViewTab] = useState('curate');
   const [resultsTab, setResultsTab] = useState('unminted');
@@ -42,7 +43,10 @@ export default function Portal() {
         'Authorization': auth.token
       },
     }).then(res => res.json())
-    .then(json => setPrograms(json.success || []));
+    .then(json => {
+      setPrograms(json.success || []);
+      setLoaded(true);
+    });
   }, [])
 
   const [applicants, setApplicants] = useState({});
@@ -349,14 +353,28 @@ export default function Portal() {
         Let's highlight great art.
       </div>
       { !selectedProgram ?
-        programs.map((program, index) => {
-          return (
-            <div key={ index } className='button' onClick={ () => loadCuration(program) } >
-              <div className='text-xs'>{ program.organizers[0].name }</div>
-              <span>{ program.name }</span>
+        <div>
+          { !loaded &&
+            <div className='flex center'>
+              <div className='block-loading'><div className='loading'><div></div><div></div></div></div>
             </div>
-          );
-        })
+          }
+          { programs && programs.length ?
+            programs.map((program, index) => {
+              return (
+                <div key={ index } className='button' onClick={ () => loadCuration(program) } >
+                  <div className='text-xs'>{ program.organizers[0].name }</div>
+                  <span>{ program.name }</span>
+                </div>
+              );
+            })
+          :
+            <div className='margin-top-l center'>
+              You are not a curator for any exhibitions!
+              <div className='spacer' />
+            </div>
+          }
+        </div>
       :
         <div className='margin-top flex'>
           { !adminTab &&
@@ -566,7 +584,9 @@ export default function Portal() {
                     { selectedProgram.mintInProgress ? 
                       <div className='text-s'>Minting In Progress</div>
                       :
-                      <div className='button-green small-button' onClick={ () => setMintConfirm(true) }>Mint</div>
+                      <div>
+                        { isAdmin && <div className='button-green small-button' onClick={ () => setMintConfirm(true) }>Mint</div> }
+                      </div>
                     }
                   </div>
                   <div className='margin-top-s'>

@@ -107,6 +107,8 @@ const GenesisNFT = ({ small, nft, src, important, hidden, contract }) => {
   if (nft && nft.user && nft.user.twitter) twitter = nft.user.twitter;
   if (nft && nft.user && nft.user.instagram) website = nft.user.instagram;
 
+  console.log(nft);
+
   return (
     <div className={ `margin-top flex full-width ${ !small && 'side-space' }` } style={ { display: hidden && 'none' } }>
       { nft ?
@@ -120,11 +122,11 @@ const GenesisNFT = ({ small, nft, src, important, hidden, contract }) => {
                     { nft.user.country } { nft.user.birthYear && `(b. ${ nft.user.birthYear })` }
                   </div>
                   <div className='margin-top-s text-s text-b'>
-                    <strong><i>{ nft.name || 'Untitled' }</i></strong>, 2021<br />
+                    <strong><i>{ nft.title || 'Untitled' }</i></strong>, 2021<br />
                     { nft.imageType.toUpperCase() } as NFT
                   </div>
                   <div className='margin-top-s text-xs'>
-                    { nft.description }
+                    { nft.description.trim() }
                   </div>
                 </div>
               </div>
@@ -198,11 +200,11 @@ const GenesisNFT = ({ small, nft, src, important, hidden, contract }) => {
                     { nft.user.country } { nft.user.birthYear && `(b. ${ nft.user.birthYear })` }
                   </div>
                   <div className='margin-top-s text-s text-b'>
-                    <strong><i>{ nft.name || 'Untitled' }</i></strong>, 2021<br />
+                    <strong><i>{ nft.title || 'Untitled' }</i></strong>, 2021<br />
                     { nft.imageType.toUpperCase() } as NFT
                   </div>
                   <div className='margin-top-s text-xs'>
-                    { nft.description }
+                    { nft.description.trim() }
                   </div>
                 </div>
               </div>

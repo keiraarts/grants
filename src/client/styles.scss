@@ -404,6 +404,7 @@ a {
 }
 
 .gallery-description {
+  word-wrap: break-word;
   width: 32%;
   white-space: pre-line;
 }
@@ -1275,6 +1276,7 @@ input[type=number] {
   .gallery-description {
     align-items: center;
     margin: auto;
+    word-wrap: break-word;
     justify-content: center;
     min-width: 25rem;
     flex-grow: 1;
@@ -1341,6 +1343,7 @@ input[type=number] {
     align-items: center;
     margin: auto;
     justify-content: center;
+    word-wrap: break-word;
     min-width: 18rem;
     flex-grow: 1;
     margin-bottom: 2rem;

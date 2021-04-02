@@ -168,10 +168,6 @@ const programApplicant = {
         ref:      'Program',
         required: true
     },
-    url: {
-        type:  String,
-        trim:  true,
-    },
     statement: {
         type:  String,
         trim:  true,

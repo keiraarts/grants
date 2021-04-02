@@ -199,10 +199,13 @@ export default function Register() {
               </div>
               <div className='form__group field'>
                 <input type='text' className='form__field' placeholder='Instagram' name='instagram' id='instagram' maxLength='100' value={ user.instagram } onChange={e => setUser({ ...user, instagram: e.target.value })} />
-                <label className='form__label'>Instagram Handle*</label>
+                <label className='form__label'>Instagram Handle</label>
               </div>
               <div className='text-s'>
                 @{ user.instagram }
+              </div>
+              <div className='text-s margin-top-s'>
+                <em>All fields are required in order to submit artwork on Sevens</em>
               </div>
               { err &&
                 <div className='margin-top-s text-s text-err'>
@@ -231,30 +234,26 @@ export default function Register() {
                 { (!user.emailVerified && !sentEmailVerification) && <span className='text-s text-grey pointer' onClick={ verifyEmail }>&nbsp;Send Verification Email</span> }
                 { sentEmailVerification && <span>&nbsp; - Verification Email Sent</span> }
               </div>
-              { (user.first || user.last) &&
-                <div>
-                  <div className='text-s margin-top-s'><strong>Name</strong></div>
-                  <div className='text-s'>{ user.first } { user.last }</div>
-                </div>
-              }
-              { (user.artistName) &&
-                <div>
-                  <div className='text-s margin-top-s'><strong>Artist Name</strong></div>
-                  <div className='text-s'>{ user.artistName }</div>
-                </div>
-              }
-              { user.country && 
-                <div className='text-s margin-top-s'>
-                  <div><strong>Country</strong></div>
-                  <div>{ user.country }</div>
-                </div>
-              }
-              { user.birthYear &&
-                <div className='text-s margin-top-s'>
-                  <div><strong>Birth Year</strong></div>
-                  <div>{ user.birthYear }</div>
-                </div>
-              }
+              <div>
+                <div className='text-s margin-top-s'><strong>Name</strong></div>
+                <div className='text-s'>{ user.first } { user.last }</div>
+              </div>
+              <div>
+                <div className='text-s margin-top-s'><strong>Artist Name</strong></div>
+                <div className='text-s'>{ user.artistName || '--' }</div>
+              </div>
+              <div className='text-s margin-top-s'>
+                <div><strong>Country</strong></div>
+                <div>{ user.country || '--' }</div>
+              </div>
+              <div className='text-s margin-top-s'>
+                <div><strong>Birth Year</strong></div>
+                  <div>{ user.birthYear || '--' }</div>
+              </div>
+              <div className='text-s margin-top-s'>
+                <div><strong>Website / Artwork URL</strong></div>
+                  <div>{ user.website || '--' }</div>
+              </div>
               <div className='margin-top-s flex'>
                 <div className='flex'>
                   { user.website && <div><img src={ Web } className='account-social-web pointer' alt='Website' onClick={ () => openLink(user.website) } /></div> }

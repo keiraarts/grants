@@ -3,7 +3,11 @@ import { useParams } from "react-router-dom";
 import { useStoreState } from 'easy-peasy';
 import { apiUrl } from '../baseUrl';
 import { Link } from "react-router-dom";
+import moment from 'moment';
 import ReactAutolinker from 'react-autolinker';
+import ReactModal from 'react-modal';
+import DatePicker from 'react-mobile-datepicker';
+
 import Resizer from './Tools/Resizer.js';
 
 import '../styles.scss';
@@ -13,6 +17,40 @@ function openLink(page)
   let win = window.open(page, '_blank');
   win.focus();
 }
+
+const monthMap = {
+	'1': 'Jan',
+	'2': 'Feb',
+	'3': 'Mar',
+	'4': 'Apr',
+	'5': 'May',
+	'6': 'Jun',
+	'7': 'Jul',
+	'8': 'Aug',
+	'9': 'Sep',
+	'10': 'Oct',
+	'11': 'Nov',
+	'12': 'Dec',
+};
+
+const dateConfig = {
+	'month': {
+		format: value => monthMap[value.getMonth() + 1],
+		caption: 'Month',
+		step: 1,
+	},
+	'date': {
+		format: 'DD',
+		caption: 'Day',
+		step: 1,
+	},
+  'hour': {
+    format: 'hh',
+    caption: 'Hour',
+    step: 1,
+  },
+};
+
 
 function doDashes(str) {
   var re = /[^a-z0-9]+/gi; // global and case insensitive matching of non-char/non-numeric
@@ -29,6 +67,9 @@ export default function Application() {
   const [user, setUser] = useState(null);
   const [programInfo, setProgram] = useState(null);
   const [editing, setEditing] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [showStartDate, setShowStartDate] = useState(false);
+  const [showEndDate, setShowEndDate] = useState(false);
   useEffect(() => {
     fetch(`${ apiUrl() }/program/getProgram`, {
       method: 'POST',
@@ -55,6 +96,7 @@ export default function Application() {
   const updateProgram = e => {
     e.preventDefault();
     if (!programInfo.name || !programInfo.url || !programInfo.description || !programInfo.logistics || !programInfo.criteria) setUpdateErr('Please fill out all required fields');
+    if (moment(programInfo.open).add(1, 'day').toDate() > new Date(programInfo.close)) setUpdateErr('Your closing date must be at least one day after opening date');
     else {
       setUpdateErr(false);
       setProgramSubmitting(true);
@@ -110,7 +152,19 @@ export default function Application() {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [err, setErr] = useState(false);
+  const preSubmit = () => {
+    if (!data.art) setErr('No artwork selected');
+    else if (!data.statement) setErr('Please write a statement of intent');
+    else if (!data.title || !data.description) setErr('Please provide an artwork title and description');
+    else if (!user) setErr('Please log in to submit');
+    else if (auth && !auth.wallet) setErr('Please verify a wallet to submit');
+    else if (user && !user.user.emailVerified) setErr('Please verify your email to submit');
+    else if (user && (!user.user.artistName || !user.user.city || !user.user.country || !user.user.twitter || !user.user.website)) setErr('Please complete your user profile to submit');
+    else setConfirmOpen(true);
+  }
+
   const submit = e => {
+    setConfirmOpen(false);
     e.preventDefault();
     if (!data.art) setErr('No artwork selected');
     else if (!data.statement) setErr('Please write a statement of intent');
@@ -118,6 +172,7 @@ export default function Application() {
     else if (!user) setErr('Please log in to submit');
     else if (auth && !auth.wallet) setErr('Please verify a wallet to submit');
     else if (user && !user.user.emailVerified) setErr('Please verify your email to submit');
+    else if (user && (!user.user.artistName || !user.user.city || !user.user.country || !user.user.twitter || !user.user.website)) setErr('Please complete your user profile to submit');
     else {
       setErr(false);
       setSubmitting(true);
@@ -132,7 +187,10 @@ export default function Application() {
   
       })
         .then(res => res.json())
-        .then(json => setSubmitted(true));
+        .then(json => {
+          if (json && json.error) setErr(json.error);
+          else setSubmitted(true);
+        });
     }
   }
 
@@ -141,14 +199,53 @@ export default function Application() {
   if (programInfo) isAdmin = (auth && programInfo.organizers[0].admins.findIndex(admin => admin === auth.id) >= 0)
   let applied;
   if (user && user.applications && programInfo) applied = user.applications.find(e => e.program === programInfo.id);
-  console.log('APPLIED', user);
+  console.log('APPLIED', programInfo);
 
   return (
     <div className='content-block'>
       <Resizer />
+      <ReactModal
+        isOpen={ confirmOpen }
+        style={{ content: { margin: 'auto', width: '15rem', height: '23rem' } }}
+        onRequestClose={ () => setConfirmOpen(false) }
+        shouldCloseOnOverlayClick={ true }
+        ariaHideApp={ false }
+      >
+        <div className='text-s font'>
+          By submitting your artwork you agree and honor the grant logistics and criteria and will not mint your piece elsewhere before the curation process is completed.<br /><br />
+          <input type='submit' value='Cancel' className='small-button' onClick={ () => setConfirmOpen(false) } />
+          <input type='submit' value='Submit' className='small-button margin-left-s' onClick={ submit } />
+        </div>
+      </ReactModal>
       <div>
         { programInfo &&
           <div>
+            <DatePicker
+              dateConfig={ dateConfig }
+              isOpen={ showStartDate }
+              confirmText='Confirm'
+              cancelText='Cancel'
+              showHeader={ true }
+              value={ new Date(programInfo.open || new Date()) }
+              headerFormat='YYYY/MM/DD hh'
+              onChange={ (e) => setProgram({ ...programInfo, open: new Date(new Date(e).setMinutes(0)) }) }
+              onSelect={ () => setShowStartDate(false) }
+              onCancel={ () => setShowStartDate(false) }
+              isPopup={ true }
+            />
+            <DatePicker
+              dateConfig={ dateConfig }
+              isOpen={ showEndDate }
+              confirmText='Confirm'
+              cancelText='Cancel'
+              showHeader={ true }
+              value={ new Date(programInfo.close || new Date()) }
+              headerFormat='YYYY/MM/DD hh'
+              onChange={ (e) => setProgram({ ...programInfo, close: new Date(new Date(e).setMinutes(0)) }) }
+              onSelect={ () => setShowEndDate(false) }
+              onCancel={ () => setShowEndDate(false) }
+              isPopup={ true }
+            />
             <div className='text-l flex'>
               { programInfo.name }
               <div className='flex-full' />
@@ -183,7 +280,7 @@ export default function Application() {
                 </div>
               }
               { editing &&
-                <form onSubmit={ updateProgram }>
+                <div>
                   <div className='form__group field'>
                     <input type='text' className='form__field' placeholder='Program Name' name='name' id='name' required maxLength='100' value={ programInfo.name } onChange={e => setProgram({ ...programInfo, name: e.target.value })} />
                     <label className='form__label'>Program Name</label>
@@ -207,6 +304,20 @@ export default function Application() {
                     <textarea type='text' className='form__field intent-field' placeholder='Intent' name='intent' id='intent' required maxLength='2000' value={ programInfo.criteria } onChange={e => setProgram({ ...programInfo, criteria: e.target.value })} />
                     <label className='form__label'>Applicant Criteria (2000 Chars)</label>
                   </div>
+                  <div className='margin-top-s text-s'>
+                    <strong>Submissions Open Time</strong><br/>
+                    { programInfo.open ? moment(programInfo.open).format('ddd MMM Do h:mm A') : '' }
+                  </div>
+                  <div className='margin-top-xs'>
+                    <input type='submit' value='Set Open Date' className='small-button' onClick={ () => setShowStartDate(true) } />  
+                  </div>
+                  <div className='margin-top-s text-s'>
+                    <strong>Submissions Close Time</strong><br/>
+                    { programInfo.close ? moment(programInfo.close).format('ddd MMM Do h:mm A') : '' }
+                  </div>
+                  <div className='margin-top-xs'>
+                    <input type='submit' value='Set Close Date' className='small-button' onClick={ () => setShowEndDate(true) } />  
+                  </div>
                   { updateErr &&
                     <div className='margin-top text-s text-err'>
                       { updateErr }
@@ -220,16 +331,16 @@ export default function Application() {
                   { (!programSubmitting) && 
                   <div>
                     <input type='submit' value='Cancel' className='submit-button' onClick={ () => setEditing(false) } />&nbsp;
-                    <input type='submit' value='Update Program' className='submit-button' />
+                    <input type='submit' value='Update Program' className='submit-button' onClick={ (e) => updateProgram(e) } />
                   </div>
                   }
-                </form>
+                </div>
               }
             </div>
           </div>
         }
         { !applied ?
-          <form onSubmit={ submit }>
+          <div>
             <div className='margin-top text-l'>Art Submission Form</div>
             { program === 'genesis' &&
             <div>
@@ -273,15 +384,15 @@ export default function Application() {
                     <div className='text-s'>
                       <div className='gallery-plate metal linear'>
                         <div className='text-s'>
-                          <strong>{ user.user.artistName }</strong><br />
-                          { user.user.country } { user.user.birthYear && `(b. ${ user.user.birthYear })` }
+                          <strong>{ user.user.artistName || 'Missing Artist Name' }</strong><br />
+                          { user.user.country || 'Missing Country' } { `(b. ${ user.user.birthYear || 'Missing Birth Year' })` }
                         </div>
                         <div className='margin-top-s text-s text-b'>
-                          <strong><i>{ data.title || 'Untitled' }</i></strong>, 2021<br />
+                          <strong><i>{ data.title || 'Missing Art Title' }</i></strong>, 2021<br />
                           { data.ext } as NFT
                         </div>
                         <div className='margin-top-s text-xs'>
-                          { data.description }
+                          { data.description || 'Missing Description' }
                         </div>
                       </div>
                     </div>
@@ -330,7 +441,7 @@ export default function Application() {
               </div>
             :
               <div className='margin-top text-s text-grey'>
-                <i>Submissions are currently closed until early April</i>
+                {/* <i>Submissions are currently closed until early April</i> */}
               </div>
             }
             { (submitting && !submitted) &&
@@ -344,12 +455,14 @@ export default function Application() {
                 We will get back to you once we announce an acceptance date via e-mail or social direct message.
               </div>
             }
-            {/* <div>
+            <div>
               { (!user) && <Link to='/login' className='margin-top text-mid text-grey'>You must be logged in to submit an artwork</Link> }
-              { (user && auth && (!auth.wallet || !user.user.emailVerified)) && <Link to='/account' className='margin-top text-mid text-grey'>You must verify a wallet and email to submit an artwork</Link> }
+              { (user && auth && (!auth.wallet || !user.user.emailVerified || !user.user.artistName || !user.user.city || !user.user.country || !user.user.twitter || !user.user.website))
+                  && <Link to='/account' className='margin-top text-mid text-grey'>You must complete your user profile and verify wallet & email to submit an artwork</Link> }
             </div>
-            { (!submitting && !submitted && user) && <input type='submit' value='Submit Artwork' className='submit-button' onClick={ submit } /> } */}
-          </form>
+            { (programInfo && !submitting && !submitted && user && new Date() > new Date(programInfo.open) && new Date() < new Date(programInfo.close)) &&
+              <input type='submit' value='Submit Artwork' className='submit-button' onClick={ () => preSubmit() } /> }
+          </div>
         :
           <div>
             <div className='margin-top-l'>Art Submission</div>
@@ -414,6 +527,21 @@ export default function Application() {
                 </div>
               }
             </div>
+          </div>
+        }
+        { programInfo &&
+          <div className='margin-top text-mid'>
+            <em>
+              { new Date() > new Date(programInfo.open) && new Date() < new Date(programInfo.close) &&
+                <div>Submissions are open until { moment(programInfo.close).format('ddd MMM Do h:mm A') }</div>
+              }
+              { new Date() < new Date(programInfo.open) && new Date < new Date(programInfo.close) &&
+                <div>Submissions will open { moment(programInfo.open).format('ddd MMM Do h:mm A') } and close { moment(programInfo.close).format('ddd MMM Do h:mm A') }</div>
+              }
+              { new Date() > new Date(programInfo.close) &&
+                <div>Submissions are closed</div>
+              }
+            </em>
           </div>
         }
         <br />

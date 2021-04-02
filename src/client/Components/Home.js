@@ -87,11 +87,9 @@ export default function Gallery() {
       <div className='text-l flex'>
         Sevens Genesis Grant
         <div className='flex-full' />
-        { auth.committee &&
-          <div className='text-s center'>
-            <Link to='/curation' className='text-grey pointer text-right'>Curation Portal</Link>
-          </div>
-        }
+        <div className='text-s center'>
+          <Link to='/curation' className='small-button text-grey'>Curation</Link>
+        </div>
       </div>
       <div className='text-s margin-top-s text-desc'>
         Curating, educating, and funding artists' first step into creative self-sovereignty
