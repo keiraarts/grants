@@ -394,6 +394,10 @@ a {
   -webkit-backface-visibility: hidden;
 }
 
+.app * {
+  transform-style: preserve-3d;
+}
+
 .text-black {
   color: black !important;
 }
