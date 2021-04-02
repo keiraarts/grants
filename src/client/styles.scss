@@ -13,8 +13,8 @@ body {
   margin: 0rem;
   width: 100%;
   height: 100%;
-  background: linear-gradient(-45deg, violet, indigo, blue, green, yellow, orange, red, violet);
-  background-size: 400% 400%;
+  // background: linear-gradient(-45deg, violet, indigo, blue, green, yellow, orange, red, violet);
+  // background-size: 400% 400%;
   background-attachment: fixed;
   z-index: -1;
   width: 100%;
@@ -26,16 +26,6 @@ canvas {
   width: 100%;
   height: 100vh;
   z-index: 1;
-}
-
-.background-gradient {
-  position: absolute;
-  background: linear-gradient(-45deg, violet, indigo, blue, green, yellow, orange, red, violet);
-  background-size: 400% 400%;
-  z-index: -1;
-  width: 100%;
-  height: 100%;
-  animation: gradient 5s ease infinite;
 }
 
 @keyframes gradient {
