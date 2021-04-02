@@ -16,7 +16,10 @@ body {
   width: 100vw;
   height: 100vh;
   top: 0;
-  position: absolute;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  position: fixed;
 
   -webkit-animation: back-rainbow 5s ease infinite;
   -z-animation: back-rainbow 5s ease infinite;
@@ -59,7 +62,7 @@ body {
 }
 
 .site-content {
-  max-width: 100vh;
+  max-width: 85rem;
   margin: auto;
   height: 100vh;
   font-size: 2rem;
