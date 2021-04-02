@@ -16,7 +16,7 @@ export default function Gallery(props) {
       <div className='gallery-block'>
         <Link to={ `/${ type === 'grantee' ? 'gallery' : 'nominee' }/${ item.order }` } className='block-art pointer'>
           { (!loaded) && <div className='block-loading'><div className='loading'><div></div><div></div></div></div> }
-          { (displayArt) && displayType === 'mp4' ?
+          { (displayArt && (displayType === 'mp4' || displayType === 'mov')) ?
             <video muted loop autoPlay webkit-playsinline='true' playsInline preload='none' className='block-art-image' onCanPlay={ () => didLoad(true) }>
               <source src={ displayArt }
                       type="video/mp4" />
