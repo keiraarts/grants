@@ -74,8 +74,8 @@ const dateConfig = {
 export default function OpenMarket({ tokenId, contract }) {
   const auth = useStoreState(state => state.user.auth);
 
-  contract = '0x3f4200234e26d2dfbc55fcfd9390bc128d5e2cca';
-  tokenId = 10;
+  // contract = '0x3f4200234e26d2dfbc55fcfd9390bc128d5e2cca';
+  // tokenId = 10;
 
   const [gotAsset, setAsset] = useState({});
   const [provider, setProvider] = useState(null);
@@ -169,8 +169,9 @@ export default function OpenMarket({ tokenId, contract }) {
         setSeaportOrders(orders);
       }
 
-      setBids(_.orderBy(newBids, ['value'], ['desc']));
-    }
+      if (newBids) setBids(_.orderBy(newBids, ['value'], ['desc']));
+    } else setBids([]);
+
 
     if (!foundListed) {
       setAuction(null);
@@ -194,6 +195,15 @@ export default function OpenMarket({ tokenId, contract }) {
       pollBids();
     }
   }, [contract])
+
+  useEffect(() => {
+    if (seaport) {
+      seaport.api.getOrders({
+        asset_contract_address: contract,
+        token_id: tokenId,
+      }).then(data => setSeaportOrders(data.orders));
+    }
+  }, [seaport])
 
   useInterval(() => {
     pollBids();
@@ -343,15 +353,6 @@ export default function OpenMarket({ tokenId, contract }) {
         const listener = createdSeaport.addListener(EventType.CreateOrder, ({ transactionHash, event }) => {
           setSellOpen(false);
         });
-
-        if (createdSeaport) {
-          const { count, orders } = await createdSeaport.api.getOrders({
-            asset_contract_address: contract,
-            token_id: tokenId,
-          });
-
-          setSeaportOrders(orders);
-        }
 
         setListener(listener);
         setProvider(createdProvider);
