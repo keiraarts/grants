@@ -40,7 +40,7 @@ export default function Organizer() {
       setOrganizerSubmitting(true);
       fetch(`${ apiUrl() }/program/updateOrg`, {
         method: 'POST',
-        body: JSON.stringify(organizer),
+        body: JSON.stringify({ ...organizer, logo: organizer.ext ? organizer.logo : undefined }),
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
@@ -93,11 +93,9 @@ export default function Organizer() {
         { organizer &&
           <div>
             <div className='text-l flex'>
-              { organizer.logo ?
-                  <img className='page-logo' src={ `https://cdn.grants.art/${ organizer.logo }` } />
-                :
-                <div>{ organizer.name }</div>
-              }
+              { (organizer.logo && !organizer.ext) && <img className='page-logo' src={ `https://cdn.grants.art/${ organizer.logo }` } /> }
+              { (organizer.logo && organizer.ext) && <img className='page-logo' src={ organizer.logo } /> }
+              { !organizer.logo && <div>{ organizer.name }</div> }
               <div className='flex-full center'>
                 { organizer.twitter && <img src={ Twitter } className='social-icon' alt='Twitter' onClick={ () => openLink(`https://twitter.com/${ organizer.twitter }`) } /> }
                 { organizer.instagram && <img src={ Instagram } className='social-icon' alt='Instagram' onClick={ () => openLink(`https://instagram.com/${ organizer.instagram }`) } /> }

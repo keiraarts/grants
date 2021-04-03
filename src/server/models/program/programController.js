@@ -136,7 +136,8 @@ exports.updateOrg = async (req, res) => {
 
   org.name = req.body.name;
   org.url = doDashes(req.body.name);
-  org.logo = req.body.logo;
+  console.log('WTF', req.body.logo);
+  if (req.body.logo) org.logo = req.body.logo;
   org.about = req.body.about;
   org.email = req.body.email,
   org.website = req.body.website;

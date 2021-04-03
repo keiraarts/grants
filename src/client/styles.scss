@@ -366,7 +366,6 @@ a {
   display: inline-block;
   background-image: repeating-linear-gradient(45deg, violet, indigo, blue, green, yellow, orange, red, violet);
   background-clip: text;
-  z-index: -10;
   animation: rainbow 3000s alternate-reverse linear infinite;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -376,7 +375,6 @@ a {
   display: inline-block;
   background-image: repeating-linear-gradient(45deg, #343d46 , #4f5b66 , #65737e , #a7adba , #c0c5ce, #343d46);
   background-clip: text;
-  z-index: -1;
   animation: rainbow 3000s alternate-reverse linear infinite;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
