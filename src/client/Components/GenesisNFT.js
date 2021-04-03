@@ -103,13 +103,20 @@ const GenesisNFT = ({ small, nft, src, important, hidden, contract }) => {
     }
   }, [hidden])
 
+  useEffect(() => {
+    if (loaded && video.current) {
+      video.current.addEventListener('pause', (e) => {
+        video.current.play();
+        // console.log('STOPPED');
+      });
+    }
+  }, [loaded])
+
   if (nft && nft.art) nft.imageType = nft.art.split('.')[1];
   let website, twitter, instagram;
   if (nft && nft.user && nft.user.website) website = nft.user.website;
   if (nft && nft.user && nft.user.twitter) twitter = nft.user.twitter;
   if (nft && nft.user && nft.user.instagram) website = nft.user.instagram;
-
-  if (video.current) setTimeout(() => video.current.play());
 
   return (
     <div className={ `margin-top flex full-width ${ !small && 'side-space' }` } style={ { display: hidden && 'none' } }>
