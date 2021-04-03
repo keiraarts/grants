@@ -38,7 +38,6 @@ const App = () => {
   }
 
   const scrollRef = useRef(null);
-  console.log('WTF', scrollRef);
 
   return (
     <BrowserRouter onChange={() => { window.scrollTo(0, 0); console.log('YEO') }}>

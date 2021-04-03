@@ -120,8 +120,6 @@ export default function OpenMarket({ tokenId, contract }) {
     }
   }, [retryAuction])
 
-  console.log(bids, seaportOrders);
-
   async function pollBids() {
     const orders = await fetch(`https://api.opensea.io/wyvern/v1/orders?asset_contract_address=${ contract }&token_ids=${ tokenId }`, {
       method: 'GET',
