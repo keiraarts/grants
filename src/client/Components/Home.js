@@ -97,11 +97,15 @@ export default function Gallery() {
       </div>
       <div className='flex margin-top'>
         <div className={ viewTab === 'grantee' ? 'info-block info-block-selected' : 'info-block' } onClick={ () => toggleView('grantee') }>
-          Genesis Grant
+          <div className={ viewTab === 'grantee' ? 'text-grey' : '' }>
+            Genesis Grant
+          </div>
         </div>
         <div className='info-block-space' />
         <div className={ viewTab === 'nominee' ? 'info-block info-block-selected' : 'info-block' } onClick={ () => toggleView('nominee') }>
+        <div className={ viewTab === 'nominee' ? 'text-grey' : '' }>
           Genesis Nominee
+        </div>
         </div>
       </div>
       <div className='cols'>

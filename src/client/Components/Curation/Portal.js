@@ -615,15 +615,21 @@ export default function Portal() {
           { viewTab !== 'results' &&
             <div className='flex margin-top-s'>
               <div className={ viewTab === 'curate' ? 'info-block info-block-selected' : 'info-block' } onClick={ () => setViewTab('curate') }>
-                Curate
+                <div className={ viewTab === 'curate' ? 'text-grey' : '' }>
+                  Curate
+                </div>
               </div>
               <div className='info-block-space' />
               <div className={ viewTab === 'approved' ? 'info-block info-block-selected' : 'info-block' } onClick={ () => setViewTab('approved') }>
-                Approved
+                <div className={ viewTab === 'approved' ? 'text-grey' : '' }>
+                  Approved
+                </div>
               </div>
               <div className='info-block-space' />
               <div className={ viewTab === 'deferred' ? 'info-block info-block-selected' : 'info-block' } onClick={ () => setViewTab('deferred') }>
-                Deferred
+                <div className={ viewTab === 'deferred' ? 'text-grey' : '' }>
+                  Deferred
+                </div>
               </div>
             </div>
           }
@@ -631,15 +637,21 @@ export default function Portal() {
             <div>
               <div className='flex margin-top-s'>
                 <div className={ resultsTab === 'results' ? 'info-block info-block-selected' : 'info-block' } onClick={ () => setResultsTab('results') }>
-                  Results
+                  <div className={ resultsTab === 'curate' ? 'text-grey' : '' }>
+                    Results
+                  </div>
                 </div>
                 <div className='info-block-space' />
                 <div className={ resultsTab === 'minted' ? 'info-block info-block-selected' : 'info-block' } onClick={ () => setResultsTab('minted') }>
-                  Minted
+                  <div className={ resultsTab === 'minted' ? 'text-grey' : '' }>
+                    Minted
+                  </div>
                 </div>
                 <div className='info-block-space' />
                 <div className={ resultsTab === 'deferred' ? 'info-block info-block-selected' : 'info-block' } onClick={ () => setResultsTab('deferred') }>
-                  Deferred
+                  <div className={ resultsTab === 'deferred' ? 'text-grey' : '' }>
+                    Deferred
+                  </div>
                 </div>
               </div>
               { resultsTab === 'results' &&
