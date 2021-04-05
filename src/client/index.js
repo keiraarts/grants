@@ -2,8 +2,9 @@ import React, { useRef } from 'react';
 import ReactDOM from 'react-dom';
 import { StoreComponent, store } from './redux';
 import { useStoreRehydrated } from 'easy-peasy';
-import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { BrowserRouter, Route, Switch, Router } from "react-router-dom";
 import { ModalProvider } from "react-modal-hook";
+import ScrollToTop from './Components/Tools/ScrollToTop';
 import Header from './Components/Header';
 import Footer from './Components/Footer';
 import Home from "./Components/Home";
@@ -40,7 +41,8 @@ const App = () => {
   const scrollRef = useRef(null);
 
   return (
-    <BrowserRouter onChange={() => { window.scrollTo(0, 0); console.log('YEO') }}>
+    <BrowserRouter>
+      <ScrollToTop />
       <StoreComponent store={ store }>
         <div className='App'>
           <div className='wrapper' />
