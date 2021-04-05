@@ -316,12 +316,11 @@ a {
 }
 
 .info-block-selected {
-  background-image: repeating-linear-gradient(45deg, #343d46 , #4f5b66 , #65737e , #a7adba , #c0c5ce, #343d46);
-  background-clip: text;
-  animation: rainbow 1000s alternate-reverse linear infinite;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  // background-color: rgba(255, 255, 255, 0);
+  background-image: repeating-linear-gradient(45deg, #343d46 , #4f5b66 , #65737e , #a7adba , #c0c5ce, #343d46) !important;
+  background-clip: text !important;
+  animation: rainbow 1000s alternate-reverse linear infinite !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
 }
 
 .remove-a {
