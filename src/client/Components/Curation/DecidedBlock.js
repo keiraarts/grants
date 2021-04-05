@@ -7,7 +7,15 @@ import Instagram from '../../assets/instagram.png';
 import Web from '../../assets/website.png';
 import '../../styles.scss';
 
-export default function Gallery({ nft, undo, type, blind }) {
+function openLink(page)
+{
+  page = page.replace('@', '');
+  let win = window.open(page, '_blank');
+  win.focus();
+}
+
+
+export default function DecidedBlock({ nft, undo, type, blind }) {
   const [loaded, didLoad] = useState(false);
   const [infoOpen, setInfoOpen] = useState(false);
   const imageType = nft.artWeb.split('.')[1];
@@ -44,8 +52,8 @@ export default function Gallery({ nft, undo, type, blind }) {
             </div>
           </div>
           { !blind &&
-            <div className='flex margin-top-s'>
-              { nft.user.website && <div><img src={ Web } className='account-social-web pointer' alt='Website' onClick={ () => openLink(nft.user.website) } /></div> }
+            <div className='flex margin-top-s center'>
+              { nft.user.website && <div><img src={ Web } className='account-social-web pointer' style={{ marginTop: '0.2rem' }} alt='Website' onClick={ () => openLink(nft.user.website) } /></div> }
               { nft.user.twitter && <div><img src={ Twitter } className='account-social pointer' alt='Twitter' onClick={ () => openLink(`https://twitter.com/${ nft.user.twitter }`) } /></div> }
               { nft.user.instagram && <div><img src={ Instagram } className='account-social pointer' alt='Instagram' onClick={ () => openLink(`https://instagram.com/${ nft.user.instagram }`) } /></div> }
             </div>
@@ -75,10 +83,12 @@ export default function Gallery({ nft, undo, type, blind }) {
         }
       </div>
       <div className='flex'>
-        <div className='small-button flex-full' onClick={ () => undo(nft.id, type) }>
-          Undo
-        </div>
-        <div className='small-space' />
+        { undo &&
+          <div className='small-button flex-full' onClick={ () => undo(nft.id, type) }>
+            Undo
+          </div>
+        }
+        { undo && <div className='small-space' /> }
         <div className='small-button flex-full' onClick={ () => setInfoOpen(true) }>
           View Info
         </div>        

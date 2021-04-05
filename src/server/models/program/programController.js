@@ -136,7 +136,6 @@ exports.updateOrg = async (req, res) => {
 
   org.name = req.body.name;
   org.url = doDashes(req.body.name);
-  console.log('WTF', req.body.logo);
   if (req.body.logo) org.logo = req.body.logo;
   org.about = req.body.about;
   org.email = req.body.email,
@@ -229,6 +228,7 @@ exports.getProgramAdmin = async (req, res) => {
 };
 
 
+// MINT TO TYPE, NOT ACTUAL MINTING
 exports.mintToArtist = async (req, res) => {
   const jwt = auth(req.headers.authorization, res, (jwt) => jwt);
   const organizer = await Organizer.findOne({ admins: jwt.id });
@@ -491,7 +491,7 @@ exports.viewAllApplications = async (req, res) => {
   const isCurator = await Program.find({ curators: user._id });
   if (!isCurator) return res.json({ error: 'Authentication error' });
 
-  return ProgramApplicant.find({ program: req.body.program, ineligible: { $ne: true } }, (err, data) => {
+  return ProgramApplicant.find({ program: req.body.program, ineligible: { $ne: true }, finalized: { $ne: true } }, (err, data) => {
     const unapproved = [], approved = [], rejected = [];
     data.forEach(e => {
       if (e.approved.find(g => g._id.equals(jwt.id))) approved.push(e);
@@ -514,7 +514,8 @@ exports.viewResults = async (req, res) => {
     return err ?
         res.status(500).json(err) :
         res.json(data);
-  }).sort('-approvalCount')
+  }).populate('user', 'artistName birthYear country city website twitter instagram')
+  .sort('-approvalCount')
   .select('-approved -rejected')
 };
 
@@ -582,6 +583,25 @@ exports.undoApplicant = async (req, res) => {
   })
 };
 
+exports.finalizeDeferred = async (req, res) => {
+  const jwt = auth(req.headers.authorization, res, (jwt) => jwt);
+  const organizer = await Organizer.findOne({ _id: req.body.org, admins: jwt.id });
+  if (!organizer) return res.json({ error: 'Authentication error' });
+  const program = await Program.findById(req.body.program);
+  if (!program) return res.json({ error: 'Authentication error' });
+
+  if (!req.body.applicants) return res.json({ error: 'Missing data' });
+
+  req.body.applicants.forEach(applicant => {
+    ProgramApplicant.findById(applicant.id).then(data => {
+      data.finalized = true;
+      data.save();
+    })
+  })
+
+  return res.json({ success: 'Deferrment finalized' })
+}
+
 
 exports.flagApplicant = (req, res) => {
   auth(req.headers.authorization, res, (jwt) => {
@@ -632,7 +652,7 @@ exports.removeFlag = (req, res) => {
 };
 
 // setTimeout(() => {
-//   Applicant.find({ email: 'kastroy13@gmail.com' }, (err, applicants) => {
+//   Applicant.find({ published: { $ne: true }, order: { $exists: false } }, (err, applicants) => {
 //     applicants.forEach(applicant => {
 //       const transfer = {
 //         user:           applicant.user,
@@ -656,23 +676,24 @@ exports.removeFlag = (req, res) => {
 //         order:          applicant.order,
 //       };
 
-//       console.log('WTF', transfer);
+//       // console.log('WTF', transfer);
 //       // const newApplicant = new ProgramApplicant(transfer);
 //       // newApplicant.save((err, data) => {
 //       //   if (err) console.log('WTF', err);
 //       // });
 //       // console.log(applicant.email);
 //     })
+
+//     console.log(applicants.length);
 //   })
 // })
 
 
 // setTimeout(() => {
-//   return ProgramApplicant.find({ program: '605f948be26eb64b749bbc09', accepted: false }, (err2, data) => {
+//   return ProgramApplicant.find({ order: { $exists: true } }, (err2, data) => {
 //     let count = 0;
 //     data.forEach(e => {
-//       e.program = '605fef70830ed668addb44ab';
-//       e.accepted = true;
+//       e.finalized = true;
 //       e.save();
 //       count++;
 //     })

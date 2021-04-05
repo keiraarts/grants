@@ -184,12 +184,18 @@ export default function Curation({ nft, small, blind }) {
             <div className={ `gallery-description` }>
               <div className='text-s'>
                 <div className='gallery-plate metal linear'>
-                  <div className='text-s'>
-                    <strong>{ nft.artist }</strong><br />
-                    { nft.country } { nft.year && `(b. ${ nft.year })` }
-                  </div>
+                  { !blind ?
+                    <div className='text-s'>
+                      <strong>{ nft.user.artistName }</strong><br />
+                      { nft.user.country } { nft.user.birthYear && `(b. ${ nft.user.birthYear })` }
+                    </div>
+                  :
+                    <div className='text-s'>
+                      <strong>Artist Info Hidden</strong><br />
+                    </div>
+                  }
                   <div className='margin-top-s text-s text-b'>
-                    <strong><i>{ nft.name || 'Untitled' }</i></strong>, 2021<br />
+                    <strong><i>{ nft.title || 'Untitled' }</i></strong>, 2021<br />
                     { imageType.toUpperCase() } as NFT
                   </div>
                   <div className='margin-top-s text-xs'>

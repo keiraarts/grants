@@ -20,6 +20,7 @@ module.exports = (app) => {
   app.post('/api/program/viewResults', program.viewResults);
   app.post('/api/program/approveOrReject', program.approveOrReject);
   app.post('/api/program/undoApplicant', program.undoApplicant);
+  app.post('/api/program/finalizeDeferred', program.finalizeDeferred);
   app.post('/api/program/flagApplicant', program.flagApplicant);
   app.post('/api/program/removeFlag', program.removeFlag);
 };

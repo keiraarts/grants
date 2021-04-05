@@ -1,11 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import ReactModal from 'react-modal';
 import { useStoreState } from 'easy-peasy';
 import { apiUrl } from '../../baseUrl';
 
+import Switch from '../../assets/switch.png';
+import Tile from '../../assets/tile.png';
+import Gallery from '../../assets/gallery.png';
 import Resizer from '../Tools/Resizer.js';
 import Curation from './Curation';
-import DecidedBlock from './DecidedBlock';
+import ArtList from './ArtList';
 
 import '../../styles.scss';
 
@@ -29,10 +32,13 @@ export default function Portal() {
   const cols = useStoreState(state => state.app.cols);
   const auth = useStoreState(state => state.user.auth);
 
+  const contentRef = useRef(null);
+
   const [loaded, setLoaded] = useState(false);
   const [programs, setPrograms] = useState([]);
   const [viewTab, setViewTab] = useState('curate');
-  const [resultsTab, setResultsTab] = useState('unminted');
+  const [curationView, setCurationView] = useState('gallery');
+  const [resultsTab, setResultsTab] = useState('results');
   const [adminTab, setAdminTab] = useState(false);
   useEffect(() => {
     fetch(`${ apiUrl() }/program/getCurationPrograms`, {
@@ -52,26 +58,34 @@ export default function Portal() {
   const [applicants, setApplicants] = useState({});
   const [results, setResults] = useState([]);
   const [filteredResults, setFilteredResults] = useState({ mintable: [], unmintable: [] });
+  const [finalResults, setFinalResults] = useState({ minted: [], unminted: [] });
   const [selectedProgram, setSelectedProgram] = useState(null);
   const [newCriteria, setNewCriteria] = useState(false);
 
   useEffect(() => {
     let filtered = { mintable: [], unmintable: [] };
+    let final = { minted: [], unminted: [] };
     if (results && results.length && selectedProgram) {
       let i = 0;
       results.forEach(result => {
-        if (selectedProgram.passByVotes && !result.published) {
-          if (result.approvalCount >= selectedProgram.voteThreshold) filtered.mintable.push(result);
-          else filtered.unmintable.push(result);
-        } else if (!result.published) {
-          if (i < selectedProgram.topThreshold) filtered.mintable.push(result);
-          else filtered.unmintable.push(result);
-          i++;
+        if (!result.finalized) {
+          if (selectedProgram.passByVotes && !result.published) {
+            if (result.approvalCount >= selectedProgram.voteThreshold) filtered.mintable.push(result);
+            else filtered.unmintable.push(result);
+          } else if (!result.published) {
+            if (i < selectedProgram.topThreshold) filtered.mintable.push(result);
+            else filtered.unmintable.push(result);
+            i++;
+          }
+        } else {
+          if (result.published) final.minted.push(result);
+          else final.unminted.push(result);
         }
       });
-    } else filtered = { mintable: [], unmintable: [] }
+    }
 
     setFilteredResults(filtered);
+    setFinalResults(final);
   }, [results, selectedProgram]);
 
   const loadCuration = program => {
@@ -246,6 +260,7 @@ export default function Portal() {
   }
 
   const addRemoveCurator = (type, curator) => {
+    console.log(type, curator, programAdmin);
     let update;
     if (type === 'add') {
       setSearch(false);
@@ -255,12 +270,12 @@ export default function Portal() {
         curators: programAdmin.curators
       }
     } else if (type === 'remove') {
-      const index = applicants.rejected.findIndex(e => e.id === curator.id);
+      const index = programAdmin.curators.findIndex(e => e.id === curator.id);
       update = {
         ...programAdmin,
         curators: [
-          ...applicants.rejected.slice(0, index),
-          ...applicants.rejected.slice(index + 1)
+          ...programAdmin.curators.slice(0, index),
+          ...programAdmin.curators.slice(index + 1)
         ]
       }
     }
@@ -309,17 +324,35 @@ export default function Portal() {
     .then(json => {});
   }
 
+  const [deferConfirm, setDeferConfirm] = useState(false);
+  const finalizeDeferred = () => {
+    setDeferConfirm(false);
+    fetch(`${ apiUrl() }/program/finalizeDeferred`, {
+      method: 'POST',
+      body: JSON.stringify({ program: selectedProgram.id, org: selectedProgram.organizers[0].id, applicants: filteredResults.unmintable }),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': auth.token
+      },
+    }).then(res => res.json())
+    .then(json => {
+      setFinalResults({ minted: finalResults.minted, unminted: [...filteredResults.unmintable, ...finalResults.unminted] });
+      setFilteredResults({ mintable: filteredResults.mintable, unmintable: [] });
+    });
+  }
+
   const closePage = () => {
     setSelectedProgram(null);
     setAdminTab(false);
-    setViewTab('curate')
+    setViewTab('curate');
     setFilteredResults({ mintable: [], unmintable: [] });
   }
 
   const isAdmin = selectedProgram && selectedProgram.organizers[0].admins.find(e => e === auth.id);
 
   return (
-    <div className='content-block'>
+    <div className='content-block' ref={ contentRef }>
       <Resizer />
       <ReactModal
         isOpen={ mintConfirm }
@@ -332,10 +365,29 @@ export default function Portal() {
           <div className='text-s font'>
             Are you sure you want to mint to your exhibition?<br /><br />
             You will be minting { filteredResults.mintable.length } artworks that will
-            end up in the <strong>{ programAdmin.mintToArtist ? 'artist wallets' : 'curator wallet' }</strong><br /><br />
+            end up in the <strong>{ programAdmin.mintToArtist ? `artist's wallet` : `curator's wallet` }</strong><br /><br />
             <div className='center'>
-              <div className='small-button' onClick={ () => setMintConfirm(false) }>Cancel</div><br /><br />
+              <div className='small-button button-red' onClick={ () => setMintConfirm(false) }>Cancel</div><br /><br />
               <div className='margin-top-s small-button button-green' onClick={ () => mint() }>Confirm</div>
+            </div>
+          </div>
+        }
+      </ReactModal>
+      <ReactModal
+        isOpen={ deferConfirm }
+        style={{ content: { margin: 'auto', width: '15rem', height: '23rem' } }}
+        onRequestClose={ () => setDeferConfirm(false) }
+        shouldCloseOnOverlayClick={ true }
+        ariaHideApp={ false }
+      >
+        { selectedProgram && selectedProgram.organizers &&
+          <div className='text-s font'>
+            Are you sure you want to defer these artworks?<br /><br />
+            <strong>{ filteredResults.unmintable.length } artworks</strong> will be finalized into the deferred results page and
+            an e-mail notification will be sent about the results being finalized.<br /><br />
+            <div className='center'>
+              <div className='small-button' onClick={ () => setDeferConfirm(false) }>Cancel</div><br /><br />
+              <div className='margin-top-s small-button' onClick={ () => finalizeDeferred() }>Confirm</div>
             </div>
           </div>
         }
@@ -394,9 +446,19 @@ export default function Portal() {
           { !adminTab &&
             <div>
               { viewTab === 'results' ?
-                <div className='small-button' onClick={ () => setViewTab('curate') }>Curation</div>
+                <div>
+                  <div className='small-button' onClick={ () => setViewTab('curate') }>
+                    Curation
+                    <img src={ Switch } className='switch-icon' />
+                  </div>
+                </div>
               :
-                <div className='small-button' onClick={ () => setViewTab('results') }>Results</div>
+                <div>
+                  <div className='small-button' onClick={ () => setViewTab('results') }>
+                    Results
+                    <img src={ Switch } className='switch-icon' />
+                  </div>
+                </div>
               }
             </div>
           }
@@ -560,67 +622,64 @@ export default function Portal() {
                 Approved
               </div>
               <div className='info-block-space' />
-              <div className={ viewTab === 'rejected' ? 'info-block info-block-selected' : 'info-block' } onClick={ () => setViewTab('rejected') }>
-                Declined
+              <div className={ viewTab === 'deferred' ? 'info-block info-block-selected' : 'info-block' } onClick={ () => setViewTab('deferred') }>
+                Deferred
               </div>
             </div>
           }
           { viewTab === 'results' &&
             <div>
               <div className='flex margin-top-s'>
-                <div className={ resultsTab === 'unminted' ? 'info-block info-block-selected' : 'info-block' } onClick={ () => setResultsTab('unminted') }>
-                  Unminted
+                <div className={ resultsTab === 'results' ? 'info-block info-block-selected' : 'info-block' } onClick={ () => setResultsTab('results') }>
+                  Results
                 </div>
                 <div className='info-block-space' />
                 <div className={ resultsTab === 'minted' ? 'info-block info-block-selected' : 'info-block' } onClick={ () => setResultsTab('minted') }>
                   Minted
                 </div>
+                <div className='info-block-space' />
+                <div className={ resultsTab === 'deferred' ? 'info-block info-block-selected' : 'info-block' } onClick={ () => setResultsTab('deferred') }>
+                  Deferred
+                </div>
               </div>
-              { resultsTab === 'unminted' ?
+              { resultsTab === 'results' &&
                 <div>
                   <div className='flex margin-top'>
-                    <div>{ selectedProgram.passByVotes ? `Received ${ selectedProgram.voteThreshold } Votes` : `Top ${ selectedProgram.topThreshold } Artworks` }</div>
+                    <div>{ selectedProgram.passByVotes ? `Received ${ selectedProgram.voteThreshold } Votes` : `Top ${ selectedProgram.topThreshold } Artworks` } (Total: { filteredResults.mintable.length })</div>
                     <div className='flex-full' />
                     { selectedProgram.mintInProgress ? 
                       <div className='text-s'>Minting In Progress</div>
                       :
-                      <div>
+                      <div style={{ marginTop: '-0.4rem' }}>
                         { isAdmin && <div className='button-green small-button' onClick={ () => setMintConfirm(true) }>Mint</div> }
                       </div>
                     }
                   </div>
-                  <div className='margin-top-s'>
-                    <React.Fragment key={ filteredResults.mintable.length }>
-                      <masonry-layout cols={ cols }>
-                        { filteredResults.mintable.map((item, index) => {
-                          return (<DecidedBlock key={ index } nft={ item } undo={ undo } blind={ selectedProgram.blindVoting } type='approve' />);
-                        }) }
-                      </masonry-layout>
-                    </React.Fragment>
-                  </div>
-                  <div className='margin-top'>Criteria Unmet</div>
-                  <div className='margin-top-s'>
-                    <React.Fragment key={ filteredResults.unmintable.length }>
-                      <masonry-layout cols={ cols }>
-                        { filteredResults.unmintable.map((item, index) => {
-                            return (<DecidedBlock key={ index } nft={ item } undo={ undo } blind={ selectedProgram.blindVoting } type='approve' />);
-                        }) }
-                      </masonry-layout>
-                    </React.Fragment>
-                  </div>
-                </div>
-              :
-                <div className='margin-top-s'>
-                  Total: { results.length }
                   <div className='margin-top-s' />
-                  <React.Fragment key={ results.length }>
-                    <masonry-layout cols={ cols }>
-                      { results.map((item, index) => {
-                          if (item.published)
-                            return (<DecidedBlock key={ index } nft={ item } undo={ undo } blind={ selectedProgram.blindVoting } type='approve' />);
-                      }) }
-                    </masonry-layout>
-                  </React.Fragment>
+                  <ArtList list={ filteredResults.mintable } blind={ selectedProgram.blindVoting } type='approve' contentRef={ contentRef } cols={ cols } />
+                  <div className='flex margin-top'>
+                    Not Enough Votes (Total: { filteredResults.unmintable.length})
+                    <div className='flex-full' />
+                    <div style={{ marginTop: '-0.3rem' }}>
+                      <div className='small-button button-red' onClick={ () => setDeferConfirm(true) }>Finalize Deferred</div>
+                    </div>
+                  </div>
+                  <div className='margin-top' />
+                  <ArtList list={ filteredResults.unmintable } blind={ selectedProgram.blindVoting } type='approve' contentRef={ contentRef } cols={ cols } />
+                </div>
+              }
+              { resultsTab === 'minted' &&
+                <div className='margin-top'>
+                  Total: { finalResults.minted.length }
+                  <div className='margin-top' />
+                  <ArtList list={ finalResults.minted } blind={ selectedProgram.blindVoting } type='approve' contentRef={ contentRef } cols={ cols } /> {/* item.published */}
+                </div>
+              }
+              { resultsTab === 'deferred' &&
+                <div className='margin-top'>
+                  Total: { finalResults.unminted.length }
+                  <div className='margin-top' />
+                  <ArtList list={ finalResults.unminted } blind={ selectedProgram.blindVoting } type='approve' contentRef={ contentRef } cols={ cols } />
                 </div>
               }
             </div>
@@ -629,19 +688,32 @@ export default function Portal() {
             <div className='margin-top-s'>
               { (applicants && applicants.unapproved && applicants.unapproved.length) ?
                 <div>
-                  Remaining: { applicants.unapproved.length }
-                  <div className='flex margin-top-s'>
-                    <div className='small-button flex-full' onClick={ () => decide('approve') }>
-                      Approve
-                    </div>
-                    <div className='info-block-space' />
-                    <div className='small-button flex-full' onClick={ () => decide('reject') }>
-                      Decline
-                    </div>
+                  <div className='flex'>
+                    Remaining: { applicants.unapproved.length }
+                    <div className='flex-full' />
+                    <img src={ Tile } className={ curationView === 'gallery' ? 'curation-control' : 'curation-control-selected' } onClick={ () => setCurationView('tile') } />
+                    <img src={ Gallery } className={ curationView === 'tile' ? 'margin-left-s curation-control' : 'margin-left-s curation-control-selected' } onClick={ () => setCurationView('gallery') } />
                   </div>
-                  <React.Fragment key={ applicants.unapproved[0].id }>
-                    <Curation nft={ applicants.unapproved[0] } small={ small } blind={ selectedProgram.blindVoting } />
-                  </React.Fragment>
+                  { curationView === 'gallery' &&
+                    <div className='flex margin-top-s'>
+                      <div className='small-button flex-full' onClick={ () => decide('approve') }>
+                        Approve
+                      </div>
+                      <div className='info-block-space' />
+                      <div className='small-button flex-full' onClick={ () => decide('reject') }>
+                        Defer
+                      </div>
+                    </div>
+                  }
+                  { curationView === 'gallery' ?
+                    <React.Fragment key={ applicants.unapproved[0].id }>
+                      <Curation nft={ applicants.unapproved[0] } small={ small } blind={ selectedProgram.blindVoting } />
+                    </React.Fragment>
+                    :
+                    <div className='margin-top-s'>
+                      <ArtList list={ applicants.unapproved } blind={ selectedProgram.blindVoting } type='approve' contentRef={ contentRef } cols={ cols } />
+                    </div>
+                  }
                 </div>
               :
                 <div className='margin-top center'>
@@ -654,35 +726,23 @@ export default function Portal() {
         </div>
       }
       { (viewTab === 'approved' && selectedProgram && !adminTab) &&
-        <div className='margin-top-s'>
+        <div className='margin-top'>
           { applicants && applicants.approved &&
             <div>
               Total: { applicants.approved.length }
-              <div className='margin-top-s' />
-              <React.Fragment key={ applicants.approved.length }>
-                <masonry-layout cols={ cols }>
-                  { applicants.approved.map((item, index) => {
-                      return (<DecidedBlock key={ index } nft={ item } undo={ undo } type='approve' />);
-                  }) }
-                </masonry-layout>
-              </React.Fragment>
+              <div className='margin-top' />
+              <ArtList list={ applicants.approved } blind={ selectedProgram.blindVoting } undo={ undo } type='approve' contentRef={ contentRef } cols={ cols } />
             </div>
           }
         </div>
       }
-      { (viewTab === 'rejected' && selectedProgram && !adminTab) &&
-        <div className='margin-top-s'>
+      { (viewTab === 'deferred' && selectedProgram && !adminTab) &&
+        <div className='margin-top'>
           { applicants && applicants.rejected &&
             <div>
               Total: { applicants.rejected.length }
-              <div className='margin-top-s' />
-              <React.Fragment key={ applicants.rejected.length }>
-                <masonry-layout cols={ cols }>
-                  { applicants.rejected.map((item, index) => {
-                      return (<DecidedBlock key={ index } nft={ item } undo={ undo } type='reject' />);
-                  }) }
-                </masonry-layout>
-              </React.Fragment>
+              <div className='margin-top' />
+              <ArtList list={ applicants.rejected } blind={ selectedProgram.blindVoting } undo={ undo } type='reject' contentRef={ contentRef } cols={ cols } />
             </div>
           }
         </div>

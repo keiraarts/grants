@@ -40,7 +40,17 @@ export default function Register() {
       },
     })
       .then(res => res.json())
-      .then(json => { setSubmitUser(false); setEditingAccount(false); })
+      .then(json => {
+        setSubmitUser(false);
+        if (json.error) setErr(json.error);
+        else {
+          const updateUser = auth;
+          updateUser.username = user.username;
+          setAuth(updateUser);
+          setErr(false);
+          setEditingAccount(false);
+        }
+      })
   }
 
   useEffect(() => {
@@ -152,7 +162,7 @@ export default function Register() {
                 <label className='form__label'>Username</label>
               </div>
               <div className='form__group field'>
-                <input type='email' disabled={ user.emailVerified } className='form__field' placeholder='Email' name='email' id='email' required maxLength='100' value={ user.email } onChange={e => setUser({ ...user, email: e.target.value })} />
+                <input type='email' className='form__field' placeholder='Email' name='email' id='email' required maxLength='100' value={ user.email } onChange={e => setUser({ ...user, email: e.target.value })} />
                 <label className='form__label'>Email</label>
               </div>
               <div className='form__group field'>
@@ -252,6 +262,10 @@ export default function Register() {
               <div className='text-s margin-top-s'>
                 <div><strong>Country</strong></div>
                 <div>{ user.country || '--' }</div>
+              </div>
+              <div className='text-s margin-top-s'>
+                <div><strong>City</strong></div>
+                <div>{ user.city || '--' }</div>
               </div>
               <div className='text-s margin-top-s'>
                 <div><strong>Birth Year</strong></div>

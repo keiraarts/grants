@@ -291,7 +291,7 @@ a {
   min-height: 3rem;
   font-size: 1.5rem;
   box-shadow: 3px 3px 5px #ccc;
-  background-color: rgba(255, 255, 255, 1);
+  background-color: rgba(255, 255, 255, 0.8);
   border-radius: 1rem;
   padding: 1rem;
 }
@@ -307,6 +307,11 @@ a {
 }
 
 .info-block-selected {
+  background-image: repeating-linear-gradient(45deg, #343d46 , #4f5b66 , #65737e , #a7adba , #c0c5ce, #343d46);
+  background-clip: text;
+  animation: rainbow 1000s alternate-reverse linear infinite;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   background-color: rgba(255, 255, 255, 0);
 }
 
@@ -635,6 +640,27 @@ a {
   // height: auto   !important;
 }
 
+.curation-control {
+  width: 2rem;
+  height: 2rem;
+  padding-top: 0.2rem;
+}
+
+.curation-control:hover {
+  opacity: 0.8;
+}
+
+.curation-control:active {
+  opacity: 0.3;
+}
+
+.curation-control-selected {
+  width: 2rem;
+  height: 2rem;
+  padding-top: 0.2rem;
+  opacity: 0.5;
+}
+
 .approve-block {
   display: flex;
   text-align: center;
@@ -665,6 +691,13 @@ a {
 .approve-block:active {
   transform: translate(3px, 3px);
   box-shadow: 1px 1px 1px #ccc;
+}
+
+
+.switch-icon {
+  width: 0.8rem;
+  height: 0.8rem;
+  margin-left: 0.4rem;
 }
 
 .block-info {
@@ -1018,13 +1051,17 @@ input[type=number] {
   // flex-grow: 1;
   font-size: 1rem;
   box-shadow: 3px 3px 5px #ccc;
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: rgba(255, 255, 255, 0.8);
   border-radius: 1rem;
   padding: 0.8rem;
 }
 
 .button-green {
-  background-color: rgb(52, 196, 64);
+  background-color: rgb(152,255,152);
+}
+
+.button-red {
+  background-color: rgb(255,182,193);
 }
 
 .small-button:hover {

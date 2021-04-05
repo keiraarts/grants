@@ -27,7 +27,7 @@ function shuffle(array) {
   return array;
 }
 
-export default function Gallery({ scrollRef }) {
+export default function Gallery() {
   const cols = useStoreState(state => state.app.cols);
 
   const [viewTab, setViewTab] = useState('grantee');
@@ -89,7 +89,7 @@ export default function Gallery({ scrollRef }) {
         <strong>Sevens Foundation</strong>
         <div className='flex-full' />
         <div className='text-s center'>
-          <Link to='/curation' className='small-button text-grey'>Curation</Link>
+          <Link to='/curation' className='small-button'><div className='text-rainbow'>Curation</div></Link>
         </div>
       </div>
       <div className='text-s margin-top-s text-desc'>

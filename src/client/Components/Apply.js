@@ -305,7 +305,7 @@ export default function Application() {
                   </div>
                   <div className='form__group field'>
                     <input type='text' className='form__field' placeholder='Intent' name='intent' id='intent' required maxLength='50' value={ programInfo.passcode } onChange={e => setProgram({ ...programInfo, passcode: e.target.value, isProtected: e.target.value ? true : false })} />
-                    <label className='form__label'>Secret phrase in order to submit</label>
+                    <label className='form__label'>Secret phrase to submit (Optional)</label>
                   </div>
                   <div className='margin-top-s text-s'>
                     <strong>Submissions Open Time</strong><br/>
@@ -478,7 +478,7 @@ export default function Application() {
             { applied.published ?
               <div className='margin-top'><Link to={ `/${ programInfo.url }/${ applied.order }` } className='text-rainbow'>Minted In Exhibition</Link></div>
               :
-              <div className='margin-top text-mid'>Status: { applied.accepted ? 'Accepted!' : 'Pending Curation Review' }</div>
+              <div className='margin-top text-mid'>Status: { applied.finalized ? 'Deferred' : 'Pending Curation Review' }</div>
             }
             <div className='margin-top gallery-container full-width'>
               { !small &&

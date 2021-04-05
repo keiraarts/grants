@@ -248,6 +248,10 @@ const programApplicant = {
         type: Boolean,
         default: false
     },
+    finalized: {
+        type: Boolean,
+        default: false,
+    },
     published: {
         type: Boolean,
         default: false

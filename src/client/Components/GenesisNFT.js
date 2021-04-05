@@ -4,8 +4,6 @@ import OpenMarket from './Market/OpenMarket.js';
 import Secure from '../assets/secure.png';
 import FullScreen from '../assets/fullscreen.png';
 import MinScreen from '../assets/minscreen.png';
-import Play from '../assets/play.png';
-import Pause from '../assets/pause.png';
 import Muted from '../assets/muted.png';
 import Unmuted from '../assets/unmuted.png';
 import Twitter from '../assets/twitter.png';
@@ -107,7 +105,6 @@ const GenesisNFT = ({ small, nft, src, important, hidden, contract }) => {
     if (loaded && video.current) {
       video.current.addEventListener('pause', (e) => {
         video.current.play();
-        // console.log('STOPPED');
       });
     }
   }, [loaded])
@@ -183,15 +180,6 @@ const GenesisNFT = ({ small, nft, src, important, hidden, contract }) => {
               :
               <div className='flex margin-top-s'>
                 <img src={ Secure } className='margin-top-xs frame-control pointer' onClick={ () => openLink(`https://arweave.net/${ nft.arweave }`) } />
-                {/* { video && video.current &&
-                  <div onClick={ () => toggleAudio() } className='pointer'>
-                    { muted ?
-                      <img src={ Muted } className='frame-control' />
-                      :
-                      <img src={ Unmuted } className='frame-control' />
-                    }
-                  </div>
-                } */}
                 <div className='flex-full' />
                 { video && video.current &&
                   <div onClick={ () => toggleAudio() } className='pointer'>

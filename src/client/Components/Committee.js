@@ -20,7 +20,7 @@ export default function Committee() {
       <div className='page-container margin-top'>
         <div className='text-m'>Advisors</div>
         <span className='text-s text-grey pointer' onClick={ () => openLink('https://twitter.com/illestrater_') }>Tim Kang (illestrater)</span>
-        <div className='text-s'>CEO of CUE Music & paradigm pusher</div>
+        <div className='text-s'>Sevens Developer & paradigm pusher</div>
         <span className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://twitter.com/darlington') }>Mike Darlington</span>
         <div className='text-s'>CEO of Monstercat music label & captain NFT gremlin</div>
         <span className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://www.instagram.com/yesladypheonix/') }>Lady PheOnix</span>
@@ -37,6 +37,8 @@ export default function Committee() {
         <div className='text-s'>Professional videographer & NFT collector</div>
         <span className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('http://justinmaller.com/') }>Justin Maller</span>
         <div className='text-s'>Digital Artist & CCO of Deviantart</div>
+        <span className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://parishilton.com/') }>Paris Hilton</span>
+        <div className='text-s'>Entrepreneur & NFT and social pioneer</div>
         <span className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://www.beeple-crap.com/') }>Mike Winkelmann (beeple)</span>
         <div className='text-s'>Renowned digital art director & professional hair trimmer</div>
         <div className='text-m margin-top'>Artists</div>

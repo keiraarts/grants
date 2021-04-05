@@ -227,41 +227,45 @@ const mint = async (applicants, program, organizer) => {
             data: encoded
           }
 
-          await new Promise((resolve, reject) => {
-            web3.eth.accounts.signTransaction(tx, process.env.WALLET_PRIVATE_KEY)
-              .then(signed => {
-                console.log('signed', signed);
-                var tran = web3.eth.sendSignedTransaction(signed.rawTransaction);
+          console.log(applicant);
 
-                  tran.on('confirmation', (confirmationNumber, receipt) => {
-                    if (confirmationNumber > 1) {
-                      tran.off('error');
-                      tran.off('receipt');
-                      tran.off('transactionHash');
-                      tran.off('confirmation');
-                      resolve();
-                    }
-                    console.log('confirmation: ' + confirmationNumber);
-                  });
+          // await new Promise((resolve, reject) => {
+          //   web3.eth.accounts.signTransaction(tx, process.env.WALLET_PRIVATE_KEY)
+          //     .then(signed => {
+          //       console.log('signed', signed);
+          //       var tran = web3.eth.sendSignedTransaction(signed.rawTransaction);
 
-                  tran.on('transactionHash', hash => {
-                    applicant.published = true;
-                    applicant.save();
-                    console.log('hash');
-                    console.log(hash);
-                  });
+          //         tran.on('confirmation', (confirmationNumber, receipt) => {
+          //           if (confirmationNumber > 1) {
+          //             tran.off('error');
+          //             tran.off('receipt');
+          //             tran.off('transactionHash');
+          //             tran.off('confirmation');
+          //             resolve();
+          //           }
+          //           console.log('confirmation: ' + confirmationNumber);
+          //         });
 
-                  tran.on('receipt', receipt => {
-                    console.log('reciept');
-                    console.log(receipt);
-                  });
+          //         tran.on('transactionHash', hash => {
+          //           applicant.published = true;
+          //           applicant.finalized = true;
+          //           applicant.accepted = true;
+          //           applicant.save();
+          //           console.log('hash');
+          //           console.log(hash);
+          //         });
 
-                  tran.on('error', error => {
-                    console.log(error.toString());
-                    throw new Error(error.toString());
-                  });
-              });
-          });
+          //         tran.on('receipt', receipt => {
+          //           console.log('reciept');
+          //           console.log(receipt);
+          //         });
+
+          //         tran.on('error', error => {
+          //           console.log(error.toString());
+          //           throw new Error(error.toString());
+          //         });
+          //     });
+          // });
         }
       }
     }

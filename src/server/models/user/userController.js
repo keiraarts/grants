@@ -150,11 +150,33 @@ exports.searchUsers = (req, res) => {
 
 exports.updateUser = async (req, res) => {
   auth(req.headers.authorization, res, (jwt) => {
-    User.findById(jwt.id, (err, user) => {
+    User.findById(jwt.id, async (err, user) => {
       if (err) return res.json(err);
-      if (!user) return res.status(401).json({ err: 'Authentication error' });
+      if (!user) return res.status(401).json({ error: 'Authentication error' });
+
+      if (!req.body.username || !req.body.email) res.json({ error: 'You are missing some required fields' });
+
+      const existingApplication = await ProgramApplicant.findOne({ user: user._id, finalized: false });
+      if (existingApplication && (!req.body.first || !req.body.last || !req.body.birthYear || !req.body.artistName || !req.body.country ||
+                                 !req.body.countryCode || !req.body.city || !req.body.website || !req.body.twitter || !req.body.instagram)) {
+        return res.json({ error: 'You must have all fields completed until your art submission is processed' });
+      }
+
+      const exists = await User.findOne({ email: { $regex: new RegExp(`^${ req.body.email.toLowerCase().trim() }$`, 'i') } })
+      if (exists && !exists._id.equals(user._id)) return res.json({ error: 'That email already exists' });
+      
+      const exists2 = await User.findOne({ username: { $regex: new RegExp(`^${ req.body.username.toLowerCase().trim() }$`, 'i') } })
+      if (exists2 && !exists2._id.equals(user._id)) return res.json({ error: 'That username already exists' });
+
       user.username = req.body.username;
-      user.email = req.body.email.toLowerCase();
+      if (user.email !== req.body.email.toLowerCase().trim()) {
+        const emailToken = crypto.randomBytes(32).toString('hex');
+        user.emailVerified = false;
+        user.emailToken = emailToken;
+        user.email = req.body.email.toLowerCase().trim();
+        transporter.sendMail(templates.verification(user.email, user.username, user.emailToken));
+      }
+
       user.first = req.body.first;
       user.last = req.body.last;
       user.birthYear = req.body.birthYear;
