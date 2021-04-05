@@ -321,7 +321,7 @@ a {
   animation: rainbow 1000s alternate-reverse linear infinite;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  background-color: rgba(255, 255, 255, 0);
+  // background-color: rgba(255, 255, 255, 0);
 }
 
 .remove-a {
