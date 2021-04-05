@@ -10,7 +10,7 @@ export default function Register() {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const submit = e => {
-    if (!data) setErr('Please provide your username or e-mail');
+    if (!data) setErr('Please provide your username or email');
     e.preventDefault();
     setErr(false);
     setSubmitting(true);
@@ -53,7 +53,7 @@ export default function Register() {
         }
         { submitted &&
           <div className='margin-top-s text-s text-grey'>
-            Your password recovery request has been sent to your registered e-mail!
+            Your password recovery request has been sent to your registered email!
           </div>
         }
       </div>

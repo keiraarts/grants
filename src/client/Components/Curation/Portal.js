@@ -384,7 +384,7 @@ export default function Portal() {
           <div className='text-s font'>
             Are you sure you want to defer these artworks?<br /><br />
             <strong>{ filteredResults.unmintable.length } artworks</strong> will be finalized into the deferred results page and
-            an e-mail notification will be sent about the results being finalized.<br /><br />
+            an email notification will be sent about the results being finalized.<br /><br />
             <div className='center'>
               <div className='small-button' onClick={ () => setDeferConfirm(false) }>Cancel</div><br /><br />
               <div className='margin-top-s small-button' onClick={ () => finalizeDeferred() }>Confirm</div>

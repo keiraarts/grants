@@ -446,20 +446,22 @@ export default function OpenMarket({ tokenId, contract }) {
                 <div className='margin-top-xs'>
                   <input type='submit' value='Change Time' className='small-button' onClick={ () => setShowDatePicker(true) } />  
                 </div>
-                <DatePicker
-                  dateConfig={ dateConfig }
-                  isOpen={ showDatePicker }
-                  confirmText='Confirm'
-                  cancelText='Cancel'
-                  min={ new Date() }
-                  showHeader={ true }
-                  value={ date }
-                  headerFormat='YYYY/MM/DD hh:mm'
-                  onChange={ (e) => setDate(e) }
-                  onSelect={ () => setShowDatePicker(false) }
-                  onCancel={ () => setShowDatePicker(false) }
-                  isPopup={ true }
-                />
+                <div className={ `${ (showDatePicker) ? 'absolute-container' : 'hidden absolute-container' }` }>
+                  <DatePicker
+                    dateConfig={ dateConfig }
+                    isOpen={ showDatePicker }
+                    confirmText='Confirm'
+                    cancelText='Cancel'
+                    min={ new Date() }
+                    value={ date }
+                    customHeader={ (<div>{ moment(date).format('ddd MMM Do h:mm A') }</div>) }
+                    showCaption
+                    onChange={ (e) => setDate(e) }
+                    onSelect={ () => setShowDatePicker(false) }
+                    onCancel={ () => setShowDatePicker(false) }
+                    isPopup={ false }
+                  />
+                </div>
                 { err &&
                   <div className='margin-top-s text-s text-err'>
                     { err }

@@ -202,6 +202,40 @@ export default function Application() {
 
   return (
     <div className='content-block'>
+      { programInfo &&
+        <div className={ `${ (showStartDate) ? 'absolute-container' : 'hidden absolute-container' }` }>
+          <DatePicker
+            dateConfig={ dateConfig }
+            isOpen={ showStartDate }
+            confirmText='Confirm'
+            cancelText='Cancel'
+            customHeader={ (<div>{ moment(programInfo.open).format('ddd MMM Do h:mm A') }</div>) }
+            showCaption
+            value={ new Date(programInfo.open || new Date()) }
+            onChange={ (e) => setProgram({ ...programInfo, open: new Date(new Date(e).setMinutes(0)) }) }
+            onSelect={ () => setShowStartDate(false) }
+            onCancel={ () => setShowStartDate(false) }
+            isPopup={ false }
+          />
+        </div>
+      }
+      { programInfo &&
+        <div  className={ `${ (showEndDate) ? 'absolute-container' : 'hidden absolute-container' }` }>
+          <DatePicker
+            dateConfig={ dateConfig }
+            isOpen={ showEndDate }
+            confirmText='Confirm'
+            cancelText='Cancel'
+            customHeader={ (<div>{ moment(programInfo.close).format('ddd MMM Do h:mm A') }</div>) }
+            showCaption
+            value={ new Date(programInfo.close || new Date()) }
+            onChange={ (e) => setProgram({ ...programInfo, close: new Date(new Date(e).setMinutes(0)) }) }
+            onSelect={ () => setShowEndDate(false) }
+            onCancel={ () => setShowEndDate(false) }
+            isPopup={ false }
+          />
+        </div>
+      }
       <Resizer />
       <ReactModal
         isOpen={ confirmOpen }
@@ -219,32 +253,6 @@ export default function Application() {
       <div>
         { programInfo &&
           <div>
-            <DatePicker
-              dateConfig={ dateConfig }
-              isOpen={ showStartDate }
-              confirmText='Confirm'
-              cancelText='Cancel'
-              showHeader={ true }
-              value={ new Date(programInfo.open || new Date()) }
-              headerFormat='YYYY/MM/DD hh'
-              onChange={ (e) => setProgram({ ...programInfo, open: new Date(new Date(e).setMinutes(0)) }) }
-              onSelect={ () => setShowStartDate(false) }
-              onCancel={ () => setShowStartDate(false) }
-              isPopup={ true }
-            />
-            <DatePicker
-              dateConfig={ dateConfig }
-              isOpen={ showEndDate }
-              confirmText='Confirm'
-              cancelText='Cancel'
-              showHeader={ true }
-              value={ new Date(programInfo.close || new Date()) }
-              headerFormat='YYYY/MM/DD hh'
-              onChange={ (e) => setProgram({ ...programInfo, close: new Date(new Date(e).setMinutes(0)) }) }
-              onSelect={ () => setShowEndDate(false) }
-              onCancel={ () => setShowEndDate(false) }
-              isPopup={ true }
-            />
             <div className='text-l flex'>
               <strong>{ programInfo.name }</strong>
               <div className='flex-full' />
@@ -461,7 +469,7 @@ export default function Application() {
             { submitted &&
               <div className='margin-top text-s text-rainbow'>
                 Thank you for submitting your artwork!<br />
-                We will get back to you once we announce an acceptance date via e-mail or social direct message.
+                The curation team is excited to check out your submission :)
               </div>
             }
             <div>
