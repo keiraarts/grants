@@ -19,7 +19,7 @@ function openLink(page)
   win.focus();
 }
 
-const GenesisNFT = ({ small, nft, src, important, hidden, contract }) => {
+const ExhibitionNFT = ({ small, nft, src, important, hidden, contract }) => {
   const [loaded, setLoaded] = useState(false);
   const video = useRef();
 
@@ -118,7 +118,7 @@ const GenesisNFT = ({ small, nft, src, important, hidden, contract }) => {
   return (
     <div className={ `margin-top flex full-width ${ !small && 'side-space' }` } style={ { display: hidden && 'none' } }>
       { nft ?
-        <div className='margin-top-l gallery-container full-width'>
+        <div className='gallery-container full-width'>
           { (!isFullScreen && !small) &&
             <div className={ `gallery-description` }>
               <div className='text-s'>
@@ -233,4 +233,4 @@ const GenesisNFT = ({ small, nft, src, important, hidden, contract }) => {
   );
 }
 
-export default GenesisNFT;
+export default ExhibitionNFT;

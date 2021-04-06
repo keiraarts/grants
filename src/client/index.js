@@ -27,7 +27,7 @@ import Login from "./Components/Login";
 import Forgot from "./Components/Forgot";
 import RecoverAccount from "./Components/RecoverAccount";
 import Account from "./Components/Account";
-import Genesis from "./Components/Genesis";
+import Exhibition from "./Components/Exhibition";
 import VerifyEmail from "./Components/VerifyEmail";
 
 import './styles.scss';
@@ -72,7 +72,7 @@ const App = () => {
                   <Route path="/recoveraccount/:token" exact component={ RecoverAccount } />
                   <Route path="/account" exact component={ Account } />
                   <Route path="/verifyemail/:id" component={ VerifyEmail } />
-                  <Route path="/:url/:id" component={ Genesis } />
+                  <Route path="/:url/:id" component={ Exhibition } />
                 </Switch>
                 <Footer/>
               </WaitForStateRehydration>

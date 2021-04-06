@@ -3,7 +3,7 @@ import { useSwipeable } from 'react-swipeable';
 import { useParams, useLocation, useHistory } from "react-router-dom";
 import { useStoreState } from 'easy-peasy';
 import { Link } from "react-router-dom";
-import GenesisNFT from './GenesisNFT.js';
+import GenesisNFT from './ExhibitionNFT.js';
 import WalletConnect from './WalletConnect.js';
 import Resizer from './Tools/Resizer.js';
 import { apiUrl } from '../baseUrl';
@@ -12,7 +12,7 @@ import '../styles.scss';
 
 const NFT = React.memo(GenesisNFT);
 
-export default function Genesis() {
+export default function Exhibition() {
   const history = useHistory();
   const small = useStoreState(state => state.app.small);
   const { url, id } = useParams();
@@ -21,7 +21,7 @@ export default function Genesis() {
   const type = location[location.length - 2] === 'gallery' ? 'grantee' : 'nominee';
 
   const [gallery, setGallery] = useState([]);
-  const [contract, setContract] = useState(null);
+  const [exhibition, setExhibition] = useState({});
   useEffect(() => {
     fetch(`${ apiUrl() }/program/getGallery`, {
       method: 'POST',
@@ -30,7 +30,7 @@ export default function Genesis() {
     }).then(res => res.json())
     .then(json => {
       if (json && json.gallery) setGallery(json.gallery)
-      if (json && json.contract) setContract(json.contract);
+      if (json && json.contract) setExhibition({ ...json, gallery: undefined });
     });
   }, [])
 
@@ -136,15 +136,31 @@ export default function Genesis() {
     preventDefaultTouchmoveEvent: true,
   });
 
+  const [provider, setProvider] = useState(null);
+  const [seaport, setSeaport] = useState(null);
+  async function connectWallet() {
+    console.log('CONNECTING');
+    if (window.ethereum) {
+      const createdProvider = window.web3.currentProvider;
+      if (!createdProvider.selectedAddress) window.ethereum.enable();
+      else {
+        const createdSeaport = new OpenSeaPort(createdProvider, {
+          networkName: Network.Main
+        })
+
+        setProvider(createdProvider);
+        setSeaport(createdSeaport);
+        getBalance(createdProvider.selectedAddress, createdSeaport);
+      }
+    }
+  }
+
   return (
     <div className='content-block' { ...handlers }>
       <Resizer />
       <WalletConnect />
-      <div className='center text-m text-b'>
-        <strong>Genesis Grant { type !== 'grantee' && 'Nominee ' }Exhibition</strong>
-      </div>
-      <div className='margin-top-s flex'>
-        <Link to={ `/${ url }/${ switchPage('previous') }` } className='relative' onClick={ () => updatePreload('previous', order) }>
+      <div className='flex'>
+        <Link to={ `/${ url }/${ switchPage('previous') }` } className='relative margin-top-s' onClick={ () => updatePreload('previous', order) }>
           <div className='round'>
             <div id='cta'>
               <span className='arrow-left segunda previous'></span>
@@ -152,8 +168,17 @@ export default function Genesis() {
             </div>
           </div>
         </Link>
-        <div className='flex-full' />
-        <Link to={ `/${ url }/${ switchPage('next') }` } className='relative' onClick={ () => updatePreload('next', order) }>
+        <div className='flex-full'>
+          <div className='center text-m text-b margin-top-minus'>
+            { exhibition.organizer &&
+              <Link to={ `/curator/${ exhibition.organizerUrl }` } className='text-rainbow text-s margin-top-minus'>
+                <strong>{ exhibition.organizer }</strong>
+              </Link>
+            }
+            { exhibition.name && <div><strong>{ exhibition.name } Exhibition</strong></div> }
+          </div>
+        </div>
+        <Link to={ `/${ url }/${ switchPage('next') }` } className='relative margin-top-s' onClick={ () => updatePreload('next', order) }>
           <div className='round arrow-right'>
             <div id='cta'>
               <span className='arrow primera next'></span>
@@ -164,9 +189,9 @@ export default function Genesis() {
       </div>
       { (gallery && gallery.length) ?
         <div className='gallery-min-height'>
-          <NFT key={ order - 2 } small={ small } nft={ gallery[order - 2] } src={ src1 } contract={ contract } important hidden />
-          <NFT key={ order - 1} small={ small } nft={ gallery[order - 1] } src={ src2 } contract={ contract } important />
-          <NFT key={ order } small={ small } nft={ gallery[order] } src={ src3 } contract={ contract } important hidden />
+          <NFT key={ order - 2 } small={ small } nft={ gallery[order - 2] } src={ src1 } contract={ exhibition.contract } important hidden />
+          <NFT key={ order - 1} small={ small } nft={ gallery[order - 1] } src={ src2 } contract={ exhibition.contract } important />
+          <NFT key={ order } small={ small } nft={ gallery[order] } src={ src3 } contract={ exhibition.contract } important hidden />
         </div>
         :
         <div className='flex center'>

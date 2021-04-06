@@ -452,13 +452,9 @@ export default function Application() {
                 }
               </div>
             }
-            { err ? 
+            { err && 
               <div className='margin-top text-s text-err'>
                 { err }
-              </div>
-            :
-              <div className='margin-top text-s text-grey'>
-                {/* <i>Submissions are currently closed until early April</i> */}
               </div>
             }
             { (submitting && !submitted) &&

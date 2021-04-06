@@ -216,8 +216,8 @@ export default function OpenMarket({ tokenId, contract }) {
     setUnverified(false);
     connectWallet();
     if (provider && provider.selectedAddress) {
-      if (auth.wallet && auth.wallet.toLowerCase() !== provider.selectedAddress.toLowerCase()) setUnverified(true);
-      else if (bid <= 0) setBidErr('Your bid must be higher than 0 WETH');
+      // if (auth.wallet && auth.wallet.toLowerCase() !== provider.selectedAddress.toLowerCase()) setUnverified(true);
+      if (bid <= 0) setBidErr('Your bid must be higher than 0 WETH');
       else {
         setBidErr(false);
         await seaport.createBuyOrder({
@@ -251,8 +251,8 @@ export default function OpenMarket({ tokenId, contract }) {
   const createAuction = async () => {
     connectWallet();
     if (provider && provider.selectedAddress) {
-      if (auth.wallet && auth.wallet.toLowerCase() !== provider.selectedAddress.toLowerCase()) setUnverified(true);
-      else if (reserve < 1.07) setBidErr('Your reserve price must start at 1 WETH');
+      // if (auth.wallet && auth.wallet.toLowerCase() !== provider.selectedAddress.toLowerCase()) setUnverified(true);
+      if (reserve < 1.07) setBidErr('Your reserve price must start at 1 WETH');
       else {
         setBidErr(false);
         await seaport.createSellOrder({
@@ -275,8 +275,8 @@ export default function OpenMarket({ tokenId, contract }) {
   const listArt = async () => {
     connectWallet();
     if (provider && provider.selectedAddress) {
-      if (auth.wallet && auth.wallet.toLowerCase() !== provider.selectedAddress.toLowerCase()) setUnverified(true);
-      else if (list <= 0) setBidErr('Your list price must be higher than 0 WETH');
+      // if (auth.wallet && auth.wallet.toLowerCase() !== provider.selectedAddress.toLowerCase()) setUnverified(true);
+      if (list <= 0) setBidErr('Your list price must be higher than 0 WETH');
       else {
         setBidErr(false);
         await seaport.createSellOrder({
@@ -324,15 +324,15 @@ export default function OpenMarket({ tokenId, contract }) {
   const purchase = async (order) => {
     connectWallet();
     if (provider && provider.selectedAddress) {
-      if (auth.wallet && auth.wallet.toLowerCase() !== provider.selectedAddress.toLowerCase()) setUnverified(true);
-      else {
-        if (!order) order = listed;
-        const foundOrder = seaportOrders.find(o => o.hash.toLowerCase() === order.order_hash);
-        await seaport.fulfillOrder({
-          order: foundOrder,
-          accountAddress: provider.selectedAddress,
-        })
-      }
+      // if (auth.wallet && auth.wallet.toLowerCase() !== provider.selectedAddress.toLowerCase()) setUnverified(true);
+      // else {
+      if (!order) order = listed;
+      const foundOrder = seaportOrders.find(o => o.hash.toLowerCase() === order.order_hash);
+      await seaport.fulfillOrder({
+        order: foundOrder,
+        accountAddress: provider.selectedAddress,
+      })
+      // }
     }
   }
 
