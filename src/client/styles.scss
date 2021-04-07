@@ -254,11 +254,9 @@ a {
 }
 
 .page-logo {
-  display: block;
+  object-fit: cover;
   max-height: 500px;
   max-width: 100%;
-  width: auto;
-  height: auto;
 }
 
 .social-icon-web {
