@@ -392,7 +392,7 @@ export default function Application() {
             </div>
             <div className='form__group field'>
               <input type='text' className='form__field' placeholder='Name' name='name' id='name' maxLength='100' onChange={e => setData({ ...data, canvas: e.target.value })} />
-              <label className='form__label'>Tools Used (e.g. Photoshop, Cinema 4D, Octane Render)</label>
+              <label className='form__label'>Tools Used (e.g. C4D, Octane)</label>
             </div>
             <div className='form__group field'>
               <label className='file__label'>Art Submission (JPG, PNG, GIF, WEBP, or MP4 - Max 77MB)</label>

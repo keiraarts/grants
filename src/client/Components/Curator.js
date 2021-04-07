@@ -94,8 +94,11 @@ export default function Organizer() {
         { organizer &&
           <div>
             { isAdmin &&
-              <div className='text-s center text-grey pointer' onClick={ () => setEditing(true) }>
-                Edit Page
+              <div className='flex'>
+                <div className='flex-full' />
+                <div className='text-s center text-grey pointer' onClick={ () => setEditing(true) }>
+                  Edit Page
+                </div>
               </div>
             }
             <div className='text-l flex center'>
@@ -112,7 +115,7 @@ export default function Organizer() {
                     { organizer.instagram && <img src={ Instagram } className='social-icon' alt='Instagram' onClick={ () => openLink(`https://instagram.com/${ organizer.instagram }`) } /> }
                     { organizer.email && <a href={ `mailto:${ organizer.email }` }><img src={ Email } className='social-icon' alt='Email' /></a> }
                   </div>
-                  <div>
+                  <div className='margin-top-s'>
                     <strong>About { organizer.logo ? organizer.name : '' }</strong>
                   </div>
                   <div className='margin-top-s text-s line-breaks'>
