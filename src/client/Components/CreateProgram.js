@@ -64,7 +64,7 @@ export default function Application() {
     <div className='content-block'>
       <Resizer />
       <div className='text-l text-b'>
-        Request a Program
+        Create a Grant Program
       </div>
       <div className='margin-top'>
         <div className='ethos-text'>
@@ -151,8 +151,11 @@ export default function Application() {
             </div>
           }
           { submitted &&
-            <div className='margin-top text-s text-rainbow'>
-              Thank you for submitting your program! We will be in touch soon.<br />
+            <div>
+              <div className='margin-top text-s text-rainbow'>
+                Thank you for submitting your program! Please let us know when you would like your exhibition to be listed publicly.
+              </div>
+              <Link to={ `/apply/${ data.url }` } className='margin-top-s text-grey'>You can navigate to your page to edit your details!</Link>
             </div>
           }
           { (!submitting && !submitted) && <input type='submit' value='Submit Program Request' className='submit-button' /> }
