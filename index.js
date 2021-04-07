@@ -58,6 +58,8 @@ app.use((req, res) => {
     res.sendFile(`${ __dirname }${ path.join('/dist/index.html') }`);
   } else if (route === 'social.png') {
     res.sendFile(`${ __dirname }${ path.join('/public/social.png') }`);
+  } else {
+    res.sendFile(`${ __dirname }${ path.join('/dist/index.html') }`);
   }
 })
 
