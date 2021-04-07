@@ -254,8 +254,11 @@ a {
 }
 
 .page-logo {
+  display: block;
   max-height: 500px;
   max-width: 100%;
+  width: auto;
+  height: auto;
 }
 
 .social-icon-web {
@@ -1246,6 +1249,14 @@ input[type=number] {
     padding: 0 1rem;
   }
 
+  .social-icon-web {
+    width: 1.6rem;
+    height: 1.6rem;
+    padding: 0 1rem;
+    margin-top: 0.2rem;
+    margin-right: 0.5rem;
+  }
+
   .info-block-container {
     margin: 0 2rem 0 2rem;
   }
@@ -1364,6 +1375,14 @@ input[type=number] {
     width: 2rem;
     height: 2rem;
     padding: 0 1rem;
+  }
+
+  .social-icon-web {
+    width: 1.6rem;
+    height: 1.6rem;
+    padding: 0 1rem;
+    margin-top: 0.2rem;
+    margin-right: 0.5rem;
   }
 
   .header-nav {
