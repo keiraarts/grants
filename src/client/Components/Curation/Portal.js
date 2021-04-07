@@ -296,6 +296,7 @@ export default function Portal() {
 
   const updateMintTo = (mintToArtist) => {
     setProgramAdmin({ ...programAdmin, mintToArtist })
+    setSelectedProgram({ ...selectedProgram, mintToArtist })
     fetch(`${ apiUrl() }/program/mintToArtist`, {
       method: 'POST',
       body: JSON.stringify({ program: selectedProgram.id, mintToArtist }),
@@ -365,7 +366,7 @@ export default function Portal() {
           <div className='text-s font'>
             Are you sure you want to mint to your exhibition?<br /><br />
             You will be minting { filteredResults.mintable.length } artworks that will
-            end up in the <strong>{ programAdmin.mintToArtist ? `artist's wallet` : `curator's wallet` }</strong><br /><br />
+            end up in the <strong>{ selectedProgram.mintToArtist ? `artist's wallet` : `curator's wallet` }</strong><br /><br />
             <div className='center'>
               <div className='small-button button-red' onClick={ () => setMintConfirm(false) }>Cancel</div><br /><br />
               <div className='margin-top-s small-button button-green' onClick={ () => mint() }>Confirm</div>
@@ -533,7 +534,7 @@ export default function Portal() {
               }
             </div>
             { !programAdmin.contractAddress &&
-              <div className='small-button margin-left-s'>Create</div>
+              <div className='small-button margin-left-s'>Create (Coming Soon ❤️)</div>
             }
           </div>
           <div className='margin-top text-mid flex'>

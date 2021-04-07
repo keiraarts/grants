@@ -189,7 +189,7 @@ function verification(email, username, token) {
   };
 }
 
-function applicationConfirmation(email) {
+function applicationConfirmation(email, name) {
   return {
     from: '"Sevens Foundation ❤️" <love@grants.art>',
     to: email,
@@ -336,7 +336,7 @@ function applicationConfirmation(email) {
       </table><table class="module" role="module" data-type="text" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="900357c7-706f-4e71-869c-7df9bcb4a718">
         <tbody>
           <tr>
-            <td style="padding:18px 0px 18px 0px; line-height:22px; text-align:inherit;" height="100%" valign="top" bgcolor="" role="module-content"><div><div style="font-family: inherit"><span style="font-family: georgia,serif">Your application has been successfully submitted! You will hear back from us soon, thank you.</span></div><div></div></div></td>
+            <td style="padding:18px 0px 18px 0px; line-height:22px; text-align:inherit;" height="100%" valign="top" bgcolor="" role="module-content"><div><div style="font-family: inherit"><span style="font-family: georgia,serif">Thank you for submitting your art piece to the ${ name } Exhibition, you can check the status on the submission page and will update once the curation is complete!</span></div><div></div></div></td>
           </tr>
         </tbody>
       </table><div data-role="module-unsubscribe" class="module" role="module" data-type="unsubscribe" style="color:#444444; font-size:12px; line-height:20px; padding:16px 16px 16px 16px; text-align:Center;" data-muid="4e838cf3-9892-4a6d-94d6-170e474d21e5"><div class="Unsubscribe--addressLine"></div><p style="font-size:12px; line-height:20px;"><a class="Unsubscribe--unsubscribeLink" href="{{{unsubscribe}}}" target="_blank" style="">Unsubscribe</a></p></div></td>

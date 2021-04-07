@@ -438,7 +438,7 @@ exports.submitApplication = async (req, res) => {
   newApplicant.save((err, data) => {
     if (err) return res.status(500).json(err);
     else {
-      transporter.sendMail(templates.applicationConfirmation(applicant.email));
+      transporter.sendMail(templates.applicationConfirmation(user.email, program.name));
       return res.json(true);
     }
   });
@@ -479,7 +479,7 @@ exports.getGallery = async (req, res) => {
 
 exports.getCurationPrograms = async (req, res) => {
   const jwt = auth(req.headers.authorization, res, (jwt) => jwt);
-  const programs = await Program.find({ curators: jwt.id }).select('organizer name url perpetual passByVotes topThreshold voteThreshold blindVoting mintInProgress').populate('organizers');
+  const programs = await Program.find({ curators: jwt.id }).select('organizer name url perpetual passByVotes topThreshold voteThreshold blindVoting mintToArtist mintInProgress').populate('organizers');
   if (!programs.length) return res.status(401).json({ error: 'Authentication error' });
 
   return res.json({ success: programs });

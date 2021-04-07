@@ -7,6 +7,8 @@ import moment from 'moment';
 import ReactAutolinker from 'react-autolinker';
 import ReactModal from 'react-modal';
 import DatePicker from 'react-mobile-datepicker';
+import MP4Box from 'mp4box';
+import muxjs from 'mux.js';
 
 import Resizer from './Tools/Resizer.js';
 
@@ -130,16 +132,34 @@ export default function Application() {
     const ext = target.value.substr(target.value.length - 3).toLowerCase();
     reader.readAsDataURL(file);
     let responsetype;
-    reader.onload = () => {
+    reader.onload = async () => {
       if (ext === 'jpg' || ext === 'jpeg') responsetype = 'image/jpeg';
       if (ext === 'png') responsetype = 'image/png';
       if (ext === 'gif') responsetype = 'image/gif';
       if (ext === 'ebp') responsetype = 'image/webp';
-      if (ext === 'mp4') responsetype = 'video/mp4';
+      if (ext === 'mp4') {
+        responsetype = 'video/mp4';
+        // const mp4boxfile = MP4Box.createFile();
+        // mp4boxfile.onReady = (info) => {
+        //   if (info && info.mime) {
+        //     console.log('GOT INFO', info);
+        //   }
+        // }
 
-      if (file.size < 120000000 || (type === 'thumbnail' && file.size < 32000000)) {
+        // const read = new FileReader();
+        // const fileData = new Blob([file]);
+        // read.readAsArrayBuffer(fileData);
+        // read.onload = () => {
+        //   console.log(read.result);
+        //   console.log(muxjs.mp4.tools.inspect(new Uint8Array(read.result)));
+        //   read.result.fileStart = 0;
+        //   // mp4boxfile.appendBuffer(read.result);
+        // }
+      }
+
+      if (file.size < 120000000) {
         if (responsetype) {
-          setData({ ...data, art: reader.result, ext })
+          setData({ ...data, art: reader.result, ext, key: Math.random() })
         } else {
           setErr('File type unsupported');
         }
@@ -426,7 +446,7 @@ export default function Application() {
                     <div className='frame gallery-art-container'>
                       <div className='frame-shadow'>
                         { (data.ext === 'mp4' || data.ext === 'mov') ?
-                          <video muted loop autoPlay webkit-playsinline='true' playsInline className='gallery-art'>
+                          <video muted loop autoPlay webkit-playsinline='true' playsInline className='gallery-art' key={ data.key }>
                             <source src={ data.art } />
                             Sorry, your browser doesn't support embedded videos.
                           </video>
