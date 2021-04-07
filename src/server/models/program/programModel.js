@@ -27,12 +27,10 @@ const organizer = {
     email: {
         type:  String,
         trim:  true,
-        required: true,
     },
     website: {
         type:  String,
         trim:  true,
-        required: true,
     },
     twitter: {
         type:  String,

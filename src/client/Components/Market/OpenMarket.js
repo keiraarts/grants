@@ -510,7 +510,7 @@ export default function OpenMarket({ tokenId, contract }) {
             <div className='flex'> 
               <div className='form__group field'>
                 <input type='number' className='form__field' placeholder='Bid Amount' name='amount' id='amount' required maxLength='100' onChange={e => { setBid(e.target.value); setBidErr(null); } } />
-                <label className='form__label_s'>Bid Amount { balance ? `(${ balance } WETH)` : '(WETH)' }</label>
+                <label className='form__label_s'>Bid Amount { balance !== null ? `(${ balance } WETH)` : '(WETH)' }</label>
               </div>
               &nbsp;<input type='submit' value='Place Bid' className='button-min-size small-button' onClick={ placeBid } />
             </div>

@@ -99,7 +99,7 @@ exports.createProgram = async (req, res) => {
     org = new Organizer({
       admins:       [jwt.id],
       name:         req.body.orgName,
-      url:          doDashes(req.body.url),
+      url:          doDashes(req.body.orgName),
       about:        req.body.about,
       email:        req.body.email,
       website:      req.body.website,
@@ -113,7 +113,7 @@ exports.createProgram = async (req, res) => {
   const newProgram = new Program({
     organizers:   [org._id],
     name:         req.body.name,
-    url:          req.body.url,
+    url:          doDashes(req.body.url),
     description:  req.body.description,
     logistics:    req.body.logistics,
     criteria:     req.body.criteria,

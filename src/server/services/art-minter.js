@@ -27,10 +27,6 @@ const mainnet = `https://mainnet.infura.io/v3/${process.env.INFURA}`
 const web3 = new Web3( new Web3.providers.HttpProvider(mainnet) )
 
 web3.eth.defaultAccount = process.env.WALLET
-const grantee = false;
-// let CONTRACT_ADDRESS
-// if (grantee) CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS;
-// else CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS_NOMINEE;
 
 const getCurrentGasPrices = async () => {
   let response = await axios.get('https://ethgasstation.info/json/ethgasAPI.json')
@@ -200,6 +196,7 @@ const mint = async (applicants, program, organizer) => {
           }
 
           applicant.arweave = transaction.id;
+          console.log(metadataTx.id);
 
           const mintTo = program.mintToArtist ? user.wallet : organizer.wallet;
           const batchMint = Contract.methods.batchMint(mintTo, Number(1), metadataTx.id, Number(0), false)
@@ -229,43 +226,43 @@ const mint = async (applicants, program, organizer) => {
 
           console.log(applicant);
 
-          // await new Promise((resolve, reject) => {
-          //   web3.eth.accounts.signTransaction(tx, process.env.WALLET_PRIVATE_KEY)
-          //     .then(signed => {
-          //       console.log('signed', signed);
-          //       var tran = web3.eth.sendSignedTransaction(signed.rawTransaction);
+          await new Promise((resolve, reject) => {
+            web3.eth.accounts.signTransaction(tx, process.env.WALLET_PRIVATE_KEY)
+              .then(signed => {
+                console.log('signed', signed);
+                var tran = web3.eth.sendSignedTransaction(signed.rawTransaction);
 
-          //         tran.on('confirmation', (confirmationNumber, receipt) => {
-          //           if (confirmationNumber > 1) {
-          //             tran.off('error');
-          //             tran.off('receipt');
-          //             tran.off('transactionHash');
-          //             tran.off('confirmation');
-          //             resolve();
-          //           }
-          //           console.log('confirmation: ' + confirmationNumber);
-          //         });
+                  tran.on('confirmation', (confirmationNumber, receipt) => {
+                    if (confirmationNumber > 1) {
+                      tran.off('error');
+                      tran.off('receipt');
+                      tran.off('transactionHash');
+                      tran.off('confirmation');
+                      resolve();
+                    }
+                    console.log('confirmation: ' + confirmationNumber);
+                  });
 
-          //         tran.on('transactionHash', hash => {
-          //           applicant.published = true;
-          //           applicant.finalized = true;
-          //           applicant.accepted = true;
-          //           applicant.save();
-          //           console.log('hash');
-          //           console.log(hash);
-          //         });
+                  tran.on('transactionHash', hash => {
+                    applicant.published = true;
+                    applicant.finalized = true;
+                    applicant.accepted = true;
+                    applicant.save();
+                    console.log('hash');
+                    console.log(hash);
+                  });
 
-          //         tran.on('receipt', receipt => {
-          //           console.log('reciept');
-          //           console.log(receipt);
-          //         });
+                  tran.on('receipt', receipt => {
+                    console.log('reciept');
+                    console.log(receipt);
+                  });
 
-          //         tran.on('error', error => {
-          //           console.log(error.toString());
-          //           throw new Error(error.toString());
-          //         });
-          //     });
-          // });
+                  tran.on('error', error => {
+                    console.log(error.toString());
+                    throw new Error(error.toString());
+                  });
+              });
+          });
         }
       }
     }

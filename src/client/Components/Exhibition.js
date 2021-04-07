@@ -18,11 +18,11 @@ export default function Exhibition() {
   const { url, id } = useParams();
   const order = Number(id);
   const location = useLocation().pathname.split('/');
-  const type = location[location.length - 2] === 'gallery' ? 'grantee' : 'nominee';
 
-  const [gallery, setGallery] = useState([]);
+  const [gallery, setGallery] = useState(null);
   const [exhibition, setExhibition] = useState({});
   useEffect(() => {
+    console.log('GETTING', url);
     fetch(`${ apiUrl() }/program/getGallery`, {
       method: 'POST',
       body: JSON.stringify({ program: url }),
@@ -30,7 +30,7 @@ export default function Exhibition() {
     }).then(res => res.json())
     .then(json => {
       if (json && json.gallery) setGallery(json.gallery)
-      if (json && json.contract) setExhibition({ ...json, gallery: undefined });
+      if (json && json.name) setExhibition({ ...json, gallery: undefined });
     });
   }, [])
 
@@ -113,7 +113,7 @@ export default function Exhibition() {
 
   function switchPage(direction) {
     if (id === '1' && direction === 'previous') return id;
-    else if (direction === 'next' && Number(id) === gallery.length) return id;
+    else if (gallery && direction === 'next' && Number(id) === gallery.length) return id;
     else if (direction === 'next') return Number(id) + 1;
     else return Number(id) - 1;
   }
@@ -195,7 +195,14 @@ export default function Exhibition() {
         </div>
         :
         <div className='flex center'>
-          <div className='block-loading'><div className='loading'><div></div><div></div></div></div>
+          { gallery ? 
+            <div className='margin-top-l'>
+              <div>There are no art pieces in this exhibition yet</div>
+              <Link to={ `/apply/${ url } ` } className='margin-top text-grey'>You may submit your artwork here!</Link>
+            </div>
+          :
+            <div className='block-loading'><div className='loading'><div></div><div></div></div></div>
+          }
         </div>
       }
       <div className='margin-top-l' />

@@ -39,8 +39,8 @@ export default function Application() {
   const [err, setErr] = useState(false);
   const submit = e => {
     e.preventDefault();
-    if (org && (!data.name || !data.url || !data.description || !data.logistics || !data.criteria)) setErr('Please complete all required fields!');
-    else if (!org && (!data.orgName || !data.about || !data.email || !data.website || !data.name ||
+    if (org && (!data.name || !data.url || !data.description || !data.logistics || !data.criteria)) setErr('Please complete all required fields');
+    else if (!org && (!data.orgName || !data.about || !data.name ||
              !data.url || !data.description || !data.logistics || !data.criteria)) setErr('Please complete all required fields');
     else if (!auth || !auth.username) setErr('You must be logged in to submit');
     else {
@@ -91,15 +91,15 @@ export default function Application() {
                 <label className='form__label'>About (2000 Chars)</label>
               </div>
               <div className='form__group field'>
-                <input type='email' className='form__field' placeholder='Email' name='email' id='email' required maxLength='100' onChange={e => setData({ ...data, email: e.target.value })} />
-                <label className='form__label'>Public / Contact Email</label>
+                <input type='email' className='form__field' placeholder='Email' name='email' id='email' maxLength='100' onChange={e => setData({ ...data, email: e.target.value })} />
+                <label className='form__label'>Public / Contact Email*</label>
               </div>
               <div className='form__group field'>
-                <input type='url' className='form__field' placeholder='URL' name='url' id='url' required maxLength='100' onChange={e => setData({ ...data, website: e.target.value })} />
-                <label className='form__label'>Website</label>
+                <input type='url' className='form__field' placeholder='URL' name='url' id='url' maxLength='100' onChange={e => setData({ ...data, website: e.target.value })} />
+                <label className='form__label'>Website*</label>
               </div>
               <div className='form__group field'>
-                <input type='text' className='form__field' placeholder='Twitter' name='twitter' id='twitter' required maxLength='100' onChange={e => setData({ ...data, twitter: e.target.value })} />
+                <input type='text' className='form__field' placeholder='Twitter' name='twitter' id='twitter' maxLength='100' onChange={e => setData({ ...data, twitter: e.target.value })} />
                 <label className='form__label'>Twitter*</label>
               </div>
               <div className='text-s'>
@@ -126,7 +126,7 @@ export default function Application() {
             <label className='form__label'>URL Permalink</label>
           </div>
           <div className='text-s margin-top-s'>
-            Program Applicant URL: { `https://grants.art/apply/${ data.url ? data.url : '' } ` }
+            Exhibition URL: { `https://grants.art/${ data.url ? data.url : '' } ` }
           </div>
           <div className='form__group field'>
             <textarea type='text' className='form__field intent-field' placeholder='Intent' name='intent' id='intent' required maxLength='2000' onChange={e => setData({ ...data, description: e.target.value })} />

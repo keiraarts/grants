@@ -92,25 +92,27 @@ export default function Organizer() {
       <div>
         { organizer &&
           <div>
-            <div className='text-l flex'>
+            { isAdmin &&
+              <div className='text-s center text-grey pointer' onClick={ () => setEditing(true) }>
+                Edit Page
+              </div>
+            }
+            <div className='text-l flex center'>
               { (organizer.logo && !organizer.ext) && <img className='page-logo' src={ `https://cdn.grants.art/${ organizer.logo }` } /> }
               { (organizer.logo && organizer.ext) && <img className='page-logo' src={ organizer.logo } /> }
               { !organizer.logo && <div>{ organizer.name }</div> }
-              <div className='flex-full center'>
-                { organizer.twitter && <img src={ Twitter } className='social-icon' alt='Twitter' onClick={ () => openLink(`https://twitter.com/${ organizer.twitter }`) } /> }
-                { organizer.instagram && <img src={ Instagram } className='social-icon' alt='Instagram' onClick={ () => openLink(`https://instagram.com/${ organizer.instagram }`) } /> }
-                <a href={ `mailto:${ organizer.email }` }><img src={ Email } className='social-icon' alt='Email' /></a>
-              </div>
-              { isAdmin &&
-                <div className='text-s center text-grey pointer' onClick={ () => setEditing(true) }>
-                  Edit Profile
-                </div>
-              }
             </div>
             <div className='margin-top'>
               { !editing &&
                 <div className='line-breaks'>
-                  <strong>About { organizer.logo ? organizer.name : '' }</strong>
+                  <div className='flex center'>
+                    { organizer.twitter && <img src={ Twitter } className='social-icon' alt='Twitter' onClick={ () => openLink(`https://twitter.com/${ organizer.twitter }`) } /> }
+                    { organizer.instagram && <img src={ Instagram } className='social-icon' alt='Instagram' onClick={ () => openLink(`https://instagram.com/${ organizer.instagram }`) } /> }
+                    <a href={ `mailto:${ organizer.email }` }><img src={ Email } className='social-icon' alt='Email' /></a>
+                  </div>
+                  <div>
+                    <strong>About { organizer.logo ? organizer.name : '' }</strong>
+                  </div>
                   <div className='margin-top-s text-s line-breaks'>
                     { organizer.about }
                   </div>
