@@ -110,7 +110,7 @@ export default function Organizer() {
                     { organizer.website && <img src={ Web } className='social-icon-web pointer' alt='Website' onClick={ () => openLink(organizer.website) } /> }
                     { organizer.twitter && <img src={ Twitter } className='social-icon' alt='Twitter' onClick={ () => openLink(`https://twitter.com/${ organizer.twitter }`) } /> }
                     { organizer.instagram && <img src={ Instagram } className='social-icon' alt='Instagram' onClick={ () => openLink(`https://instagram.com/${ organizer.instagram }`) } /> }
-                    <a href={ `mailto:${ organizer.email }` }><img src={ Email } className='social-icon' alt='Email' /></a>
+                    { organizer.email && <a href={ `mailto:${ organizer.email }` }><img src={ Email } className='social-icon' alt='Email' /></a> }
                   </div>
                   <div>
                     <strong>About { organizer.logo ? organizer.name : '' }</strong>
