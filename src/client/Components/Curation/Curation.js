@@ -103,7 +103,11 @@ export default function Curation({ nft, small, blind }) {
                   }
                   <div className='margin-top-s text-s text-b'>
                     <strong><i>{ nft.title || 'Untitled' }</i></strong>, 2021<br />
-                    { imageType.toUpperCase() } as NFT
+                    { nft.canvas ?
+                      <div className='text-xs'>{ nft.canvas }</div>
+                      :
+                      <div>{ imageType.toUpperCase() } as NFT</div>
+                    }
                   </div>
                   <div className='margin-top-s text-xs'>
                     { nft.description }
@@ -196,7 +200,11 @@ export default function Curation({ nft, small, blind }) {
                   }
                   <div className='margin-top-s text-s text-b'>
                     <strong><i>{ nft.title || 'Untitled' }</i></strong>, 2021<br />
-                    { imageType.toUpperCase() } as NFT
+                    { nft.canvas ?
+                      <div className='text-xs'>{ nft.canvas }</div>
+                      :
+                      <div>{ imageType.toUpperCase() } as NFT</div>
+                    }
                   </div>
                   <div className='margin-top-s text-xs'>
                     { nft.description }

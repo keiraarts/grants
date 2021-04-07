@@ -375,6 +375,7 @@ exports.submitApplication = async (req, res) => {
     statement:   req.body.statement,
     additional:  req.body.additional,
     title:       req.body.title,
+    canvas:      req.body.canvas,
     description: req.body.description,
   };
 

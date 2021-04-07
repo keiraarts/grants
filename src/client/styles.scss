@@ -254,7 +254,16 @@ a {
 }
 
 .page-logo {
-  max-height: 20rem;
+  max-height: 500px;
+  max-width: 100%;
+}
+
+.social-icon-web {
+  width: 2.4rem;
+  height: 2.4rem;
+  padding: 0 1rem;
+  margin-top: 0.2rem;
+  margin-right: 0.5rem;
 }
 
 .social-icon {

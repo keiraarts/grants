@@ -169,6 +169,7 @@ export default function Application() {
     if (!data.art) setErr('No artwork selected');
     else if (!data.statement) setErr('Please write a statement of intent');
     else if (!data.title || !data.description) setErr('Please provide an artwork title and description');
+    else if (!data.canvas) setErr('Please specify the tools used for your artwork');
     else if (!user) setErr('Please log in to submit');
     else if (auth && !auth.wallet) setErr('Please verify a wallet to submit');
     else if (user && !user.user.emailVerified) setErr('Please verify your email to submit');
@@ -390,6 +391,10 @@ export default function Application() {
               <label className='form__label'>Artwork Description</label>
             </div>
             <div className='form__group field'>
+              <input type='text' className='form__field' placeholder='Name' name='name' id='name' maxLength='100' onChange={e => setData({ ...data, canvas: e.target.value })} />
+              <label className='form__label'>Tools Used (e.g. Photoshop, Cinema 4D, Octane Render)</label>
+            </div>
+            <div className='form__group field'>
               <label className='file__label'>Art Submission (JPG, PNG, GIF, WEBP, or MP4 - Max 77MB)</label>
               <input type='file' className='form__field' placeholder='Artwork' name='artwork' id='name' accept='image/jpeg, image/png, image/gif, image/webp, video/mp4' required onChange={ (e) => uploadHandler(e.target) } />
             </div>
@@ -406,7 +411,8 @@ export default function Application() {
                         </div>
                         <div className='margin-top-s text-s text-b'>
                           <strong><i>{ data.title || 'Missing Art Title' }</i></strong>, 2021<br />
-                          { data.ext } as NFT
+                          {/* { data.ext } as NFT */}
+                          <div className='text-xs'>{ data.canvas }</div>
                         </div>
                         <div className='margin-top-s text-xs'>
                           { data.description || 'Missing Description' }
@@ -441,7 +447,8 @@ export default function Application() {
                         </div>
                         <div className='margin-top-s text-s text-b'>
                           <strong><i>{ data.title || 'Untitled' }</i></strong>, 2021<br />
-                          { data.ext } as NFT
+                          {/* { data.ext } as NFT */}
+                          <div className='text-xs'>{ data.canvas }</div>
                         </div>
                         <div className='margin-top-s text-xs'>
                           { data.description }
@@ -495,7 +502,11 @@ export default function Application() {
                       </div>
                       <div className='margin-top-s text-s text-b'>
                         <strong><i>{ applied.title || 'Untitled' }</i></strong>, 2021<br />
-                        {  applied.art.split('.')[1].toUpperCase() } as NFT
+                        { applied.canvas ?
+                          <div className='text-xs'>{ applied.canvas }</div>
+                          :
+                          <div>{ applied.art.split('.')[1].toUpperCase() } as NFT</div>
+                        }
                       </div>
                       <div className='margin-top-s text-xs'>
                         { applied.description }
@@ -530,7 +541,11 @@ export default function Application() {
                       </div>
                       <div className='margin-top-s text-s text-b'>
                         <strong><i>{ applied.title || 'Untitled' }</i></strong>, 2021<br />
-                        { applied.art.split('.')[1].toUpperCase() } as NFT
+                        { applied.canvas ?
+                          <div className='text-xs'>{ applied.canvas }</div>
+                          :
+                          <div>{ applied.art.split('.')[1].toUpperCase() } as NFT</div>
+                        }
                       </div>
                       <div className='margin-top-s text-xs'>
                         { applied.description }

@@ -129,7 +129,11 @@ const ExhibitionNFT = ({ small, nft, src, important, hidden, contract }) => {
                   </div>
                   <div className='margin-top-s text-s text-b'>
                     <strong><i>{ nft.title || 'Untitled' }</i></strong>, 2021<br />
-                    { nft.imageType.toUpperCase() } as NFT
+                    { nft.canvas ?
+                      <div className='text-xs'>{ nft.canvas }</div>
+                      :
+                      <div>{ nft.imageType.toUpperCase() } as NFT</div>
+                    }
                   </div>
                   <div className='margin-top-s text-xs'>
                     { nft.description.trim() }
@@ -207,7 +211,11 @@ const ExhibitionNFT = ({ small, nft, src, important, hidden, contract }) => {
                   </div>
                   <div className='margin-top-s text-s text-b'>
                     <strong><i>{ nft.title || 'Untitled' }</i></strong>, 2021<br />
-                    { nft.imageType.toUpperCase() } as NFT
+                    { nft.canvas ?
+                      <div className='text-xs'>{ nft.canvas }</div>
+                      :
+                      <div>{ nft.imageType.toUpperCase() } as NFT</div>
+                    }
                   </div>
                   <div className='margin-top-s text-xs'>
                     { nft.description.trim() }

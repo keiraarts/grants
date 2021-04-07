@@ -4,6 +4,7 @@ import { useStoreState } from 'easy-peasy';
 import { apiUrl } from '../baseUrl';
 import Resizer from './Tools/Resizer.js';
 
+import Web from '../assets/website.png';
 import Twitter from '../assets/twitter.png';
 import Instagram from '../assets/instagram.png';
 import Email from '../assets/email.png';
@@ -106,6 +107,7 @@ export default function Organizer() {
               { !editing &&
                 <div className='line-breaks'>
                   <div className='flex center'>
+                    { organizer.website && <img src={ Web } className='social-icon-web pointer' alt='Website' onClick={ () => openLink(organizer.website) } /> }
                     { organizer.twitter && <img src={ Twitter } className='social-icon' alt='Twitter' onClick={ () => openLink(`https://twitter.com/${ organizer.twitter }`) } /> }
                     { organizer.instagram && <img src={ Instagram } className='social-icon' alt='Instagram' onClick={ () => openLink(`https://instagram.com/${ organizer.instagram }`) } /> }
                     <a href={ `mailto:${ organizer.email }` }><img src={ Email } className='social-icon' alt='Email' /></a>

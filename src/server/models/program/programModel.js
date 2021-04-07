@@ -190,6 +190,10 @@ const programApplicant = {
         type:  String,
         required: true,
     },
+    canvas: {
+        type:  String,
+        required: true,
+    },
     art:  {
         type:  String,
         required: true,
