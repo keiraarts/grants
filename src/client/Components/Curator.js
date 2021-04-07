@@ -35,7 +35,7 @@ export default function Organizer() {
   const [updateErr, setUpdateErr] = useState(false);
   const updateOrg = e => {
     e.preventDefault();
-    if (!organizer.name || !organizer.about || !organizer.email || !organizer.website) setUpdateErr('Please fill out all required fields');
+    if (!organizer.name || !organizer.about) setUpdateErr('Please fill out all required fields');
     else {
       setUpdateErr(false);
       setOrganizerSubmitting(true);
@@ -127,23 +127,23 @@ export default function Organizer() {
                     <label className='form__label'>Program Curator / Organization Name</label>
                   </div>
                   <div className='form__group field'>
-                    <textarea type='text' className='form__field intent-field' placeholder='Intent' name='intent' id='intent' required maxLength='2000' value={ organizer.about } onChange={e => setOrganizer({ ...organizer, about: e.target.value })} />
-                    <label className='form__label'>About (2000 Chars)</label>
+                    <textarea type='text' className='form__field intent-field' placeholder='Intent' name='intent' id='intent' required maxLength='4000' value={ organizer.about } onChange={e => setOrganizer({ ...organizer, about: e.target.value })} />
+                    <label className='form__label'>About</label>
                   </div>
                   <div className='form__group field'>
-                    <input type='email' className='form__field' placeholder='Email' name='email' id='email' required maxLength='100' value={ organizer.email } onChange={e => setOrganizer({ ...organizer, email: e.target.value })} />
-                    <label className='form__label'>Public / Contact Email</label>
+                    <input type='email' className='form__field' placeholder='Email' name='email' id='email' maxLength='100' value={ organizer.email } onChange={e => setOrganizer({ ...organizer, email: e.target.value })} />
+                    <label className='form__label'>Public / Contact Email*</label>
                   </div>
                   <div className='form__group field'>
                     <label className='file__label'>Logo (JPG, PNG, GIF - Max 5MB)</label>
                     <input type='file' className='form__field' placeholder='Artwork' name='artwork' id='name' accept='image/jpeg, image/png, image/gif' onChange={ (e) => uploadHandler(e.target) } />
                   </div>
                   <div className='form__group field'>
-                    <input type='url' className='form__field' placeholder='URL' name='url' id='url' required maxLength='100' value={ organizer.website } onChange={e => setOrganizer({ ...organizer, website: e.target.value })} />
-                    <label className='form__label'>Website</label>
+                    <input type='url' className='form__field' placeholder='URL' name='url' id='url' maxLength='100' value={ organizer.website } onChange={e => setOrganizer({ ...organizer, website: e.target.value })} />
+                    <label className='form__label'>Website*</label>
                   </div>
                   <div className='form__group field'>
-                    <input type='text' className='form__field' placeholder='Twitter' name='twitter' id='twitter' required maxLength='100' value={ organizer.twitter } onChange={e => setOrganizer({ ...organizer, twitter: e.target.value })} />
+                    <input type='text' className='form__field' placeholder='Twitter' name='twitter' id='twitter' maxLength='100' value={ organizer.twitter } onChange={e => setOrganizer({ ...organizer, twitter: e.target.value })} />
                     <label className='form__label'>Twitter*</label>
                   </div>
                   <div className='text-s'>
