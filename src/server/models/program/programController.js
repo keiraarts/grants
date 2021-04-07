@@ -438,6 +438,7 @@ exports.submitApplication = async (req, res) => {
   newApplicant.save((err, data) => {
     if (err) return res.status(500).json(err);
     else {
+      transporter.sendMail(templates.applicationConfirmation(applicant.email));
       return res.json(true);
     }
   });
