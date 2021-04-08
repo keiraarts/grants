@@ -155,13 +155,14 @@ export default function Application() {
         // read.readAsArrayBuffer(fileData);
         // read.onload = () => {
         //   // console.log((Buffer.from(new Uint8Array(read.result)).toString('hex').match(/61766343/g) || []).length);
-        //   // const buff = Buffer.from(new Uint8Array(read.result)).toString('hex');
-        //   // const index = buff.indexOf('61766343');
+        //   const buff = Buffer.from(new Uint8Array(read.result)).toString('hex');
+        //   const index = buff.indexOf('61766343');
+        //   console.log('YO', index);
         //   // const newBaseline = `${ buff.slice(0, index + 14) }1F${ buff.slice(index + 16, buff.length)}`
         //   // const art = `data:video/mp4;base64,${ Buffer.from(newBaseline, 'hex').toString('base64') } `;
         //   // const buff = Buffer.from(new Uint8Array(read.result)).toString();
         //   // const index = buff.indexOf('avcC');
-        //   // console.log(buff.slice(index, index + 60));
+        //   console.log(buff.slice(index - 30, index + 60));
         //   // console.log(Buffer.from(new Uint8Array(read.result)).toString().indexOf('avcC'));
         //   // console.log(muxjs.mp4.tools.inspect(new Uint8Array(read.result)));
         //   read.result.fileStart = 0;

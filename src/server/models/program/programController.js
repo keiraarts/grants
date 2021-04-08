@@ -322,7 +322,14 @@ const compressor = async (file, fileWeb) => {
           format: 'mp4',
           size: `${ width }x${ height }`
         }).then(() => {
-          resolve();
+          videoResize({
+            inputPath: input,
+            outputPath: path.join(__dirname, `../../images/${ file }-video`),
+            format: 'mp4',
+            size: `${ dimensions.width }x${ dimensions.height }`
+          }).then(() => {
+            resolve();
+          })
         })
       });
     } else {
@@ -386,24 +393,25 @@ exports.submitApplication = async (req, res) => {
       image = req.body[item].replace(/^data:image\/\w+;base64,/, '');
       image = image.replace(/^data:video\/mp4;base64,/, '');
       let buf = new Buffer.from(image, 'base64');
-      if (ext === 'mp4') { // Change codec baseline profile to be compatible with iOS
-        const buff = buf.toString('hex');
-        const index = buff.indexOf('61766343');
-        const newBaseline = `${ buff.slice(0, index + 10) }4D4033${ buff.slice(index + 16, buff.length)}`
-        buf = new Buffer.from(newBaseline, 'hex');
-      }
 
       const name = crypto.randomBytes(20).toString('hex');
 
       applicant.art = `${ name }.${ ext }`;
       applicant.artWeb = `${ name }-web.${ ext }`;
 
+      if (ext === 'mp4') { // Change codec baseline profile to be compatible with iOS
+        const buff = buf.toString('hex');
+        const index = buff.indexOf('61766343');
+        const newBaseline = `${ buff.slice(0, index + 10) }4D401F${ buff.slice(index + 16, buff.length)}`
+        buf = new Buffer.from(newBaseline, 'hex');
+      }
+
       const saveImage = promisify(fs.writeFile);
       await saveImage(path.join(__dirname, `../../images/${ applicant.art }`), buf)
       await compressor(applicant.art, applicant.artWeb);
 
       const uploader = await spaces.uploadFile({
-        localFile: path.join(__dirname, `../../images/${ applicant.art }`),
+        localFile: path.join(__dirname, `../../images/${ ext === 'mp4' ? `${ applicant.art }-video` : applicant.art }`),
         s3Params: {
           Bucket: 'grants',
           Key: `${ applicant.art }`,
@@ -428,6 +436,15 @@ exports.submitApplication = async (req, res) => {
           }
           return null;
         });
+
+        if (ext === 'mp4') {
+          fs.unlink(path.join(__dirname, `../../images/${applicant.art }-video`), (err2) => {
+            if (err2 !== null) {
+              console.log(err2);
+            }
+            return null;
+          });
+        }
       });
 
       uploader2.on('end', () => {
