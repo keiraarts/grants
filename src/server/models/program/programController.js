@@ -385,7 +385,14 @@ exports.submitApplication = async (req, res) => {
       ext = req.body[item].split(';')[0].match(/jpeg|png|gif|webp|mp4/)[0];
       image = req.body[item].replace(/^data:image\/\w+;base64,/, '');
       image = image.replace(/^data:video\/mp4;base64,/, '');
-      const buf = new Buffer.from(image, 'base64');
+      let buf = new Buffer.from(image, 'base64');
+      if (ext === 'mp4') { // Change codec baseline profile to be compatible with iOS
+        const buff = buf.toString('hex');
+        const index = buff.indexOf('61766343');
+        const newBaseline = `${ buff.slice(0, index + 10) }4D4033${ buff.slice(index + 16, buff.length)}`
+        buf = new Buffer.from(newBaseline, 'hex');
+      }
+
       const name = crypto.randomBytes(20).toString('hex');
 
       applicant.art = `${ name }.${ ext }`;
