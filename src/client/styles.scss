@@ -259,6 +259,13 @@ a {
   height: 10rem;
 }
 
+.home-logo {
+  border-radius: 50%;
+  width: 2rem;
+  height: 2rem;
+  margin-top: -0.5rem;
+}
+
 .social-icon-web {
   width: 2.4rem;
   height: 2.4rem;
@@ -1136,6 +1143,42 @@ input[type=number] {
 .button:active {
   border: none;
   outline: none;
+  transform: translate(3px, 3px);
+  box-shadow: 1px 1px 1px #ccc;
+}
+
+.home-button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  font-family: 'Roboto Slab', sans-serif;
+  white-space: normal;
+  border: none;
+  text-decoration: none;
+  color: black;
+  justify-content: center;
+  align-items: center;
+  display: inline-block;
+  font-size: 1.4rem;
+  min-width: 6rem;
+  padding: 2rem;
+  margin: 1rem 2rem;
+  outline: none;
+  box-shadow: 3px 3px 5px #ccc;
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 1rem;
+}
+
+.home-button:hover {
+  color: rgba(0, 0, 0, 0.8);
+  outline: none;
+  cursor: pointer;
+}
+
+.home-button:active {
+  border: none;
+  outline: none;
+  color: rgba(0, 0, 0, 0.8);
   transform: translate(3px, 3px);
   box-shadow: 1px 1px 1px #ccc;
 }

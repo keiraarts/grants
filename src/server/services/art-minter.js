@@ -302,6 +302,7 @@ module.exports = (app) => {
         console.log('wtf', applicants);
 
         program.mintInProgress = true;
+        program.exhibiting = true;
         program.save();
 
         mint(applicants, program, organizer);

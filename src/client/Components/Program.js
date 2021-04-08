@@ -19,6 +19,8 @@ export default function Program() {
     });
   }, [])
 
+  console.log(programs);
+
   return (
     <div className='content-block'>
       <div className='text-l text-b'>
@@ -51,12 +53,14 @@ export default function Program() {
           <div className='flex-wrap margin-top'>
             {
               programs.map((program, index) => {
-                return (
-                  <Link key={ index } className='button' to={ `/apply/${ program.url }` }>
-                    <div className='text-xs'>{ program.organizers[0].name }</div>
-                    <span>{ program.name }</span>
-                  </Link>
-                );
+                if (!program.closeApplication) {
+                  return (
+                    <Link key={ index } className='button' to={ `/apply/${ program.url }` }>
+                      <div className='text-xs'>{ program.organizers[0].name }</div>
+                      <span>{ program.name }</span>
+                    </Link>
+                  );
+                }
               })
             }
           </div>

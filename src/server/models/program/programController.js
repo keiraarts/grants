@@ -47,8 +47,9 @@ exports.getPrograms = async (req, res) => {
     return err ?
         res.status(500).json(err) :
         res.json(data);
-  }).select('organizers name url')
-  .populate('organizers');
+  }).select('organizers name url exhibiting tagline description total open close closeApplication')
+  .populate('organizers')
+  .sort('order');
 };
 
 exports.getProgram = async (req, res) => {
@@ -191,6 +192,7 @@ exports.updateProgram = async (req, res) => {
   program.url = req.body.url;
   program.passcode = req.body.passcode;
   program.isProtected = req.body.passcode ? true : false;
+  program.tagline = req.body.tagline;
   program.description = req.body.description;
   program.logistics = req.body.logistics;
   program.criteria = req.body.criteria;

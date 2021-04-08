@@ -112,10 +112,12 @@ export default function Exhibition() {
   }
 
   function switchPage(direction) {
-    if (id === '1' && direction === 'previous') return id;
-    else if (gallery && direction === 'next' && Number(id) === gallery.length) return id;
-    else if (direction === 'next') return Number(id) + 1;
-    else return Number(id) - 1;
+    if (gallery) {
+      if (id === '1' && direction === 'previous') return gallery.length;
+      else if (gallery && direction === 'next' && Number(id) === gallery.length) return 1;
+      else if (direction === 'next') return Number(id) + 1;
+      else return Number(id) - 1;
+    }
   }
 
   let foundSrc, src1, src2, src3;
@@ -154,6 +156,8 @@ export default function Exhibition() {
       }
     }
   }
+
+  console.log(preload);
 
   return (
     <div className='content-block' { ...handlers }>

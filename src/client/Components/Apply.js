@@ -309,6 +309,10 @@ export default function Application() {
                     <label className='form__label'>Program Description (2000 Chars)</label>
                   </div>
                   <div className='form__group field'>
+                    <textarea type='text' className='form__field intent-field' placeholder='Intent' name='intent' id='intent' required maxLength='300' value={ programInfo.tagline } onChange={e => setProgram({ ...programInfo, tagline: e.target.value })} />
+                    <label className='form__label'>Program Tagline (Home Page)</label>
+                  </div>
+                  <div className='form__group field'>
                     <textarea type='text' className='form__field intent-field' placeholder='Intent' name='intent' id='intent' required maxLength='2000' value={ programInfo.logistics } onChange={e => setProgram({ ...programInfo, logistics: e.target.value })} />
                     <label className='form__label'>Grant Logistics (2000 Chars)</label>
                   </div>

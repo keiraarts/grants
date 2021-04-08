@@ -1,86 +1,27 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useStoreState, useStoreActions } from 'easy-peasy';
 import { Link } from 'react-router-dom';
-import { useScrollPosition } from '@n8tb1t/use-scroll-position'
-import '@appnest/masonry-layout';
+import moment from 'moment';
 
 import { apiUrl } from '../baseUrl';
 
 import Resizer from './Tools/Resizer.js';
-import GalleryBlock from './GalleryBlock';
 import '../styles.scss';
 
-const clone = (items) => items.map(item => Array.isArray(item) ? clone(item) : item);
-
-function shuffle(array) {
-  var currentIndex = array.length, temporaryValue, randomIndex;
-
-  while (0 !== currentIndex) {
-    randomIndex = Math.floor(Math.random() * currentIndex);
-    currentIndex -= 1;
-
-    temporaryValue = array[currentIndex];
-    array[currentIndex] = array[randomIndex];
-    array[randomIndex] = temporaryValue;
-  }
-
-  return array;
-}
-
 export default function Gallery() {
-  const cols = useStoreState(state => state.app.cols);
-
-  const [viewTab, setViewTab] = useState('grantee');
-  const [showData, setShowData] = useState([]);
   const contentRef = useRef(null);
 
-  const [loaded, setLoaded] = useState(false);
-  const [grantees, setGrantees] = useState([]);
-  const [nominees, setNominees] = useState([]);
+  const [programs, setPrograms] = useState(null);
   useEffect(() => {
-    fetch(`${ apiUrl() }/program/getGallery`, {
-      method: 'POST',
-      body: JSON.stringify({ program: 'gallery' }),
+    fetch(`${ apiUrl() }/program/getPrograms`, {
+      method: 'GET',
       headers: { 'Content-Type': 'application/json' },
     }).then(res => res.json())
     .then(json => {
-      if (json && json.gallery) setGrantees(shuffle(json.gallery))
-      setLoaded(true);
-    });
-
-    fetch(`${ apiUrl() }/program/getGallery`, {
-      method: 'POST',
-      body: JSON.stringify({ program: 'nominee' }),
-      headers: { 'Content-Type': 'application/json' },
-    }).then(res => res.json())
-    .then(json => {
-      if (json && json.gallery) setNominees(shuffle(json.gallery))
+      setPrograms(json);
     });
   }, [])
 
-  useEffect(() => {
-    if (grantees && grantees.length && viewTab === 'grantee') setShowData(grantees.slice(0, 30));
-  }, [grantees])
-
-  useEffect(() => {
-    if (nominees && nominees.length && viewTab === 'nominee') setShowData(nominees.slice(0, 30));
-  }, [nominees])
-
-  useScrollPosition(({ currPos }) => {
-    if ((currPos.y + 1500 > contentRef.current.offsetHeight)) {
-      if (viewTab === 'grantee') setShowData(grantees.slice(0, showData.length + 30))
-      else if (viewTab === 'nominee') setShowData(nominees.slice(0, showData.length + 30))
-    }
-  }, [showData], null, true);
-
-  const toggleView = (view) => {
-    if (view === 'grantee') {
-      setShowData([]); setTimeout(() => setShowData(grantees.slice(0, 30)));
-    } else if (view === 'nominee') {
-      setShowData([]); setTimeout(() => setShowData(nominees.slice(0, 30)));
-    }
-    setViewTab(view);
-  }
+  console.log(programs);
 
   return (
     <div className='content-block' ref={ contentRef }>
@@ -89,27 +30,14 @@ export default function Gallery() {
         <strong>Sevens Foundation</strong>
         <div className='flex-full' />
         <div className='text-s center'>
-          <Link to='/curation' className='small-button'><div className='text-rainbow'>Curation</div></Link>
+          <Link to='/curation' className='small-button'><div className='text-grey'>Curation</div></Link>
         </div>
       </div>
       <div className='text-s margin-top-s text-desc'>
         Curating, educating, and funding artists' first step into creative self-sovereignty
       </div>
-      <div className='flex margin-top'>
-        <div className={ viewTab === 'grantee' ? 'info-block info-block-selected' : 'info-block' } onClick={ () => toggleView('grantee') }>
-          <div className={ viewTab === 'grantee' ? 'text-grey' : '' }>
-            Genesis Grant
-          </div>
-        </div>
-        <div className='info-block-space' />
-        <div className={ viewTab === 'nominee' ? 'info-block info-block-selected' : 'info-block' } onClick={ () => toggleView('nominee') }>
-        <div className={ viewTab === 'nominee' ? 'text-grey' : '' }>
-          Genesis Nominee
-        </div>
-        </div>
-      </div>
       <div className='cols'>
-        { !showData || !showData.length ?
+        { !programs || !programs.length ?
           <div className='center flex'>
             <div className='margin-top center'>
               <div className="loading"><div></div><div></div></div>
@@ -117,17 +45,139 @@ export default function Gallery() {
           </div>
           :
           <div className='margin-top'>
-            <masonry-layout cols={ cols } >
-              {
-                (showData) && showData.map((item, index)=>{
+            <div>
+              Art Exhibitions
+            </div>
+            {
+              (programs) && programs.map((item, index)=>{
+                if (item.exhibiting) {
                   return (
-                    <React.Fragment key={ index }>
-                      <GalleryBlock item={ item } index={ index } viewTab={ viewTab } />
-                    </React.Fragment>
+                    <Link to={ `/${ item.url }/${ Math.floor(Math.random() * (item.total ? item.total : 1)) + 1  }` } className='flex' key={ index }>
+                      <div className='home-button flex-full'>
+                        <div className='flex'>
+                          <div className='text-rainbow text-s'>
+                            <strong>{ item.organizers[0].name }</strong>
+                          </div>
+                          <div className='flex-full' />
+                          { item.organizers[0].logo && <img className='home-logo' src={ `https://cdn.grants.art/${ item.organizers[0].logo }` } /> }
+                        </div>
+                        <div className='margin-top-s'>
+                          <strong>{ item.name }</strong>
+                        </div>
+                        <div className='text-s'>
+                          { item.tagline }
+                        </div>
+                      </div>
+                    </Link>
                   );
-                })
-              }
-            </masonry-layout>
+                }
+              })
+            }
+            <div className='margin-top'>
+              Upcoming Exhibitions
+            </div>
+            {
+              (programs) && programs.map((item, index)=>{
+                if (!item.exhibiting) {
+                  return (
+                    <Link to={ `/${ item.url }/${ Math.floor(Math.random() * (item.total ? item.total : 1)) + 1  }` } className='flex' key={ index }>
+                      <div className='home-button flex-full'>
+                        <div className='flex'>
+                          <div className='text-rainbow text-s'>
+                            <strong>{ item.organizers[0].name }</strong>
+                          </div>
+                          <div className='flex-full' />
+                          { item.organizers[0].logo && <img className='home-logo' src={ `https://cdn.grants.art/${ item.organizers[0].logo }` } /> }
+                        </div>
+                        <div className='margin-top-s'>
+                          <strong>{ item.name }</strong>
+                        </div>
+                        <div className='text-s'>
+                          { item.tagline }
+                        </div>
+                        <div className='margin-top-s text-s'>
+                          <em>
+                            { new Date() > new Date(item.open) && new Date() < new Date(item.close) &&
+                              <div>Submissions are open until { moment(item.close).format('ddd MMM Do h:mm A') }</div>
+                            }
+                            { new Date() < new Date(item.open) && new Date < new Date(item.close) &&
+                              <div>Submissions will open { moment(item.open).format('ddd MMM Do h:mm A') } and close { moment(item.close).format('ddd MMM Do h:mm A') }</div>
+                            }
+                            { new Date() > new Date(item.close) &&
+                              <div>Submissions are closed</div>
+                            }
+                          </em>
+                        </div>
+                      </div>
+                    </Link>
+                  );
+                }
+              })
+            }
+            <div className='flex'>
+              <div className='home-button flex-full'>
+                <div className='flex'>
+                  <div className='text-rainbow text-s'>
+                    <strong>??? ???</strong>
+                  </div>
+                  <div className='flex-full' />
+                </div>
+                <div className='margin-top-s'>
+                  <strong>🎨</strong>
+                </div>
+                <div className='margin-top-s text-s'>
+                  ????????? ???????
+                </div>
+              </div>
+            </div>
+            <div className='flex'>
+              <div className='home-button flex-full'>
+                <div className='flex'>
+                  <div className='text-rainbow text-s'>
+                    <strong>????? ??????</strong>
+                  </div>
+                  <div className='flex-full' />
+                </div>
+                <div className='margin-top-s'>
+                  <strong>👑</strong>
+                </div>
+                <div className='margin-top-s text-s'>
+                  ?????????? ?????
+                </div>
+              </div>
+            </div>
+            <div className='flex'>
+              <div className='home-button flex-full'>
+                <div className='flex'>
+                  <div className='text-rainbow text-s'>
+                    <strong>???????</strong>
+                  </div>
+                  <div className='flex-full' />
+                </div>
+                <div className='margin-top-s'>
+                  <strong>🐇</strong>
+                </div>
+                <div className='margin-top-s text-s'>
+                  ? ? ? ? ?
+                </div>
+              </div>
+            </div>
+            <div className='flex'>
+              <div className='home-button flex-full'>
+                <div className='flex'>
+                  <div className='text-rainbow text-s'>
+                    <strong>??????? ????</strong>
+                  </div>
+                  <div className='flex-full' />
+                </div>
+                <div className='margin-top-s'>
+                  <strong>🎥</strong>
+                </div>
+                <div className='margin-top-s text-s'>
+                  ????????
+                </div>
+              </div>
+            </div>
           </div>
         }
       </div>

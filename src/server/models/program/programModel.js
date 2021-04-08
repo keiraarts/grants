@@ -81,6 +81,10 @@ const program = {
         trim:  true,
         required: true,
     },
+    tagline: {
+        type: String,
+        trime: true,
+    },
     logistics: {
         type:  String,
         trim:  true,
@@ -111,6 +115,9 @@ const program = {
     },
     close: {
         type: Date,
+    },
+    closeApplication: {
+        type: Boolean,
     },
     perpetual: {
         type: Boolean,
@@ -144,6 +151,16 @@ const program = {
     },
     mintInProgress: {
         type: Boolean,
+    },
+    exhibiting: {
+        type: Boolean,
+        default: false,
+    },
+    order: {
+        type: Number,
+    },
+    total: {
+        type: Number,
     }
 }
 
