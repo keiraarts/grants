@@ -17,7 +17,7 @@ export default function Gallery(props) {
         <Link to={ `/${ type === 'grantee' ? 'gallery' : 'nominee' }/${ item.order }` } className='block-art pointer'>
           { (!loaded) && <div className='block-loading'><div className='loading'><div></div><div></div></div></div> }
           { (displayArt && (displayType === 'mp4' || displayType === 'mov')) ?
-            <video muted loop autoPlay webkit-playsinline='true' playsInline preload='none' className='block-art-image' onLoadedData={ () => didLoad(true) }>
+            <video muted loop autoPlay webkit-playsinline='true' playsInline preload='none' className='block-art-image' onCanPlay={ () => didLoad(true) } onCanPlayThrough={ () => didLoad(true) }>
               <source src={ displayArt }
                       type="video/mp4" />
               Sorry, your browser doesn't support embedded videos.
