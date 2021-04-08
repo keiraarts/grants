@@ -153,7 +153,7 @@ const ExhibitionNFT = ({ small, nft, src, important, hidden, contract }) => {
               <div className='frame-shadow'>
                 { (nft.imageType === 'mp4' || nft.imageType === 'mov')  &&
                   <video muted loop autoPlay webkit-playsinline='true' playsInline key={ `${ src }-1` } className={ `gallery-art ${ !loaded && 'hidden'}` } onCanPlay={ () => setLoaded(true) } ref={ video }>
-                    <source src={ src } type={ `video/${ nft.imageType }` } />
+                    <source src={ src } type={ `video/${ nft.imageType }` } codecs='avc1.42E01E, mp4a.40.2' />
                     Sorry, your browser doesn't support embedded videos.
                   </video>
                 }
