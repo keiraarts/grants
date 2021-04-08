@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import { useStoreState } from 'easy-peasy';
 import { apiUrl } from '../baseUrl';
 import Resizer from './Tools/Resizer.js';
@@ -16,7 +16,15 @@ function openLink(page)
   win.focus();
 }
 
+function doDashes(str) {
+  var re = /[^a-z0-9]+/gi; // global and case insensitive matching of non-char/non-numeric
+  var re2 = /^-*|-*$/g;     // get rid of any leading/trailing dashes
+  str = str.replace(re, '-');  // perform the 1st regexp
+  return str.replace(re2, '').toLowerCase(); // ..aaand the second + return lowercased result
+}
+
 export default function Organizer() {
+  const history = useHistory();
   const { org } = useParams();
   const auth = useStoreState(state => state.user.auth);
 
@@ -53,6 +61,7 @@ export default function Organizer() {
           if (json.success) {
             setEditing(false);
             setOrganizerSubmitting(false);
+            history.push(`/curator/${ doDashes(organizer.name) }`)
           } else {
             setUpdateErr(json.error);
           }
@@ -128,6 +137,9 @@ export default function Organizer() {
                   <div className='form__group field'>
                     <input type='text' className='form__field' placeholder='Organizer Name' name='organizer' id='organizer' required maxLength='100' value={ organizer.name } onChange={e => setOrganizer({ ...organizer, name: e.target.value })} />
                     <label className='form__label'>Program Curator / Organization Name</label>
+                  </div>
+                  <div className='text-s margin-top-s'>
+                    Curator URL: { `https://grants.art/${ organizer.name ? doDashes(organizer.name) : '' } ` }
                   </div>
                   <div className='form__group field'>
                     <textarea type='text' className='form__field intent-field' placeholder='Intent' name='intent' id='intent' required maxLength='4000' value={ organizer.about } onChange={e => setOrganizer({ ...organizer, about: e.target.value })} />

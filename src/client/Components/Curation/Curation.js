@@ -139,7 +139,7 @@ export default function Curation({ nft, small, blind }) {
                 { imageType === 'mp4' ?
                   <div>
                     <video muted loop autoPlay webkit-playsinline='true' playsInline className={ `gallery-art ${ !loaded && 'hidden'}` } onCanPlay={ () => setLoaded(true) } ref={ video }>
-                      <source src={ `https://cdn.grants.art/${ nft.art }` } />
+                      <source src={ `https://cdn.grants.art/${ nft.art }` } codecs='avc1.42E01E, mp4a.40.2' />
                       Sorry, your browser doesn't support embedded videos.
                     </video>
                     <video muted loop autoPlay webkit-playsinline='true' playsInline className={ `gallery-art ${ loaded && 'hidden'}` }>

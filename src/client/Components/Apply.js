@@ -151,9 +151,10 @@ export default function Application() {
         // read.readAsArrayBuffer(fileData);
         // read.onload = () => {
         //   console.log(read.result);
-        //   console.log(muxjs.mp4.tools.inspect(new Uint8Array(read.result)));
+        //   // console.log(read.result);
+        //   // console.log(muxjs.mp4.tools.inspect(new Uint8Array(read.result)));
         //   read.result.fileStart = 0;
-        //   // mp4boxfile.appendBuffer(read.result);
+        //   mp4boxfile.appendBuffer(read.result);
         // }
       }
 
