@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import ReactAutolinker from 'react-autolinker';
+import VideoJS from 'video.js';
 
 import FullScreen from '../../assets/fullscreen.png';
 import MinScreen from '../../assets/minscreen.png';
@@ -81,7 +82,17 @@ export default function Curation({ nft, small, blind }) {
     else setMuted(false);
   }
 
+  useEffect(() => {
+    if (video) {
+      console.log('GOT VIDEO', video);
+      const videoo = VideoJS(video.current, { autoplay: true, auto: true, muted: true }, function onPlayerReady() {
+        this.class = 'gallery-art'
+      });
+    }
+  }, [video])
+
   const imageType = nft.art.split('.')[1];
+  console.log('yo', video);
 
   return (
     <div className={ `margin-top flex full-width ${ !small && 'side-space' }` }>
@@ -137,8 +148,9 @@ export default function Curation({ nft, small, blind }) {
             <div className='frame gallery-art-container'>
               <div className='frame-shadow'>
                 { imageType === 'mp4' ?
-                  <div>
-                    <video muted loop autoPlay webkit-playsinline='true' playsInline className={ `gallery-art ${ !loaded && 'hidden'}` } onCanPlay={ () => setLoaded(true) } ref={ video }>
+                  <div className='gallery-art'>
+                    <video muted loop autoPlay webkit-playsinline='true' playsInline onCanPlay={ () => setLoaded(true) } ref={ video }>
+                    {/* <video muted loop autoPlay webkit-playsinline='true' playsInline className={ `gallery-art ${ !loaded && 'hidden'}` } onCanPlay={ () => setLoaded(true) } ref={ video }> */}
                       <source src={ `https://cdn.grants.art/${ nft.art }` } />
                       Sorry, your browser doesn't support embedded videos.
                     </video>
