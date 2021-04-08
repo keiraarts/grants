@@ -10,6 +10,7 @@ const getMediaDimensions = require('get-media-dimensions');
 const { promisify } = require('util');
 const { Duplex } = require('stream');
 const gifResize = require('@gumlet/gif-resize');
+const hbjs = require('handbrake-js');
 
 const auth = require('../../services/authorization-service');
 const templates = require('../../emails/templates');
@@ -322,14 +323,7 @@ const compressor = async (file, fileWeb) => {
           format: 'mp4',
           size: `${ width }x${ height }`
         }).then(() => {
-          videoResize({
-            inputPath: input,
-            outputPath: path.join(__dirname, `../../images/${ file }-video`),
-            format: 'mp4',
-            size: `${ dimensions.width }x${ dimensions.height }`
-          }).then(() => {
-            resolve();
-          })
+          resolve();
         })
       });
     } else {
@@ -399,19 +393,19 @@ exports.submitApplication = async (req, res) => {
       applicant.art = `${ name }.${ ext }`;
       applicant.artWeb = `${ name }-web.${ ext }`;
 
-      if (ext === 'mp4') { // Change codec baseline profile to be compatible with iOS
-        const buff = buf.toString('hex');
-        const index = buff.indexOf('61766343');
-        const newBaseline = `${ buff.slice(0, index + 10) }4D401F${ buff.slice(index + 16, buff.length)}`
-        buf = new Buffer.from(newBaseline, 'hex');
-      }
-
       const saveImage = promisify(fs.writeFile);
       await saveImage(path.join(__dirname, `../../images/${ applicant.art }`), buf)
       await compressor(applicant.art, applicant.artWeb);
+      if (ext === 'mp4') {
+        await hbjs.run({
+          input: path.join(__dirname, `../../images/${ applicant.art }`),
+          output: path.join(__dirname, `../../images/video-${ applicant.art }`),
+          preset: 'Vimeo YouTube HQ 2160p60 4K',
+        })
+      }
 
       const uploader = await spaces.uploadFile({
-        localFile: path.join(__dirname, `../../images/${ ext === 'mp4' ? `${ applicant.art }-video` : applicant.art }`),
+        localFile: path.join(__dirname, `../../images/${ ext === 'mp4' ? `video-${ applicant.art }` : applicant.art }`),
         s3Params: {
           Bucket: 'grants',
           Key: `${ applicant.art }`,
@@ -438,7 +432,7 @@ exports.submitApplication = async (req, res) => {
         });
 
         if (ext === 'mp4') {
-          fs.unlink(path.join(__dirname, `../../images/${applicant.art }-video`), (err2) => {
+          fs.unlink(path.join(__dirname, `../../images/video-${applicant.art }`), (err2) => {
             if (err2 !== null) {
               console.log(err2);
             }
