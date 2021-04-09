@@ -422,7 +422,7 @@ export default function Portal() {
             })
           :
             <div className='margin-top-l center'>
-              { loaded && 'You are not a curator for any exhibitions!' }
+              { loaded && 'Please log in to curate!' }
               <div className='spacer' />
             </div>
           }
@@ -673,7 +673,7 @@ export default function Portal() {
                     Not Enough Votes (Total: { filteredResults.unmintable.length})
                     <div className='flex-full' />
                     <div style={{ marginTop: '-0.3rem' }}>
-                      <div className='small-button button-red' onClick={ () => setDeferConfirm(true) }>Finalize Deferred</div>
+                      { isAdmin && <div className='small-button button-red' onClick={ () => setDeferConfirm(true) }>Finalize Deferred</div> }
                     </div>
                   </div>
                   <div className='margin-top' />
