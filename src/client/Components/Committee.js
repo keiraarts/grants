@@ -67,10 +67,11 @@ export default function Committee() {
         <div className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://www.behance.net/Filiphds') }>Filip Hodas</div>
         <br /><br />
         <div className='text-m text-b'>
-          Endorsements
+          Partners
         </div>
         <div className='text-s margin-top'>
-          <i>If you are an existing NFT artist, please <a href='mailto:tim@grants.art' className='text-s text-grey pointer'>email</a> or DM us on social media to be listed here!</i>
+          <span className='text-s text-grey pointer' onClick={ () => openLink('https://www.numomo.com/') }>Numomo Creative Agency</span>
+          <div className='text-s'>World's First Creative NFT Agency</div>
         </div>
         <br />
       </div>

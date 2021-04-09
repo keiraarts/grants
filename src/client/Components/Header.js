@@ -9,6 +9,9 @@ export default function Header() {
   const auth = useStoreState(state => state.user.auth);
   const location = useLocation();
 
+  const path = location.pathname.split('/')[1];
+  console.log('YO', path);
+
   return (
     <div className='header flex'>
       <Link to='/' className='flex remove-a'>
@@ -19,19 +22,19 @@ export default function Header() {
         <div className='flex-full' />
         <div className='header-nav'>
           <strong>
-            <Link to='/ethos' rel='canonical' className= { `header-margin remove-a ${ location.pathname === '/ethos' && 'header-selected' }` }>
+            <Link to='/ethos' rel='canonical' className= { `header-margin remove-a ${ path === 'ethos' && 'header-selected' }` }>
               Ethos
             </Link>
-            <Link to='/nft' rel='canonical' className={ `header-margin remove-a ${ location.pathname === '/nft' && 'header-selected' }` }>
-              FAQ
+            <Link to='/nft' rel='canonical' className={ `header-margin remove-a ${ path === 'nft' && 'header-selected' }` }>
+              Learn
             </Link>
-            <Link to='/resources' rel='canonical' className={ `header-margin remove-a ${ location.pathname === '/resources' && 'header-selected' }` }>
-              Resources
+            <Link to='/committee' rel='canonical' className={ `header-margin remove-a ${ path === 'committee' && 'header-selected' }` }>
+              Team
             </Link>
-            <Link to='/testimony' rel='canonical' className={ `header-margin remove-a ${ location.pathname === '/testimony' && 'header-selected' }` }>
+            <Link to='/testimony' rel='canonical' className={ `header-margin remove-a ${ path === 'testimony' && 'header-selected' }` }>
               Testimonies
             </Link>
-            <Link to='/program' rel='canonical' className={ `header-margin remove-a ${ (location.pathname === '/program' || location.pathname === '/apply') && 'header-selected' }` }>
+            <Link to='/program' rel='canonical' className={ `header-margin remove-a ${ (path === 'program' || path === 'apply') && 'header-selected' }` }>
               Apply
             </Link>
           </strong>

@@ -53,8 +53,8 @@ const App = () => {
                 <Switch>
                   <Route path="/" exact component={ Home } scrollRef={ scrollRef ? scrollRef.current : null } />
                   <Route path="/ethos" exact component={ Ethos } />
-                  <Route path="/nft" exact component={ FAQ } />
-                  <Route path="/resources" exact component={ Resources } />
+                  <Route path="/nft" exact component={ Resources } />
+                  {/* <Route path="/resources" exact component={ Resources } /> */}
                   <Route path="/tutorial" exact component={ Tutorial } />
                   <Route path="/rarible" exact component={ Rarible } />
                   <Route path="/opensea" exact component={ OpenSea } />
