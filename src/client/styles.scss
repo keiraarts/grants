@@ -178,6 +178,12 @@ a {
   height: 2rem;
 }
 
+.line-spacer {
+  height: 1px;
+  background-color: rgba(0, 0, 0, 0.1);
+  width: 100%;
+}
+
 .margin-left-s {
   margin-left: 1rem;
 }
@@ -323,7 +329,8 @@ a {
 }
 
 .info-block:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  filter: opacity(0.8);
+  // background-color: rgba(255, 255, 255, 0.1);
   cursor: pointer;
 }
 
@@ -719,6 +726,11 @@ a {
   width: 0.8rem;
   height: 0.8rem;
   margin-left: 0.4rem;
+}
+
+.close-icon {
+  width: 0.8rem;
+  height: 0.8rem;
 }
 
 .block-info {

@@ -3,6 +3,7 @@ import ReactModal from 'react-modal';
 import { useStoreState } from 'easy-peasy';
 import { apiUrl } from '../../baseUrl';
 
+import Close from '../../assets/close.png';
 import Switch from '../../assets/switch.png';
 import Tile from '../../assets/tile.png';
 import Gallery from '../../assets/gallery.png';
@@ -428,40 +429,47 @@ export default function Portal() {
           }
         </div>
       :
-        <div className='margin-top flex'>
-          { !adminTab &&
-            <div className='margin-right-s'>
-              <div className='small-button' onClick={ () => closePage() }>Close</div>
-            </div>
-          }
-          <div className='flex-full center'>
-            <div className='text-xs'>{ selectedProgram.organizers[0].name }</div>
-            { adminTab ?
-              <div className='text-m'>{ selectedProgram.name } Settings</div>
-            :
-              <div className='text-m'>{ selectedProgram.name }{ viewTab === 'results' ? ' Results' : ' Curation' }</div>
+        <div>
+          <div className='margin-top flex'>
+            { !adminTab &&
+              <div className='margin-right-s'>
+                <div className='small-button' onClick={ () => closePage() }>
+                  <img src={ Close } className='close-icon' />
+                </div>
+              </div>
             }
-          </div>
-          <div className='small-space' />
-          { !adminTab &&
-            <div>
-              { viewTab === 'results' ?
-                <div>
-                  <div className='small-button' onClick={ () => setViewTab('curate') }>
-                    Curation
-                    <img src={ Switch } className='switch-icon' />
-                  </div>
-                </div>
+            <div className='flex-full center'>
+              <div className='text-xs'>{ selectedProgram.organizers[0].name }</div>
+              { adminTab ?
+                <div className='text-m'>{ selectedProgram.name } Settings</div>
               :
-                <div>
-                  <div className='small-button' onClick={ () => setViewTab('results') }>
-                    Results
-                    <img src={ Switch } className='switch-icon' />
-                  </div>
-                </div>
+                <div className='text-m'>{ selectedProgram.name }{ viewTab === 'results' ? ' Results' : ' Curation' }</div>
               }
             </div>
-          }
+            <div className='small-space' />
+            { !adminTab &&
+              <div>
+                { viewTab === 'results' ?
+                  <div>
+                    <div className='small-button' onClick={ () => setViewTab('curate') }>
+                      Curation
+                      <img src={ Switch } className='switch-icon' />
+                    </div>
+                  </div>
+                :
+                  <div>
+                    <div className='small-button' onClick={ () => setViewTab('results') }>
+                      Results
+                      <img src={ Switch } className='switch-icon' />
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+          <div className='margin-top-s'>
+            <div className='line-spacer' />
+          </div>
         </div>
       }
       { (selectedProgram && adminTab && programAdmin) &&
@@ -620,13 +628,13 @@ export default function Portal() {
                 </div>
               </div>
               <div className='info-block-space' />
-              <div className={ viewTab === 'approved' ? 'info-block info-block-selected' : 'info-block' } onClick={ () => setViewTab('approved') }>
+              <div className={ viewTab === 'approved' ? 'info-block info-block-selected button-green' : 'info-block button-green' } onClick={ () => setViewTab('approved') }>
                 <div className={ viewTab === 'approved' ? 'text-grey' : '' }>
                   Approved
                 </div>
               </div>
               <div className='info-block-space' />
-              <div className={ viewTab === 'deferred' ? 'info-block info-block-selected' : 'info-block' } onClick={ () => setViewTab('deferred') }>
+              <div className={ viewTab === 'deferred' ? 'info-block info-block-selected button-red' : 'info-block button-red' } onClick={ () => setViewTab('deferred') }>
                 <div className={ viewTab === 'deferred' ? 'text-grey' : '' }>
                   Deferred
                 </div>
@@ -637,18 +645,18 @@ export default function Portal() {
             <div>
               <div className='flex margin-top-s'>
                 <div className={ resultsTab === 'results' ? 'info-block info-block-selected' : 'info-block' } onClick={ () => setResultsTab('results') }>
-                  <div className={ resultsTab === 'curate' ? 'text-grey' : '' }>
+                  <div className={ resultsTab === 'results' ? 'text-grey' : '' }>
                     Results
                   </div>
                 </div>
                 <div className='info-block-space' />
-                <div className={ resultsTab === 'minted' ? 'info-block info-block-selected' : 'info-block' } onClick={ () => setResultsTab('minted') }>
+                <div className={ resultsTab === 'minted' ? 'info-block info-block-selected button-green' : 'info-block button-green' } onClick={ () => setResultsTab('minted') }>
                   <div className={ resultsTab === 'minted' ? 'text-grey' : '' }>
                     Minted
                   </div>
                 </div>
                 <div className='info-block-space' />
-                <div className={ resultsTab === 'deferred' ? 'info-block info-block-selected' : 'info-block' } onClick={ () => setResultsTab('deferred') }>
+                <div className={ resultsTab === 'deferred' ? 'info-block info-block-selected button-red' : 'info-block button-red' } onClick={ () => setResultsTab('deferred') }>
                   <div className={ resultsTab === 'deferred' ? 'text-grey' : '' }>
                     Deferred
                   </div>
