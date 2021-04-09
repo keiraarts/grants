@@ -21,8 +21,6 @@ export default function Gallery() {
     });
   }, [])
 
-  console.log(programs);
-
   return (
     <div className='content-block' ref={ contentRef }>
       <Resizer />

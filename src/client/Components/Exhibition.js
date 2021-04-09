@@ -22,7 +22,6 @@ export default function Exhibition() {
   const [gallery, setGallery] = useState(null);
   const [exhibition, setExhibition] = useState({});
   useEffect(() => {
-    console.log('GETTING', url);
     fetch(`${ apiUrl() }/program/getGallery`, {
       method: 'POST',
       body: JSON.stringify({ program: url }),
@@ -141,7 +140,6 @@ export default function Exhibition() {
   const [provider, setProvider] = useState(null);
   const [seaport, setSeaport] = useState(null);
   async function connectWallet() {
-    console.log('CONNECTING');
     if (window.ethereum) {
       const createdProvider = window.web3.currentProvider;
       if (!createdProvider.selectedAddress) window.ethereum.enable();
@@ -156,8 +154,6 @@ export default function Exhibition() {
       }
     }
   }
-
-  console.log(preload);
 
   return (
     <div className='content-block' { ...handlers }>

@@ -10,7 +10,6 @@ export default function Header() {
   const location = useLocation();
 
   const path = location.pathname.split('/')[1];
-  console.log('YO', path);
 
   return (
     <div className='header flex'>

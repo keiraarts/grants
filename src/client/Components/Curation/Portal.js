@@ -260,7 +260,6 @@ export default function Portal() {
   }
 
   const addRemoveCurator = (type, curator) => {
-    console.log(type, curator, programAdmin);
     let update;
     if (type === 'add') {
       setSearch(false);
