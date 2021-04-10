@@ -220,9 +220,11 @@ export default function Exhibition() {
           }
           <div className='margin-top-l' />
           <ReactAutolinker text={ exhibition.description } className='text-mid' />
-          <div className='margin-top-l center'>
-            Curated By
-          </div>
+          { (exhibition && exhibition.curators) &&
+            <div className='margin-top-l center'>
+              Curated By
+            </div>
+          }
           <div className='text-s margin-top-s center'>
             { exhibition && exhibition.curators && exhibition.curators.map((curator, index) => {
               return (
