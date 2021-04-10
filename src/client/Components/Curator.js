@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useHistory } from "react-router-dom";
 import { useStoreState } from 'easy-peasy';
+import ReactAutolinker from 'react-autolinker';
 import { apiUrl } from '../baseUrl';
 import Resizer from './Tools/Resizer.js';
 
@@ -128,7 +129,7 @@ export default function Organizer() {
                     <strong>About { organizer.logo ? organizer.name : '' }</strong>
                   </div>
                   <div className='margin-top-s text-s line-breaks'>
-                    { organizer.about }
+                    <ReactAutolinker text={ organizer.about } />
                   </div>
                 </div>
               }

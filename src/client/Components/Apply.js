@@ -7,8 +7,6 @@ import moment from 'moment';
 import ReactAutolinker from 'react-autolinker';
 import ReactModal from 'react-modal';
 import DatePicker from 'react-mobile-datepicker';
-import MP4Box from 'mp4box';
-import muxjs from 'mux.js';
 
 import Resizer from './Tools/Resizer.js';
 

@@ -50,7 +50,7 @@ export default function Gallery() {
               (programs) && programs.map((item, index)=>{
                 if (item.exhibiting) {
                   return (
-                    <Link to={ `/${ item.url }/${ Math.floor(Math.random() * (item.total ? item.total : 1)) + 1  }` } className='flex' key={ index }>
+                    <Link to={ `/${ item.url }` } className='flex' key={ index }>
                       <div className='home-button flex-full'>
                         <div className='flex'>
                           <div className='text-rainbow text-s'>
@@ -62,7 +62,7 @@ export default function Gallery() {
                         <div className='margin-top-s'>
                           <strong>{ item.name }</strong>
                         </div>
-                        <div className='text-s'>
+                        <div className='text-s margin-top-xs'>
                           { item.tagline }
                         </div>
                       </div>
@@ -78,7 +78,7 @@ export default function Gallery() {
               (programs) && programs.map((item, index)=>{
                 if (!item.exhibiting) {
                   return (
-                    <Link to={ `/${ item.url }/${ Math.floor(Math.random() * (item.total ? item.total : 1)) + 1  }` } className='flex' key={ index }>
+                    <Link to={ `/${ item.url }` } className='flex' key={ index }>
                       <div className='home-button flex-full'>
                         <div className='flex'>
                           <div className='text-rainbow text-s'>
@@ -90,7 +90,7 @@ export default function Gallery() {
                         <div className='margin-top-s'>
                           <strong>{ item.name }</strong>
                         </div>
-                        <div className='text-s'>
+                        <div className='text-s margin-top-xs'>
                           { item.tagline }
                         </div>
                         <div className='margin-top-s text-s'>

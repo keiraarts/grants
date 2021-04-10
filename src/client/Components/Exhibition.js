@@ -3,10 +3,15 @@ import { useSwipeable } from 'react-swipeable';
 import { useParams, useLocation, useHistory } from "react-router-dom";
 import { useStoreState } from 'easy-peasy';
 import { Link } from "react-router-dom";
+import ReactAutolinker from 'react-autolinker';
 import GenesisNFT from './ExhibitionNFT.js';
 import WalletConnect from './WalletConnect.js';
 import Resizer from './Tools/Resizer.js';
 import { apiUrl } from '../baseUrl';
+
+import Web from '../assets/website.png';
+import Twitter from '../assets/twitter.png';
+import Instagram from '../assets/instagram.png';
 
 import '../styles.scss';
 
@@ -187,22 +192,52 @@ export default function Exhibition() {
           </div>
         </Link>
       </div>
-      { (gallery && gallery.length) ?
+      { !id &&
+        <div className='line-breaks'>
+          { (gallery && gallery.length) ?
+            <div className='margin-top-l center'>
+              <Link to={ `/${ url }/${ Math.floor(Math.random() * (gallery.length ? gallery.length : 1)) + 1  }` } className='button'>
+                <span className='text-l'>Enter Exhibition</span>
+              </Link>
+            </div>
+            :
+            <div className='flex center'>
+              { (gallery) ? 
+                <div className='margin-top-l'>
+                  <div>There are no art pieces in this exhibition yet</div>
+                  <Link to={ `/apply/${ url } ` } className='margin-top text-grey'>You may submit your artwork here!</Link>
+                </div>
+              :
+                <div className='block-loading'><div className='loading'><div></div><div></div></div></div>
+              }
+            </div>
+          }
+          <div className='margin-top-l' />
+          <ReactAutolinker text={ exhibition.description } className='text-mid' />
+          <div className='margin-top-l center'>
+            Curated By
+          </div>
+          <div className='text-s margin-top-s center'>
+            { exhibition && exhibition.curators && exhibition.curators.map((curator, index) => {
+              return (
+                <div className='margin-top-s' key={ index }>
+                  <div>{ curator.artistName ? `${ curator.artistName }` : `${ curator.first } ${ curator.last }` }</div>
+                  <div className='flex center'>
+                    { curator.website && <div className='margin-top-xs'><img src={ Web } className='curator-icon-web pointer' alt='Website' onClick={ () => openLink(organizer.website) } /></div> }
+                    { curator.twitter && <div className='margin-top-xs'><img src={ Twitter } className='curator-icon pointer' alt='Twitter' onClick={ () => openLink(`https://twitter.com/${ organizer.twitter }`) } /></div> }
+                    { curator.instagram && <div className='margin-top-xs'><img src={ Instagram } className='curator-icon pointer' alt='Instagram' onClick={ () => openLink(`https://instagram.com/${ organizer.instagram }`) } /></div> }
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      }
+      { (id && gallery && gallery.length) &&
         <div className='gallery-min-height'>
           <NFT key={ order - 2 } small={ small } nft={ gallery[order - 2] } src={ src1 } contract={ exhibition.contract } important hidden />
           <NFT key={ order - 1} small={ small } nft={ gallery[order - 1] } src={ src2 } contract={ exhibition.contract } important />
           <NFT key={ order } small={ small } nft={ gallery[order] } src={ src3 } contract={ exhibition.contract } important hidden />
-        </div>
-        :
-        <div className='flex center'>
-          { gallery ? 
-            <div className='margin-top-l'>
-              <div>There are no art pieces in this exhibition yet</div>
-              <Link to={ `/apply/${ url } ` } className='margin-top text-grey'>You may submit your artwork here!</Link>
-            </div>
-          :
-            <div className='block-loading'><div className='loading'><div></div><div></div></div></div>
-          }
         </div>
       }
       <div className='margin-top-l' />
