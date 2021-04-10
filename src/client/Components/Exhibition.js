@@ -15,6 +15,12 @@ import Instagram from '../assets/instagram.png';
 
 import '../styles.scss';
 
+function openLink(page)
+{
+  let win = window.open(page, '_blank');
+  win.focus();
+}
+
 const NFT = React.memo(GenesisNFT);
 
 export default function Exhibition() {
@@ -221,11 +227,11 @@ export default function Exhibition() {
             { exhibition && exhibition.curators && exhibition.curators.map((curator, index) => {
               return (
                 <div className='margin-top-s' key={ index }>
-                  <div>{ curator.artistName ? `${ curator.artistName }` : `${ curator.first } ${ curator.last }` }</div>
+                  <div><strong>{ curator.artistName ? `${ curator.artistName }` : `${ curator.first } ${ curator.last }` }</strong></div>
                   <div className='flex center'>
-                    { curator.website && <div className='margin-top-xs'><img src={ Web } className='curator-icon-web pointer' alt='Website' onClick={ () => openLink(organizer.website) } /></div> }
-                    { curator.twitter && <div className='margin-top-xs'><img src={ Twitter } className='curator-icon pointer' alt='Twitter' onClick={ () => openLink(`https://twitter.com/${ organizer.twitter }`) } /></div> }
-                    { curator.instagram && <div className='margin-top-xs'><img src={ Instagram } className='curator-icon pointer' alt='Instagram' onClick={ () => openLink(`https://instagram.com/${ organizer.instagram }`) } /></div> }
+                    { curator.website && <div className='margin-top-xs'><img src={ Web } className='curator-icon-web pointer' alt='Website' onClick={ () => openLink(curator.website) } /></div> }
+                    { curator.twitter && <div className='margin-top-xs'><img src={ Twitter } className='curator-icon pointer' alt='Twitter' onClick={ () => openLink(`https://twitter.com/${ curator.twitter }`) } /></div> }
+                    { curator.instagram && <div className='margin-top-xs'><img src={ Instagram } className='curator-icon pointer' alt='Instagram' onClick={ () => openLink(`https://instagram.com/${ curator.instagram }`) } /></div> }
                   </div>
                 </div>
               );
