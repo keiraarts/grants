@@ -143,8 +143,12 @@ export default function Exhibition() {
   }
 
   const handlers = useSwipeable({
-    onSwipedRight: (eventData) => { updatePreload('previous', order); history.push(`/${ url }/${ switchPage('previous') }`) },
-    onSwipedLeft: (eventData) => { updatePreload('next', order); history.push(`/${ url }/${ switchPage('next') }`) },
+    onSwipedRight: (eventData) => {
+      if (id) { updatePreload('previous', order); history.push(`/${ url }/${ switchPage('previous') }`) }
+    },
+    onSwipedLeft: (eventData) => { 
+      if (id) { updatePreload('next', order); history.push(`/${ url }/${ switchPage('next') }`) }
+    },
     preventDefaultTouchmoveEvent: true,
   });
 
@@ -171,14 +175,16 @@ export default function Exhibition() {
       <Resizer />
       <WalletConnect />
       <div className='flex'>
-        <Link to={ `/${ url }/${ switchPage('previous') }` } className='relative margin-top-s' onClick={ () => updatePreload('previous', order) }>
-          <div className='round'>
-            <div id='cta'>
-              <span className='arrow-left segunda previous'></span>
-              <span className='arrow-left primera previous'></span>
+        { id &&
+          <Link to={ `/${ url }/${ switchPage('previous') }` } className='relative margin-top-s' onClick={ () => updatePreload('previous', order) }>
+            <div className='round'>
+              <div id='cta'>
+                <span className='arrow-left segunda previous'></span>
+                <span className='arrow-left primera previous'></span>
+              </div>
             </div>
-          </div>
-        </Link>
+          </Link>
+        }
         <div className='flex-full'>
           <div className='center text-m text-b margin-top-minus'>
             { exhibition.organizer &&
@@ -189,14 +195,16 @@ export default function Exhibition() {
             { exhibition.name && <div><strong>{ exhibition.name } Exhibition</strong></div> }
           </div>
         </div>
-        <Link to={ `/${ url }/${ switchPage('next') }` } className='relative margin-top-s' onClick={ () => updatePreload('next', order) }>
-          <div className='round arrow-right'>
-            <div id='cta'>
-              <span className='arrow primera next'></span>
-              <span className='arrow segunda next'></span>
+        { id &&
+          <Link to={ `/${ url }/${ switchPage('next') }` } className='relative margin-top-s' onClick={ () => updatePreload('next', order) }>
+            <div className='round arrow-right'>
+              <div id='cta'>
+                <span className='arrow primera next'></span>
+                <span className='arrow segunda next'></span>
+              </div>
             </div>
-          </div>
-        </Link>
+          </Link>
+        }
       </div>
       { !id &&
         <div className='line-breaks'>
@@ -228,7 +236,7 @@ export default function Exhibition() {
           <div className='text-s margin-top-s center'>
             { exhibition && exhibition.curators && exhibition.curators.map((curator, index) => {
               return (
-                <div className='margin-top-s' key={ index }>
+                <div className='margin-top' key={ index }>
                   <div><strong>{ curator.artistName ? `${ curator.artistName }` : `${ curator.first } ${ curator.last }` }</strong></div>
                   <div className='flex center'>
                     { curator.website && <div className='margin-top-xs'><img src={ Web } className='curator-icon-web pointer' alt='Website' onClick={ () => openLink(curator.website) } /></div> }
