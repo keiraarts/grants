@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import ReactModal from 'react-modal';
 import { useStoreState } from 'easy-peasy';
+import { Link } from 'react-router-dom';
 import { apiUrl } from '../../baseUrl';
 
 import Close from '../../assets/close.png';
@@ -423,7 +424,7 @@ export default function Portal() {
             })
           :
             <div className='margin-top-l center'>
-              { loaded && 'Please log in to curate!' }
+              { loaded && <div>Please <Link to='/login' className='text-grey'>log in</Link> to curate!</div> }
               <div className='spacer' />
             </div>
           }
@@ -467,9 +468,7 @@ export default function Portal() {
               </div>
             }
           </div>
-          <div className='margin-top-s'>
-            <div className='line-spacer' />
-          </div>
+          <div className='line-spacer' />
         </div>
       }
       { (selectedProgram && adminTab && programAdmin) &&

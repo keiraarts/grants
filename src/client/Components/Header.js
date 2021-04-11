@@ -24,10 +24,10 @@ export default function Header() {
             <Link to='/ethos' rel='canonical' className= { `header-margin remove-a ${ path === 'ethos' && 'header-selected' }` }>
               Ethos
             </Link>
-            <Link to='/nft' rel='canonical' className={ `header-margin remove-a ${ path === 'nft' && 'header-selected' }` }>
+            <Link to='/learn' rel='canonical' className={ `header-margin remove-a ${ path === 'learn' && 'header-selected' }` }>
               Learn
             </Link>
-            <Link to='/committee' rel='canonical' className={ `header-margin remove-a ${ path === 'committee' && 'header-selected' }` }>
+            <Link to='/team' rel='canonical' className={ `header-margin remove-a ${ path === 'team' && 'header-selected' }` }>
               Team
             </Link>
             <Link to='/testimony' rel='canonical' className={ `header-margin remove-a ${ path === 'testimony' && 'header-selected' }` }>

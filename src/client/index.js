@@ -9,8 +9,7 @@ import Header from './Components/Header';
 import Footer from './Components/Footer';
 import Home from "./Components/Home";
 import Ethos from "./Components/Ethos";
-import FAQ from "./Components/FAQ";
-import Resources from "./Components/Resources";
+import Learn from "./Components/Learn";
 import Tutorial from "./Components/Tutorials/Wallet";
 import Rarible from "./Components/Tutorials/Rarible";
 import OpenSea from "./Components/Tutorials/OpenSea";
@@ -53,12 +52,11 @@ const App = () => {
                 <Switch>
                   <Route path="/" exact component={ Home } scrollRef={ scrollRef ? scrollRef.current : null } />
                   <Route path="/ethos" exact component={ Ethos } />
-                  <Route path="/nft" exact component={ Resources } />
-                  {/* <Route path="/resources" exact component={ Resources } /> */}
+                  <Route path="/learn" exact component={ Learn } />
                   <Route path="/tutorial" exact component={ Tutorial } />
                   <Route path="/rarible" exact component={ Rarible } />
                   <Route path="/opensea" exact component={ OpenSea } />
-                  <Route path="/committee" exact component={ Committee } />
+                  <Route path="/team" exact component={ Committee } />
                   <Route path="/donate" exact component={ Donate } />
                   <Route path="/program" exact component={ Program } />
                   <Route path="/create-program" exact component={ CreateProgram } />
