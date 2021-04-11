@@ -40,7 +40,7 @@ require('./src/server/models/user/userRoutes.js')(app);
 require('./src/server/models/applicant/applicantRoutes.js')(app);
 require('./src/server/models/program/programRoutes.js')(app);
 require('./src/server/services/infura-service.js')(app);
-require('./src/server/services/art-minter.js')(app);
+require('./src/server/services/eth-service.js')(app);
 mongoose.connect(ENV.MONGO);
 
 

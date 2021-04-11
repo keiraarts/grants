@@ -113,7 +113,7 @@ const ExhibitionNFT = ({ small, nft, src, important, hidden, contract }) => {
   let website, twitter, instagram;
   if (nft && nft.user && nft.user.website) website = nft.user.website;
   if (nft && nft.user && nft.user.twitter) twitter = nft.user.twitter;
-  if (nft && nft.user && nft.user.instagram) website = nft.user.instagram;
+  if (nft && nft.user && nft.user.instagram) instagram = nft.user.instagram;
 
   return (
     <div className={ `margin-top flex full-width ${ !small && 'side-space' }` } style={ { display: hidden && 'none' } }>

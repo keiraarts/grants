@@ -19,7 +19,7 @@ export default function Committee() {
       </div>
       <div className='page-container margin-top'>
         <div className='text-m'>Advisors</div>
-        <span className='text-s text-grey pointer' onClick={ () => openLink('https://twitter.com/illestrater_') }>Tim Kang (illestrater)</span>
+        <span className='text-s text-grey pointer' onClick={ () => openLink('https://y.at/%F0%9F%91%89%F0%9F%8E%B1%F0%9F%95%B3') }>Tim Kang (illestrater)</span>
         <div className='text-s'>Sevens Developer & paradigm pusher</div>
         <span className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://twitter.com/darlington') }>Mike Darlington</span>
         <div className='text-s'>CEO of Monstercat music label & captain NFT gremlin</div>
@@ -33,7 +33,7 @@ export default function Committee() {
         <div className='text-s'>Co-Founder of Museum of Crypto Art & NFT collector</div>
         <span className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://twitter.com/LordTylerWard') }>Tyler Ward</span>
         <div className='text-s'>Founder of Barn Bridge & DeFi degen</div>
-        <span className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://www.youtube.com/c/BrandonKangFilms/videos') }>Brandon Kang</span>
+        <span className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://y.at/%E2%AD%90%F0%9F%8E%AC%E2%AD%90') }>Brandon Kang</span>
         <div className='text-s'>Professional videographer & NFT collector</div>
         <span className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('http://justinmaller.com/') }>Justin Maller</span>
         <div className='text-s'>Digital Artist & CCO of Deviantart</div>

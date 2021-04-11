@@ -9,7 +9,6 @@ const fetch = require('node-fetch');
 
 const auth = require('./authorization-service');
 
-const Applicant = require('mongoose').model('Applicant');
 const User = require('mongoose').model('User');
 const Organizer = require('mongoose').model('Organizer');
 const Program = require('mongoose').model('Program');
@@ -92,32 +91,6 @@ const mint = async (applicants, program, organizer) => {
             console.log(`${uploader.pctComplete}% complete, ${uploader.uploadedChunks}/${uploader.totalChunks}`);
           }
 
-          // let thumbnail, transaction2;
-          // if (applicant.thumbnail) {
-          //   file = await fetch(`https://cdn.grants.art/${ applicant.thumbnail }`)
-          //     .then(res => res.buffer())
-          //     .catch(function() {
-          //       throw new Error('FETCH ERROR');
-          //     });
-
-          //   transaction2 = await arweave.createTransaction({ data: file }, wallet);
-          //   const ext = applicant.thumbnail.substr(applicant.thumbnail.length - 3).toLowerCase();
-          //   let responsetype;
-          //   if (ext === 'jpg' || ext === 'jpeg') responsetype = 'image/jpeg';
-          //   if (ext === 'png') responsetype = 'image/png';
-          //   if (ext === 'gif') responsetype = 'image/gif';
-          //   if (ext === 'ebp') responsetype = 'image/webp';
-          //   if (ext === 'mp4') responsetype = 'video/mp4';
-          //   transaction2.addTag('Content-Type', responsetype);
-          //   await arweave.transactions.sign(transaction2, wallet);
-          //   let uploader = await arweave.transactions.getUploader(transaction2);
-
-          //   while (!uploader.isComplete) {
-          //     await uploader.uploadChunk();
-          //     console.log(`${uploader.pctComplete}% complete, ${uploader.uploadedChunks}/${uploader.totalChunks}`);
-          //   }
-          // }
-
           const metadata = {
             minter: "0x47BCD42B8545c23031E9918c3D823Be4100D4e87",
             mintedOn: "2021-03-14T00:00:00.777Z",
@@ -135,7 +108,6 @@ const mint = async (applicants, program, organizer) => {
             visibility: "safe",
             forSale: false,
             image: `https://arweave.net/${ transaction.id }`,
-            // media: transaction2 ? { uri: `https://arweave.net/${ transaction.id }` } : undefined,
             attributes: [
               {
                 trait_type: 'Artist',
@@ -312,3 +284,4 @@ module.exports = (app) => {
     }
   });
 };
+
