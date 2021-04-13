@@ -146,6 +146,10 @@ const program = {
         type: Boolean,
         default: false,
     },
+    curationLock: {
+        type: Boolean,
+        default: false,
+    },
     curatorAddress: {
         type: String
     },
@@ -153,6 +157,10 @@ const program = {
         type: Boolean,
     },
     exhibiting: {
+        type: Boolean,
+        default: false,
+    },
+    finalized: {
         type: Boolean,
         default: false,
     },

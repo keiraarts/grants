@@ -62,8 +62,8 @@ export default function Committee() {
           <strong>About Sevens Foundation</strong>
         </div>
         <Block title='What makes Sevens unique to NFTs?' text='We provide a curation framework for curators to view art submissions with little emphasis on prior success
-          through tools such as optional blind voting and single art submissions. Although the story of an artist is also important, we believe art should speak for itself and 
-          are we rooted in elevating emerging and undiscovered talent. We also built Sevens to present digital art in a way that closely mirrors the experience we are familiar with when viewing physical art.
+          through tools such as optional blind voting and single art submissions. Although the story of an artist is also important, we believe art should speak for itself and
+          we are rooted in elevating emerging and undiscovered talent. We also built Sevens to present digital art in a way that closely mirrors the experience we are familiar with when viewing physical art.
           We strive to bridge the gap between the traditional and digital art realms.' />
         <Block title='Can I mint freely here?' text={ `Sevens is not an open minting platform. We believe in curation through a unified theme & experience similar to how traditional art galleries present
           artworks. We operate on a single art submission-per-exhibition basis and leave it up to the curators to decide what is minted. Each exhibition seeks different criteria and if you meet them you are
@@ -73,6 +73,8 @@ export default function Committee() {
         <Block title='How may I collect artwork on Sevens?' text={ `You may do so completely within our website. We use OpenSea's API so the bidding, listing, and auction mechanics
           are the same as OpenSea's - but everything works in-house. We do not present historical sales data on Sevens because we believe that immediately presenting a valuation creates bias
           towards the art piece, but you may certainly find that info on OpenSea. We also operate as decentralized as possible, so you must use an Ethereum wallet to create transactions.` } />
+        <Block title='Do you take profits?' text={ `We take 0% on all sales. We are fortunate and grateful to be able to operate pro-bono and have gracious donors to help fund our programs.
+          But, there is an automated 2.5% fee that OpenSea takes for using their integrations on any exchanges that happens in-house.` } />
         <div className='margin-top-l text-l text-b'>
           <strong>Technical FAQ</strong>
         </div>

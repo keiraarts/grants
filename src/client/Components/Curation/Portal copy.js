@@ -12,7 +12,14 @@ import Resizer from '../Tools/Resizer.js';
 import Curation from './Curation';
 import ArtList from './ArtList';
 import ReorderList from './ReorderList';
-import Admin from './Admin';
+
+const reorder = (list, startIndex, endIndex) => {
+  const result = Array.from(list);
+  const [removed] = result.splice(startIndex, 1);
+  result.splice(endIndex, 0, removed);
+
+  return result;
+};
 
 import '../../styles.scss';
 
@@ -64,6 +71,8 @@ export default function Portal() {
   const [filteredResults, setFilteredResults] = useState({ mintable: [], unmintable: [] });
   const [finalResults, setFinalResults] = useState({ minted: [], unminted: [] });
   const [selectedProgram, setSelectedProgram] = useState(null);
+  const [newCriteria, setNewCriteria] = useState(false);
+
   useEffect(() => {
     let filtered = { mintable: [], unmintable: [] };
     let final = { minted: [], unminted: [] };
@@ -92,6 +101,7 @@ export default function Portal() {
 
   const loadCuration = program => {
     setSelectedProgram(program);
+    setNewCriteria({ passByVotes: program.passByVotes, blindVoting: program.blindVoting, topThreshold: program.topThreshold, voteThreshold: program.voteThreshold });
     setApplicants({});
     fetch(`${ apiUrl() }/program/viewAllApplications`, {
       method: 'POST',
@@ -119,6 +129,42 @@ export default function Portal() {
     })
     .then(res => res.json())
     .then(json => setResults(json))
+  }
+
+  const [programAdmin, setProgramAdmin] = useState({});
+  useEffect(() => {
+    if (adminTab && selectedProgram) {
+      setProgramAdmin({});
+      fetch(`${ apiUrl() }/program/getProgramAdmin`, {
+        method: 'POST',
+        body: JSON.stringify({ program: selectedProgram.id }),
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': auth.token
+        },
+      })
+      .then(res => res.json())
+      .then(json => setProgramAdmin(json))
+    }
+  }, [adminTab]);
+
+  const saveCriteria = () => {
+    setSelectedProgram({ ...selectedProgram, passByVotes: newCriteria.passByVotes, blindVoting: newCriteria.blindVoting, topThreshold: newCriteria.topThreshold, voteThreshold: newCriteria.voteThreshold });
+    setCriteria(false);
+    const index = programs.findIndex(e => e.id === selectedProgram.id)
+    programs[index] = { ...programs[index], passByVotes: newCriteria.passByVotes, blindVoting: newCriteria.blindVoting, topThreshold: newCriteria.topThreshold, voteThreshold: newCriteria.voteThreshold };
+    setPrograms(programs);
+    fetch(`${ apiUrl() }/program/updateCurationCriteria`, {
+      method: 'POST',
+      body: JSON.stringify({ ...newCriteria, id: selectedProgram.id, org: selectedProgram.organizers[0].id }),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': auth.token
+      },
+    }).then(res => res.json())
+    .then(json => {});
   }
 
   const decide = (type) => {
@@ -203,6 +249,94 @@ export default function Portal() {
     .then(json => {})
   }
 
+
+  const [foundUsers, setFoundUsers] = useState([]);
+  const [search, setSearch] = useState(false);
+  const [criteria, setCriteria] = useState(false);
+  const searchUsers = (search) => {
+    if (!search) setFoundUsers([]);
+    else {
+      fetch(`${ apiUrl() }/searchUsers`, {
+        method: 'POST',
+        body: JSON.stringify({ user: search }),
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': auth.token
+        },
+      })
+      .then(res => res.json())
+      .then(json => setFoundUsers(json))
+    }
+  }
+
+  const addRemoveCurator = (type, curator) => {
+    let update;
+    if (type === 'add') {
+      setSearch(false);
+      programAdmin.curators.push(curator);
+      update = {
+        ...programAdmin,
+        curators: programAdmin.curators
+      }
+    } else if (type === 'remove') {
+      const index = programAdmin.curators.findIndex(e => e.id === curator.id);
+      update = {
+        ...programAdmin,
+        curators: [
+          ...programAdmin.curators.slice(0, index),
+          ...programAdmin.curators.slice(index + 1)
+        ]
+      }
+    }
+
+    setProgramAdmin(update);
+    fetch(`${ apiUrl() }/program/addRemoveCurator`, {
+      method: 'POST',
+      body: JSON.stringify({ program: selectedProgram.id, curator: curator.id, type }),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': auth.token
+      },
+    })
+    .then(res => res.json())
+    .then(json => {})
+  }
+
+  const reorderCurators = (curators) => {
+    console.log(curators);
+
+    // fetch(`${ apiUrl() }/program/reorderCurators`, {
+    //   method: 'POST',
+    //   body: JSON.stringify({ program: selectedProgram.id, curators }),
+    //   headers: {
+    //     'Accept': 'application/json',
+    //     'Content-Type': 'application/json',
+    //     'Authorization': auth.token
+    //   },
+    // })
+    // .then(res => res.json())
+    // .then(json => {
+    //   if (json.success) setProgramAdmin(...programAdmin, curators);
+    // })
+  }
+
+  const updateMintTo = (mintToArtist) => {
+    setProgramAdmin({ ...programAdmin, mintToArtist })
+    setSelectedProgram({ ...selectedProgram, mintToArtist })
+    fetch(`${ apiUrl() }/program/mintToArtist`, {
+      method: 'POST',
+      body: JSON.stringify({ program: selectedProgram.id, mintToArtist }),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': auth.token
+      },
+    }).then(res => res.json())
+    .then(json => {});
+  }
+
   const [mintConfirm, setMintConfirm] = useState(false);
   const [reorder, setReorder] = useState(false);
   const [newOrder, setNewOrder] = useState(null);
@@ -264,7 +398,6 @@ export default function Portal() {
   }
 
   const isAdmin = selectedProgram && selectedProgram.organizers[0].admins.find(e => e === auth.id);
-  console.log(selectedProgram);
 
   return (
     <div className='content-block' ref={ contentRef }>
@@ -403,14 +536,151 @@ export default function Portal() {
           <div className='line-spacer' />
         </div>
       }
-      { (selectedProgram && adminTab) &&
-        <Admin
-          auth={ auth }
-          selectedProgram={ selectedProgram }
-          setSelectedProgram={ setSelectedProgram }
-          programs={ programs }
-          setPrograms={ setPrograms }
-        />
+      { (selectedProgram && adminTab && programAdmin) &&
+        <div className='margin-top'>
+          <div className='text-mid flex'>
+            <div>
+              <div className='text-s'>
+                Exhibition Criteria
+              </div>
+              { selectedProgram.passByVotes ?
+                <div>{ selectedProgram.voteThreshold } Votes Needed</div>
+                :
+                <div>Top { selectedProgram.topThreshold } Submissions</div>
+              }
+            </div>
+            { criteria ?
+              <div>
+                <div className='small-button margin-left-s' onClick={ () => setCriteria(!criteria) }>Cancel</div>
+                <div className='small-button margin-left-s' onClick={ () => saveCriteria() }>Save</div>
+              </div>
+              :
+              <div className='small-button margin-left-s' onClick={ () => setCriteria(!criteria) }>Edit</div>
+            }
+          </div>
+          { criteria &&
+            <div>
+              <div className='text-s margin-top form__title'>Selection Type</div>
+              <div className='select-dropdown margin-top-minus'>
+                <select name='Mint' className='text-black' defaultValue={ `${ newCriteria.passByVotes }` } value={ `${ newCriteria.passByVotes }` } required onChange={e => setNewCriteria({ ...newCriteria, passByVotes: (e.target.value === 'true') })}>
+                  <option value='default' disabled hidden>
+                    Select an option
+                  </option>
+                  <option value='false'>Top Submissions</option>
+                  <option value='true'>Vote Count</option>
+                </select>
+              </div>
+              { newCriteria.passByVotes ?
+                <div className='form__group field'>
+                  <input type='number' className='form__field' placeholder='Number' name='number' id='number' maxLength='4' value={ `${ newCriteria.voteThreshold }` } onChange={e => setNewCriteria({ ...newCriteria, voteThreshold: Number(e.target.value) }) } />
+                  <label className='form__label'>Needed Votes Count</label>
+                </div>
+                :
+                <div className='form__group field'>
+                  <input type='number' className='form__field' placeholder='Number' name='number' id='number' maxLength='4' value={ `${ newCriteria.topThreshold }` } onChange={e => setNewCriteria({ ...newCriteria, topThreshold: Number(e.target.value) }) } />
+                  <label className='form__label'>Top Artworks Threshold Count</label>
+                </div>
+              }
+              <div className='text-s margin-top form__title'>Blind Curation</div>
+              <div className='select-dropdown margin-top-minus'>
+                <select name='Mint' className='text-black' defaultValue={ `${ newCriteria.blindVoting }` } value={ `${ newCriteria.blindVoting }` } required onChange={e => setNewCriteria({ ...newCriteria, blindVoting: (e.target.value === 'true') })}>
+                  <option value='default' disabled hidden>
+                    Select an option
+                  </option>
+                  <option value='false'>Show Artist Info</option>
+                  <option value='true'>Hide Artist Info</option>
+                </select>
+              </div>
+            </div>
+          }
+          <div className='margin-top text-mid flex'>
+            <div>
+              <div className='text-s'>
+                Exhibition Contract
+              </div>
+              { programAdmin.contractAddress ?
+                <div>{ programAdmin.contractAddress }</div>
+                :
+                <div>Not Created</div>
+              }
+            </div>
+            { !programAdmin.contractAddress &&
+              <div className='small-button margin-left-s'>Create (Coming Soon ❤️)</div>
+            }
+          </div>
+          <div className='margin-top text-mid flex'>
+            <div>
+              <div className='text-s'>
+                Mint to Artist or Curator
+              </div>
+              <div className='select-dropdown margin-top-minus'>
+                <select name='Mint' className='text-black' defaultValue={ `${ programAdmin.mintToArtist }` } value={ `${ programAdmin.mintToArtist }` } required onChange={e => updateMintTo(e.target.value === "true") }>
+                  <option value='default' disabled hidden>
+                    Select an option
+                  </option>
+                  <option value='true'>Artist&nbsp;&nbsp;&nbsp;&nbsp;</option>
+                  <option value='false'>Curator&nbsp;&nbsp;&nbsp;&nbsp;</option>
+                </select>
+              </div>
+              { !programAdmin.mintToArtist && 
+                <div className='margin-top-s'>
+                  <div className='text-xs'>
+                    Address
+                  </div>
+                  <div className='text-s'>{ selectedProgram.organizers[0].wallet }</div>
+                </div>
+              }
+            </div>
+          </div>
+          <div className='margin-top text-mid'>
+            Curators:
+            <div className='small-button margin-left-s' onClick={ () => setSearch(!search) }>{ search ? 'Close' : 'Add' }</div>
+            { search &&
+              <div className='form__group field'>
+                <input type='text' className='form__field' placeholder='Search' name='search' id='search' maxLength='100' onChange={e => searchUsers(e.target.value) } />
+                <label className='form__label'>Search by name or username</label>
+              </div>
+            }
+          </div>
+          { (search && programAdmin && foundUsers) &&
+            <div>
+              { foundUsers.map((item, index) => {
+                return (
+                <div key={ index } className='margin-top-s flex'>
+                  <div>
+                    <div className='text-xs'>{ item.username }</div>
+                    <div className='text-s'>{ item.first } { item.last }</div>
+                  </div>
+                  <div className='margin-left-s'>
+                    <div className='text-grey text-xs pointer' onClick={ () => addRemoveCurator('add', item) }>
+                      - Add
+                    </div>
+                  </div>
+                </div>);
+              })}
+            </div>
+          }
+          { (!search && programAdmin && programAdmin.curators) &&
+            <div>
+              { programAdmin.curators.map((item, index) => {
+                return (
+                <div key={ index } className='margin-top-s flex'>
+                  <div>
+                    <div className='text-xs'>{ item.username }</div>
+                    <div className='text-s'>{ item.first } { item.last }</div>
+                  </div>
+                  { auth.id !== item.id &&
+                    <div className='margin-left-s'>
+                      <div className='text-grey text-xs pointer' onClick={ () => addRemoveCurator('remove', item) }>
+                        - Remove
+                      </div>
+                    </div>
+                  }
+                </div>);
+              })}
+            </div>
+          }
+        </div>
       }
       { (selectedProgram && !adminTab) &&
         <div>
@@ -461,9 +731,9 @@ export default function Portal() {
                   <div className='flex margin-top'>
                     <div>{ selectedProgram.passByVotes ? `Received ${ selectedProgram.voteThreshold } Votes` : `Top ${ selectedProgram.topThreshold } Artworks` } (Total: { filteredResults.mintable.length })</div>
                     <div className='flex-full' />
-                    {/* { (isAdmin && !selectedProgram.finalized) &&
+                    { (isAdmin && !selectedProgram.finalized) &&
                       <div className='button-green small-button' onClick={ () => setApproveConfirm(true) }>Finalize Approved</div>
-                    } */}
+                    }
                     { selectedProgram.mintInProgress &&
                       <div className='text-s'>Minting In Progress</div>
                     }
@@ -474,7 +744,7 @@ export default function Portal() {
                       </div>
                     }
                   </div>
-                  <div className='margin-top' />
+                  <div className='margin-top-s' />
                   { reorder ?
                     <ReorderList list={ filteredResults.mintable } setNewOrder={ setNewOrder } />
                     :
@@ -511,23 +781,13 @@ export default function Portal() {
             <div className='margin-top-s'>
               { (applicants && applicants.unapproved && applicants.unapproved.length) ?
                 <div>
-                  { !selectedProgram.curationLock ?
-                    <div className='flex'>
-                      Remaining: { applicants.unapproved.length }
-                      <div className='flex-full' />
-                      <img src={ Tile } className={ curationView === 'gallery' ? 'curation-control' : 'curation-control-selected' } onClick={ () => setCurationView('tile') } />
-                      <img src={ Gallery } className={ curationView === 'tile' ? 'margin-left-s curation-control' : 'margin-left-s curation-control-selected' } onClick={ () => setCurationView('gallery') } />
-                    </div>
-                    :
-                    <div className='margin-top-s'>
-                      <div className='flex'>
-                        Curation Currently Locked
-                        <div className='flex-full' />
-                      </div>
-                      <div className='margin-top-s' />
-                    </div>
-                  }
-                  { (curationView === 'gallery' && !selectedProgram.curationLock) &&
+                  <div className='flex'>
+                    Remaining: { applicants.unapproved.length }
+                    <div className='flex-full' />
+                    <img src={ Tile } className={ curationView === 'gallery' ? 'curation-control' : 'curation-control-selected' } onClick={ () => setCurationView('tile') } />
+                    <img src={ Gallery } className={ curationView === 'tile' ? 'margin-left-s curation-control' : 'margin-left-s curation-control-selected' } onClick={ () => setCurationView('gallery') } />
+                  </div>
+                  { curationView === 'gallery' &&
                     <div className='flex margin-top-s'>
                       <div className='small-button flex-full' onClick={ () => decide('approve') }>
                         Approve
@@ -538,7 +798,7 @@ export default function Portal() {
                       </div>
                     </div>
                   }
-                  { (curationView === 'gallery' && !selectedProgram.curationLock) ?
+                  { curationView === 'gallery' ?
                     <React.Fragment key={ applicants.unapproved[0].id }>
                       <Curation nft={ applicants.unapproved[0] } small={ small } blind={ selectedProgram.blindVoting } />
                     </React.Fragment>

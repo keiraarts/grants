@@ -11,7 +11,9 @@ module.exports = (app) => {
   app.post('/api/program/updateCurationCriteria', program.updateCurationCriteria);
   app.post('/api/program/getProgramAdmin', program.getProgramAdmin);
   app.post('/api/program/mintToArtist', program.mintToArtist);
+  app.post('/api/program/curationLock', program.curationLock);
   app.post('/api/program/addRemoveCurator', program.addRemoveCurator);
+  app.post('/api/program/reorderCurators', program.reorderCurators);
   app.post('/api/program/submitApplication', program.submitApplication);
   app.post('/api/program/updateApplication', program.updateApplication);
   app.post('/api/program/getGallery', program.getGallery);

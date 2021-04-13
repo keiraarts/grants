@@ -201,7 +201,7 @@ export default function Application() {
   let isAdmin = false;
   if (programInfo) isAdmin = (auth && programInfo.organizers[0].admins.findIndex(admin => admin === auth.id) >= 0)
   let applied;
-  // if (user && user.applications && programInfo) applied = user.applications.find(e => e.program === programInfo.id);
+  if (user && user.applications && programInfo) applied = user.applications.find(e => e.program === programInfo.id);
 
   return (
     <div className='content-block'>
@@ -248,7 +248,7 @@ export default function Application() {
         ariaHideApp={ false }
       >
         <div className='text-s font'>
-          By submitting your artwork you agree and honor the grant logistics and criteria and will not mint your piece elsewhere before the curation process is completed.<br /><br />
+          By submitting your artwork you agree to and honor the grant logistics and criteria and will not mint your piece elsewhere before the curation process is completed.<br /><br />
           <input type='submit' value='Cancel' className='small-button' onClick={ () => setConfirmOpen(false) } />
           <input type='submit' value='Submit' className='small-button margin-left-s' onClick={ submit } />
         </div>

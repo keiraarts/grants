@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useStoreState } from 'easy-peasy';
 import { useScrollPosition } from '@n8tb1t/use-scroll-position'
 import '@appnest/masonry-layout';
 

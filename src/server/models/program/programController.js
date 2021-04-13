@@ -231,7 +231,7 @@ exports.getProgramAdmin = async (req, res) => {
 };
 
 
-// MINT TO TYPE, NOT ACTUAL MINTING
+// MINTING LOCATION TYPE, NOT ACTUAL MINTING
 exports.mintToArtist = async (req, res) => {
   const jwt = auth(req.headers.authorization, res, (jwt) => jwt);
   const organizer = await Organizer.findOne({ admins: jwt.id });
@@ -241,6 +241,23 @@ exports.mintToArtist = async (req, res) => {
     if (!program.organizers.find(e => e.equals(organizer._id))) return res.json({ error: 'Authentication error' });
 
     program.mintToArtist = req.body.mintToArtist;
+    program.save();
+    return err ?
+        res.status(500).json(err) :
+        res.json({ success: 'Updated' });
+  });
+};
+
+
+exports.curationLock = async (req, res) => {
+  const jwt = auth(req.headers.authorization, res, (jwt) => jwt);
+  const organizer = await Organizer.findOne({ admins: jwt.id });
+  if (!organizer) return res.json({ error: 'Authentication error' });
+
+  return Program.findById(req.body.program, (err, program) => {
+    if (!program.organizers.find(e => e.equals(organizer._id))) return res.json({ error: 'Authentication error' });
+
+    program.curationLock = req.body.curationLock;
     program.save();
     return err ?
         res.status(500).json(err) :
@@ -275,6 +292,22 @@ exports.addRemoveCurator = async (req, res) => {
     }
 
     return res.json({ error: 'Could not find curator' });
+  });
+};
+
+
+exports.reorderCurators = async (req, res) => {
+  const jwt = auth(req.headers.authorization, res, (jwt) => jwt);
+  const organizer = await Organizer.findOne({ admins: jwt.id });
+  if (!organizer) return res.json({ error: 'Authentication error' });
+
+  return Program.findById(req.body.program, (err, program) => {
+    if (!program.organizers.find(e => e.equals(organizer._id))) return res.json({ error: 'Authentication error' });
+
+    program.curators = req.body.curators;
+    program.save();
+
+    return res.json({ success: 'Order updated' });
   });
 };
 
@@ -510,9 +543,8 @@ exports.getCurationPrograms = async (req, res) => {
   if (jwt.id) {
     const user = await User.findById(jwt.id);
     if (!user) return res.json({ error: 'Authentication error' });
-    const programs = await Program.find({ curators: jwt.id }).select('organizer name url perpetual passByVotes topThreshold voteThreshold blindVoting mintToArtist mintInProgress').populate('organizers');
-
-    const sample = await Program.findById('60708c75525e3e035e8e2eb8').select('organizer name url perpetual passByVotes topThreshold voteThreshold blindVoting mintToArtist mintInProgress').populate('organizers');
+    const programs = await Program.find({ curators: jwt.id }).select('organizer name url perpetual passByVotes topThreshold voteThreshold blindVoting mintToArtist curationLock mintInProgress').populate('organizers');
+    const sample = await Program.findById('60708c75525e3e035e8e2eb8').select('organizer name url perpetual passByVotes topThreshold voteThreshold blindVoting mintToArtist curationLock mintInProgress').populate('organizers');
     if (jwt.id !== '6035e7415f0a684942f4e17c') programs.push(sample);
 
     return res.json({ success: programs });
@@ -618,6 +650,28 @@ exports.undoApplicant = async (req, res) => {
     }
   })
 };
+
+exports.finalizeApproved = async (req, res) => {
+  const jwt = auth(req.headers.authorization, res, (jwt) => jwt);
+  const organizer = await Organizer.findOne({ _id: req.body.org, admins: jwt.id });
+  if (!organizer) return res.json({ error: 'Authentication error' });
+  const program = await Program.findById(req.body.program);
+  if (!program) return res.json({ error: 'Authentication error' });
+
+  if (!req.body.applicants) return res.json({ error: 'Missing data' });
+
+  req.body.applicants.forEach(applicant => {
+    ProgramApplicant.findById(applicant.id).then(data => {
+      data.finalized = true;
+      data.save();
+    })
+  })
+
+  program.finalized = true;
+  program.save();
+
+  return res.json({ success: 'Deferrment finalized' })
+}
 
 exports.finalizeDeferred = async (req, res) => {
   const jwt = auth(req.headers.authorization, res, (jwt) => jwt);
