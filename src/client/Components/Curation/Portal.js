@@ -69,21 +69,30 @@ export default function Portal() {
     let final = { minted: [], unminted: [] };
     if (results && results.length && selectedProgram) {
       let i = 0;
-      results.forEach(result => {
-        if (!result.finalized) {
-          if (selectedProgram.passByVotes && !result.published) {
-            if (result.approvalCount >= selectedProgram.voteThreshold) filtered.mintable.push(result);
-            else filtered.unmintable.push(result);
-          } else if (!result.published) {
-            if (i < selectedProgram.topThreshold) filtered.mintable.push(result);
-            else filtered.unmintable.push(result);
-            i++;
+      if (selectedProgram.finalized) {
+        results.forEach(result => {
+          if (result.prepared) filtered.mintable.push(result);
+          else if (result.published) filtered.minted.push(result);
+          else if (result.finalized) final.unminted.push(result);
+          else filtered.unmintable.push(result);
+        })
+      } else {
+        results.forEach(result => {
+          if (!result.finalized) {
+            if (selectedProgram.passByVotes && !result.published) {
+              if (result.approvalCount >= selectedProgram.voteThreshold) filtered.mintable.push(result);
+              else filtered.unmintable.push(result);
+            } else if (!result.published) {
+              if (i < selectedProgram.topThreshold) filtered.mintable.push(result);
+              else filtered.unmintable.push(result);
+              i++;
+            }
+          } else {
+            if (result.published) final.minted.push(result);
+            else final.unminted.push(result);
           }
-        } else {
-          if (result.published) final.minted.push(result);
-          else final.unminted.push(result);
-        }
-      });
+        });
+      }
     }
 
     setFilteredResults(filtered);
@@ -240,11 +249,11 @@ export default function Portal() {
   }
 
   const [approveConfirm, setApproveConfirm] = useState(false);
-  const finalizeApproved = () => {
+  const finalizeApproved = (finalize) => {
     setDeferConfirm(false);
     fetch(`${ apiUrl() }/program/finalizeApproved`, {
       method: 'POST',
-      body: JSON.stringify({ program: selectedProgram.id, org: selectedProgram.organizers[0].id, applicants: filteredResults.mintable }),
+      body: JSON.stringify({ program: selectedProgram.id, org: selectedProgram.organizers[0].id, applicants: newOrder ? newOrder : filteredResults.mintable, finalize }),
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
@@ -252,7 +261,22 @@ export default function Portal() {
       },
     }).then(res => res.json())
     .then(json => {
-      if (json.success) setSelectedProgram({ ...selectedProgram, finalized: true })
+      if (json.success) {
+        if (finalize) {
+          const mintable = newOrder ? newOrder : filteredResults.mintable;
+          console.log('WTF', mintable);
+          mintable.forEach(result => result.prepared = true);
+          setResults([...mintable, ...filteredResults.unmintable])
+          setSelectedProgram({ ...selectedProgram, finalized: true })
+          setReorder(false);
+          setApproveConfirm(false);
+        } else {
+          const mintable = filteredResults.mintable;
+          mintable.forEach(result => result.prepared = false);
+          setResults([...mintable, ...filteredResults.unmintable])
+          setSelectedProgram({ ...selectedProgram, finalized: false })
+        }
+      }
     });
   }
 
@@ -264,7 +288,6 @@ export default function Portal() {
   }
 
   const isAdmin = selectedProgram && selectedProgram.organizers[0].admins.find(e => e === auth.id);
-  console.log(selectedProgram);
 
   return (
     <div className='content-block' ref={ contentRef }>
@@ -301,8 +324,8 @@ export default function Portal() {
             <strong>{ filteredResults.mintable.length } artworks</strong> will be prepared for you to re-order them
             to your liking before minting.<br /><br />
             <div className='center'>
-              <div className='small-button' onClick={ () => setApproveConfirm(false) }>Cancel</div><br /><br />
-              <div className='margin-top-s small-button' onClick={ () => finalizeApproved() }>Confirm</div>
+              <div className='small-button button-red' onClick={ () => setApproveConfirm(false) }>Cancel</div><br /><br />
+              <div className='margin-top-s small-button button-green' onClick={ () => finalizeApproved(true) }>Confirm</div>
             </div>
           </div>
         }
@@ -320,8 +343,8 @@ export default function Portal() {
             <strong>{ filteredResults.unmintable.length } artworks</strong> will be finalized into the deferred results page and
             an email notification will be sent about the results being finalized.<br /><br />
             <div className='center'>
-              <div className='small-button' onClick={ () => setDeferConfirm(false) }>Cancel</div><br /><br />
-              <div className='margin-top-s small-button' onClick={ () => finalizeDeferred() }>Confirm</div>
+              <div className='small-button button-red' onClick={ () => setDeferConfirm(false) }>Cancel</div><br /><br />
+              <div className='margin-top-s small-button button-green' onClick={ () => finalizeDeferred() }>Confirm</div>
             </div>
           </div>
         }
@@ -380,21 +403,25 @@ export default function Portal() {
               }
             </div>
             <div className='small-space' />
-            { !adminTab &&
+            { (!selectedProgram.hideResults || isAdmin) &&
               <div>
-                { viewTab === 'results' ?
+                { !adminTab &&
                   <div>
-                    <div className='small-button' onClick={ () => setViewTab('curate') }>
-                      Curation
-                      <img src={ Switch } className='switch-icon' />
-                    </div>
-                  </div>
-                :
-                  <div>
-                    <div className='small-button' onClick={ () => setViewTab('results') }>
-                      Results
-                      <img src={ Switch } className='switch-icon' />
-                    </div>
+                    { viewTab === 'results' ?
+                      <div>
+                        <div className='small-button' onClick={ () => setViewTab('curate') }>
+                          Curation
+                          <img src={ Switch } className='switch-icon' />
+                        </div>
+                      </div>
+                    :
+                      <div>
+                        <div className='small-button' onClick={ () => setViewTab('results') }>
+                          Results
+                          <img src={ Switch } className='switch-icon' />
+                        </div>
+                      </div>
+                    }
                   </div>
                 }
               </div>
@@ -461,16 +488,23 @@ export default function Portal() {
                   <div className='flex margin-top'>
                     <div>{ selectedProgram.passByVotes ? `Received ${ selectedProgram.voteThreshold } Votes` : `Top ${ selectedProgram.topThreshold } Artworks` } (Total: { filteredResults.mintable.length })</div>
                     <div className='flex-full' />
-                    {/* { (isAdmin && !selectedProgram.finalized) &&
-                      <div className='button-green small-button' onClick={ () => setApproveConfirm(true) }>Finalize Approved</div>
-                    } */}
+                    { (isAdmin && !selectedProgram.finalized) &&
+                      <div className='small-button' onClick={ () => setApproveConfirm(true) }>Finalize Approved</div>
+                    }
                     { selectedProgram.mintInProgress &&
                       <div className='text-s'>Minting In Progress</div>
                     }
                     { (isAdmin && selectedProgram.finalized) &&
                       <div style={{ marginTop: '-0.4rem' }}>
-                        { isAdmin && <div className='small-button' onClick={ () => setReorder(!reorder) }>{ reorder ? 'Save Order' : 'Reorder' }</div> }
-                        { isAdmin && <div className='button-green small-button margin-left-s' onClick={ () => setMintConfirm(true) }>Mint</div> }
+                        { isAdmin && reorder &&
+                          <div>
+                            <div className='small-button margin-left-s' onClick={ () => setReorder(false) }>Cancel</div>
+                            <div className='small-button margin-left-s' onClick={ () => finalizeApproved(true) }>Save Order</div>
+                          </div>
+                        }
+                        { (isAdmin && !reorder) && <div className='small-button' onClick={ () => finalizeApproved(false) }>Undo Finalize</div> }
+                        { (isAdmin && !reorder) && <div className='small-button margin-left-s' onClick={ () => setReorder(true) }>Reorder</div> }
+                        { (isAdmin && !reorder) && <div className='button-green small-button margin-left-s' onClick={ () => setMintConfirm(true) }>Mint</div> }
                       </div>
                     }
                   </div>
@@ -484,7 +518,7 @@ export default function Portal() {
                     Not Enough Votes (Total: { filteredResults.unmintable.length})
                     <div className='flex-full' />
                     <div style={{ marginTop: '-0.3rem' }}>
-                      { isAdmin && <div className='small-button button-red' onClick={ () => setDeferConfirm(true) }>Finalize Deferred</div> }
+                      { isAdmin && <div className='small-button' onClick={ () => setDeferConfirm(true) }>Finalize Deferred</div> }
                     </div>
                   </div>
                   <div className='margin-top' />

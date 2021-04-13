@@ -150,6 +150,10 @@ const program = {
         type: Boolean,
         default: false,
     },
+    hideResults: {
+        type: Boolean,
+        default: false,
+    },
     curatorAddress: {
         type: String
     },
@@ -274,6 +278,10 @@ const programApplicant = {
     accepted: {
         type: Boolean,
         default: false
+    },
+    prepared: {
+        type: Boolean,
+        default: false,
     },
     finalized: {
         type: Boolean,

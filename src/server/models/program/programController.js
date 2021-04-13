@@ -265,6 +265,22 @@ exports.curationLock = async (req, res) => {
   });
 };
 
+exports.hideResults = async (req, res) => {
+  const jwt = auth(req.headers.authorization, res, (jwt) => jwt);
+  const organizer = await Organizer.findOne({ admins: jwt.id });
+  if (!organizer) return res.json({ error: 'Authentication error' });
+
+  return Program.findById(req.body.program, (err, program) => {
+    if (!program.organizers.find(e => e.equals(organizer._id))) return res.json({ error: 'Authentication error' });
+
+    program.hideResults = req.body.hideResults;
+    program.save();
+    return err ?
+        res.status(500).json(err) :
+        res.json({ success: 'Updated' });
+  });
+};
+
 
 exports.addRemoveCurator = async (req, res) => {
   const jwt = auth(req.headers.authorization, res, (jwt) => jwt);
@@ -543,8 +559,10 @@ exports.getCurationPrograms = async (req, res) => {
   if (jwt.id) {
     const user = await User.findById(jwt.id);
     if (!user) return res.json({ error: 'Authentication error' });
-    const programs = await Program.find({ curators: jwt.id }).select('organizer name url perpetual passByVotes topThreshold voteThreshold blindVoting mintToArtist curationLock mintInProgress').populate('organizers');
-    const sample = await Program.findById('60708c75525e3e035e8e2eb8').select('organizer name url perpetual passByVotes topThreshold voteThreshold blindVoting mintToArtist curationLock mintInProgress').populate('organizers');
+    const programs = await Program.find({ curators: jwt.id })
+      .select('organizer name url perpetual passByVotes topThreshold voteThreshold blindVoting mintToArtist hideResults curationLock finalized mintInProgress').populate('organizers');
+    const sample = await Program.findById('60708c75525e3e035e8e2eb8')
+      .select('organizer name url perpetual passByVotes topThreshold voteThreshold blindVoting mintToArtist hideResults curationLock finalized mintInProgress').populate('organizers');
     if (jwt.id !== '6035e7415f0a684942f4e17c') programs.push(sample);
 
     return res.json({ success: programs });
@@ -583,7 +601,7 @@ exports.viewResults = async (req, res) => {
         res.status(500).json(err) :
         res.json(data);
   }).populate('user', 'artistName birthYear country city website twitter instagram')
-  .sort('-approvalCount')
+  .sort('order')
   .select('-approved -rejected')
 };
 
@@ -594,6 +612,7 @@ exports.approveOrReject = async (req, res) => {
 
   const isCurator = await Program.find({ curators: user._id });
   if (!isCurator) return res.json({ error: 'Authentication error' });
+  if (isCurator.curationLock) return res.json({ error: 'Curation locked' });
 
   return ProgramApplicant.findById(req.body.id, (err2, data) => {
     if (err2) return res.status(500).json(err);
@@ -660,17 +679,28 @@ exports.finalizeApproved = async (req, res) => {
 
   if (!req.body.applicants) return res.json({ error: 'Missing data' });
 
-  req.body.applicants.forEach(applicant => {
-    ProgramApplicant.findById(applicant.id).then(data => {
-      data.finalized = true;
-      data.save();
-    })
-  })
+  const exists = await ProgramApplicant.find({ published: true, program: req.body.id });
+  let order = exists.length + 1;
 
-  program.finalized = true;
+  for (const applicant of req.body.applicants) {
+    await ProgramApplicant.findById(applicant.id).then(data => {
+      if (req.body.finalize) {
+        data.order = order;
+        data.prepared = true;
+        data.save();
+        order++;
+      } else {
+        data.order = undefined;
+        data.prepared = false;
+        data.save();
+      }
+    })
+  }
+
+  program.finalized = req.body.finalize;
   program.save();
 
-  return res.json({ success: 'Deferrment finalized' })
+  return res.json({ success: 'Approval finalized' })
 }
 
 exports.finalizeDeferred = async (req, res) => {

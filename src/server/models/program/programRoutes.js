@@ -12,6 +12,7 @@ module.exports = (app) => {
   app.post('/api/program/getProgramAdmin', program.getProgramAdmin);
   app.post('/api/program/mintToArtist', program.mintToArtist);
   app.post('/api/program/curationLock', program.curationLock);
+  app.post('/api/program/hideResults', program.hideResults);
   app.post('/api/program/addRemoveCurator', program.addRemoveCurator);
   app.post('/api/program/reorderCurators', program.reorderCurators);
   app.post('/api/program/submitApplication', program.submitApplication);
@@ -22,6 +23,7 @@ module.exports = (app) => {
   app.post('/api/program/viewResults', program.viewResults);
   app.post('/api/program/approveOrReject', program.approveOrReject);
   app.post('/api/program/undoApplicant', program.undoApplicant);
+  app.post('/api/program/finalizeApproved', program.finalizeApproved);
   app.post('/api/program/finalizeDeferred', program.finalizeDeferred);
   app.post('/api/program/flagApplicant', program.flagApplicant);
   app.post('/api/program/removeFlag', program.removeFlag);

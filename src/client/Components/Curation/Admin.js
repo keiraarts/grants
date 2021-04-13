@@ -156,6 +156,20 @@ export default function Admin({ selectedProgram, setSelectedProgram, programs, s
     .then(json => {});
   }
 
+  const toggleResults = (hideResults) => {
+    setSelectedProgram({ ...selectedProgram, hideResults })
+    fetch(`${ apiUrl() }/program/hideResults`, {
+      method: 'POST',
+      body: JSON.stringify({ program: selectedProgram.id, hideResults }),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': auth.token
+      },
+    }).then(res => res.json())
+    .then(json => {});
+  }
+
   const updateMintTo = (mintToArtist) => {
     setProgramAdmin({ ...programAdmin, mintToArtist })
     setSelectedProgram({ ...selectedProgram, mintToArtist })
@@ -277,6 +291,20 @@ export default function Admin({ selectedProgram, setSelectedProgram, programs, s
           :
             <div className='small-button' onClick={ () => lockCuration(true) }>
               Lock Curation
+            </div>
+          }
+        </div>
+      </div>
+      <div className='margin-top'>
+        <div className='text-s'>Hide results from curators: <strong>{ selectedProgram.hideResults ? 'Yes' : 'No' }</strong></div>
+        <div className='margin-top-xs'>
+          { selectedProgram.hideResults ?
+            <div className='small-button' onClick={ () => toggleResults(false) }>
+              Unhide
+            </div>
+          :
+            <div className='small-button' onClick={ () => toggleResults(true) }>
+              Hide
             </div>
           }
         </div>
