@@ -330,8 +330,8 @@ export default function Admin({ selectedProgram, setSelectedProgram, programs, s
                               <div key={ index } className='margin-top-s flex'>
                                 <img src={ Drag } className='curator-drag' />
                                 <div>
-                                  <div className='text-xs'>{ item.username }</div>
-                                  <div className='text-s'>{ item.first } { item.last }</div>
+                                  <div className='text-xs'>{ item.first || '--' } { item.last || '--' }</div>
+                                  <div className='text-s'>{ item.username }</div>
                                 </div>
                                 { auth.id !== item.id &&
                                   <div className='margin-left-s'>
