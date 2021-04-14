@@ -2,8 +2,10 @@ const User = require('mongoose').model('User');
 const Applicant = require('mongoose').model('Applicant');
 const ProgramApplicant = require('mongoose').model('ProgramApplicant');
 const jsonwebtoken = require('jsonwebtoken');
+const request = require('request');
 const crypto = require('crypto');
 const ethers = require('ethers');
+const fetch = require('node-fetch');
 const auth = require('../../services/authorization-service');
 const nodemailer = require('nodemailer');
 const templates = require('../../emails/templates');
@@ -27,7 +29,7 @@ const transporter = nodemailer.createTransport({
 });
 
 exports.register = (req, res) => {
-  if (!validateUsername(req.body.username)) {
+  if (!validateUsername(req.body.username) || req.body.username.length > 15) {
     return res.status(406).json('Invalid username');
   }
 
@@ -134,6 +136,14 @@ exports.getAccount = (req, res, next) => {
   });
 }
 
+exports.getProfile = (req, res, next) => {
+  User.findOne({ username: req.body.username }, (err, user) => {
+    if (err) return res.json(err);
+    if (!user) return res.json({ error: 'User does not exist' }); 
+    return res.json({ success: user });
+  }).select('username first last artistName city country website twitter twitterVerified instagram about');
+}
+
 exports.searchUsers = (req, res) => {
   User.find({
       $or: [
@@ -183,8 +193,12 @@ exports.updateUser = async (req, res) => {
       user.artistName = req.body.artistName;
       user.country = req.body.country;
       user.countryCode = req.body.countryCode;
+      user.about = req.body.about;
       user.city = req.body.city;
       user.website = req.body.website;
+      if (req.body.twitter && user.twitter && req.body.twitter.toLowerCase().trim() !== user.twitter.toLowerCase().trim()) {
+        user.twitterVerified = false;
+      }
       user.twitter = req.body.twitter;
       user.instagram = req.body.instagram;
       user.save();
@@ -277,6 +291,36 @@ exports.recoverPassword = (req, res, next) => {
   });
 };
 
+exports.twitter = async (req, res, next) => {
+  const jwt = auth(req.headers.authorization, res, (jwt) => jwt);
+  const user = await User.findById(jwt.id);
+  if (!user || !jwt) return res.json({ error: 'Authentication error' });
+
+  return await fetch(`https://api.twitter.com/2/tweets/search/recent?query=from%3A${ req.body.twitter }&max_results=10`, {
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${ ENV.TWITTER_TOKEN }`,
+    }
+  }).then(res => res.json())
+  .then(json => {
+    if (json && json.data) {
+      let found = false;
+      json.data.forEach(tweet => {
+        if (tweet && tweet.text && tweet.text.indexOf('Verifying my @SevensGrant account') > -1) found = true;
+      })
+
+      if (found) {
+        user.twitterVerified = true;
+        user.save();
+        return res.json({ success: 'Verified' });
+      }
+
+      return res.json({ error: 'Issue verifying' });
+    }
+
+    return res.json({ error: 'Issue verifying' });
+  })
+}
 
 
 // FIX BAD MAPPING

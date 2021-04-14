@@ -87,10 +87,18 @@ const user = {
         type:  String,
         trim:  true,
     },
+    twitterVerified: {
+        type: Boolean,
+        default: false,
+    },
     instagram: {
         type:  String,
         trim:  true,
     },
+    about: {
+        type: String,
+        trim: true,
+    }
 };
 
 const UserSchema = new Schema(user);

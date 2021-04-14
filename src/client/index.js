@@ -26,6 +26,7 @@ import Login from "./Components/Login";
 import Forgot from "./Components/Forgot";
 import RecoverAccount from "./Components/RecoverAccount";
 import Account from "./Components/Account";
+import Profile from "./Components/Profile";
 import Exhibition from "./Components/Exhibition";
 import VerifyEmail from "./Components/VerifyEmail";
 
@@ -69,6 +70,7 @@ const App = () => {
                   <Route path="/forgotpassword" exact component={ Forgot } />
                   <Route path="/recoveraccount/:token" exact component={ RecoverAccount } />
                   <Route path="/account" exact component={ Account } />
+                  <Route path="/u/:username" component={ Profile } />
                   <Route path="/verifyemail/:id" component={ VerifyEmail } />
                   <Route path="/:url/:id" component={ Exhibition } />
                   <Route path="/:url" component={ Exhibition } />

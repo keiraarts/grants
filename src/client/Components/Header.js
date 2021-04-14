@@ -34,7 +34,7 @@ export default function Header() {
               Testimonies
             </Link>
             <Link to='/program' rel='canonical' className={ `header-margin remove-a ${ (path === 'program' || path === 'apply') && 'header-selected' }` }>
-              Apply
+              Grants
             </Link>
           </strong>
         </div>

@@ -294,6 +294,26 @@ a {
   margin-top: -0.5rem;
 }
 
+.earth-icon {
+  width: 1rem;
+  height: 1rem;
+  margin-right: 0.5rem;
+  margin-bottom: -0.15rem;
+}
+
+.profile-verified {
+  width: 1.4rem;
+  height: 1.4rem;
+  margin-left: 0.5rem;
+}
+
+.verified-icon {
+  width: 1rem;
+  height: 1rem;
+  margin-left: 0.3rem;
+  margin-bottom: -0.1rem;
+}
+
 .social-icon-web {
   width: 2.4rem;
   height: 2.4rem;
@@ -1511,6 +1531,17 @@ input[type=number] {
 
   .faq-toggle {
     margin-top: 0.5rem;
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .profile-verified {
+    width: 1rem;
+    height: 1rem;
+    margin-left: 0.3rem;
+  }
+
+  .verified-icon {
     width: 1rem;
     height: 1rem;
   }

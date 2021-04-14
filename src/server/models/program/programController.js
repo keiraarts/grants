@@ -421,6 +421,9 @@ exports.submitApplication = async (req, res) => {
   if (program.isProtected && req.body.passcode !== program.passcode) return res.json({ error: 'The secret phrase was incorrect' });
   if (new Date() < program.open || new Date() > program.close) return res.json({ error: 'Submissions are closed' });
 
+  const applied = await ProgramApplicant.findOne({ user: jwt.id, program: req.body.program });
+  if (applied) return res.json({ error: 'You have already submitted an application' });
+
   const applicant = {
     user:        jwt.id,
     program:     req.body.program,
