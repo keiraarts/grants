@@ -23,10 +23,14 @@ export default function Committee() {
         <div className='text-s'>Sevens Developer & paradigm pusher</div>
         <span className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://twitter.com/darlington') }>Mike Darlington</span>
         <div className='text-s'>CEO of Monstercat music label & captain NFT gremlin</div>
-        <span className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://www.instagram.com/yesladypheonix/') }>Lady PheOnix</span>
-        <div className='text-s'>Co-Founder of Universe Contemporary & leading crypto art evangelist</div>
+        <span className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://www.slimesunday.com') }>Devin Dube</span>
+        <div className='text-s'>Digital Marketing @ Slime Sunday & art lover</div>
+        <span className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://twitter.com/EthArtX') }>Larry Saggese</span>
+        <div className='text-s'>NFT podcaster & communications guru</div>
         <span className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://3lau.com/') }>Justin Blau (3LAU)</span>
         <div className='text-s'>Music producer & NFT innovator</div>
+        <span className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://www.instagram.com/yesladypheonix/') }>Lady PheOnix</span>
+        <div className='text-s'>Co-Founder of Universe Contemporary & leading crypto art evangelist</div>
         <span className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://twitter.com/axieking') }>OhhShiny</span>
         <div className='text-s'>Traditional fine art & NFT collector</div>
         <span className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://twitter.com/pablorfraile') }>Pablo</span>

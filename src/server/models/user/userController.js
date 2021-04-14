@@ -1,8 +1,6 @@
 const User = require('mongoose').model('User');
-const Applicant = require('mongoose').model('Applicant');
 const ProgramApplicant = require('mongoose').model('ProgramApplicant');
 const jsonwebtoken = require('jsonwebtoken');
-const request = require('request');
 const crypto = require('crypto');
 const ethers = require('ethers');
 const fetch = require('node-fetch');
@@ -10,6 +8,7 @@ const auth = require('../../services/authorization-service');
 const nodemailer = require('nodemailer');
 const templates = require('../../emails/templates');
 const errorMessages = require('../../services/error-messages');
+const { existsSync } = require('fs');
 
 const ENV = process.env;
 
@@ -28,87 +27,63 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-exports.register = (req, res) => {
+exports.register = async (req, res) => {
   if (!validateUsername(req.body.username) || req.body.username.length > 15) {
-    return res.status(406).json('Invalid username');
+    return res.json({ error: 'Invalid username' });
   }
 
-  if (req.body.username.length > 30) return res.status(406).json('Username too long');
+  if (req.body.username.length > 15) return res.json({ error: 'That username is too long' });
 
-  return User.findOne({
-    $or: [
-        { email: { $regex: new RegExp(`^${ req.body.email.toLowerCase().trim() }$`, 'i') } },
-        { username: { $regex: new RegExp(`^${ req.body.username.toLowerCase().trim() }$`, 'i') } }
-    ]
-  }, async (err, user) => {
-    if (err) {
-      return res.status(500).json(errorMessages.parse(err));
-    } else if (!req.user) {
-      if (!user) {
-        if (req.body.password !== req.body.confirmPassword) {
-          return res.status(500).json('Passwords do not match');
-        }
+  const exists = await User.findOne({ email: { $regex: new RegExp(`^${ req.body.email.toLowerCase().replace(/\s+/g, '') }$`, 'i') } })
+  if (exists) return res.json({ error: 'That email already exists' });
 
-        const applicant = await Applicant.findOne({ email: { $regex: new RegExp(`^${ req.body.email.toLowerCase().trim() }$`, 'i') } }, (err2, data) => data)
-          .select('-flagged -approvalCount -rejectCount -rejected -approved').sort({ _id: -1 });
+  const exists2 = await User.findOne({ username: { $regex: new RegExp(`^${ req.body.username.toLowerCase().replace(/\s+/g, '') }$`, 'i') } })
+  if (exists2 && exists2.username.toLowerCase() === req.body.username.toLowerCase().replace(/\s+/g, '')) return res.json({ error: 'That username already exists' });
 
-        user = {
-          first:       req.body.first,
-          last:        req.body.last,
-          username:    req.body.username,
-          email:       req.body.email,
-          password:    req.body.password,
-          artistName:  applicant && applicant.name,
-          country:     applicant && applicant.country,
-          countryCode: applicant && applicant.countryCode,
-          city:        applicant && applicant.city,
-          website:     applicant && applicant.website,
-          twitter:     applicant && applicant.twitter,
-          instagram:   applicant && applicant.instagram,
-          committee:   false,
-          emailToken: crypto.randomBytes(32).toString('hex')
-        };
+  if (req.body.password !== req.body.confirmPassword) {
+    return res.json({ error: 'Passwords do not match' });
+  }
 
-        user = new User(user);
-        return user.save((err, data) => {
-          if (err) return res.status(500).json('There was an issue please notify tim@grants.art');
-          
-          if (applicant) {
-            applicant.user = data._id;
-            applicant.save();
-          }
+  const user = new User({
+    first:       req.body.first,
+    last:        req.body.last,
+    username:    req.body.username,
+    email:       req.body.email,
+    password:    req.body.password,
+    committee:   false,
+    emailToken: crypto.randomBytes(32).toString('hex')
+  });
 
-          transporter.sendMail(templates.verification(user.email, user.username, user.emailToken));
+  return user.save((err, data) => {
+    if (err) return res.json({ error: 'There was an unknown issue, please notify sevens@grants.art' });
 
-          const token = jsonwebtoken.sign({
-              username: user.username,
-              id:       data.id,
-          }, ENV.JWT);
-          return res.json({ username: user.username, id: user.id, token, committee: false });
-        });
-      }
-      return res.status(500).json('User or Email already exists');
-    }
+    transporter.sendMail(templates.verification(user.email, user.username, user.emailToken));
+
+    const token = jsonwebtoken.sign({
+        username: user.username,
+        id:       data.id,
+    }, ENV.JWT);
+    return res.json({ username: user.username, id: user.id, token, committee: false });
   });
 };
 
 exports.login = (req, res, next) => {
   User.findOne({
-      $or: [
-          { email: { $regex: new RegExp(`^${ req.body.username.toLowerCase().trim() }$`, 'i') } },
-          { username: { $regex: new RegExp(`^${ req.body.username.toLowerCase().trim() }$`, 'i') } }
-      ]
+    $or: [
+      { email: { $regex: new RegExp(`^${ req.body.username.toLowerCase().trim() }$`, 'i') } },
+      { username: { $regex: new RegExp(`^${ req.body.username.toLowerCase().trim() }$`, 'i') } }
+    ]
   }, (err, user) => {
       if (err) {
-          return next(err);
+        return next(err);
       } else if (!user) {
-          return res.status(401).json(`Could not find user: ${ req.body.username }`);
+        return res.status(401).json(`Could not find user: ${ req.body.username }`);
       } else if ((user.username.toLowerCase() !== req.body.username.toLowerCase().trim() && user.email.toLowerCase() !== req.body.username.toLowerCase().trim())) {
-          return res.status(401).json(`Could not find user: ${ req.body.username }`);
+        return res.status(401).json(`Could not find user: ${ req.body.username }`);
       } else if (user.hashPassword(req.body.password) !== user.password) {
-          return res.status(401).json('Invalid password');
+        return res.status(401).json('Invalid password');
       } else if (user.banned) {
-          return res.status(401).json('Your account is banned');
+        return res.status(401).json('Your account is banned');
       }
 
       const token = jsonwebtoken.sign({

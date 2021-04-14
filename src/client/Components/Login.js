@@ -1,13 +1,17 @@
 import React, { useState } from 'react';
-import { Redirect } from "react-router-dom";
+import { Redirect, useHistory } from "react-router-dom";
 import { apiUrl } from '../baseUrl';
 import { Link } from 'react-router-dom';
-import { useStoreActions } from 'easy-peasy';
+import { useStoreActions, useStoreState } from 'easy-peasy';
 
 import '../styles.scss';
 
 export default function Register() {
   const setAuth = useStoreActions(dispatch => dispatch.user.setAuth);
+  const auth = useStoreState(state => state.user.auth);
+  const history = useHistory();
+
+  if (auth && auth.username) history.push('/');
 
   const [loginData, setLoginData] = useState({
     username: '',

@@ -428,7 +428,7 @@ a {
   background-color: rgba(255, 255, 255, 0.2);
   border-radius: 1rem;
   padding: 2rem;
-  margin: 2rem 0;
+  margin: 1rem 0 2rem 0;
 }
 
 .reorder-block {
@@ -1271,7 +1271,7 @@ input[type=number] {
   font-size: 1.4rem;
   min-width: 6rem;
   padding: 2rem;
-  margin: 1rem 2rem;
+  margin: 1rem 1rem;
   outline: none;
   box-shadow: 3px 3px 5px #ccc;
   background-color: rgba(255, 255, 255, 0.5);
@@ -1430,7 +1430,7 @@ input[type=number] {
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
     padding: 2rem 2rem;
-    margin: 2rem;
+    margin: 1rem 2rem 2rem 2rem;
   }
 
   .text-l {
@@ -1572,7 +1572,7 @@ input[type=number] {
   }
 
   .content-block {
-    margin: 1rem 1rem;
+    margin: 0rem 1rem 1rem 1rem;
     padding: 1rem;
   }
 

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Redirect } from "react-router-dom";
+import { Redirect, useHistory } from "react-router-dom";
 import { apiUrl } from '../baseUrl';
-import { useStoreActions } from 'easy-peasy';
+import { useStoreActions, useStoreState } from 'easy-peasy';
 
 import '../styles.scss';
 
@@ -12,6 +12,10 @@ function validateUsername(string) {
 
 export default function Register() {
   const setAuth = useStoreActions(dispatch => dispatch.user.setAuth);
+  const auth = useStoreState(state => state.user.auth);
+  const history = useHistory();
+
+  if (auth && auth.username) history.push('/');
 
   const [registerData, setRegisterData] = useState({
     username: '',
@@ -57,9 +61,9 @@ export default function Register() {
         if (data && data.username) {
           setAuth(data);
           setLogged(true);
-        } else {
+        } else if (data.error) {
           setSubmitting(false);
-          setErr(data);
+          setErr(data.error);
         }
       })
     }
@@ -82,7 +86,7 @@ export default function Register() {
             <label className='form__label'>Last Name</label>
           </div>
           <div className='form__group field'>
-            <input type='text' className='form__field' placeholder='Username' name='username' id='username' required maxLength='15' value={ registerData.username } onChange={e => { validateUsername(e.target.value.trim()) && setRegisterData({ ...registerData, username: e.target.value.trim() }) } }/>
+            <input type='text' className='form__field' placeholder='Username' name='username' id='username' required maxLength='15' value={ registerData.username } onChange={e => { validateUsername(e.target.value.replace(/\s+/g, '')) && setRegisterData({ ...registerData, username: e.target.value.replace(/\s+/g, '') }) } }/>
             <label className='form__label'>Username</label>
           </div>
           <div className='form__group field'>

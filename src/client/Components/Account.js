@@ -151,7 +151,7 @@ export default function Account() {
   }
 
   const createTweet = () => {
-    openLink(`https://twitter.com/intent/tweet?text=Verifying%20my%20%40SevensGrant%20account%20❤️`)
+    openLink(`https://twitter.com/intent/tweet?text=Verifying%20my%20%40SevensGrant%20account%20❤️%0A%0Ahttps://grants.art/u/${ user.username }`)
   }
 
   const verifyTweet = () => {
@@ -189,7 +189,7 @@ export default function Account() {
           { editingAccount &&
             <div>
               <div className='form__group field'>
-                <input type='text' className='form__field' placeholder='Username' name='username' id='username' required maxLength='15' value={ updateUser.username } onChange={e => { validateUsername(e.target.value.trim()) && setUpdateUser({ ...updateUser, username: e.target.value.trim() }) } } />
+                <input type='text' className='form__field' placeholder='Username' name='username' id='username' required maxLength='15' value={ updateUser.username } onChange={e => { validateUsername(e.target.value.replace(/\s+/g, '')) && setUpdateUser({ ...updateUser, username: e.target.value.replace(/\s+/g, '') }) } } />
                 <label className='form__label'>Username</label>
               </div>
               <div className='form__group field'>
@@ -293,9 +293,8 @@ export default function Account() {
             <div>
               <div className='text-s'><strong>Username</strong></div>
               <div className='text-s'>
-                <Link to={ `/u/${ user.username }` } className='text-grey'>
-                  { user.username }
-                </Link>{ user.twitterVerified && <img src={ Verified } className='verified-icon' title='Twitter Verified' /> }
+                { user.username }
+                { user.twitterVerified && <img src={ Verified } className='verified-icon' title='Twitter Verified' /> }
               </div>
               <div className='text-s margin-top-s'><strong>Email{ !user.emailVerified && ' - Unverified' }</strong></div>
               <div className='text-s'>

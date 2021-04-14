@@ -43,7 +43,9 @@ export default function Header() {
           <div>
             <div className='text-s flex'>
               <div className='flex-full' />
-              Logged in as&nbsp;<Link to='/account' className='pointer'><div className='text-grey'>{ auth.username }</div></Link>
+              <Link to='/account' className='pointer'><div className='text-grey'>Edit Profile</div></Link>
+              &nbsp;⬡&nbsp;
+              <Link to={ `/u/${ auth.username }` } className='pointer'><div className='text-rainbow'>{ auth.username }</div></Link>
             </div>
           </div>
           :
