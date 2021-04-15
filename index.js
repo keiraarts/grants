@@ -53,10 +53,12 @@ if (cluster.isMaster) {
   require('./src/server/models/user/userModel.js');
   require('./src/server/models/applicant/applicantModel.js');
   require('./src/server/models/program/programModel.js');
+  require('./src/server/models/gallery/galleryModel.js');
 
   require('./src/server/models/user/userRoutes.js')(app);
   require('./src/server/models/applicant/applicantRoutes.js')(app);
   require('./src/server/models/program/programRoutes.js')(app);
+  require('./src/server/models/gallery/galleryRoutes.js')(app);
   require('./src/server/services/infura-service.js')(app);
   require('./src/server/services/eth-service.js')(app);
   mongoose.connect(ENV.MONGO);

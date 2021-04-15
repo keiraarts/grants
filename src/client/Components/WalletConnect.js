@@ -1,11 +1,18 @@
 import React, { useEffect, useState } from 'react';
-
-let provider;
+import { OpenSeaPort, Network, EventType } from 'opensea-js';
+import { useStoreState, useStoreActions } from 'easy-peasy';
 
 export default function WalletConnect() {
+  const setProvider = useStoreActions(dispatch => dispatch.eth.setProvider);
+
   function connectWallet() {
     if (window.ethereum) {
-      provider = window.web3.currentProvider;
+      const provider = window.ethereum;
+      if (provider.selectedAddress) {
+        setProvider(provider);
+      } else {
+        setProvider(null);
+      }
     }
   }
 

@@ -28,21 +28,12 @@ export const store = createStore(
         }
       }),
     },
-    grantees: {
-      data: [],
-      setGrantees: action((state, payload) => {
+    eth: {
+      provider: null,
+      setProvider: action((state, payload) => {
         return {
           ...state,
-          data: payload
-        }
-      }),
-    },
-    nominees: {
-      data: [],
-      setNominees: action((state, payload) => {
-        return {
-          ...state,
-          data: payload
+          provider: payload
         }
       }),
     },

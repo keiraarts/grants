@@ -173,7 +173,7 @@ export default function Exhibition() {
   return (
     <div className='content-block' { ...handlers }>
       <Resizer />
-      <WalletConnect />
+      {/* <WalletConnect /> */}
       <div className='flex'>
         { id &&
           <Link to={ `/${ url }/${ switchPage('previous') }` } className='relative margin-top-s' onClick={ () => updatePreload('previous', order) }>
