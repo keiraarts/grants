@@ -21,8 +21,6 @@ import '../styles.scss';
 
 function openLink(page)
 {
-  page = page.replace('@', '');
-  if (user.twitter.substring(0, 3) === 'www') page = `https://${ page }`
   let win = window.open(page, '_blank');
   win.focus();
 }
