@@ -47,7 +47,7 @@ const addNFT = ({ data, index, width }) => {
     <div key={ index }>
       <div className='gallery-block' style={{ width }}>
       { (data.imageType === 'mp4' || data.imageType === 'mov') ?
-        <video muted loop webkit-playsinline='true' playsInline preload='none' className='block-art-image'>
+        <video muted loop autoPlay webkit-playsinline='true' playsInline preload='none' className='block-art-image'>
             <source src={ data.image }
                     type={ `video/${ data.imageType }` } />
             Sorry, your browser doesn't support embedded videos.

@@ -32,10 +32,20 @@ export default function Profile() {
   const setAuth = useStoreActions(dispatch => dispatch.user.setAuth);
   const small = useStoreState(state => state.app.small);
 
-  const { isLoading, data } = usePromise(() => getProfile(username), {
-    resolve: true,
-    resolveCondition: []
-  });
+  const [data, setData] = useState(null);
+  useEffect(() => {
+    fetch(`${ apiUrl() }/getProfile`, {
+      method: 'POST',
+      body: JSON.stringify({ username }),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+    }).then(res => res.json())
+    .then(json => {
+      if (json.success) setData(json.success);
+    });
+  }, [username])
 
   const [galleries, setGalleries] = useState([]);
   useEffect(() => {
@@ -74,7 +84,7 @@ export default function Profile() {
       <Resizer />
       { !editCollection &&
         <div>
-          { isLoading &&
+          { !data &&
             <div className='center flex'>
               <div className='margin-top center'>
                 <div className="loading"><div></div><div></div></div>
@@ -136,19 +146,4 @@ export default function Profile() {
       />
     </div>
   );
-}
-
-const getProfile = (username) => {
-  return fetch(`${ apiUrl() }/getProfile`, {
-    method: 'POST',
-    body: JSON.stringify({ username }),
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-    },
-  }).then(res => res.json())
-  .then(json => {
-    if (json.success) return json.success;
-    return null;
-  });
 }
