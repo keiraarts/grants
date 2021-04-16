@@ -116,22 +116,6 @@ export default function Gallery() {
               <div className='home-button flex-full'>
                 <div className='flex'>
                   <div className='text-rainbow text-s'>
-                    <strong>????? ??????</strong>
-                  </div>
-                  <div className='flex-full' />
-                </div>
-                <div className='margin-top-s'>
-                  <strong>👑</strong>
-                </div>
-                <div className='margin-top-s text-s'>
-                  ?????????? ?????
-                </div>
-              </div>
-            </div>
-            <div className='flex'>
-              <div className='home-button flex-full'>
-                <div className='flex'>
-                  <div className='text-rainbow text-s'>
                     <strong>???????</strong>
                   </div>
                   <div className='flex-full' />
