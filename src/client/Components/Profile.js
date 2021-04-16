@@ -47,7 +47,7 @@ export default function Profile() {
     });
   }, [username])
 
-  const [galleries, setGalleries] = useState([]);
+  const [galleries, setGalleries] = useState(null);
   useEffect(() => {
     if (data && data.id) {
       fetch(`${ apiUrl() }/gallery/getGalleries`, {

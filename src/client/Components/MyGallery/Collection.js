@@ -156,7 +156,7 @@ export default function Collection({ editing, setEditCollection, galleries, addN
         <div className='text-s font'>
           Add to which gallery?
           <div className='center'>
-            { galleries.map((gallery, index) => {
+            { galleries && galleries.map((gallery, index) => {
               return (
                 <div className='margin-top-s'>
                   <div className='small-button' style={{ display: 'block' }} onClick={ () => confirmAdd(gallery.id) }>{ gallery.name }</div>
@@ -203,6 +203,13 @@ export default function Collection({ editing, setEditCollection, galleries, addN
           }
         </div>
       }
+      { !galleries &&
+        <div className='center flex'>
+          <div className='margin-top center'>
+            <div className="loading"><div></div><div></div></div>
+          </div>
+        </div>
+      }
       <div className='margin-top-s'>
         { editing ?
           <div>
@@ -217,15 +224,19 @@ export default function Collection({ editing, setEditCollection, galleries, addN
             }
           </div>
           :
-          galleries.map((item, index) => {
-            if (gallery && gallery.id !== item.id) {
-              return (
-                <div key={ index } className='small-button margin-left-s' onClick={ () => changeGallery(item) } >
-                  <div className='text-s'>{ item.name }</div>
-                </div>
-              );
+          <div>
+            { galleries &&
+              galleries.map((item, index) => {
+                if (gallery && gallery.id !== item.id) {
+                  return (
+                    <div key={ index } className='small-button margin-left-s' onClick={ () => changeGallery(item) } >
+                      <div className='text-s'>{ item.name }</div>
+                    </div>
+                  );
+                }
+              })
             }
-          })
+          </div>
         }
       </div>
       { editGallery &&
@@ -256,6 +267,7 @@ export default function Collection({ editing, setEditCollection, galleries, addN
           </div>
         </div>
       }
+      { (galleries && !galleries.length)  && <div className='margin-top-s'>No galleries have been created yet</div> }
       { editing && !manage &&
         <div className='margin-top text-m'>
           <EditGalleries galleries={ galleries } setManage={ setManage } setDel={ setDel } setGalleries={ setGalleries } />
