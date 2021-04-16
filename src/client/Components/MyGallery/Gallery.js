@@ -91,7 +91,7 @@ const NFT = ({ data, index, width }) => {
                 { data.description }
               </div>
               <div className='margin-top-s pointer' onClick={ () => openLink(data.opensea) }>
-                View Original
+                View on OpenSea
               </div>
             </div>
           </div>

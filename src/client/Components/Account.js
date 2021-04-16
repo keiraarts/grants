@@ -151,7 +151,7 @@ export default function Account() {
   }
 
   const createTweet = () => {
-    openLink(`https://twitter.com/intent/tweet?text=Verifying%20my%20%40SevensGrant%20account%20❤️%0A%0Ahttps://grants.art/u/${ user.username }`)
+    openLink(`https://twitter.com/intent/tweet?text=Verifying%20my%20%40SevensGrant%20account%20❤️%0A%0Ahttps://curation.art/u/${ user.username }`)
   }
 
   const verifyTweet = () => {
