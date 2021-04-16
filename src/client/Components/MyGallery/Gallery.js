@@ -44,8 +44,8 @@ export default function Collection({ nfts, add }) {
 
 const addNFT = ({ data, index, width }) => {
   return (
-    <div>
-      <div className='gallery-block' key={ index } style={{ width }}>
+    <div key={ index }>
+      <div className='gallery-block' style={{ width }}>
       { (data.imageType === 'mp4' || data.imageType === 'mov') ?
         <video muted loop autoPlay webkit-playsinline='true' playsInline preload='none' className='block-art-image' poster={ data.poster }>
             <source src={ data.image }
@@ -67,8 +67,8 @@ const addNFT = ({ data, index, width }) => {
 
 const NFT = ({ data, index, width }) => {
   return (
-    <div>
-      <div className='gallery-block' key={ index } style={{ width }}>
+    <div key={ index }>
+      <div className='gallery-block' style={{ width }}>
       { (data.imageType === 'mp4' || data.imageType === 'mov') ?
         <video muted loop autoPlay webkit-playsinline='true' playsInline preload='none' className='block-art-image' poster={ data.poster }>
             <source src={ data.image }

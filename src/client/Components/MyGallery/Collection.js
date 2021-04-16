@@ -137,8 +137,12 @@ export default function Collection({ editing, setEditCollection, galleries, addN
     }
   }
 
-  // if (provider && provider.selectedAddress) console.log(provider.selectedAddress)
+  const changeGallery = (item) => {
+    setGallery({ ...item });
+    setMyNFTs({ ...item.nfts });
+  }
 
+  // if (provider && provider.selectedAddress) console.log(provider.selectedAddress)
   return (
     <div>
       <WalletConnect />
@@ -212,7 +216,7 @@ export default function Collection({ editing, setEditCollection, galleries, addN
           galleries.map((item, index) => {
             if (gallery && gallery.id !== item.id) {
               return (
-                <div key={ index } className='small-button margin-left-s' onClick={ () => setGallery(item) } >
+                <div key={ index } className='small-button margin-left-s' onClick={ () => changeGallery(item) } >
                   <div className='text-s'>{ item.name }</div>
                 </div>
               );
