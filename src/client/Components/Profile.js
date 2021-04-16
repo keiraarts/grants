@@ -11,6 +11,7 @@ import Resizer from './Tools/Resizer.js';
 import Collection from './MyGallery/Collection.js';
 
 import Verified from '../assets/verified.png';
+import Share from '../assets/share.png';
 import Earth from '../assets/earth.png';
 import Twitter from '../assets/twitter.png';
 import Instagram from '../assets/instagram.png';
@@ -75,6 +76,7 @@ export default function Profile() {
   }
 
   const [editCollection, setEditCollection] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   let user = {}
   if (data) user = data;
@@ -92,29 +94,38 @@ export default function Profile() {
             </div>
           }
           { logout && <Redirect to='/' /> }
-          <div className='text-l flex'>
-            <div>
-              <strong>{ user.username ? `${ user.artistName ? user.artistName : user.username }` : username }</strong>
-              { user.twitterVerified && <img src={ Verified } className='profile-verified' title='Twitter Verified' /> }
+          <div className='flex'>
+            <div className='username-container'>
+              <div className='text-l word-wrap'>
+                <strong>{ user.username ? `${ user.artistName ? user.artistName : user.username }` : username }</strong>
+                { user.twitterVerified && <img src={ Verified } className='profile-verified' title='Twitter Verified' /> }
+              </div>
+              { (user.first || user.last) &&
+                <div className='text-s'>
+                  { user.first ? `${ user.first } ` : '' }{ user.last }
+                </div>
+              }
+              { (user.city || user.country) &&
+                <div className='text-s margin-top-xs'>
+                  <img className='earth-icon' src={ Earth } />{ user.city }, { user.country }
+                </div>
+              }
             </div>
             <div className='flex-full' />
-            { (auth && auth.username === user.username) &&
-              <div className='text-s flex'>
-                <div className='flex-full' />
-                <span className='text-grey pointer' onClick={ logMeOut }>Logout</span>
+            <div className='share-icon-container'>
+              { (auth && auth.username === user.username) &&
+                <div className='text-s flex'>
+                  <div className='flex-full' />
+                  <span className='text-grey pointer' onClick={ logMeOut }>Logout</span>
+                </div>
+              }
+              <div className={ `${ auth && auth.username === user.username && 'margin-top-xs' }` }>
+                <img src={ Share } className='share-icon pointer'
+                  onClick={ () => { navigator.clipboard.writeText(`https://curation.art/u/${ user.username }`); setCopied(true) } }/>
+                { copied && <div className='text-xs'>URL Copied</div> }
               </div>
-            }
+            </div>
           </div>
-          { (user.first || user.last) &&
-            <div className='text-s'>
-              { user.first ? `${ user.first } ` : '' }{ user.last }
-            </div>
-          }
-          { (user.city || user.country) &&
-            <div className='text-s margin-top-xs'>
-              <img className='earth-icon' src={ Earth } />{ user.city }, { user.country }
-            </div>
-          }
           <div className={ `flex margin-top ${ small ? 'center' : '' } ` }>
             { user.website && <img src={ Web } className='social-icon-web pointer' alt='Website' onClick={ () => openLink(user.website) } /> }
             { user.twitter && <img src={ Twitter } className='social-icon' alt='Twitter' onClick={ () => openLink(`https://twitter.com/${ user.twitter }`) } /> }
