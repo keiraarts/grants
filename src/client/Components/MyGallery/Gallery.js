@@ -77,62 +77,8 @@ const NFT = ({ data, index, width }) => {
   const [info, showInfo] = useState(false);
   const tap = () => {
     showInfo(!info);
-    if (video.current) video.current.play();
+    // if (video.current && video.current.readyState > 3) video.current.play();
   }
-
-  const [isFullScreen, setFullScreen] = useState(false);
-  function fullScreen() {
-    if (video.current) {
-      video.current.muted = false;
-      if (video.current.requestFullScreen) {
-        video.current.requestFullScreen();
-      } else if (video.current.webkitRequestFullScreen) {
-        video.current.webkitRequestFullScreen();
-      } else if (video.current.mozRequestFullScreen) {
-        video.current.mozRequestFullScreen();
-      } else if (video.current.msRequestFullscreen) {
-        video.current.msRequestFullscreen();
-      } else if (video.current.webkitEnterFullscreen) {
-        video.current.webkitEnterFullscreen(); //for iphone this code worked
-      }
-    } else {
-      if (document.documentElement.requestFullScreen) {
-        if (isFullScreen) document.exitFullscreen();
-        else document.documentElement.requestFullScreen();
-      } else if (document.documentElement.webkitRequestFullScreen) {
-        if (isFullScreen) document.webkitExitFullscreen();
-        else document.documentElement.webkitRequestFullScreen();
-      } else if (document.documentElement.mozRequestFullScreen) {
-        if (isFullScreen) document.mozExitFullscreen();
-        else document.documentElement.mozRequestFullScreen();
-      } else if (document.documentElement.msRequestFullscreen) {
-        if (isFullScreen) document.msExitFullscreen();
-        else document.documentElement.msRequestFullscreen();
-      } else if (document.documentElement.webkitEnterFullscreen) {
-        if (isFullScreen) document.webkitExitFullscreen();
-        else document.documentElement.webkitEnterFullscreen()
-      }
-
-      setFullScreen(!isFullScreen);
-    }
-  }
-
-  useEffect(() => {
-    document.addEventListener('webkitfullscreenchange', (event) => {
-      if (!document.webkitIsFullScreen) {
-        setFullScreen(false);
-        if (video.current) {
-          setTimeout(() => {
-            video.current.play();
-          });
-        }
-      } else setFullScreen(true);
-    });
-
-    return () => {
-      document.removeEventListener('fullscreenchange', () => {});
-    }
-  }, [])
 
   return (
     <div key={ index } className='gallery-info-container'>
@@ -153,7 +99,7 @@ const NFT = ({ data, index, width }) => {
       }
       <div className='gallery-block' style={{ width }} onClick={ () => tap() }>
       { (data.imageType === 'mp4' || data.imageType === 'mov') ?
-        <video muted loop webkit-playsinline='true' playsInline preload='none' className='block-art-image' poster={ data.poster } ref={ video }>
+        <video muted loop autoPlay webkit-playsinline='true' playsInline preload='none' className='block-art-image' poster={ data.poster } ref={ video }>
             <source src={ data.image }
                     type={ `video/${ data.imageType }` } />
             Sorry, your browser doesn't support embedded videos.
