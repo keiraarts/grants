@@ -136,7 +136,7 @@ export default function Profile() {
             <div className='text-l'>
               <strong>About</strong>
             </div>
-            <div className='margin-top-s text-m'>
+            <div className='margin-top-s text-mid'>
               { user.about ? 
                 <ReactAutolinker text={ user.about } />
               :

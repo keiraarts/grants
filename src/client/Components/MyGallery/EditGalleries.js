@@ -59,8 +59,6 @@ export default function EditGalleries({ galleries, setManage, setDel, setGalleri
     pushReorder(items);
     setShowData(items);
     setGalleries([...items]);
-
-    console.log('hello', items);
   }
 
   return (

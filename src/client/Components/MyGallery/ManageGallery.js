@@ -55,7 +55,6 @@ export default function ManageGallery({ gallery, reorderNFTs, galleries, setGall
     setShowData(items);
     pushReorder(items);
     reorderNFTs(gallery.id, items);
-    console.log('hello', items);
   }
 
   const remove = (id) => {

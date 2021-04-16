@@ -171,14 +171,14 @@ export default function Collection({ editing, setEditCollection, galleries, addN
       <ReactModal
         isOpen={ del !== null }
         style={{ content: { margin: 'auto', width: '15rem', height: '23rem' } }}
-        onRequestClose={ () => setDel(false) }
+        onRequestClose={ () => setDel(null) }
         shouldCloseOnOverlayClick={ true }
         ariaHideApp={ false }
       >
         <div className='text-s font'>
           Are you sure you want to delete your gallery?<br /><br />
           <div className='center'>
-            <div className='small-button' onClick={ () => setDel(false) }>Cancel</div><br /><br />
+            <div className='small-button' onClick={ () => setDel(null) }>Cancel</div><br /><br />
             <div className='margin-top-s small-button' onClick={ () => deleteGallery() }>Confirm</div>
           </div>
         </div>
