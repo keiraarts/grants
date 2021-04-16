@@ -496,6 +496,27 @@ a {
   margin: 0.5rem 0;
 }
 
+.gallery-info-container {
+  position: relative;
+}
+
+.gallery-info {
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  margin-top: 0.5rem;
+  padding: 2rem;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  color: white;
+  z-index: 1;
+  background: radial-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 1));;
+}
+
 .text-rainbow {
   display: inline-block;
   background-image: repeating-linear-gradient(45deg, violet, indigo, blue, green, yellow, orange, red, violet);

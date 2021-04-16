@@ -132,6 +132,7 @@ export default function Profile() {
         editing={ editCollection }
         setEditCollection={ setEditCollection }
         setGalleries={ setGalleries }
+        username={ username }
       />
     </div>
   );

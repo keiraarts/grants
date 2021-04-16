@@ -12,7 +12,7 @@ import WalletConnect from '../WalletConnect';
 
 import '../../styles.scss';
 
-export default function Collection({ editing, setEditCollection, galleries, addNewGallery, setGalleries }) {
+export default function Collection({ editing, setEditCollection, galleries, addNewGallery, setGalleries, username }) {
   const auth = useStoreState(state => state.user.auth);
   const provider = useStoreState(state => state.eth.provider);
   
@@ -196,7 +196,11 @@ export default function Collection({ editing, setEditCollection, galleries, addN
         <div className='flex'>
           <div className='text-l'><strong>My Galleries</strong></div>
           <div className='flex-full' />
-          <span className='text-s text-grey pointer' onClick={ () => setEditCollection(!editing) }>{ editing ? 'Close Curation' : 'Edit Galleries' }</span>
+          { username === auth.username &&
+            <span className='text-s text-grey pointer' onClick={ () => setEditCollection(!editing) }>
+              { editing ? 'Close Curation' : 'Edit Galleries' }
+            </span>
+          }
         </div>
       }
       <div className='margin-top-s'>

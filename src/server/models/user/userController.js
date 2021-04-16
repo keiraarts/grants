@@ -112,7 +112,7 @@ exports.getAccount = (req, res, next) => {
 }
 
 exports.getProfile = (req, res, next) => {
-  User.findOne({ username: req.body.username }, (err, user) => {
+  User.findOne({ username: { $regex: new RegExp(`^${ req.body.username.toLowerCase().trim() }$`, 'i') } }, (err, user) => {
     if (err) return res.json(err);
     if (!user) return res.json({ error: 'User does not exist' }); 
     return res.json({ success: user });
