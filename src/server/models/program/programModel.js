@@ -60,7 +60,6 @@ OrganizerSchema.set('toJSON', {
 mongoose.model('Organizer', OrganizerSchema);
 
 
-
 const program = {
     organizers: [{
         type:     mongoose.Schema.ObjectId,
@@ -141,6 +140,10 @@ const program = {
     },
     contractAddress: {
         type: String
+    },
+    creationInProgress: {
+        type: Boolean,
+        default: false,
     },
     mintToArtist: {
         type: Boolean,

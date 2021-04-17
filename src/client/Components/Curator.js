@@ -112,8 +112,8 @@ export default function Organizer() {
               </div>
             }
             <div className='text-l flex center'>
-              { (organizer.logo && !organizer.ext) && <img className='page-logo' src={ `https://cdn.grants.art/${ organizer.logo }` } /> }
-              { (organizer.logo && organizer.ext) && <img className='page-logo' src={ organizer.logo } /> }
+              { (organizer.logo && !organizer.ext) && <div className='page-logo-c'><img className='page-logo' src={ `https://cdn.grants.art/${ organizer.logo }` } /></div> }
+              { (organizer.logo && organizer.ext) && <div className='page-logo-c'><img className='page-logo' src={ organizer.logo } /></div> }
               { !organizer.logo && <div>{ organizer.name }</div> }
             </div>
             <div className='margin-top'>

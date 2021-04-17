@@ -5,7 +5,6 @@ import { useStoreState } from 'easy-peasy';
 import { Link } from "react-router-dom";
 import ReactAutolinker from 'react-autolinker';
 import GenesisNFT from './ExhibitionNFT.js';
-import WalletConnect from './WalletConnect.js';
 import Resizer from './Tools/Resizer.js';
 import { apiUrl } from '../baseUrl';
 
@@ -152,28 +151,10 @@ export default function Exhibition() {
     preventDefaultTouchmoveEvent: true,
   });
 
-  const [provider, setProvider] = useState(null);
-  const [seaport, setSeaport] = useState(null);
-  async function connectWallet() {
-    if (window.ethereum) {
-      const createdProvider = window.web3.currentProvider;
-      if (!createdProvider.selectedAddress) window.ethereum.enable();
-      else {
-        const createdSeaport = new OpenSeaPort(createdProvider, {
-          networkName: Network.Main
-        })
-
-        setProvider(createdProvider);
-        setSeaport(createdSeaport);
-        getBalance(createdProvider.selectedAddress, createdSeaport);
-      }
-    }
-  }
 
   return (
     <div className='content-block' { ...handlers }>
       <Resizer />
-      {/* <WalletConnect /> */}
       <div className='flex'>
         { id &&
           <Link to={ `/${ url }/${ switchPage('previous') }` } className='relative margin-top-s' onClick={ () => updatePreload('previous', order) }>

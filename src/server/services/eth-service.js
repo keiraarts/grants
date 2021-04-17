@@ -8,6 +8,7 @@ const Arweave = require('arweave');
 const fetch = require('node-fetch');
 
 const auth = require('./authorization-service');
+const MintbaseABI = require('./MintbaseFactory.json');
 
 const User = require('mongoose').model('User');
 const Organizer = require('mongoose').model('Organizer');
@@ -271,8 +272,6 @@ module.exports = (app) => {
           order++;
         })
 
-        console.log('wtf', applicants);
-
         program.mintInProgress = true;
         program.exhibiting = true;
         program.save();
@@ -285,3 +284,110 @@ module.exports = (app) => {
   });
 };
 
+
+
+const createExhibition = async (wallet, name, symbol, program) => {
+  console.log('CREATING', wallet, name, symbol);
+
+  try {
+    let myBalanceWei = await web3.eth.getBalance(web3.eth.defaultAccount).then(balance => balance)
+    let myBalance = await web3.utils.fromWei(myBalanceWei, 'ether');
+    const block = await web3.eth.getBlock('latest');
+
+    log(`Your wallet balance is currently ${myBalance} ETH`.green)
+    const mintbaseFactoryAddress = '0x0e6541374e9D7DEe2C53C15a1a00fbe41C7b7198';
+    const Contract = new web3.eth.Contract(MintbaseABI, mintbaseFactoryAddress);
+    const sevensMintAddress = '0xEbfDF56E9c9A643c8abc13A4fbD679ed02F9ceb4';
+
+    const launch = Contract.methods.launchStore(name, symbol, 'https://arweave.net/')
+    const encoded = launch.encodeABI();
+
+    let nonce = await web3.eth.getTransactionCount(web3.eth.defaultAccount);
+    let gasPrices = await getCurrentGasPrices()
+
+    let details = {
+      "to": process.env.DESTINATION_WALLET_ADDRESS,
+      "gas": 26520,
+      "gasPrice": gasPrices.medium * 1000000000, // converts the gwei price to wei
+      "chainId": 4 // EIP 155 chainId - mainnet: 1, rinkeby: 4
+    }
+    log(`The outgoing transaction count for your wallet address is: ${nonce}`.magenta)
+
+    var tx = {
+      nonce,
+      to: mintbaseFactoryAddress,
+      from: sevensMintAddress,
+      gas: 500000,
+      gasLimit: block.gasLimit,
+      gasPrice: details.gasPrice,
+      data: encoded
+    }
+
+    console.log(tx);
+
+    await new Promise((resolve, reject) => {
+      web3.eth.accounts.signTransaction(tx, process.env.WALLET_PRIVATE_KEY)
+        .then(signed => {
+          console.log('signed', signed);
+        //   var tran = web3.eth.sendSignedTransaction(signed.rawTransaction);
+
+        //     tran.on('confirmation', (confirmationNumber, receipt) => {
+        //       if (confirmationNumber > 1) {
+        //         tran.off('error');
+        //         tran.off('receipt');
+        //         tran.off('transactionHash');
+        //         tran.off('confirmation');
+        //         resolve();
+        //       }
+        //       console.log('confirmation: ' + confirmationNumber);
+        //     });
+
+        //     tran.on('transactionHash', hash => {
+        //       applicant.published = true;
+        //       applicant.finalized = true;
+        //       applicant.accepted = true;
+        //       applicant.save();
+        //       console.log('hash');
+        //       console.log(hash);
+        //     });
+
+        //     tran.on('receipt', receipt => {
+        //       console.log('reciept');
+        //       console.log(receipt);
+        //     });
+
+        //     tran.on('error', error => {
+        //       console.log(error.toString());
+        //       throw new Error(error.toString());
+        //     });
+        });
+    });
+
+    program.creationInProgress = false;
+    program.save();
+  } catch (err) {
+    console.log('ERROR MINTING', err)
+    program.creationInProgress = false;
+    program.save();
+  }
+};
+
+module.exports = (app) => {
+  app.post('/api/program/createExhibition', async (req, res) => {
+    const jwt = auth(req.headers.authorization, res, (jwt) => jwt);
+    const organizer = await Organizer.findOne({ _id: req.body.org, admins: jwt.id });
+    if (!organizer) return res.json({ error: 'Authentication error' });
+    const program = await Program.findById(req.body.program);
+    if (!program) return res.json({ error: 'Authentication error' });
+    if (program.creationInProgress) return res.json({ error: 'Contract creation is already in progress' });
+    if (!req.body.wallet) return res.json({ error: 'No wallet provided' });
+    if (!req.body.name || !req.body.symbol) return res.json({ error: 'Missing contract info' });
+    organizer.wallet = req.body.wallet;
+    organizer.save();
+
+    program.creationInProgress = true;
+    program.save();
+
+    createExhibition(req.body.wallet, req.body.name, req.body.symbol, program);
+  });
+}

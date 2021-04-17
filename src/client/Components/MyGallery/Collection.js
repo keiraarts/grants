@@ -8,7 +8,7 @@ import Gallery from './Gallery';
 import EditGallery from './EditGallery';
 import EditGalleries from './EditGalleries';
 import ManageGallery from './ManageGallery';
-import WalletConnect from '../WalletConnect';
+import WalletConnect from '../Web3/WalletConnect';
 
 import '../../styles.scss';
 
@@ -91,9 +91,13 @@ export default function Collection({ editing, setEditCollection, galleries, addN
   }, [gallery])
 
   useEffect(() => {
-    if (editing) getMyAssets(0, []);
+    if (provider && provider.selectedAddress && editing) getMyAssets(0, []);
     if (!editing) setManage(false);
   }, [editing])
+
+  useEffect(() => {
+    if (provider && provider.selectedAddress && editing) getMyAssets(0, []);
+  }, [provider])
 
   useEffect(() => {
     if (galleries && galleries.length) {
@@ -142,7 +146,12 @@ export default function Collection({ editing, setEditCollection, galleries, addN
     setMyNFTs({ ...item.nfts });
   }
 
-  // if (provider && provider.selectedAddress) console.log(provider.selectedAddress)
+  const connectWallet = () => {
+    if (window.ethereum) {
+      window.ethereum.enable();
+    }
+  }
+
   return (
     <div>
       <WalletConnect />
@@ -273,16 +282,26 @@ export default function Collection({ editing, setEditCollection, galleries, addN
           <EditGalleries galleries={ galleries } setManage={ setManage } setDel={ setDel } setGalleries={ setGalleries } />
           <div className='text-m'><strong>My NFTs</strong></div>
           <div className='text-s'>
-            { (provider && provider.selectedAddress) ? `Connected: ${ provider.selectedAddress }` : 'No connected wallet' }
+            { (provider && provider.selectedAddress) ? 
+              `Connected: ${ provider.selectedAddress }`
+            : 
+              <div className='margin-top-s'>
+                <div className='small-button' onClick={ () => connectWallet() }>Connect your wallet</div>
+              </div>
+            }
           </div>
           <div className='margin-top-s' />
-          { !showData ?
+          { !showData && provider && provider.selectedAddress &&
             <div className='center flex'>
               <div className='margin-top center'>
                 <div className="loading"><div></div><div></div></div>
               </div>
             </div>
-          :
+          }
+          { (!provider || !provider.selectedAddress) &&
+            <div className='margin-top-s'>Please connect your wallet to view your NFTs</div>
+          }
+          { showData &&
             <Gallery nfts={ showData } add />
           }
         </div>

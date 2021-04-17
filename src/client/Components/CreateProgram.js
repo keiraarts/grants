@@ -72,6 +72,7 @@ export default function Application() {
           Providing grants, at the minimum, must cover all costs for minting recipients' NFTs.
         </div>
         { (!auth || !auth.username) && <Link to='/login' className='margin-top text-mid text-grey'>You must have an account to submit a program</Link> }
+        <div className='margin-top text-s'><em>Starred fields are optional*</em></div>
         <form onSubmit={ submit }>
           <div className='margin-top'>
             Program Curator or Organization

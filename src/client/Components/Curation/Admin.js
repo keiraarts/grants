@@ -1,9 +1,27 @@
-import React, { useState, useEffect, useStoreState } from 'react';
-import { apiUrl } from '../../baseUrl';
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { useStoreState } from 'easy-peasy';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import Web3 from 'web3';
+import { apiUrl } from '../../baseUrl';
 
+
+import WalletConnect from '../Web3/WalletConnect';
 import Drag from '../../assets/drag.png';
 import '../../styles.scss';
+
+const getCurrentGasPrices = async () => {
+  let response = await fetch('https://ethgasstation.info/json/ethgasAPI.json').then(res => res.json());
+  console.log('GOT GAS', response);
+  let prices = {
+    low: response.safeLow / 10,
+    medium: response.average / 10,
+    high: response.fast / 10,
+    super: response.fastest / 10
+  }
+
+  return prices
+}
 
 const reorder = (list, startIndex, endIndex) => {
   const result = Array.from(list);
@@ -14,6 +32,8 @@ const reorder = (list, startIndex, endIndex) => {
 };
 
 export default function Admin({ selectedProgram, setSelectedProgram, programs, setPrograms, auth }) {
+  const provider = useStoreState(state => state.eth.provider);
+
   const [newCriteria, setNewCriteria] = useState(false);
   const [foundUsers, setFoundUsers] = useState([]);
   const [search, setSearch] = useState(false);
@@ -185,8 +205,59 @@ export default function Admin({ selectedProgram, setSelectedProgram, programs, s
     .then(json => {});
   }
 
+  const [exhibition, setExhibition] = useState(false);
+  const [exhibitionName, setExhibitionName] = useState(false);
+  const [exhibitionSymbol, setExhibitionSymbol] = useState(false);
+  const [exhibitionErr, setExhibitionErr] = useState(false);
+  const exhibitionCreation = () => {
+    setExhibitionSymbol('ART');
+    setExhibitionName(selectedProgram.name);
+    setExhibition(true);
+  }
+
+  const createContract = async () => {
+    setExhibitionErr(false);
+    const index = programs.findIndex(e => e.id === selectedProgram.id)
+    programs[index] = { ...programs[index], creationInProgress: true };
+    setPrograms(programs);
+    setSelectedProgram({ ...selectedProgram, creationInProgress: true });
+    fetch(`${ apiUrl() }/program/createExhibition`, {
+      method: 'POST',
+      body: JSON.stringify({
+        program: selectedProgram.id,
+        org: selectedProgram.organizers[0].id,
+        name: exhibitionName,
+        symbol: exhibitionSymbol,
+        wallet: provider.selectedAddress
+      }),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': auth.token
+      },
+    }).then(res => res.json())
+    .then(json => {
+      if (json.error) setExhibitionErr(json.error);
+    });
+  }
+
+  const connectWallet = () => {
+    if (window.ethereum) {
+      window.ethereum.request({
+        method: 'eth_requestAccounts',
+      }).catch(e => {
+        if (e.code === -32002)
+        setBidErr('MetaMask is already requesting login!')
+      });
+    }
+  }
+
+  const verified = (auth.wallet) ? `${ auth.wallet.slice(0,8).toLowerCase() }...${ auth.wallet.slice(-4).toLowerCase() }` : 'No verified wallet';
+  const connected = (provider && provider.selectedAddress) ? `${ provider.selectedAddress.slice(0,8) }...${ provider.selectedAddress.slice(-4) }` : 'No connected wallet';
+
   return (
     <div className='margin-top'>
+      <WalletConnect />
       <div className='text-mid flex'>
         <div>
           <div className='text-s'>
@@ -253,10 +324,51 @@ export default function Admin({ selectedProgram, setSelectedProgram, programs, s
             <div>Not Created</div>
           }
         </div>
-        { !programAdmin.contractAddress &&
-          <div className='small-button margin-left-s'>Create (Coming Soon ❤️)</div>
+        { (!programAdmin.contractAddress && !exhibition) &&
+          <div className='small-button margin-left-s' onClick={ () => exhibitionCreation() }>Create (Coming Soon ❤️)</div>
         }
       </div>
+      {/* { exhibition &&
+        <div>
+          <div className='form__group field'>
+            <input type='text' className='form__field' placeholder='Symbol' name='symbol' id='symbol' maxLength='4' value={ `${ exhibitionSymbol }` } onChange={e => setExhibitionSymbol(e.target.value) } />
+            <label className='form__label'>Symbol</label>
+          </div>
+          <div className='text-s'>
+            'ART' is recommended for Sevens NFTs
+          </div>
+          <div className='form__group field'>
+            <input type='text' className='form__field' placeholder='Name' name='name' id='name' maxLength='77' value={ `${ exhibitionName }` } onChange={e => setExhibitionName(e.target.value) } />
+            <label className='form__label'>Contract Name</label>
+          </div>
+          <div className='text-s'>
+            Both fields are not too important as we don't display on our website anywhere
+          </div>
+          <div className='margin-top-s text-xs'>
+            <div>Verified Wallet: { verified }</div>
+            <div>My Wallet: { connected }</div>
+            { (verified.toLowerCase() !== connected.toLowerCase()) &&
+              <div className='margin-top-s'>
+                <em>Your verified and connected wallets do not match. Please go to <Link to='/account' className='text-grey'>Edit Profile</Link> to verify your wallet.</em>
+              </div>
+            }
+          </div>
+          { selectedProgram.creationInProgress ?
+            <div className='margin-top-s text-s'>Exhibition creation in progress</div>
+          :
+            <div className='flex margin-top-s'>
+              <div className='small-button' onClick={ () => setExhibition(false) }>Cancel</div>
+              { (!provider || !provider.selectedAddress) &&
+                <div className='small-button margin-left-s' onClick={ () => connectWallet() }>Connect Wallet</div>
+              }
+              { (verified.toLowerCase() === connected.toLowerCase()) &&
+                <div className='small-button margin-left-s' onClick={ () => createContract() }>Create Contract</div>
+              }
+            </div>
+          }
+          { exhibitionErr && <div className='text-err text-s'>{ exhibitionErr }</div> }
+        </div>
+      } */}
       <div className='margin-top text-mid flex'>
         <div>
           <div className='text-s'>

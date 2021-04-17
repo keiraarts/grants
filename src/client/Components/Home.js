@@ -57,7 +57,11 @@ export default function Gallery() {
                             <strong>{ item.organizers[0].name }</strong>
                           </div>
                           <div className='flex-full' />
-                          { item.organizers[0].logo && <img className='home-logo' src={ `https://cdn.grants.art/${ item.organizers[0].logo }` } /> }
+                          { item.organizers[0].logo && 
+                            <div className='home-logo-c'>
+                              <img className='home-logo' src={ `https://cdn.grants.art/${ item.organizers[0].logo }` } />
+                            </div>
+                          }
                         </div>
                         <div className='margin-top-s'>
                           <strong>{ item.name }</strong>
@@ -85,7 +89,11 @@ export default function Gallery() {
                             <strong>{ item.organizers[0].name }</strong>
                           </div>
                           <div className='flex-full' />
-                          { item.organizers[0].logo && <img className='home-logo' src={ `https://cdn.grants.art/${ item.organizers[0].logo }` } /> }
+                          { item.organizers[0].logo && 
+                            <div className='home-logo-c'>
+                              <img className='home-logo' src={ `https://cdn.grants.art/${ item.organizers[0].logo }` } />
+                            </div>
+                          }
                         </div>
                         <div className='margin-top-s'>
                           <strong>{ item.name }</strong>

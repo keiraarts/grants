@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { usePromise } from 'promise-hook';
 import { useParams } from "react-router-dom";
 import { Redirect } from 'react-router-dom';
 import { useStoreState, useStoreActions } from 'easy-peasy';
 import ReactAutolinker from 'react-autolinker';
-import WalletConnect from './WalletConnect';
 import { apiUrl } from '../baseUrl';
 
 import Resizer from './Tools/Resizer.js';

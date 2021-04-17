@@ -11,6 +11,7 @@ import moment from 'moment';
 
 import OpenSeaLogo from '../../assets/opensea.png';
 import AuctionTimer from './AuctionTimer';
+import WalletConnect from '../Web3/WalletConnect';
 import '../../styles.scss';
 
 function openLink(page)
@@ -73,12 +74,13 @@ const dateConfig = {
 
 export default function OpenMarket({ tokenId, contract }) {
   const auth = useStoreState(state => state.user.auth);
+  const provider = useStoreState(state => state.eth.provider);
 
   // contract = '0x3f4200234e26d2dfbc55fcfd9390bc128d5e2cca';
   // tokenId = 10;
 
   const [gotAsset, setAsset] = useState({});
-  const [provider, setProvider] = useState(null);
+  // const [provider, setProvider] = useState(null);
   const [seaport, setSeaport] = useState(null);
   const [bids, setBids] = useState(null);
   const [auction, setAuction] = useState(null);
@@ -338,40 +340,40 @@ export default function OpenMarket({ tokenId, contract }) {
 
   const [listener, setListener] = useState(null);
   async function connectWallet() {
-    if (window.ethereum) {
-      const createdProvider = window.web3.currentProvider;
-      if (!createdProvider.selectedAddress) window.ethereum.enable();
-      else {
-        const createdSeaport = new OpenSeaPort(createdProvider, {
-          networkName: Network.Main
-        })
+    if (provider) {
+      setBidErr(null);
+      const createdSeaport = new OpenSeaPort(provider, {
+        networkName: Network.Main
+      })
 
-        if (listener && seaport) {
-          seaport.removeListener(listener);
-        }
-
-        const listener = createdSeaport.addListener(EventType.CreateOrder, ({ transactionHash, event }) => {
-          setSellOpen(false);
-        });
-
-        setListener(listener);
-        setProvider(createdProvider);
-        setSeaport(createdSeaport);
-        getBalance(createdProvider.selectedAddress, createdSeaport);
+      if (listener && seaport) {
+        seaport.removeListener(listener);
       }
+
+      const listener = createdSeaport.addListener(EventType.CreateOrder, ({ transactionHash, event }) => {
+        setSellOpen(false);
+      });
+
+      setListener(listener);
+      setSeaport(createdSeaport);
+      getBalance(provider.selectedAddress, createdSeaport);
     }
   }
 
   useEffect(() => {
-    setTimeout(() => {
-      if (window.ethereum) {
-        connectWallet();
-        window.ethereum.on('accountsChanged', function (accounts) {
-          connectWallet();
-        })
-      }
-    }, 1000)
-  }, []);
+    if (provider && provider.selectedAddress) connectWallet()
+  }, [provider]);
+
+  const connect = () => {
+    if (window.ethereum) {
+      window.ethereum.request({
+        method: 'eth_requestAccounts',
+      }).catch(e => {
+        if (e.code === -32002)
+        setBidErr('MetaMask is already requesting login!')
+      });
+    }
+  }
 
   let asset = {};
   if (gotAsset && gotAsset.assets && gotAsset.assets[0]) asset = gotAsset.assets[0];
@@ -400,6 +402,7 @@ export default function OpenMarket({ tokenId, contract }) {
 
   return (
     <div className='margin-top-s'>
+      <WalletConnect />
       <ReactModal
         isOpen={ sellOpen }
         style={{ content: { margin: 'auto', width: '15rem', height: '23rem' } }}
@@ -502,6 +505,15 @@ export default function OpenMarket({ tokenId, contract }) {
       </div>
       { bids !== null ?
         <div>
+          { !seaport ?
+            <div className='margin-top-s'>
+              <div className='small-button' onClick={ () => connect() }>Connect your wallet</div>
+            </div>
+            :
+            <div className='margin-top-s text-xs'>
+              My Wallet: { `${ provider.selectedAddress.slice(0,8).toLowerCase() }...${ provider.selectedAddress.slice(-4).toLowerCase() }` }
+            </div>
+          }
           <div className='text-xs margin-top-s'>
             <strong>Owner:</strong> { address }
             <img src={ OpenSeaLogo } className='block-social' alt='OpenSea' onClick={ () => openLink(asset.permalink) } />
