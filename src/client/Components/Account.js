@@ -150,11 +150,14 @@ export default function Account() {
     setLogout(true);
   }
 
+  const [highlightConfirm, setHighlightConfirm] = useState(false);
   const createTweet = () => {
     openLink(`https://twitter.com/intent/tweet?text=Verifying%20my%20%40SevensGrant%20account%20❤️%0A%0Ahttps://curation.art/u/${ user.username }`)
+    setHighlightConfirm(true);
   }
 
   const verifyTweet = () => {
+    setHighlightConfirm(false);
     fetch(`${ apiUrl() }/twitter`, {
       method: 'POST',
       body: JSON.stringify({ twitter: updateUser.twitter }),
@@ -256,12 +259,16 @@ export default function Account() {
                   <div className='small-button' onClick={ () => createTweet() }>
                     Verify with Twitter
                   </div>
-                  <div className='small-button margin-left-s' onClick={ () => verifyTweet() }>
+                  <div className='margin-left-s'>
+                    →
+                  </div>
+                  <div className={ `${ highlightConfirm ? 'button-green small-button margin-left-s' : 'small-button margin-left-s' }` } onClick={ () => verifyTweet() }>
                     Confirm Verification
                   </div>
                   <div className='flex-full' />
                 </div>
               }
+              { highlightConfirm && <div className='text-s margin-top-s text-err'><strong>Please press Confirm Verification after tweeting!</strong></div> }
               <div className='text-s margin-top'>
                 <em>All fields and verifications (email, wallet, & twitter) are required in order to submit artwork on Sevens</em>
               </div>

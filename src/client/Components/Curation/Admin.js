@@ -221,7 +221,7 @@ export default function Admin({ selectedProgram, setSelectedProgram, programs, s
     programs[index] = { ...programs[index], creationInProgress: true };
     setPrograms(programs);
     setSelectedProgram({ ...selectedProgram, creationInProgress: true });
-    fetch(`${ apiUrl() }/program/createExhibition`, {
+    fetch(`${ apiUrl() }/program/addMinterAndTransfer`, {
       method: 'POST',
       body: JSON.stringify({
         program: selectedProgram.id,
@@ -325,10 +325,10 @@ export default function Admin({ selectedProgram, setSelectedProgram, programs, s
           }
         </div>
         { (!programAdmin.contractAddress && !exhibition) &&
-          <div className='small-button margin-left-s' onClick={ () => exhibitionCreation() }>Create (Coming Soon ❤️)</div>
+          <div className='small-button margin-left-s' onClick={ () => {} }>Create (Coming Soon)</div>
         }
       </div>
-      {/* { exhibition &&
+      { exhibition &&
         <div>
           <div className='form__group field'>
             <input type='text' className='form__field' placeholder='Symbol' name='symbol' id='symbol' maxLength='4' value={ `${ exhibitionSymbol }` } onChange={e => setExhibitionSymbol(e.target.value) } />
@@ -349,7 +349,7 @@ export default function Admin({ selectedProgram, setSelectedProgram, programs, s
             <div>My Wallet: { connected }</div>
             { (verified.toLowerCase() !== connected.toLowerCase()) &&
               <div className='margin-top-s'>
-                <em>Your verified and connected wallets do not match. Please go to <Link to='/account' className='text-grey'>Edit Profile</Link> to verify your wallet.</em>
+                <em>Your verified and connected wallets do not match. Please switch or go to <Link to='/account' className='text-grey'>Edit Profile</Link> to verify your wallet.</em>
               </div>
             }
           </div>
@@ -368,7 +368,7 @@ export default function Admin({ selectedProgram, setSelectedProgram, programs, s
           }
           { exhibitionErr && <div className='text-err text-s'>{ exhibitionErr }</div> }
         </div>
-      } */}
+      }
       <div className='margin-top text-mid flex'>
         <div>
           <div className='text-s'>

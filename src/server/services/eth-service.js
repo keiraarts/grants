@@ -9,6 +9,7 @@ const fetch = require('node-fetch');
 
 const auth = require('./authorization-service');
 const MintbaseABI = require('./MintbaseFactory.json');
+const ERC721 = require('./ERC721.json');
 
 const User = require('mongoose').model('User');
 const Organizer = require('mongoose').model('Organizer');
@@ -24,9 +25,19 @@ const arweave = Arweave.init({
 });
 
 const mainnet = `https://mainnet.infura.io/v3/${process.env.INFURA}`
+const mainnetWS = `wss://mainnet.infura.io/ws/v3/${process.env.INFURA}`
 const web3 = new Web3( new Web3.providers.HttpProvider(mainnet) )
+const web3WS = new Web3( new Web3.providers.WebsocketProvider(mainnetWS) )
 
-web3.eth.defaultAccount = process.env.WALLET
+const test = async () => {
+  const block = await web3.eth.getBlock('latest');
+  console.log(block.gasLimit);
+}
+
+test();
+
+const MINT_WALLET = process.env.WALLET;
+web3.eth.defaultAccount = MINT_WALLET;
 
 const getCurrentGasPrices = async () => {
   let response = await axios.get('https://ethgasstation.info/json/ethgasAPI.json')
@@ -61,7 +72,6 @@ const mint = async (applicants, program, organizer) => {
     const { abi } = await abiData.json();
     const address = program.contractAddress;
     const Contract = new web3.eth.Contract(abi, address);
-    const sevensMintAddress = '0xEbfDF56E9c9A643c8abc13A4fbD679ed02F9ceb4';
     const rawdata = await fs.readFileSync('./arweave.json');
     const wallet = JSON.parse(rawdata);
 
@@ -187,11 +197,16 @@ const mint = async (applicants, program, organizer) => {
           }
           log(`The outgoing transaction count for your wallet address is: ${nonce}`.magenta)
 
+          let estimatedGas = await web3.eth.estimateGas({
+            to: address,
+            data: encoded
+          });      
+
           var tx = {
             nonce,
             to: address,
-            from: sevensMintAddress,
-            gas: 500000,
+            from: MINT_WALLET,
+            gas: estimatedGas,
             gasLimit: block.gasLimit,
             gasPrice: details.gasPrice,
             data: encoded
@@ -285,6 +300,92 @@ module.exports = (app) => {
 };
 
 
+const addMinterAndTransfer = async (wallet, address, program) => {
+  try {
+    let myBalanceWei = await web3.eth.getBalance(web3.eth.defaultAccount).then(balance => balance)
+    let myBalance = await web3.utils.fromWei(myBalanceWei, 'ether');
+    const block = await web3.eth.getBlock('latest');
+
+    log(`Your wallet balance is currently ${myBalance} ETH`.green)
+    const Contract = new web3.eth.Contract(ERC721, address);
+    const ContractWS = new web3WS.eth.Contract(ERC721, address);
+    const encoded = Contract.methods.addMinter(wallet).encodeABI();
+
+    let nonce = await web3.eth.getTransactionCount(web3.eth.defaultAccount);
+    let gasPrices = await getCurrentGasPrices()
+
+    let estimatedGas = await web3.eth.estimateGas({
+      to: address,
+      data: encoded
+    });
+
+    let tx = {
+      nonce,
+      to: address,
+      from: MINT_WALLET,
+      gas: estimatedGas,
+      gasLimit: block.gasLimit,
+      gasPrice: gasPrices.medium * 1000000000,
+      data: encoded
+    }
+
+    console.log(tx);
+
+    await new Promise((resolve, reject) => {
+      web3.eth.accounts.signTransaction(tx, process.env.WALLET_PRIVATE_KEY)
+        .then(signed => {
+          const addMinter = ContractWS.events.MinterAdded();
+          addMinter.on('data', (event) => {
+            console.log('MINTER ADDED', event);
+            addMinter.off('data');
+            resolve();
+          })
+
+          web3.eth.sendSignedTransaction(signed.rawTransaction);
+      });
+    });
+
+    const transferEncoded = Contract.methods.transferOwnership(wallet).encodeABI();
+
+    nonce = await web3.eth.getTransactionCount(web3.eth.defaultAccount);
+    gasPrices = await getCurrentGasPrices()
+
+    estimatedGas = await web3.eth.estimateGas({
+      to: address,
+      data: transferEncoded
+    });
+
+    tx = {
+      nonce,
+      to: address,
+      from: MINT_WALLET,
+      gas: estimatedGas,
+      gasLimit: block.gasLimit,
+      gasPrice: gasPrices.medium * 1000000000,
+      data: transferEncoded
+    }
+
+    await new Promise((resolve, reject) => {
+      web3.eth.accounts.signTransaction(tx, process.env.WALLET_PRIVATE_KEY)
+        .then(signed => {
+          const transferred = ContractWS.events.OwnershipTransferred();
+          transferred.on('data', (event) => {
+            console.log('OWNERSHIP TRANSFERRED', event);
+            program.ownershipTransferred = true;
+            program.save();
+            transferred.off('data');
+            resolve();
+          });
+
+          web3.eth.sendSignedTransaction(signed.rawTransaction);
+      });
+    });
+
+  } catch (err) {
+    console.log('ERROR MINTING', err)
+  }
+}
+
 
 const createExhibition = async (wallet, name, symbol, program) => {
   console.log('CREATING', wallet, name, symbol);
@@ -297,29 +398,26 @@ const createExhibition = async (wallet, name, symbol, program) => {
     log(`Your wallet balance is currently ${myBalance} ETH`.green)
     const mintbaseFactoryAddress = '0x0e6541374e9D7DEe2C53C15a1a00fbe41C7b7198';
     const Contract = new web3.eth.Contract(MintbaseABI, mintbaseFactoryAddress);
-    const sevensMintAddress = '0xEbfDF56E9c9A643c8abc13A4fbD679ed02F9ceb4';
-
-    const launch = Contract.methods.launchStore(name, symbol, 'https://arweave.net/')
-    const encoded = launch.encodeABI();
+    const ContractWS = new web3WS.eth.Contract(MintbaseABI, mintbaseFactoryAddress);
+    const encoded = Contract.methods.launchStore(name, symbol, 'https://arweave.net/').encodeABI();
 
     let nonce = await web3.eth.getTransactionCount(web3.eth.defaultAccount);
     let gasPrices = await getCurrentGasPrices()
 
-    let details = {
-      "to": process.env.DESTINATION_WALLET_ADDRESS,
-      "gas": 26520,
-      "gasPrice": gasPrices.medium * 1000000000, // converts the gwei price to wei
-      "chainId": 4 // EIP 155 chainId - mainnet: 1, rinkeby: 4
-    }
-    log(`The outgoing transaction count for your wallet address is: ${nonce}`.magenta)
+    let estimatedGas = await web3.eth.estimateGas({
+      to: mintbaseFactoryAddress,
+      data: encoded
+    });
 
-    var tx = {
+    console.log(estimatedGas);
+
+    let tx = {
       nonce,
       to: mintbaseFactoryAddress,
-      from: sevensMintAddress,
-      gas: 500000,
+      from: MINT_WALLET,
+      gas: estimatedGas,
       gasLimit: block.gasLimit,
-      gasPrice: details.gasPrice,
+      gasPrice: gasPrices.medium * 1000000000,
       data: encoded
     }
 
@@ -328,43 +426,27 @@ const createExhibition = async (wallet, name, symbol, program) => {
     await new Promise((resolve, reject) => {
       web3.eth.accounts.signTransaction(tx, process.env.WALLET_PRIVATE_KEY)
         .then(signed => {
-          console.log('signed', signed);
-        //   var tran = web3.eth.sendSignedTransaction(signed.rawTransaction);
+          const launch = ContractWS.events.StoreLaunch();
+          launch.on('data', (event) => {
+            console.log('GOT EVENT', event);
+            if (event && event.returnValues) {
+              if (event.returnValues['1'] === name && event.returnValues['2'] === symbol) {
+                const address = event.returnValues['0'];
+                program.contractAddress = address;
+                program.creationInProgress = false;
+                program.save();
 
-        //     tran.on('confirmation', (confirmationNumber, receipt) => {
-        //       if (confirmationNumber > 1) {
-        //         tran.off('error');
-        //         tran.off('receipt');
-        //         tran.off('transactionHash');
-        //         tran.off('confirmation');
-        //         resolve();
-        //       }
-        //       console.log('confirmation: ' + confirmationNumber);
-        //     });
+                launch.off('data');
 
-        //     tran.on('transactionHash', hash => {
-        //       applicant.published = true;
-        //       applicant.finalized = true;
-        //       applicant.accepted = true;
-        //       applicant.save();
-        //       console.log('hash');
-        //       console.log(hash);
-        //     });
+                addMinterAndTransfer(wallet, address, program);
+                resolve(program);
+              }
+            }
+          })
 
-        //     tran.on('receipt', receipt => {
-        //       console.log('reciept');
-        //       console.log(receipt);
-        //     });
-
-        //     tran.on('error', error => {
-        //       console.log(error.toString());
-        //       throw new Error(error.toString());
-        //     });
-        });
+          web3.eth.sendSignedTransaction(signed.rawTransaction);
+      });
     });
-
-    program.creationInProgress = false;
-    program.save();
   } catch (err) {
     console.log('ERROR MINTING', err)
     program.creationInProgress = false;
@@ -380,8 +462,9 @@ module.exports = (app) => {
     const program = await Program.findById(req.body.program);
     if (!program) return res.json({ error: 'Authentication error' });
     if (program.creationInProgress) return res.json({ error: 'Contract creation is already in progress' });
+    if (program.contractAddress) return res.json({ error: 'Contract already created' });
     if (!req.body.wallet) return res.json({ error: 'No wallet provided' });
-    if (!req.body.name || !req.body.symbol) return res.json({ error: 'Missing contract info' });
+    if (!req.body.name || !req.body.symbol) return res.json({ error: 'Missing contract name or symbol' });
     organizer.wallet = req.body.wallet;
     organizer.save();
 
@@ -389,5 +472,23 @@ module.exports = (app) => {
     program.save();
 
     createExhibition(req.body.wallet, req.body.name, req.body.symbol, program);
+    return res.json({ success: 'Creation started' });
   });
 }
+
+
+// module.exports = (app) => {
+//   app.post('/api/program/addMinterAndTransfer', async (req, res) => {
+//     const jwt = auth(req.headers.authorization, res, (jwt) => jwt);
+//     const organizer = await Organizer.findOne({ _id: req.body.org, admins: jwt.id });
+//     if (!organizer) return res.json({ error: 'Authentication error' });
+//     const program = await Program.findById(req.body.program);
+//     if (!program) return res.json({ error: 'Authentication error' });
+//     if (program.creationInProgress) return res.json({ error: 'Contract creation is already in progress' });
+//     if (!req.body.wallet) return res.json({ error: 'No wallet provided' });
+//     if (!req.body.name || !req.body.symbol) return res.json({ error: 'Missing contract info' });
+
+//     addMinterAndTransfer(req.body.wallet, program.contractAddress, program);
+//     return res.json({ success: 'Creation started' });
+//   });
+// }

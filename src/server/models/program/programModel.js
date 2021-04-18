@@ -145,6 +145,10 @@ const program = {
         type: Boolean,
         default: false,
     },
+    ownershipTransferred: {
+        type: Boolean,
+        default: false,
+    },
     mintToArtist: {
         type: Boolean,
         default: false,
