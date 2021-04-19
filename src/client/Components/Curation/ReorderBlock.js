@@ -9,7 +9,7 @@ export default function DecidedBlock({ order, nft }) {
 
   return (
     <div className='reorder-block flex'>
-      <img src={ Drag } className='drag-icon' />
+      <img src={ Drag } className='drag-icon v-center' />
       { (!loaded) && <div className='reorder-loading'><div className='loading'><div></div><div></div></div></div> }
       <div className='drag-order'>
         { order + 1 }

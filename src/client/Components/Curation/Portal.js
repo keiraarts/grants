@@ -71,8 +71,8 @@ export default function Portal() {
       let i = 0;
       if (selectedProgram.finalized) {
         results.forEach(result => {
-          if (result.prepared) filtered.mintable.push(result);
-          else if (result.published) filtered.minted.push(result);
+          if (result.published) final.minted.push(result);
+          else if (result.prepared) filtered.mintable.push(result);
           else if (result.finalized) final.unminted.push(result);
           else filtered.unmintable.push(result);
         })
@@ -494,7 +494,7 @@ export default function Portal() {
                     { selectedProgram.mintInProgress &&
                       <div className='text-s'>Minting In Progress</div>
                     }
-                    { (isAdmin && selectedProgram.finalized) &&
+                    { (isAdmin && selectedProgram.finalized && !selectedProgram.mintInProgress) &&
                       <div style={{ marginTop: '-0.4rem' }}>
                         { isAdmin && reorder &&
                           <div>

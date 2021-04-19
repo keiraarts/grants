@@ -325,7 +325,7 @@ export default function Admin({ selectedProgram, setSelectedProgram, programs, s
           }
         </div>
         { (!programAdmin.contractAddress && !exhibition) &&
-          <div className='small-button margin-left-s' onClick={ () => {} }>Create (Coming Soon)</div>
+          <div className='small-button margin-left-s' onClick={ () => exhibitionCreation() }>Create</div>
         }
       </div>
       { exhibition &&

@@ -29,13 +29,6 @@ const mainnetWS = `wss://mainnet.infura.io/ws/v3/${process.env.INFURA}`
 const web3 = new Web3( new Web3.providers.HttpProvider(mainnet) )
 const web3WS = new Web3( new Web3.providers.WebsocketProvider(mainnetWS) )
 
-const test = async () => {
-  const block = await web3.eth.getBlock('latest');
-  console.log(block.gasLimit);
-}
-
-test();
-
 const MINT_WALLET = process.env.WALLET;
 web3.eth.defaultAccount = MINT_WALLET;
 
@@ -65,7 +58,6 @@ const mint = async (applicants, program, organizer) => {
   try {
     let myBalanceWei = await web3.eth.getBalance(web3.eth.defaultAccount).then(balance => balance)
     let myBalance = await web3.utils.fromWei(myBalanceWei, 'ether');
-    const block = await web3.eth.getBlock('latest');
 
     log(`Your wallet balance is currently ${myBalance} ETH`.green)
     const abiData = await fetch(`https://us-central1-thing-1d2be.cloudfunctions.net/getAbi?version=v1.0.0`)
@@ -74,9 +66,11 @@ const mint = async (applicants, program, organizer) => {
     const Contract = new web3.eth.Contract(abi, address);
     const rawdata = await fs.readFileSync('./arweave.json');
     const wallet = JSON.parse(rawdata);
+    let total;
 
     for (const applicant of applicants) {
       if (applicant.user) {
+        const block = await web3.eth.getBlock('latest');
         const user = await User.findById(applicant.user, user => user);
         if (user) {
           let file = await fetch(`https://cdn.grants.art/${ applicant.art }`)
@@ -188,19 +182,10 @@ const mint = async (applicants, program, organizer) => {
           let nonce = await web3.eth.getTransactionCount(web3.eth.defaultAccount);
 
           let gasPrices = await getCurrentGasPrices()
-
-          let details = {
-            "to": process.env.DESTINATION_WALLET_ADDRESS,
-            "gas": 26520,
-            "gasPrice": gasPrices.super * 1000000000, // converts the gwei price to wei
-            "chainId": 4 // EIP 155 chainId - mainnet: 1, rinkeby: 4
-          }
-          log(`The outgoing transaction count for your wallet address is: ${nonce}`.magenta)
-
           let estimatedGas = await web3.eth.estimateGas({
             to: address,
             data: encoded
-          });      
+          });
 
           var tx = {
             nonce,
@@ -208,7 +193,7 @@ const mint = async (applicants, program, organizer) => {
             from: MINT_WALLET,
             gas: estimatedGas,
             gasLimit: block.gasLimit,
-            gasPrice: details.gasPrice,
+            gasPrice: gasPrices.super * 1000000000,
             data: encoded
           }
 
@@ -236,6 +221,9 @@ const mint = async (applicants, program, organizer) => {
                     applicant.finalized = true;
                     applicant.accepted = true;
                     applicant.save();
+                    program.total = applicant.order;
+                    total = program.total;
+                    program.save();
                     console.log('hash');
                     console.log(hash);
                   });
@@ -256,6 +244,7 @@ const mint = async (applicants, program, organizer) => {
     }
 
     program.mintInProgress = false;
+    if (total) program.total = total;
     program.save();
   } catch (err) {
     console.log('ERROR MINTING', err)
@@ -263,41 +252,6 @@ const mint = async (applicants, program, organizer) => {
     program.save();
   }
 }
-
-// main()
-
-module.exports = (app) => {
-  app.post('/api/program/mint', async (req, res) => {
-    const jwt = auth(req.headers.authorization, res, (jwt) => jwt);
-    const organizer = await Organizer.findOne({ _id: req.body.org, admins: jwt.id });
-    if (!organizer) return res.json({ error: 'Authentication error' });
-    const program = await Program.findById(req.body.id);
-    if (!program) return res.json({ error: 'Authentication error' });
-    if (!program.contractAddress) return res.json({ error: 'The collection contract does not exist' });
-    if (program.mintInProgress) return res.json({ error: 'Minting is already in progress' });
-    if (!program.mintToArtist && !organizer.wallet) return res.json({ error: 'Curator must verify wallet' });
-
-    const exists = await ProgramApplicant.find({ published: true, program: req.body.id });
-    if (program.passByVotes) {
-      ProgramApplicant.find({ program: req.body.id, published: { $ne: true }, approvalCount: { $gte: program.voteThreshold } }, (err, applicants) => {
-        let order = exists.length + 1;
-        applicants.forEach(applicant => {
-          applicant.order = order;
-          applicant.save();
-          order++;
-        })
-
-        program.mintInProgress = true;
-        program.exhibiting = true;
-        program.save();
-
-        mint(applicants, program, organizer);
-      })
-    } else {
-      ProgramApplicant.find({ })
-    }
-  });
-};
 
 
 const addMinterAndTransfer = async (wallet, address, program) => {
@@ -455,6 +409,29 @@ const createExhibition = async (wallet, name, symbol, program) => {
 };
 
 module.exports = (app) => {
+  app.post('/api/program/mint', async (req, res) => {
+    const jwt = auth(req.headers.authorization, res, (jwt) => jwt);
+    const organizer = await Organizer.findOne({ _id: req.body.org, admins: jwt.id });
+    if (!organizer) return res.json({ error: 'Authentication error' });
+    const program = await Program.findById(req.body.id);
+    if (!program) return res.json({ error: 'Authentication error' });
+    if (!program.contractAddress) return res.json({ error: 'The collection contract does not exist' });
+    if (program.mintInProgress) return res.json({ error: 'Minting is already in progress' });
+    if (!program.mintToArtist && !organizer.wallet) return res.json({ error: 'Curator must verify wallet' });
+
+    if (program.passByVotes) {
+      ProgramApplicant.find({ program: req.body.id, order: { $exists: true }, published: false }, (err, applicants) => {
+        program.mintInProgress = true;
+        program.exhibiting = true;
+        program.save();
+
+        mint(applicants, program, organizer);
+      })
+    } else {
+      ProgramApplicant.find({ })
+    }
+  });
+
   app.post('/api/program/createExhibition', async (req, res) => {
     const jwt = auth(req.headers.authorization, res, (jwt) => jwt);
     const organizer = await Organizer.findOne({ _id: req.body.org, admins: jwt.id });

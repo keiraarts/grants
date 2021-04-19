@@ -201,7 +201,7 @@ export default function Application() {
   let isAdmin = false;
   if (programInfo) isAdmin = (auth && programInfo.organizers[0].admins.findIndex(admin => admin === auth.id) >= 0)
   let applied;
-  // if (user && user.applications && programInfo) applied = user.applications.find(e => e.program === programInfo.id);
+  if (user && user.applications && programInfo) applied = user.applications.find(e => e.program === programInfo.id);
 
   return (
     <div className='content-block'>
