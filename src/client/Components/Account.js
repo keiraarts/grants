@@ -32,7 +32,7 @@ export default function Account() {
 
   const [editingAccount, setEditingAccount] = useState(false);
   const [user, setUser] = useState(null);
-  const [updateUser, setUpdateUser] = useState(null);
+  const [updateUser, setUpdateUser] = useState({});
   const [application, setApplication] = useState({});
   const [err, setErr] = useState(false);
   const [submitUser, setSubmitUser] = useState(false);
@@ -160,7 +160,7 @@ export default function Account() {
     setHighlightConfirm(false);
     fetch(`${ apiUrl() }/twitter`, {
       method: 'POST',
-      body: JSON.stringify({ twitter: updateUser.twitter }),
+      body: JSON.stringify({ twitter: user.twitter }),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': auth.token
@@ -252,22 +252,6 @@ export default function Account() {
               <div className='text-s'>
                 @{ updateUser.twitter }
               </div>
-              { updateUser.twitterVerified ?
-                <div className='margin-top-s text-s'>Twitter Verified <img src={ Verified } className='verified-icon' title='Twitter Verified' /></div>
-              :
-                <div className='flex margin-top-s'>
-                  <div className='small-button' onClick={ () => createTweet() }>
-                    Verify with Twitter
-                  </div>
-                  <div className='margin-left-s'>
-                    →
-                  </div>
-                  <div className={ `${ highlightConfirm ? 'button-green small-button margin-left-s' : 'small-button margin-left-s' }` } onClick={ () => verifyTweet() }>
-                    Confirm Verification
-                  </div>
-                  <div className='flex-full' />
-                </div>
-              }
               { highlightConfirm && <div className='text-s margin-top-s text-err'><strong>Please press Confirm Verification after tweeting!</strong></div> }
               <div className='text-s margin-top'>
                 <em>All fields and verifications (email, wallet, & twitter) are required in order to submit artwork on Sevens</em>
@@ -341,6 +325,32 @@ export default function Account() {
                 </div>
                 <div className='flex-full' />
               </div>
+              { user.twitter &&
+                <div>
+                  { user.twitterVerified ?
+                    <div className='margin-top-s text-s'>Twitter Verified <img src={ Verified } className='verified-icon' title='Twitter Verified' /></div>
+                  :
+                    <div className='flex margin-top-s'>
+                      <div className='small-button' onClick={ () => createTweet() }>
+                        Twitter Verification
+                      </div>
+                      <div className='margin-left-s'>
+                        →
+                      </div>
+                      <div className={ `${ highlightConfirm ? 'button-green small-button margin-left-s' : 'small-button margin-left-s' }` } onClick={ () => verifyTweet() }>
+                        Confirm Verification
+                      </div>
+                      <div className='flex-full' />
+                    </div>
+                  }
+                  { err &&
+                    <div className='margin-top-s text-s text-err'>
+                      { err }
+                    </div>
+                  }
+                  <div className='margin-top-s' />
+                </div>
+              }
               <div className='text-s margin-top-s'><strong>Verified Wallet Address</strong></div>
               <div className='text-s'>{ verifiedWallet || 'No Wallet Verified' }</div>
               <div className='text-s margin-top-s'><strong>Connected Wallet Address</strong></div>
