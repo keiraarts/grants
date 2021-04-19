@@ -221,7 +221,7 @@ export default function Admin({ selectedProgram, setSelectedProgram, programs, s
     programs[index] = { ...programs[index], creationInProgress: true };
     setPrograms(programs);
     setSelectedProgram({ ...selectedProgram, creationInProgress: true });
-    fetch(`${ apiUrl() }/program/addMinterAndTransfer`, {
+    fetch(`${ apiUrl() }/program/createExhibition`, {
       method: 'POST',
       body: JSON.stringify({
         program: selectedProgram.id,
@@ -353,7 +353,7 @@ export default function Admin({ selectedProgram, setSelectedProgram, programs, s
               </div>
             }
           </div>
-          { selectedProgram.creationInProgress ?
+          { programAdmin.creationInProgress ?
             <div className='margin-top-s text-s'>Exhibition creation in progress</div>
           :
             <div className='flex margin-top-s'>

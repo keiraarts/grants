@@ -180,6 +180,7 @@ const program = {
     },
     total: {
         type: Number,
+        default: 0
     }
 }
 

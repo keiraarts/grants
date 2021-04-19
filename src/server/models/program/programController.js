@@ -682,8 +682,6 @@ exports.finalizeApproved = async (req, res) => {
 
   if (!req.body.applicants) return res.json({ error: 'Missing data' });
 
-  // const exists = await ProgramApplicant.find({ published: true, program: req.body.id });
-  // let order = exists.length + 1;
   let order = program.total + 1;
 
   for (const applicant of req.body.applicants) {

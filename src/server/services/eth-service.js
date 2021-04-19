@@ -279,7 +279,7 @@ const addMinterAndTransfer = async (wallet, address, program) => {
       from: MINT_WALLET,
       gas: estimatedGas,
       gasLimit: block.gasLimit,
-      gasPrice: gasPrices.medium * 1000000000,
+      gasPrice: gasPrices.high * 1000000000,
       data: encoded
     }
 
@@ -315,7 +315,7 @@ const addMinterAndTransfer = async (wallet, address, program) => {
       from: MINT_WALLET,
       gas: estimatedGas,
       gasLimit: block.gasLimit,
-      gasPrice: gasPrices.medium * 1000000000,
+      gasPrice: gasPrices.high * 1000000000,
       data: transferEncoded
     }
 
@@ -363,15 +363,13 @@ const createExhibition = async (wallet, name, symbol, program) => {
       data: encoded
     });
 
-    console.log(estimatedGas);
-
     let tx = {
       nonce,
       to: mintbaseFactoryAddress,
       from: MINT_WALLET,
       gas: estimatedGas,
       gasLimit: block.gasLimit,
-      gasPrice: gasPrices.medium * 1000000000,
+      gasPrice: gasPrices.high * 1000000000,
       data: encoded
     }
 
