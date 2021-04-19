@@ -27,7 +27,6 @@ export default function Exhibition() {
   const small = useStoreState(state => state.app.small);
   const { url, id } = useParams();
   const order = Number(id);
-  const location = useLocation().pathname.split('/');
 
   const [gallery, setGallery] = useState(null);
   const [exhibition, setExhibition] = useState({});
@@ -48,7 +47,8 @@ export default function Exhibition() {
       return [...preload, value];
     } else if (type === 'update') {
       const index = preload.findIndex(e => Number(e.order) === value.order);
-      if (index) {
+      console.log('wtf', index);
+      if (index >= 0) {
         const updated = preload[index];
         if (updated) {
           updated.image = value.image;
@@ -65,6 +65,8 @@ export default function Exhibition() {
 
     return preload;
   }, []);
+
+  console.log(preload);
 
   useEffect(() => {
     if (gallery && gallery.length && !preload.length) {
@@ -151,6 +153,7 @@ export default function Exhibition() {
     preventDefaultTouchmoveEvent: true,
   });
 
+  console.log(preload);
 
   return (
     <div className='content-block' { ...handlers }>
