@@ -1340,7 +1340,7 @@ input[type=number] {
   font-size: 1.4rem;
   min-width: 6rem;
   padding: 2rem;
-  margin: 1rem 1rem;
+  margin: 1rem 0rem;
   outline: none;
   box-shadow: 3px 3px 5px #ccc;
   background-color: rgba(255, 255, 255, 0.5);
@@ -1498,7 +1498,7 @@ input[type=number] {
   .content-block {
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
-    padding: 2rem 2rem;
+    // padding: 2rem 2rem;
     margin: 1rem 2rem 2rem 2rem;
   }
 
@@ -1652,7 +1652,7 @@ input[type=number] {
 
   .content-block {
     margin: 0rem 1rem 1rem 1rem;
-    padding: 1rem;
+    // padding: 1rem;
   }
 
   .info-block-container {

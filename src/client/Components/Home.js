@@ -25,7 +25,9 @@ export default function Gallery() {
     <div className='content-block' ref={ contentRef }>
       <Resizer />
       <div className='text-l flex'>
-        <strong>Sevens Foundation</strong>
+        <div className='margin-right-s'>
+          <strong>Sevens Foundation</strong>
+        </div>
         <div className='flex-full' />
         <div className='text-s center'>
           <Link to='/curation' className='small-button'><div className='text-grey'>Curation</div></Link>
@@ -43,8 +45,9 @@ export default function Gallery() {
           </div>
           :
           <div className='margin-top'>
-            <div>
-              Art Exhibitions
+            <div className='center'>
+              <strong>Art Exhibitions</strong>
+              <div className='margin-top-s' />
             </div>
             {
               (programs) && programs.map((item, index)=>{
@@ -75,8 +78,9 @@ export default function Gallery() {
                 }
               })
             }
-            <div className='margin-top'>
-              Upcoming Exhibitions
+            <div className='margin-top center'>
+              <strong>Upcoming Exhibitions</strong>
+              <div className='margin-top-s' />
             </div>
             {
               (programs) && programs.map((item, index)=>{
