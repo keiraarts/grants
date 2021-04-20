@@ -15,7 +15,6 @@ const hbjs = require('handbrake-js');
 const auth = require('../../services/authorization-service');
 const templates = require('../../emails/templates');
 
-const Applicant = require('mongoose').model('Applicant');
 const Organizer = require('mongoose').model('Organizer');
 const Program = require('mongoose').model('Program');
 const ProgramApplicant = require('mongoose').model('ProgramApplicant');
