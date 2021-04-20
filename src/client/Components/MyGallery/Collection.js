@@ -173,7 +173,7 @@ export default function Collection({ editing, setEditCollection, galleries, addN
               )
             }) }
             <div className='margin-top-s' />
-            <div className='button-red small-button' onClick={ () => setAdd(false) }>Cancel</div>
+            <div className='button-red small-button' onClick={ () => setAdd(null) }>Cancel</div>
           </div>
         </div>
       </ReactModal>
