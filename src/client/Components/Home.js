@@ -59,8 +59,10 @@ export default function Gallery() {
                     <Link to={ `/${ item.url }` } className='flex' key={ index }>
                       <div className='home-button flex-full'>
                         <div className='flex'>
-                          <Link to={ `/curator/${ item.organizers[0].url }` } className='text-rainbow text-s'>
-                            <strong>{ item.organizers[0].name }</strong>
+                          <Link to={ `/curator/${ item.organizers[0].url }` }>
+                            <div className='text-rainbow text-s'>
+                              <strong>{ item.organizers[0].name }</strong>
+                            </div>
                           </Link>
                           <div className='flex-full' />
                           { item.organizers[0].logo && 
@@ -96,7 +98,9 @@ export default function Gallery() {
                       <div className='home-button flex-full'>
                         <div className='flex'>
                           <Link to={ `/curator/${ item.organizers[0].url }` } className='text-rainbow text-s'>
-                            <strong>{ item.organizers[0].name }</strong>
+                            <div className='text-rainbow text-s'>
+                              <strong>{ item.organizers[0].name }</strong>
+                            </div>
                           </Link>
                           <div className='flex-full' />
                           { item.organizers[0].logo && 
