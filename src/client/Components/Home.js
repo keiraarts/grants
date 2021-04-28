@@ -112,9 +112,9 @@ export default function Gallery() {
                           { item.tagline }
                         </div>
                         <div className='margin-top-s text-s text-grey'>
-                          <strong><em>
+                          <strong>
                             { new Date() > new Date(item.open) && new Date() < new Date(item.close) &&
-                              <div>Submissions are open until { moment(item.close).format('ddd MMM Do h:mm A') }</div>
+                              <div>Accepting submissions until { moment(item.close).format('ddd MMM Do h:mm A') }</div>
                             }
                             { new Date() < new Date(item.open) && new Date < new Date(item.close) &&
                               <div>Submissions will open { moment(item.open).format('ddd MMM Do h:mm A') } and close { moment(item.close).format('ddd MMM Do h:mm A') }</div>
@@ -122,7 +122,7 @@ export default function Gallery() {
                             { new Date() > new Date(item.close) &&
                               <div>Submissions are closed</div>
                             }
-                          </em></strong>
+                          </strong>
                         </div>
                       </div>
                     </Link>
