@@ -35,8 +35,8 @@ export default function Gallery() {
       </div>
       <div className='text-s margin-top-s text-desc'>
         We are a non-profit organization dedicated to elevating artists. We provide a framework
-        for curators and organizations to connect through art exhibitions with charitable or benevolent
-        intentions and art grants. We empower emerging artists by highlighting them, operating pro-bono, taking 0% profits, and providing a unique
+        for curators and organizations to connect through art exhibitions and grants with charitable or benevolent
+        intentions. We empower emerging artists by highlighting them, operating pro-bono, taking 0% profits, and providing a unique
         and innovative tool for collaboration.
       </div>
       <div className='cols'>
@@ -59,14 +59,14 @@ export default function Gallery() {
                     <Link to={ `/${ item.url }` } className='flex' key={ index }>
                       <div className='home-button flex-full'>
                         <div className='flex'>
-                          <Link to={ `/curator/${ item.organizers[0].url }` } className='text-rainbow text-s' key={ index }>
+                          <Link to={ `/curator/${ item.organizers[0].url }` } className='text-rainbow text-s'>
                             <strong>{ item.organizers[0].name }</strong>
                           </Link>
                           <div className='flex-full' />
                           { item.organizers[0].logo && 
-                            <div className='home-logo-c margin-top-minus'>
+                            <Link to={ `/curator/${ item.organizers[0].url }` }  className='home-logo-c margin-top-minus'>
                               <img className='home-logo' src={ `https://cdn.grants.art/${ item.organizers[0].logo }` } />
-                            </div>
+                            </Link>
                           }
                         </div>
                         <div className='margin-top-s'>
@@ -95,14 +95,14 @@ export default function Gallery() {
                     <Link to={ `/${ item.url }` } className='flex' key={ index }>
                       <div className='home-button flex-full'>
                         <div className='flex'>
-                          <Link to={ `/curator/${ item.organizers[0].url }` } className='text-rainbow text-s' key={ index }>
+                          <Link to={ `/curator/${ item.organizers[0].url }` } className='text-rainbow text-s'>
                             <strong>{ item.organizers[0].name }</strong>
                           </Link>
                           <div className='flex-full' />
                           { item.organizers[0].logo && 
-                            <div className='home-logo-c margin-top-minus'>
+                            <Link to={ `/curator/${ item.organizers[0].url }` }  className='home-logo-c margin-top-minus'>
                               <img className='home-logo' src={ `https://cdn.grants.art/${ item.organizers[0].logo }` } />
-                            </div>
+                            </Link>
                           }
                         </div>
                         <div className='margin-top-s'>
@@ -111,16 +111,16 @@ export default function Gallery() {
                         <div className='text-s margin-top-xs'>
                           { item.tagline }
                         </div>
-                        <div className='margin-top-s text-s text-grey'>
+                        <div className='margin-top-s text-s'>
                           <strong>
                             { new Date() > new Date(item.open) && new Date() < new Date(item.close) &&
-                              <div>Accepting submissions until { moment(item.close).format('ddd MMM Do h:mm A') }</div>
+                              <div className='text-grey'>Accepting submissions until { moment(item.close).format('ddd MMM Do h:mm A') }</div>
                             }
                             { new Date() < new Date(item.open) && new Date < new Date(item.close) &&
-                              <div>Submissions will open { moment(item.open).format('ddd MMM Do h:mm A') } and close { moment(item.close).format('ddd MMM Do h:mm A') }</div>
+                              <div className='text-grey'>Submissions will open { moment(item.open).format('ddd MMM Do h:mm A') } and close { moment(item.close).format('ddd MMM Do h:mm A') }</div>
                             }
                             { new Date() > new Date(item.close) &&
-                              <div>Submissions are closed</div>
+                              <div className='text-grey'>Submissions are closed</div>
                             }
                           </strong>
                         </div>

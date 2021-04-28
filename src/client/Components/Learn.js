@@ -68,12 +68,12 @@ export default function Committee() {
         <Block title='Can I mint freely here?' text={ `Sevens is not an open minting platform. We believe in curation through a unified theme & experience similar to how traditional art galleries present
           artworks. We operate on a single art submission-per-exhibition basis and leave it up to the curators to decide what is minted. Each exhibition seeks different criteria and if you meet them you are
           free to submit your artwork to be potentially curated into the exhibition.` } />
-        <Block title='Do artists receive royalties?' text={ `We have 10% secondary sale royalties built within our contracts, but it will only be paid out if an artwork is resold on Rarible.
-          As we are using OpenSea auction and listing mechanics, royalties will currently not be paid out unfortunately. We are reliant on OpenSea to implement our contract's royalty standard
-          and they have expressed their intent to do so in the future.` } />
         <Block title='How may I collect artwork on Sevens?' text={ `You may do so completely within our website. We use OpenSea's API so the bidding, listing, and auction mechanics
           are the same as OpenSea's - but everything works in-house. We do not present historical sales data on Sevens because we believe that immediately presenting a valuation creates bias
           towards the art piece, but you may certainly find that info on OpenSea. We also operate as decentralized as possible, so you must use an Ethereum wallet to create transactions.` } />
+        <Block title='Do artists receive royalties?' text={ `We have 10% secondary sale royalties built within our contracts, but it currently will only be paid out if an artwork is resold on Rarible.
+          As we are reliant on using OpenSea auction and listing mechanics, royalties unfortunately will not be paid out until they implement our contract's royalty standard
+          and they have expressed their intent to do so in the future.` } />
         <Block title='Do you take profits?' text={ `We take 0% on all sales. We are fortunate and grateful to be able to operate pro-bono and have gracious donors to help fund our programs.
           But, there is an automated 2.5% fee that OpenSea takes for using their integrations on any exchanges that happens in-house.` } />
         <div className='margin-top-l text-l text-b'>
