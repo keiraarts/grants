@@ -34,7 +34,10 @@ export default function Gallery() {
         </div>
       </div>
       <div className='text-s margin-top-s text-desc'>
-        Curating, educating, and funding artists' first step into creative self-sovereignty
+        We are a non-profit organization dedicated to elevating artists. We provide a framework
+        for curators and organizations to connect through art exhibitions with charitable or benevolent
+        intentions and art grants. We empower emerging artists by highlighting them, operating pro-bono, taking 0% profits, and providing a unique
+        and innovative tool for collaboration.
       </div>
       <div className='cols'>
         { !programs || !programs.length ?
@@ -46,7 +49,7 @@ export default function Gallery() {
           :
           <div className='margin-top'>
             <div className='center'>
-              <strong>Art Exhibitions</strong>
+              <strong>Open Exhibitions</strong>
               <div className='margin-top-s' />
             </div>
             {
@@ -56,12 +59,12 @@ export default function Gallery() {
                     <Link to={ `/${ item.url }` } className='flex' key={ index }>
                       <div className='home-button flex-full'>
                         <div className='flex'>
-                          <div className='text-rainbow text-s'>
+                          <Link to={ `/curator/${ item.organizers[0].url }` } className='text-rainbow text-s' key={ index }>
                             <strong>{ item.organizers[0].name }</strong>
-                          </div>
+                          </Link>
                           <div className='flex-full' />
                           { item.organizers[0].logo && 
-                            <div className='home-logo-c'>
+                            <div className='home-logo-c margin-top-minus'>
                               <img className='home-logo' src={ `https://cdn.grants.art/${ item.organizers[0].logo }` } />
                             </div>
                           }
@@ -71,6 +74,9 @@ export default function Gallery() {
                         </div>
                         <div className='text-s margin-top-xs'>
                           { item.tagline }
+                        </div>
+                        <div className='text-grey text-s margin-top-s'>
+                          <strong>View Exhibition</strong>
                         </div>
                       </div>
                     </Link>
@@ -89,12 +95,12 @@ export default function Gallery() {
                     <Link to={ `/${ item.url }` } className='flex' key={ index }>
                       <div className='home-button flex-full'>
                         <div className='flex'>
-                          <div className='text-rainbow text-s'>
+                          <Link to={ `/curator/${ item.organizers[0].url }` } className='text-rainbow text-s' key={ index }>
                             <strong>{ item.organizers[0].name }</strong>
-                          </div>
+                          </Link>
                           <div className='flex-full' />
                           { item.organizers[0].logo && 
-                            <div className='home-logo-c'>
+                            <div className='home-logo-c margin-top-minus'>
                               <img className='home-logo' src={ `https://cdn.grants.art/${ item.organizers[0].logo }` } />
                             </div>
                           }
@@ -105,8 +111,8 @@ export default function Gallery() {
                         <div className='text-s margin-top-xs'>
                           { item.tagline }
                         </div>
-                        <div className='margin-top-s text-s'>
-                          <em>
+                        <div className='margin-top-s text-s text-grey'>
+                          <strong><em>
                             { new Date() > new Date(item.open) && new Date() < new Date(item.close) &&
                               <div>Submissions are open until { moment(item.close).format('ddd MMM Do h:mm A') }</div>
                             }
@@ -116,7 +122,7 @@ export default function Gallery() {
                             { new Date() > new Date(item.close) &&
                               <div>Submissions are closed</div>
                             }
-                          </em>
+                          </em></strong>
                         </div>
                       </div>
                     </Link>

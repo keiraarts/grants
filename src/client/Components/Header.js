@@ -38,7 +38,7 @@ export default function Header() {
             </Link>
           </strong>
         </div>
-        <div className='flex-full' />
+        <div className='flex-full margin-top-xs' />
         { (auth && auth.username) ?
           <div>
             <div className='text-s flex'>

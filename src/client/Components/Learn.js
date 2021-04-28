@@ -68,8 +68,9 @@ export default function Committee() {
         <Block title='Can I mint freely here?' text={ `Sevens is not an open minting platform. We believe in curation through a unified theme & experience similar to how traditional art galleries present
           artworks. We operate on a single art submission-per-exhibition basis and leave it up to the curators to decide what is minted. Each exhibition seeks different criteria and if you meet them you are
           free to submit your artwork to be potentially curated into the exhibition.` } />
-        <Block title='Do artists receive royalties?' text={ `Currently and unfortunately no. We 100% believe in perpetual royalties for artists as it is key to empowering artists
-          and we will introduce this feature as soon as we are able to, but we have made a careful decision not to at this time.` } />
+        <Block title='Do artists receive royalties?' text={ `We have 10% secondary sale royalties built within our contracts, but it will only be paid out if an artwork is resold on Rarible.
+          As we are using OpenSea auction and listing mechanics, royalties will currently not be paid out unfortunately. We are reliant on OpenSea to implement our contract's royalty standard
+          and they have expressed their intent to do so in the future.` } />
         <Block title='How may I collect artwork on Sevens?' text={ `You may do so completely within our website. We use OpenSea's API so the bidding, listing, and auction mechanics
           are the same as OpenSea's - but everything works in-house. We do not present historical sales data on Sevens because we believe that immediately presenting a valuation creates bias
           towards the art piece, but you may certainly find that info on OpenSea. We also operate as decentralized as possible, so you must use an Ethereum wallet to create transactions.` } />
@@ -80,7 +81,7 @@ export default function Committee() {
         </div>
         <Block title='How decentralized is Sevens?' text={ `Decentralization is a core ethos of ours because it is the paradigm that makes NFTs powerful. Curators create NFT collections (ERC721)
           with their own wallet and provide Sevens permission to mint on their behalf - they can revoke this permission after the exhibition is minted
-          or at any time. We do not have custody and all NFTs are minted directly to the artist or the curator themselves depending on the grant structure. That being said, centralization is important to the extent
+          or at any time. We do not have custody and all NFTs are minted directly from the artist's verified wallet. That being said, centralization is important to the extent
           that it makes sense, and our curation tooling and website are parts of the platform that we control and update. It is currently too difficult to operate this all on decentralized 
           services but we will migrate when it is possible.` } />
         <Block title={ `Where are the NFT's art assets stored?` } text={ `We believe in asset permanence, and that all artworks should live forever. We are not confident IPFS provides this promise and

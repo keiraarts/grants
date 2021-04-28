@@ -221,6 +221,7 @@ export default function Admin({ selectedProgram, setSelectedProgram, programs, s
     programs[index] = { ...programs[index], creationInProgress: true };
     setPrograms(programs);
     setSelectedProgram({ ...selectedProgram, creationInProgress: true });
+    setProgramAdmin({ ...programAdmin, creationInProgress: true });
     fetch(`${ apiUrl() }/program/createExhibition`, {
       method: 'POST',
       body: JSON.stringify({

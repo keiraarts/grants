@@ -47,7 +47,6 @@ export default function Exhibition() {
       return [...preload, value];
     } else if (type === 'update') {
       const index = preload.findIndex(e => Number(e.order) === value.order);
-      console.log('wtf', index);
       if (index >= 0) {
         const updated = preload[index];
         if (updated) {
@@ -65,8 +64,6 @@ export default function Exhibition() {
 
     return preload;
   }, []);
-
-  console.log(preload);
 
   useEffect(() => {
     if (gallery && gallery.length && !preload.length) {
@@ -122,7 +119,9 @@ export default function Exhibition() {
     }
   }
 
+  // const [swipeDirection, setSwipeDirection] = useState(null);
   function switchPage(direction) {
+    // setSwipeDirection(direction);
     if (gallery) {
       if (id === '1' && direction === 'previous') return gallery.length;
       else if (gallery && direction === 'next' && Number(id) === gallery.length) return 1;
@@ -152,8 +151,6 @@ export default function Exhibition() {
     },
     preventDefaultTouchmoveEvent: true,
   });
-
-  console.log(preload);
 
   return (
     <div className='content-block' { ...handlers }>

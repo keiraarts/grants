@@ -86,7 +86,7 @@ export default function DecidedBlock({ nft, undo, type, blind }) {
           <img src={ `https://cdn.grants.art/${ nft.artWeb }` } className='block-art-image' onLoad={ () => didLoad(true) } />
         }
       </div>
-      <div className='flex'>
+      <div className='flex margin-top-xs'>
         { undo &&
           <div className='small-button flex-full' onClick={ () => undo(nft.id, type) }>
             Undo
@@ -95,8 +95,9 @@ export default function DecidedBlock({ nft, undo, type, blind }) {
         { undo && <div className='small-space' /> }
         <div className='small-button flex-full' onClick={ () => setInfoOpen(true) }>
           View Info
-        </div>        
+        </div>  
       </div>
+      <div className='margin-top-s' />
     </div>
   );
 }

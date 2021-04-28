@@ -2,13 +2,17 @@ require('dotenv').config()
  
 const Web3 = require('web3')
 const axios = require('axios')
+const path = require('path');
 const fs = require('fs');
 const log = require('ololog').configure({ time: true })
 const Arweave = require('arweave');
 const fetch = require('node-fetch');
+const verify = require('verify-on-etherscan');
+// const hre = require('@nomiclabs/hardhat-etherscan');
 
 const auth = require('./authorization-service');
-const MintbaseABI = require('./MintbaseFactory.json');
+const Sevens = require('./Sevens.json');
+const SevensFactory = require('./SevensFactory.json');
 const ERC721 = require('./ERC721.json');
 
 const User = require('mongoose').model('User');
@@ -53,17 +57,14 @@ const getCurrentGasPrices = async () => {
   return prices
 }
 
-
 const mint = async (applicants, program, organizer) => {
   try {
     let myBalanceWei = await web3.eth.getBalance(web3.eth.defaultAccount).then(balance => balance)
     let myBalance = await web3.utils.fromWei(myBalanceWei, 'ether');
 
     log(`Your wallet balance is currently ${myBalance} ETH`.green)
-    const abiData = await fetch(`https://us-central1-thing-1d2be.cloudfunctions.net/getAbi?version=v1.0.0`)
-    const { abi } = await abiData.json();
     const address = program.contractAddress;
-    const Contract = new web3.eth.Contract(abi, address);
+    const Contract = new web3.eth.Contract(Sevens.abi, address);
     const rawdata = await fs.readFileSync('./arweave.json');
     const wallet = JSON.parse(rawdata);
     let total;
@@ -176,7 +177,7 @@ const mint = async (applicants, program, organizer) => {
           console.log(metadataTx.id);
 
           const mintTo = program.mintToArtist ? user.wallet : organizer.wallet;
-          const batchMint = Contract.methods.batchMint(mintTo, Number(1), metadataTx.id, Number(0), false)
+          const batchMint = Contract.methods.batchMint(mintTo, Number(1), metadataTx.id, Number(0), [mintTo], [1000])
           const encoded = batchMint.encodeABI();
 
           let nonce = await web3.eth.getTransactionCount(web3.eth.defaultAccount);
@@ -187,12 +188,13 @@ const mint = async (applicants, program, organizer) => {
             data: encoded
           });
 
+
           var tx = {
             nonce,
             to: address,
             from: MINT_WALLET,
-            gas: estimatedGas,
-            gasLimit: block.gasLimit,
+            gas: new web3.utils.BN(estimatedGas * 1.5),
+            gasLimit: block.gasLimit * 1.5,
             gasPrice: gasPrices.super * 1000000000,
             data: encoded
           }
@@ -277,8 +279,8 @@ const addMinterAndTransfer = async (wallet, address, program) => {
       nonce,
       to: address,
       from: MINT_WALLET,
-      gas: estimatedGas,
-      gasLimit: block.gasLimit,
+      gas: new web3.utils.BN(estimatedGas * 1.5),
+      gasLimit: block.gasLimit * 1.5,
       gasPrice: gasPrices.high * 1000000000,
       data: encoded
     }
@@ -313,8 +315,8 @@ const addMinterAndTransfer = async (wallet, address, program) => {
       nonce,
       to: address,
       from: MINT_WALLET,
-      gas: estimatedGas,
-      gasLimit: block.gasLimit,
+      gas: new web3.utils.BN(estimatedGas * 1.5),
+      gasLimit: block.gasLimit * 1.5,
       gasPrice: gasPrices.high * 1000000000,
       data: transferEncoded
     }
@@ -340,6 +342,91 @@ const addMinterAndTransfer = async (wallet, address, program) => {
   }
 }
 
+// const verifyEtherScan = async (address, encoded) => {
+//   const sevensFactory = '0xec74d232fC2968Bfc873995ee89bba521396e943';
+//   const Contract = new web3.eth.Contract(SevensFactory.abi, sevensFactory);
+//   encoded = Contract.methods.launchStore('Sevens Specialis', 'ART', 'https://arweave.net/').encodeABI();
+//   address = '0xbc9Bf05D180403d0Dcc30e061bb9c0d67EEe66a1';
+//   console.log('WTF', process.env.ETHERSCAN);
+
+//   encoded = web3.eth.abi.encodeParameters(['string','string', 'string'], ['Sevens Specialis', 'ART', 'https://arweave.net/'])
+
+//   console.log('wtf', encoded);
+
+//   const result = await verify({
+//     cwd: __dirname,
+//     artifacts: ['./Sevens.json'],
+//     apiKey: process.env.ETHERSCAN,
+//     web3,
+//     // optimizer,
+//     // output,
+//     // delay,
+//     // logger,
+//     verbose: true
+//   })
+
+//   console.log(result);
+  
+  // await fetch(`https://api.etherscan.io/address/${ address }#code`, {
+  // await fetch(`https://api.etherscan.io/api`, {
+  //     method: 'POST',
+  //     body: new URLSearchParams({
+  //       apiKey: process.env.ETHERSCAN,
+  //       module: 'contract',                             //Do not change
+  //       action: 'verifysourcecode',                     //Do not change
+  //       contractaddress: address,   //Contract Address starts with 0x...     
+  //       sourceCode: Sevens.source,             //Contract Source Code (Flattened if necessary)
+  //       codeformat: 'solidity-single-file',             //solidity-single-file (default) or solidity-standard-json-input (for std-input-json-format support
+  //       contractname: 'Sevens.sol:Sevens',         //ContractName (if codeformat=solidity-standard-json-input, then enter contractname as ex: erc20.sol:erc20)
+  //       compilerversion: 'v0.5.16+commit.9c3226ce',   // see https://etherscan.io/solcversions for list of support versions
+  //       optimizationUsed: '1', //0 = No Optimization, 1 = Optimization used (applicable when codeformat=solidity-single-file)
+  //       runs: 200,                                      //set to 200 as default unless otherwise  (applicable when codeformat=solidity-single-file)        
+  //       constructorArguements: encoded.substring(2),   //if applicable
+  //       evmversion: 'istanbul',             //leave blank for compiler default, homestead, tangerineWhistle, spuriousDragon, byzantium, constantinople, petersburg, istanbul (applicable when codeformat=solidity-single-file)
+  //       licenseType: 1,           //Valid codes 1-12 where 1=No License .. 12=Apache 2.0, see https://etherscan.io/contract-license-types
+  //     }),
+  //     headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8' }
+  // })
+  // .then(res => res.json())
+  // .then(json => {
+  //   if (json && json.status === '1') {
+  //     setTimeout(() => {
+  //       fetch(`https://api.etherscan.io/api`, {
+  //         method: 'POST',
+  //         body: new URLSearchParams({
+  //           apiKey: process.env.ETHERSCAN,
+  //           guid: json.result,                             //Do not change
+  //           module: 'contract',                     //Do not change
+  //           action: 'checkverifystatus',   //Contract Address starts with 0x...     
+  //         }),
+  //         headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8' }
+  //       }).then(res => res.json())
+  //       .then(json => {
+  //         console.log('WTF RESULT', json);
+  //         });
+  //     }, 60000)
+  //   }
+  //   console.log('VERIIFED', json);
+  // })
+  // .catch(e => {
+  //   console.log('GOT ERR', e);
+  // })
+// }
+
+// const verifyEtherScan = async () => {
+//   const verify = await hre.run("verify:verify", {
+//     address: '0xbc9Bf05D180403d0Dcc30e061bb9c0d67EEe66a1',
+//     constructorArguments: [
+//       'Sevens Specialis',
+//       'ART',
+//       'https://arweave.net/'
+//     ],
+//   })
+
+//   console.log(verify);
+// }
+
+// verifyEtherScan();
 
 const createExhibition = async (wallet, name, symbol, program) => {
   console.log('CREATING', wallet, name, symbol);
@@ -350,25 +437,25 @@ const createExhibition = async (wallet, name, symbol, program) => {
     const block = await web3.eth.getBlock('latest');
 
     log(`Your wallet balance is currently ${myBalance} ETH`.green)
-    const mintbaseFactoryAddress = '0x0e6541374e9D7DEe2C53C15a1a00fbe41C7b7198';
-    const Contract = new web3.eth.Contract(MintbaseABI, mintbaseFactoryAddress);
-    const ContractWS = new web3WS.eth.Contract(MintbaseABI, mintbaseFactoryAddress);
+    const sevensFactory = '0xec74d232fC2968Bfc873995ee89bba521396e943';
+    const Contract = new web3.eth.Contract(SevensFactory.abi, sevensFactory);
+    const ContractWS = new web3WS.eth.Contract(SevensFactory.abi, sevensFactory);
     const encoded = Contract.methods.launchStore(name, symbol, 'https://arweave.net/').encodeABI();
 
     let nonce = await web3.eth.getTransactionCount(web3.eth.defaultAccount);
     let gasPrices = await getCurrentGasPrices()
 
     let estimatedGas = await web3.eth.estimateGas({
-      to: mintbaseFactoryAddress,
+      to: sevensFactory,
       data: encoded
     });
 
     let tx = {
       nonce,
-      to: mintbaseFactoryAddress,
+      to: sevensFactory,
       from: MINT_WALLET,
-      gas: estimatedGas,
-      gasLimit: block.gasLimit,
+      gas: new web3.utils.BN(estimatedGas * 1.5),
+      gasLimit: block.gasLimit * 1.5,
       gasPrice: gasPrices.high * 1000000000,
       data: encoded
     }
@@ -391,6 +478,7 @@ const createExhibition = async (wallet, name, symbol, program) => {
                 launch.off('data');
 
                 addMinterAndTransfer(wallet, address, program);
+                // verifyEtherScan(address, encoded);
                 resolve(program);
               }
             }
@@ -467,3 +555,4 @@ module.exports = (app) => {
 //     return res.json({ success: 'Creation started' });
 //   });
 // }
+
