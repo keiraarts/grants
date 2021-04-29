@@ -91,7 +91,7 @@ export default function Gallery() {
               <div className='margin-top-s' />
             </div>
             {
-              (programs) && programs.map((item, index)=>{
+              (programs) && programs.map((item, index) => {
                 if (!item.exhibiting) {
                   return (
                     <Link to={ `/${ item.url }` } className='flex' key={ index }>

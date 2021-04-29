@@ -2,18 +2,16 @@ require('dotenv').config()
  
 const Web3 = require('web3')
 const axios = require('axios')
-const path = require('path');
 const fs = require('fs');
 const log = require('ololog').configure({ time: true })
 const Arweave = require('arweave');
 const fetch = require('node-fetch');
-const verify = require('verify-on-etherscan');
-// const hre = require('@nomiclabs/hardhat-etherscan');
+const hre = require("hardhat")
 
 const auth = require('./authorization-service');
-const Sevens = require('./Sevens.json');
-const SevensFactory = require('./SevensFactory.json');
-const ERC721 = require('./ERC721.json');
+const Sevens = require('../../../artifacts/contracts/Sevens.sol/Sevens.json');
+const SevensFactory = require('../../../artifacts/contracts/SevensFactory.sol/SevensFactory.json');
+const GenesisERC721 = require('./GenesisERC721.json');
 
 const User = require('mongoose').model('User');
 const Organizer = require('mongoose').model('Organizer');
@@ -35,6 +33,7 @@ const web3WS = new Web3( new Web3.providers.WebsocketProvider(mainnetWS) )
 
 const MINT_WALLET = process.env.WALLET;
 web3.eth.defaultAccount = MINT_WALLET;
+const FACTORY_ADDRESS = process.env.FACTORY_ADDRESS;
 
 const getCurrentGasPrices = async () => {
   let response = await axios.get('https://ethgasstation.info/json/ethgasAPI.json')
@@ -64,7 +63,12 @@ const mint = async (applicants, program, organizer) => {
 
     log(`Your wallet balance is currently ${myBalance} ETH`.green)
     const address = program.contractAddress;
-    const Contract = new web3.eth.Contract(Sevens.abi, address);
+    let Contract;
+    if (program.contractAddress === '0xc0b4777897a2a373da8cb1730135062e77b7baec') { // No royalties Genesis Grant
+      Contract = new web3.eth.Contract(GenesisERC721, address);
+    } else {
+      Contract = new web3.eth.Contract(Sevens.abi, address);
+    }
     const rawdata = await fs.readFileSync('./arweave.json');
     const wallet = JSON.parse(rawdata);
     let total;
@@ -98,10 +102,10 @@ const mint = async (applicants, program, organizer) => {
           }
 
           const metadata = {
-            minter: "0x47BCD42B8545c23031E9918c3D823Be4100D4e87",
+            minter: "0xEbfDF56E9c9A643c8abc13A4fbD679ed02F9ceb4",
             mintedOn: "2021-03-14T00:00:00.777Z",
             contractAddress: address,
-            minted: `Minted by ${ organizer.name } on behalf of ${ user.artistName }`,
+            minted: `Minted by ${ organizer.name } for ${ user.artistName }`,
             note: 'Minted with love by Sevens Foundation',
             exhibition: `${ program.name }`,
             fiatPrice: "$PRICELESS",
@@ -177,7 +181,13 @@ const mint = async (applicants, program, organizer) => {
           console.log(metadataTx.id);
 
           const mintTo = program.mintToArtist ? user.wallet : organizer.wallet;
-          const batchMint = Contract.methods.batchMint(mintTo, Number(1), metadataTx.id, Number(0), [mintTo], [1000])
+          let batchMint;
+          if (program.contractAddress === '0xc0b4777897a2a373da8cb1730135062e77b7baec') { // No royalties Genesis Grant
+            batchMint = Contract.methods.batchMint(mintTo, Number(1), metadataTx.id, Number(0))
+          } else {
+            batchMint = Contract.methods.batchMint(mintTo, Number(1), metadataTx.id, Number(0), [user.wallet], [1000])
+          }
+
           const encoded = batchMint.encodeABI();
 
           let nonce = await web3.eth.getTransactionCount(web3.eth.defaultAccount);
@@ -263,8 +273,8 @@ const addMinterAndTransfer = async (wallet, address, program) => {
     const block = await web3.eth.getBlock('latest');
 
     log(`Your wallet balance is currently ${myBalance} ETH`.green)
-    const Contract = new web3.eth.Contract(ERC721, address);
-    const ContractWS = new web3WS.eth.Contract(ERC721, address);
+    const Contract = new web3.eth.Contract(Sevens.abi, address);
+    const ContractWS = new web3WS.eth.Contract(Sevens.abi, address);
     const encoded = Contract.methods.addMinter(wallet).encodeABI();
 
     let nonce = await web3.eth.getTransactionCount(web3.eth.defaultAccount);
@@ -342,91 +352,23 @@ const addMinterAndTransfer = async (wallet, address, program) => {
   }
 }
 
-// const verifyEtherScan = async (address, encoded) => {
-//   const sevensFactory = '0xec74d232fC2968Bfc873995ee89bba521396e943';
-//   const Contract = new web3.eth.Contract(SevensFactory.abi, sevensFactory);
-//   encoded = Contract.methods.launchStore('Sevens Specialis', 'ART', 'https://arweave.net/').encodeABI();
-//   address = '0xbc9Bf05D180403d0Dcc30e061bb9c0d67EEe66a1';
-//   console.log('WTF', process.env.ETHERSCAN);
-
-//   encoded = web3.eth.abi.encodeParameters(['string','string', 'string'], ['Sevens Specialis', 'ART', 'https://arweave.net/'])
-
-//   console.log('wtf', encoded);
-
-//   const result = await verify({
-//     cwd: __dirname,
-//     artifacts: ['./Sevens.json'],
-//     apiKey: process.env.ETHERSCAN,
-//     web3,
-//     // optimizer,
-//     // output,
-//     // delay,
-//     // logger,
-//     verbose: true
-//   })
-
-//   console.log(result);
-  
-  // await fetch(`https://api.etherscan.io/address/${ address }#code`, {
-  // await fetch(`https://api.etherscan.io/api`, {
-  //     method: 'POST',
-  //     body: new URLSearchParams({
-  //       apiKey: process.env.ETHERSCAN,
-  //       module: 'contract',                             //Do not change
-  //       action: 'verifysourcecode',                     //Do not change
-  //       contractaddress: address,   //Contract Address starts with 0x...     
-  //       sourceCode: Sevens.source,             //Contract Source Code (Flattened if necessary)
-  //       codeformat: 'solidity-single-file',             //solidity-single-file (default) or solidity-standard-json-input (for std-input-json-format support
-  //       contractname: 'Sevens.sol:Sevens',         //ContractName (if codeformat=solidity-standard-json-input, then enter contractname as ex: erc20.sol:erc20)
-  //       compilerversion: 'v0.5.16+commit.9c3226ce',   // see https://etherscan.io/solcversions for list of support versions
-  //       optimizationUsed: '1', //0 = No Optimization, 1 = Optimization used (applicable when codeformat=solidity-single-file)
-  //       runs: 200,                                      //set to 200 as default unless otherwise  (applicable when codeformat=solidity-single-file)        
-  //       constructorArguements: encoded.substring(2),   //if applicable
-  //       evmversion: 'istanbul',             //leave blank for compiler default, homestead, tangerineWhistle, spuriousDragon, byzantium, constantinople, petersburg, istanbul (applicable when codeformat=solidity-single-file)
-  //       licenseType: 1,           //Valid codes 1-12 where 1=No License .. 12=Apache 2.0, see https://etherscan.io/contract-license-types
-  //     }),
-  //     headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8' }
-  // })
-  // .then(res => res.json())
-  // .then(json => {
-  //   if (json && json.status === '1') {
-  //     setTimeout(() => {
-  //       fetch(`https://api.etherscan.io/api`, {
-  //         method: 'POST',
-  //         body: new URLSearchParams({
-  //           apiKey: process.env.ETHERSCAN,
-  //           guid: json.result,                             //Do not change
-  //           module: 'contract',                     //Do not change
-  //           action: 'checkverifystatus',   //Contract Address starts with 0x...     
-  //         }),
-  //         headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8' }
-  //       }).then(res => res.json())
-  //       .then(json => {
-  //         console.log('WTF RESULT', json);
-  //         });
-  //     }, 60000)
-  //   }
-  //   console.log('VERIIFED', json);
-  // })
-  // .catch(e => {
-  //   console.log('GOT ERR', e);
-  // })
-// }
-
-// const verifyEtherScan = async () => {
-//   const verify = await hre.run("verify:verify", {
-//     address: '0xbc9Bf05D180403d0Dcc30e061bb9c0d67EEe66a1',
-//     constructorArguments: [
-//       'Sevens Specialis',
-//       'ART',
-//       'https://arweave.net/'
-//     ],
-//   })
-
-//   console.log(verify);
-// }
-
-// verifyEtherScan();
+const verifyEtherScan = async (address, name, symbol) => {
+  try {
+    await hre.run("verify:verify", {
+      address,
+      constructorArguments: [
+        name,
+        symbol,
+        'https://arweave.net/',
+        '0xEbfDF56E9c9A643c8abc13A4fbD679ed02F9ceb4',
+        '0xEbfDF56E9c9A643c8abc13A4fbD679ed02F9ceb4'
+      ],
+      network: 'mainnet'
+    })
+  } catch (err) {
+    console.log('ERR VERIFYING CONTRACT');
+  }
+}
 
 const createExhibition = async (wallet, name, symbol, program) => {
   console.log('CREATING', wallet, name, symbol);
@@ -437,22 +379,21 @@ const createExhibition = async (wallet, name, symbol, program) => {
     const block = await web3.eth.getBlock('latest');
 
     log(`Your wallet balance is currently ${myBalance} ETH`.green)
-    const sevensFactory = '0xec74d232fC2968Bfc873995ee89bba521396e943';
-    const Contract = new web3.eth.Contract(SevensFactory.abi, sevensFactory);
-    const ContractWS = new web3WS.eth.Contract(SevensFactory.abi, sevensFactory);
+    const Contract = new web3.eth.Contract(SevensFactory.abi, FACTORY_ADDRESS);
+    const ContractWS = new web3WS.eth.Contract(SevensFactory.abi, FACTORY_ADDRESS);
     const encoded = Contract.methods.launchStore(name, symbol, 'https://arweave.net/').encodeABI();
 
     let nonce = await web3.eth.getTransactionCount(web3.eth.defaultAccount);
     let gasPrices = await getCurrentGasPrices()
 
     let estimatedGas = await web3.eth.estimateGas({
-      to: sevensFactory,
+      to: FACTORY_ADDRESS,
       data: encoded
     });
 
     let tx = {
       nonce,
-      to: sevensFactory,
+      to: FACTORY_ADDRESS,
       from: MINT_WALLET,
       gas: new web3.utils.BN(estimatedGas * 1.5),
       gasLimit: block.gasLimit * 1.5,
@@ -478,7 +419,7 @@ const createExhibition = async (wallet, name, symbol, program) => {
                 launch.off('data');
 
                 addMinterAndTransfer(wallet, address, program);
-                // verifyEtherScan(address, encoded);
+                verifyEtherScan(address, name, symbol);
                 resolve(program);
               }
             }

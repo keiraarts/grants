@@ -192,7 +192,7 @@ export default function Exhibition() {
           { (gallery && gallery.length) ?
             <div className='margin-top-l center'>
               <Link to={ `/${ url }/${ Math.floor(Math.random() * (gallery.length ? gallery.length : 1)) + 1  }` } className='button'>
-                <span className='text-l'>Enter Exhibition</span>
+                <span className='text-l'>Enter Gallery</span>
               </Link>
             </div>
             :
