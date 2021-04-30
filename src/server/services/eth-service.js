@@ -360,8 +360,8 @@ const verifyEtherScan = async (address, name, symbol) => {
         name,
         symbol,
         'https://arweave.net/',
-        '0xEbfDF56E9c9A643c8abc13A4fbD679ed02F9ceb4',
-        '0xEbfDF56E9c9A643c8abc13A4fbD679ed02F9ceb4'
+        MINT_WALLET,
+        MINT_WALLET
       ],
       network: 'mainnet'
     })
