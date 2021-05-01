@@ -2,6 +2,7 @@
   "/_app": "pages/_app.js",
   "/_document": "pages/_document.js",
   "/_error": "pages/_error.js",
+  "/ethos": "pages/ethos.js",
   "/": "pages/index.js",
   "/api/programs/getPrograms": "pages/api/programs/getPrograms.js"
 }

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { apiUrl } from "../src/client/baseUrl";
+import Resizer from "../src/client/Components/Tools/Resizer";
 import moment from "moment";
 
 export async function getStaticProps() {
@@ -20,7 +21,7 @@ function HomePage(props) {
 
   return (
     <div className="content-block">
-      {/*    <Resizer /> */}
+      <Resizer />
       <div className="text-l flex">
         <div className="margin-right-s">
           <strong>Sevens Foundation</strong>

@@ -9,7 +9,6 @@ export default async function handler(req, res) {
     case "GET":
       try {
         Program.find({ active: true }, (err, data) => {
-          console.log({ data, err });
           return err ? res.status(500).json(err) : res.json(data);
         })
           .select(
