@@ -4,10 +4,11 @@ import moment from "moment";
 import { apiUrl } from "../baseUrl";
 import Resizer from "./Tools/Resizer.js";
 
-export default function Gallery() {
+export default function Gallery(props) {
+  console.log(props);
   const contentRef = useRef(null);
   const [programs, setPrograms] = useState(null);
-
+  /* 
   useEffect(() => {
     fetch(`${apiUrl()}/programs/getPrograms`, {
       method: "GET",
@@ -16,11 +17,8 @@ export default function Gallery() {
       .then((res) => {
         console.log(res);
         return res.json();
-      })
-      .then((json) => {
-        setPrograms(json);
       });
-  }, []);
+  }, []); */
 
   return (
     <div className="content-block" ref={contentRef}>

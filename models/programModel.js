@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+require("./organizerModel");
 
 const program = {
   organizers: [
@@ -136,8 +137,6 @@ ProgramSchema.set("toJSON", {
   getters: true,
   virtuals: true,
 });
-
-mongoose.model("Program", ProgramSchema);
 
 export default mongoose.models.Program ||
   mongoose.model("Program", ProgramSchema);

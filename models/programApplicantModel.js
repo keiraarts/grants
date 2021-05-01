@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+require("./programModel");
 
 const programApplicant = {
   user: {
@@ -121,8 +122,6 @@ ProgramApplicantSchema.set("toJSON", {
   getters: true,
   virtuals: true,
 });
-
-mongoose.model("ProgramApplicant", ProgramApplicantSchema);
 
 export default mongoose.models.ProgramApplicant ||
   mongoose.model("ProgramApplicant", ProgramApplicantSchema);

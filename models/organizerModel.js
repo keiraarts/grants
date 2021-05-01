@@ -58,7 +58,5 @@ OrganizerSchema.set("toJSON", {
   virtuals: true,
 });
 
-mongoose.model("Organizer", OrganizerSchema);
-
 export default mongoose.models.Organizer ||
   mongoose.model("Organizer", OrganizerSchema);
