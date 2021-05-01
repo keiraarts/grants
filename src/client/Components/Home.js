@@ -9,11 +9,14 @@ export default function Gallery() {
   const [programs, setPrograms] = useState(null);
 
   useEffect(() => {
-    fetch(`${apiUrl()}/program/getPrograms`, {
+    fetch(`${apiUrl()}/programs/getPrograms`, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
     })
-      .then((res) => res.json())
+      .then((res) => {
+        console.log(res);
+        return res.json();
+      })
       .then((json) => {
         setPrograms(json);
       });
