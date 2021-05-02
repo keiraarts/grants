@@ -14,16 +14,16 @@ export async function getServerSideProps(context) {
     headers: { "Content-Type": "application/json" },
   });
 
-  const orgs = await res.json();
+  const data = await res.json();
 
   return {
-    props: { orgs }, // will be passed to the page component as props
+    props: { org: data }, // will be passed to the page component as props
   };
 }
 
 export default function Organizer(props) {
   const auth = useStoreState((state) => state.user.auth);
-  const [organizer, setOrganizer] = useState(props.orgs);
+  const [organizer, setOrganizer] = useState(props.org);
   const [editing, setEditing] = useState(false);
 
   const [programSubmitting, setOrganizerSubmitting] = useState(false);

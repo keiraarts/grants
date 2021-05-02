@@ -8,21 +8,25 @@ export default async function handler(req, res) {
   switch (method) {
     case "GET":
       try {
-        Program.find({ active: true }, (err, data) => {
-          return err ? res.status(500).json(err) : res.json(data);
-        })
+        const programs = await Program.find({ active: true })
           .select(
-            "organizers name url exhibiting tagline description total open close closeApplication"
+            `organizers name url exhibiting tagline description total open close closeApplication`
           )
           .populate("organizers")
           .sort("order");
+
+        if (!programs) return res.status(503).json({ success: false });
+
+        res.status(200).json(programs);
       } catch (error) {
-        res.status(400).json({ success: false });
+        console.error(error);
+        res.status(400).json({ success: false, message: "fetch failed" });
       }
+
       break;
 
     default:
-      res.status(400).json({ success: false });
+      res.status(400).json({ success: false, message: "route not matched" });
       break;
   }
 }

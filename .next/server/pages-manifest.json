@@ -2,11 +2,6 @@
   "/_app": "pages/_app.js",
   "/_document": "pages/_document.js",
   "/_error": "pages/_error.js",
-  "/testimony": "pages/testimony.js",
-  "/program": "pages/program.js",
-  "/api/programs/getPrograms": "pages/api/programs/getPrograms.js",
   "/": "pages/index.js",
-  "/ethos": "pages/ethos.js",
-  "/team": "pages/team.js",
   "/learn": "pages/learn.js"
 }
