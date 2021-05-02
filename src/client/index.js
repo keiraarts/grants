@@ -8,7 +8,6 @@ import ScrollToTop from "./Components/Tools/ScrollToTop";
 import Header from "./Components/Header";
 import Footer from "./Components/Footer";
 import Home from "./Components/Home";
-import Ethos from "./Components/Ethos";
 import Learn from "./Components/Learn";
 import Tutorial from "./Components/Tutorials/Wallet";
 import Rarible from "./Components/Tutorials/Rarible";
@@ -57,7 +56,7 @@ const App = () => {
                     component={Home}
                     scrollRef={scrollRef ? scrollRef.current : null}
                   />
-                  <Route path="/ethos" exact component={Ethos} />
+
                   <Route path="/learn" exact component={Learn} />
                   <Route path="/tutorial" exact component={Tutorial} />
                   <Route path="/rarible" exact component={Rarible} />
