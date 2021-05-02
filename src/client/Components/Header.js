@@ -8,8 +8,8 @@ export default function Header() {
   const auth = useStoreState((state) => state.user.auth);
 
   return (
-    <div className="header flex">
-      <Link href="/" passHref>
+    <div className="flex header">
+      <Link href="/">
         <a className="flex remove-a">
           <img
             src="/assets/logo.svg"
@@ -84,7 +84,7 @@ export default function Header() {
         <div className="flex-full margin-top-xs" />
         {auth?.username ? (
           <div>
-            <div className="text-s flex">
+            <div className="flex text-s">
               <div className="flex-full" />
               <a href="/account" className="pointer">
                 <div className="text-grey">Edit Profile</div>
@@ -97,10 +97,10 @@ export default function Header() {
           </div>
         ) : (
           <div>
-            <div className="text-s flex">
+            <div className="flex text-s">
               <div className="flex-full" />
               <Link href="/login">
-                <a href="/login" className="pointer">
+                <a className="pointer">
                   <div className="text-grey">Log In</div>
                 </a>
               </Link>

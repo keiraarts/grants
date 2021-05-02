@@ -1,5 +1,4 @@
 import React from "react";
-import Link from "next/link";
 
 export default function Committee() {
   return (
@@ -123,7 +122,6 @@ export default function Committee() {
         <div className="text-s margin-top">
           Many more testimonies to be revealed soon ❤️
         </div>
-        <br />
       </div>
     </div>
   );

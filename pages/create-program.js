@@ -270,7 +270,7 @@ export default function Application(props) {
                 you would like your exhibition to be listed publicly.
               </div>
               <Link
-                to={`/apply/${data.url}`}
+                href={`/apply/${data.url}`}
                 className="margin-top-s text-grey"
               >
                 You can navigate to your page to edit your details!

@@ -79,7 +79,7 @@ export default function Register() {
         {submitted && (
           <div className="margin-top-s text-s text-grey">
             Your password has been reset. You may proceed to{" "}
-            <Link to="/login" className="text-grey pointer">
+            <Link href="/login" className="text-grey pointer">
               login
             </Link>
             !

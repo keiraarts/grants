@@ -53,11 +53,10 @@ const App = () => {
                 <Switch>
                   <Route
                     path="/"
-                    exact
                     component={Home}
                     scrollRef={scrollRef ? scrollRef.current : null}
                   />
-                  <Route path="/ethos" exact component={Ethos} />
+
                   <Route path="/learn" exact component={Learn} />
                   <Route path="/tutorial" exact component={Tutorial} />
                   <Route path="/rarible" exact component={Rarible} />
@@ -65,11 +64,7 @@ const App = () => {
                   <Route path="/team" exact component={Committee} />
                   <Route path="/donate" exact component={Donate} />
                   <Route path="/program" exact component={Program} />
-                  <Route
-                    path="/create-program"
-                    exact
-                    component={CreateProgram}
-                  />
+                  <Route path="/create-program" component={CreateProgram} />
                   <Route path="/apply/:program" exact component={Apply} />
                   <Route path="/curator/:org" exact component={Organizer} />
                   <Route path="/curation" exact component={Curation} />
@@ -79,7 +74,6 @@ const App = () => {
                   <Route path="/forgotpassword" exact component={Forgot} />
                   <Route
                     path="/recoveraccount/:token"
-                    exact
                     component={RecoverAccount}
                   />
                   <Route path="/account" exact component={Account} />

@@ -20,7 +20,7 @@ function HomePage(props) {
   return (
     <div className="content-block">
       <Resizer />
-      <div className="text-l flex">
+      <div className="flex text-l">
         <div className="margin-right-s">
           <strong>Sevens Foundation</strong>
         </div>

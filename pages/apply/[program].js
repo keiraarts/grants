@@ -6,8 +6,9 @@ import ReactAutolinker from "react-autolinker";
 import ReactModal from "react-modal";
 import DatePicker from "react-mobile-datepicker";
 
-import { apiUrl } from "../../src/client/baseUrl";
 import Resizer from "../../src/client/Components/Tools/Resizer";
+import { apiUrl } from "../../src/client/baseUrl";
+import doDashes from "../../utils/doDashes";
 import moment from "moment";
 
 export async function getServerSideProps(context) {
@@ -46,7 +47,7 @@ export default function Application(props) {
         .then((res) => res.json())
         .then((json) => setUser(json));
     }
-  }, []);
+  }, [auth?.token]);
 
   const [programSubmitting, setProgramSubmitting] = useState(false);
   const [updateErr, setUpdateErr] = useState(false);
@@ -291,7 +292,7 @@ export default function Application(props) {
       <div>
         {programInfo && (
           <div>
-            <div className="text-l flex">
+            <div className="flex text-l">
               <strong>{programInfo.name}</strong>
               <div className="flex-full" />
               {isAdmin && (
@@ -692,7 +693,7 @@ export default function Application(props) {
                           {/* { data.ext } as NFT */}
                           <div className="text-xs">{data.canvas}</div>
                         </div>
-                        <div className="margin-top-s text-xs">
+                        <div className="text-xs margin-top-s">
                           {data.description || "Missing Description"}
                         </div>
                       </div>
@@ -748,7 +749,7 @@ export default function Application(props) {
                           {/* { data.ext } as NFT */}
                           <div className="text-xs">{data.canvas}</div>
                         </div>
-                        <div className="margin-top-s text-xs">
+                        <div className="text-xs margin-top-s">
                           {data.description}
                         </div>
                       </div>
@@ -851,7 +852,7 @@ export default function Application(props) {
                           </div>
                         )}
                       </div>
-                      <div className="margin-top-s text-xs">
+                      <div className="text-xs margin-top-s">
                         {applied.description}
                       </div>
                     </div>
@@ -917,7 +918,7 @@ export default function Application(props) {
                           </div>
                         )}
                       </div>
-                      <div className="margin-top-s text-xs">
+                      <div className="text-xs margin-top-s">
                         {applied.description}
                       </div>
                     </div>

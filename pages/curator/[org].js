@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 
 import Resizer from "../../src/client/Components/Tools/Resizer";
-import { useStoreState } from "easy-peasy";
 import ReactAutolinker from "react-autolinker";
+import doDashes from "../../utils/doDashes";
+import { useStoreState } from "easy-peasy";
 import { apiUrl } from "../baseUrl";
 
 export async function getServerSideProps(context) {
@@ -105,7 +106,7 @@ export default function Organizer(props) {
                 </div>
               </div>
             )}
-            <div className="text-l flex center">
+            <div className="flex text-l center">
               {organizer.logo && !organizer.ext && (
                 <div className="page-logo-c">
                   <img
@@ -126,34 +127,31 @@ export default function Organizer(props) {
                 <div className="line-breaks">
                   <div className="flex center">
                     {organizer.website && (
-                      <img
-                        src={"/assets/website.png"}
-                        className="social-icon-web pointer"
-                        alt="Website"
-                        onClick={() => openLink(organizer.website)}
-                      />
+                      <a href={organizer.website}>
+                        <img
+                          src={"/assets/website.png"}
+                          className="social-icon-web pointer"
+                          alt="Website"
+                        />
+                      </a>
                     )}
                     {organizer.twitter && (
-                      <img
-                        src={`assets/twitter.png`}
-                        className="social-icon"
-                        alt="Twitter"
-                        onClick={() =>
-                          openLink(`https://twitter.com/${organizer.twitter}`)
-                        }
-                      />
+                      <a href={`https://twitter.com/${organizer.twitter}`}>
+                        <img
+                          src={`assets/twitter.png`}
+                          className="social-icon"
+                          alt="Twitter"
+                        />
+                      </a>
                     )}
                     {organizer.instagram && (
-                      <img
-                        src={`assets/instagram.png`}
-                        className="social-icon"
-                        alt="Instagram"
-                        onClick={() =>
-                          openLink(
-                            `https://instagram.com/${organizer.instagram}`
-                          )
-                        }
-                      />
+                      <a href={`https://instagram.com/${organizer.instagram}`}>
+                        <img
+                          src={`assets/instagram.png`}
+                          className="social-icon"
+                          alt="Instagram"
+                        />
+                      </a>
                     )}
                     {organizer.email && (
                       <a href={`mailto:${organizer.email}`}>
@@ -329,7 +327,6 @@ export default function Organizer(props) {
             </div>
           </div>
         )}
-        <br />
       </div>
     </div>
   );

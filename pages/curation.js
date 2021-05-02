@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import ReactAutolinker from "react-autolinker";
+import Link from "next/link";
 
 export default function Curation({ nft, small, blind }) {
   const [loaded, setLoaded] = useState(false);
@@ -99,39 +100,42 @@ export default function Curation({ nft, small, blind }) {
                       <div>{imageType.toUpperCase()} as NFT</div>
                     )}
                   </div>
-                  <div className="margin-top-s text-xs">{nft.description}</div>
+                  <div className="text-xs margin-top-s">{nft.description}</div>
                 </div>
               </div>
               {!blind && (
                 <div className="flex margin-top-s">
                   {nft.user.website && (
                     <div>
-                      <img
-                        src="/assets/website.png"
-                        className="account-social-web pointer"
-                        alt="Website"
-                        a={nft.user.website}
-                      />
+                      <a href={nft.user.website}>
+                        <img
+                          src="/assets/website.png"
+                          className="account-social-web pointer"
+                          alt="Website"
+                        />
+                      </a>
                     </div>
                   )}
                   {nft.user.twitter && (
                     <div>
-                      <img
-                        src="/assets/twitter.png"
-                        className="account-social pointer"
-                        alt="Twitter"
-                        a={`https://twitter.com/${nft.user.twitter}`}
-                      />
+                      <a href={`https://twitter.com/${nft.user.twitter}`}>
+                        <img
+                          src="/assets/twitter.png"
+                          className="account-social pointer"
+                          alt="Twitter"
+                        />
+                      </a>
                     </div>
                   )}
                   {nft.user.instagram && (
                     <div>
-                      <img
-                        src="/assets/instagram.png"
-                        className="account-social pointer"
-                        alt="Instagram"
-                        a={`https://instagram.com/${nft.user.instagram}`}
-                      />
+                      <a href={`https://instagram.com/${nft.user.instagram}`}>
+                        <img
+                          src="/assets/instagram.png"
+                          className="account-social pointer"
+                          alt="Instagram"
+                        />
+                      </a>
                     </div>
                   )}
                 </div>
@@ -140,6 +144,7 @@ export default function Curation({ nft, small, blind }) {
                 <div className="text-m">Statement of Intent</div>
                 <ReactAutolinker text={nft.statement} />
               </div>
+
               {nft.additional && (
                 <div className="margin-top-s text-s">
                   <div className="text-m">Additional Info</div>
@@ -270,52 +275,55 @@ export default function Curation({ nft, small, blind }) {
                       <div>{imageType.toUpperCase()} as NFT</div>
                     )}
                   </div>
-                  <div className="margin-top-s text-xs">{nft.description}</div>
+                  <div className="text-xs margin-top-s">{nft.description}</div>
                 </div>
               </div>
               <div className="flex margin-top-s">
                 {nft.website && (
                   <div>
-                    <img
-                      src={Web}
-                      className="account-social-web pointer"
-                      alt="Website"
-                      a={nft.website}
-                    />
+                    <a href={nft.website}>
+                      <img
+                        src={Web}
+                        className="account-social-web pointer"
+                        alt="Website"
+                      />
+                    </a>
                   </div>
                 )}
                 {nft.twitter && (
                   <div>
-                    <img
-                      src={Twitter}
-                      className="account-social pointer"
-                      alt="Twitter"
-                      onClick={() =>
-                        openLink(
-                          nft.twitter.substring(0, 4) === "http" ||
-                            nft.twitter.substring(0, 3) === "www"
-                            ? nft.twitter
-                            : `https://twitter.com/${nft.twitter}`
-                        )
+                    <a
+                      href={
+                        nft.twitter.substring(0, 4) === "http" ||
+                        nft.twitter.substring(0, 3) === "www"
+                          ? nft.twitter
+                          : `https://twitter.com/${nft.twitter}`
                       }
-                    />
+                    >
+                      <img
+                        src={Twitter}
+                        className="account-social pointer"
+                        alt="Twitter"
+                      />
+                    </a>
                   </div>
                 )}
                 {nft.instagram && (
                   <div>
-                    <img
-                      src={Instagram}
-                      className="account-social pointer"
-                      alt="Instagram"
-                      onClick={() =>
-                        openLink(
-                          nft.instagram.substring(0, 4) === "http" ||
-                            nft.instagram.substring(0, 3) === "www"
-                            ? nft.instagram
-                            : `https://instagram.com/${nft.instagram}`
-                        )
-                      }
-                    />
+                    <a
+                      href={openLink(
+                        nft.instagram.substring(0, 4) === "http" ||
+                          nft.instagram.substring(0, 3) === "www"
+                          ? nft.instagram
+                          : `https://instagram.com/${nft.instagram}`
+                      )}
+                    >
+                      <img
+                        src={Instagram}
+                        className="account-social pointer"
+                        alt="Instagram"
+                      />
+                    </a>
                   </div>
                 )}
               </div>

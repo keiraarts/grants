@@ -1,9 +1,14 @@
 import React, { useState } from "react";
+import { NextSeo } from "next-seo";
 import Link from "next/link";
 
 function HomePage() {
   return (
     <div className="content-block">
+      <NextSeo
+        title="Grants Ethos"
+        description=" Sevens Foundation was created by Tim Kang through the heart of Mike Darlington. We are a global and 501(c)3 non-profit organization with a mission to spotlight emerging artists and share their creativity with the world."
+      />
       <div className="text-l text-b">
         <strong>Ξthos</strong>
       </div>
@@ -65,8 +70,6 @@ function HomePage() {
           </a>
         </Link>
         .
-        <br />
-        <br />
       </div>
     </div>
   );

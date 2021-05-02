@@ -180,7 +180,7 @@ export default function Exhibition({ data }) {
       <div className="flex">
         {id && (
           <Link
-            to={`/${url}/${switchPage("previous")}`}
+            href={`/${url}/${switchPage("previous")}`}
             className="relative margin-top-s"
             onClick={() => updatePreload("previous", order)}
           >
@@ -196,7 +196,7 @@ export default function Exhibition({ data }) {
           <div className="center text-m text-b margin-top-minus">
             {exhibition.organizer && (
               <Link
-                to={`/curator/${exhibition.organizerUrl}`}
+                href={`/curator/${exhibition.organizerUrl}`}
                 className="text-rainbow text-s margin-top-minus"
               >
                 <strong>{exhibition.organizer}</strong>
@@ -211,7 +211,7 @@ export default function Exhibition({ data }) {
         </div>
         {id && (
           <Link
-            to={`/${url}/${switchPage("next")}`}
+            href={`/${url}/${switchPage("next")}`}
             className="relative margin-top-s"
             onClick={() => updatePreload("next", order)}
           >
@@ -229,7 +229,7 @@ export default function Exhibition({ data }) {
           {gallery && gallery.length ? (
             <div className="margin-top-l center">
               <Link
-                to={`/${url}/${
+                href={`/${url}/${
                   Math.floor(
                     Math.random() * (gallery.length ? gallery.length : 1)
                   ) + 1
@@ -244,7 +244,10 @@ export default function Exhibition({ data }) {
               {gallery ? (
                 <div className="margin-top-l">
                   <div>There are no art pieces in this exhibition yet</div>
-                  <Link to={`/apply/${url} `} className="margin-top text-grey">
+                  <Link
+                    href={`/apply/${url} `}
+                    className="margin-top text-grey"
+                  >
                     You may submit your artwork here!
                   </Link>
                 </div>
