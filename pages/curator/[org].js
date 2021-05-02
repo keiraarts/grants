@@ -6,11 +6,9 @@ import ReactAutolinker from "react-autolinker";
 import { apiUrl } from "../baseUrl";
 
 export async function getServerSideProps(context) {
-  const { org } = context.query;
-
   const res = await fetch(`${apiUrl()}/program/getOrg`, {
     method: "POST",
-    body: JSON.stringify({ url: org }),
+    body: JSON.stringify({ url: context.query.org }),
     headers: { "Content-Type": "application/json" },
   });
 

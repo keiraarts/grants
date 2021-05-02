@@ -9,12 +9,13 @@ export default function Rarible() {
         <div className="text-s margin-top-s">
           Open your MetaMask extension and ensure your correct wallet is
           selected. A{" "}
-          <span
+          <a
+            target="_blank"
             className="pointer text-grey"
-            a="https://medium.com/radartech/hardware-wallets-explained-da8bd93ce801"
+            href="https://medium.com/radartech/hardware-wallets-explained-da8bd93ce801"
           >
             hardware wallet
-          </span>{" "}
+          </a>{" "}
           is recommended to have full self sovereign control over your keys. You
           will notice no password is needed, securing your recovery phrase is
           all you need to do and your wallet is your access key!
@@ -65,7 +66,7 @@ export default function Rarible() {
           Follow the steps, and whenever it prompts you to sign and confirm, do
           so using your wallet. Do note when a contract method is called, such
           as minting or creating a collection, it will cost gas fees.{" "}
-          <a href="/opensea" className="text-grey remove-a">
+          <a target="_blank" href="/opensea" className="text-grey remove-a">
             OpenSea
           </a>{" "}
           is an alternative option if you'd like to list an NFT with different

@@ -1,19 +1,24 @@
 import React from "react";
 import { useStoreState } from "easy-peasy";
+import { useRouter } from "next/router";
 import Link from "next/link";
 
 export default function Header() {
+  const router = useRouter();
   const auth = useStoreState((state) => state.user.auth);
-  const path = "/";
 
   return (
     <div className="header flex">
-      <Link href="/">
-        <a href="/" className="flex remove-a">
-          <img src="/assets/logo.png" className="logo" alt="Twitter" />
+      <Link href="/" passHref>
+        <a className="flex remove-a">
+          <img
+            src="/assets/logo.svg"
+            className="logo"
+            alt="Seven Grants Logo"
+          />
         </a>
       </Link>
-      <div className="flex-full" />
+      <div className="flex-full"></div>
       <div className="nav-container">
         <div className="flex-full" />
         <div className="header-nav">
@@ -23,7 +28,7 @@ export default function Header() {
                 href="/ethos"
                 rel="canonical"
                 className={`header-margin remove-a ${
-                  path === "ethos" && "header-selected"
+                  router.asPath === "/ethos" && "header-selected"
                 }`}
               >
                 Ethos
@@ -34,7 +39,7 @@ export default function Header() {
                 href="/learn"
                 rel="canonical"
                 className={`header-margin remove-a ${
-                  path === "learn" && "header-selected"
+                  router.asPath === "/learn" && "header-selected"
                 }`}
               >
                 Learn
@@ -45,7 +50,7 @@ export default function Header() {
                 href="/team"
                 rel="canonical"
                 className={`header-margin remove-a ${
-                  path === "team" && "header-selected"
+                  router.asPath === "/team" && "header-selected"
                 }`}
               >
                 Team
@@ -56,7 +61,7 @@ export default function Header() {
                 href="/testimony"
                 rel="canonical"
                 className={`header-margin remove-a ${
-                  path === "testimony" && "header-selected"
+                  router.asPath === "/testimony" && "header-selected"
                 }`}
               >
                 Testimonies
@@ -67,7 +72,8 @@ export default function Header() {
                 href="/program"
                 rel="canonical"
                 className={`header-margin remove-a ${
-                  (path === "program" || path === "apply") && "header-selected"
+                  (router.asPath === "/program" || router.asPath === "apply") &&
+                  "header-selected"
                 }`}
               >
                 Grants
@@ -76,7 +82,7 @@ export default function Header() {
           </strong>
         </div>
         <div className="flex-full margin-top-xs" />
-        {auth && auth.username ? (
+        {auth?.username ? (
           <div>
             <div className="text-s flex">
               <div className="flex-full" />
@@ -93,9 +99,11 @@ export default function Header() {
           <div>
             <div className="text-s flex">
               <div className="flex-full" />
-              <a href="/login" className="pointer">
-                <div className="text-grey">Log In</div>
-              </a>
+              <Link href="/login">
+                <a href="/login" className="pointer">
+                  <div className="text-grey">Log In</div>
+                </a>
+              </Link>
             </div>
           </div>
         )}

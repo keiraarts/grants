@@ -1,6 +1,7 @@
 import React, { useState } from "react";
+import Link from "next/link";
 
-function HomePage(props) {
+function HomePage() {
   return (
     <div className="content-block">
       <div className="text-l text-b">
@@ -12,9 +13,11 @@ function HomePage(props) {
       <div className="page-container margin-top ethos-text">
         Sevens Foundation was created by Tim Kang through the heart of Mike
         Darlington. We are a global{" "}
-        <a to="/team" className="text-rainbow remove-a">
-          committee
-        </a>{" "}
+        <Link href="/team" passHref>
+          <a href="/team" className="text-rainbow remove-a">
+            committee
+          </a>
+        </Link>
         and 501(c)3 non-profit organization with a mission to spotlight emerging
         artists and share their creativity with the world.
         <br />
@@ -56,13 +59,11 @@ function HomePage(props) {
         <br />
         <br />
         We give much gratitude to our{" "}
-        <a
-          to="/donate"
-          className="text-rainbow remove-a"
-          onClick={() => window.scrollTo(0, 0)}
-        >
-          donors
-        </a>
+        <Link passHref href="/donate">
+          <a href="/donate" className="text-rainbow remove-a">
+            donors
+          </a>
+        </Link>
         .
         <br />
         <br />

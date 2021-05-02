@@ -15,14 +15,12 @@ export async function getStaticProps() {
 
   const orgs = await res.json();
 
-  return {
-    props: { orgs }, // will be passed to the page component as props
-  };
+  return { props: { orgs } };
 }
 
 export default function Application(props) {
   const auth = useStoreState((state) => state.user.auth);
-  const [org, setOrg] = useState(props?.org);
+  const [org] = useState(props?.org);
 
   const [data, setData] = useState({});
   const [submitting, setSubmitting] = useState(false);

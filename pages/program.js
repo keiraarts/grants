@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { apiUrl } from "../src/client/baseUrl";
+import Link from "next/link";
 
 export async function getStaticProps() {
   const res = await fetch(`${apiUrl()}/programs/getPrograms`, {
@@ -8,14 +9,10 @@ export async function getStaticProps() {
   });
 
   const programs = await res.json();
-
-  return {
-    props: { programs }, // will be passed to the page component as props
-  };
+  return { props: { programs } };
 }
 
 export default function Program(props) {
-  const [loaded, setLoaded] = useState(false);
   const [programs] = useState(props?.programs);
 
   return (
@@ -53,10 +50,12 @@ export default function Program(props) {
           {programs.map((program, index) => {
             if (!program.closeApplication) {
               return (
-                <a key={index} className="button" to={`/apply/${program.url}`}>
-                  <div className="text-xs">{program.organizers[0].name}</div>
-                  <span>{program.name}</span>
-                </a>
+                <Link passHref href={`/apply/${program.url}`} key={index}>
+                  <a className="button" href={`/apply/${program.url}`}>
+                    <div className="text-xs">{program.organizers[0].name}</div>
+                    <span>{program.name}</span>
+                  </a>
+                </Link>
               );
             }
           })}

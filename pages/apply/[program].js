@@ -6,25 +6,19 @@ import ReactAutolinker from "react-autolinker";
 import ReactModal from "react-modal";
 import DatePicker from "react-mobile-datepicker";
 
-import React, { useState, useEffect } from "react";
-import { apiUrl } from "../src/client/baseUrl";
+import { apiUrl } from "../../src/client/baseUrl";
 import Resizer from "../../src/client/Components/Tools/Resizer";
 import moment from "moment";
 
 export async function getServerSideProps(context) {
-  const { program } = context.query;
-
   const res = await fetch(`${apiUrl()}/program/getProgram`, {
     method: "POST",
-    body: JSON.stringify({ url: program }),
+    body: JSON.stringify({ url: context.query.program }),
     headers: { "Content-Type": "application/json" },
   });
 
   const program = await res.json();
-
-  return {
-    props: { program }, // will be passed to the page component as props
-  };
+  return { props: { program } };
 }
 
 export default function Application(props) {
@@ -113,9 +107,7 @@ export default function Application(props) {
       if (ext === "png") responsetype = "image/png";
       if (ext === "gif") responsetype = "image/gif";
       if (ext === "ebp") responsetype = "image/webp";
-      if (ext === "mp4") {
-        responsetype = "video/mp4";
-      }
+      if (ext === "mp4") responsetype = "video/mp4";
 
       if (file.size < 120000000) {
         if (responsetype) {
@@ -316,7 +308,7 @@ export default function Application(props) {
               <strong>
                 <Link
                   className="text-rainbow pointer"
-                  to={`/curator/${doDashes(programInfo.organizers[0].name)}`}
+                  href={`/curator/${doDashes(programInfo.organizers[0].name)}`}
                 >
                   {programInfo.organizers[0].name}
                 </Link>
@@ -780,7 +772,7 @@ export default function Application(props) {
             )}
             <div>
               {!user && (
-                <Link to="/login" className="margin-top text-mid text-grey">
+                <Link href="/login" className="margin-top text-mid text-grey">
                   You must be logged in to submit an artwork
                 </Link>
               )}
@@ -793,7 +785,10 @@ export default function Application(props) {
                   !user.user.country ||
                   !user.user.twitter ||
                   !user.user.website) && (
-                  <Link to="/account" className="margin-top text-mid text-grey">
+                  <Link
+                    href="/account"
+                    className="margin-top text-mid text-grey"
+                  >
                     You must complete your user profile and verify wallet &
                     email to submit an artwork
                   </Link>
@@ -819,7 +814,7 @@ export default function Application(props) {
             {applied.published ? (
               <div className="margin-top">
                 <Link
-                  to={`/${programInfo.url}/${applied.order}`}
+                  href={`/${programInfo.url}/${applied.order}`}
                   className="text-rainbow"
                 >
                   Minted In Exhibition

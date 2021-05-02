@@ -1,27 +1,6 @@
 import React, { useState } from "react";
 
-const Block = ({ title, text }) => {
-  const [open, setOpen] = useState(false);
-
-  return (
-    <div className="margin-top">
-      <div
-        className="flex pointer faq-title-container"
-        onClick={() => setOpen(!open)}
-      >
-        <div className="text-m flex-full faq-title">{title}</div>
-        <img
-          src={open ? `/assets/up.png` : `/assets/down.png`}
-          className="faq-toggle"
-        />
-      </div>
-      <div className="line-spacer" />
-      {open && <div className="text-s margin-top-s">{text}</div>}
-    </div>
-  );
-};
-
-function HomePage() {
+export default function HomePage() {
   return (
     <div className="content-block">
       <div className="text-l text-b">
@@ -149,7 +128,7 @@ function HomePage() {
         </a>
         <br />
         <a
-          target={"_blank"}
+          target="_blank"
           href="https://coopahtroopa.mirror.xyz/PF42Z9oE_r6yhZN9jZrrseXfHaZALj9JIfMplshlgQ0"
           className="text-grey pointer margin-top"
         >
@@ -163,20 +142,32 @@ function HomePage() {
           Paris Hilton's "I'm Excited About NFTs—You Should Be Too"
         </a>
         <br />
-        <a to="/tutorial" className="text-grey remove-a margin-top">
+        <a
+          target="_blank"
+          href="/tutorial"
+          className="text-grey remove-a margin-top"
+        >
           Setting up a wallet
         </a>
         <br />
-        <a to="/opensea" className="text-grey remove-a margin-top">
+        <a
+          target="_blank"
+          href="/opensea"
+          className="text-grey remove-a margin-top"
+        >
           Minting on OpenSea
         </a>
         <br />
-        <a to="/rarible" className="text-grey remove-a margin-top">
+        <a
+          target="_blank"
+          href="/rarible"
+          className="text-grey remove-a margin-top"
+        >
           Minting on Rarible
         </a>
         <br />
         <a
-          target={"_blank"}
+          target="_blank"
           href="https://discord.gg/a9dDyUCZWY"
           className="text-grey pointer margin-top"
         >
@@ -184,7 +175,7 @@ function HomePage() {
         </a>
         <br />
         <a
-          target={"_blank"}
+          target="_blank"
           className="text-grey pointer margin-top"
           href="https://goldstandard.org"
         >
@@ -197,4 +188,23 @@ function HomePage() {
   );
 }
 
-export default HomePage;
+const Block = ({ title, text }) => {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div className="margin-top">
+      <div
+        className="flex pointer faq-title-container"
+        onClick={() => setOpen(!open)}
+      >
+        <div className="text-m flex-full faq-title">{title}</div>
+        <img
+          src={open ? `/assets/up.png` : `/assets/down.png`}
+          className="faq-toggle"
+        />
+      </div>
+      <div className="line-spacer" />
+      {open && <div className="text-s margin-top-s">{text}</div>}
+    </div>
+  );
+};

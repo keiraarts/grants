@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { apiUrl } from "../src/client/baseUrl";
 import { Redirect, useHistory } from "react-router-dom";
 import { useStoreActions, useStoreState } from "easy-peasy";
+import Link from "next/link";
 
 export default function Register() {
   const setAuth = useStoreActions((dispatch) => dispatch.user.setAuth);
@@ -84,23 +85,24 @@ export default function Register() {
             <div>
               <input type="submit" value="Log In" className="submit-button" />
               &nbsp;&nbsp;&nbsp;or&nbsp;&nbsp;
-              <a href="/register" className="text-m text-grey pointer">
-                Register an Account
-              </a>
+              <Link href="/register">
+                <a href="/register" className="text-m text-grey pointer">
+                  Register an Account
+                </a>
+              </Link>
               <br />
-              <a
-                href="/forgotpassword"
-                className="margin-top text-s text-grey pointer"
-              >
-                Forgot your password?
-              </a>
+              <Link href="/forgotpassword">
+                <a
+                  href="/forgotpassword"
+                  className="margin-top text-s text-grey pointer"
+                >
+                  Forgot your password?
+                </a>
+              </Link>
             </div>
           )}
         </form>
-        <br />
       </div>
     </div>
   );
 }
-
-const login = (data) => {};

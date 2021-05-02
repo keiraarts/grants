@@ -10,8 +10,9 @@ export default function Rarible() {
           Open your MetaMask extension and ensure your correct wallet is
           selected. A{" "}
           <span
+            target="_blank"
             className="pointer text-grey"
-            a="https://medium.com/radartech/hardware-wallets-explained-da8bd93ce801"
+            href="https://medium.com/radartech/hardware-wallets-explained-da8bd93ce801"
           >
             hardware wallet
           </span>{" "}
@@ -31,7 +32,7 @@ export default function Rarible() {
           create an NFT on OpenSea, you must first create a collection in which
           all of your pieces will be grouped together. Give it a name and
           optionally give it a description and add a logo.{" "}
-          <a href="/rarible" className="text-grey remove-a">
+          <a target="_blank" href="/rarible" className="text-grey remove-a">
             Rarible
           </a>{" "}
           is an alternative option if you'd like to mint your NFT as a

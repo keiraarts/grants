@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 
 export default function Committee() {
   return (
@@ -14,6 +15,7 @@ export default function Committee() {
           <i>
             If you would like to share your experiences in short, please{" "}
             <a
+              target="_blank"
               href="mailto:tim@grants.art"
               className="text-s text-grey pointer"
             >
@@ -32,8 +34,9 @@ export default function Committee() {
           upcoming artists show their passion and grow this amazing community."
           -{" "}
           <a
+            target="_blank"
             className="text-s text-rainbow pointer"
-            a="https://linktr.ee/renderfruit"
+            href="https://linktr.ee/renderfruit"
           >
             RenderFruit
           </a>
@@ -46,8 +49,9 @@ export default function Committee() {
           with knowledge and support resulting in more inclusivity and talent in
           the NFT world." -{" "}
           <a
+            target="_blank"
             className="text-s text-rainbow pointer"
-            a="https://twitter.com/billelis"
+            href="https://twitter.com/billelis"
           >
             Billelis
           </a>
@@ -64,8 +68,9 @@ export default function Committee() {
           spoken to people I wouldn’t of even dreamt to speaking to, and have
           made life long friends." -{" "}
           <a
+            target="_blank"
             className="text-s text-rainbow pointer"
-            a="https://www.behance.net/JonathanQuintin"
+            href="https://www.behance.net/JonathanQuintin"
           >
             mbsjq
           </a>
@@ -77,8 +82,9 @@ export default function Committee() {
           gives freedom and power to the artist and is changing a lot of lives,
           from the smallest artists to the top ones." -{" "}
           <a
+            target="_blank"
             className="text-s text-rainbow pointer"
-            a="https://www.instagram.com/msistema/"
+            href="https://www.instagram.com/msistema/"
           >
             Marc Ferrer Vives
           </a>
@@ -94,8 +100,9 @@ export default function Committee() {
           anyone eager to explore the uncharted path. A truly exciting moment in
           art." -{" "}
           <a
+            target="_blank"
             className="text-s text-rainbow pointer"
-            a="https://twitter.com/_james_owen_"
+            href="https://twitter.com/_james_owen_"
           >
             James Owen
           </a>
@@ -106,8 +113,9 @@ export default function Committee() {
           most creative and forward thinking individuals in the world, and it
           drives me to do something great for others." -{" "}
           <a
+            target="_blank"
             className="text-s text-rainbow pointer"
-            a="https://twitter.com/illestrater_"
+            href="https://twitter.com/illestrater_"
           >
             illestrater
           </a>

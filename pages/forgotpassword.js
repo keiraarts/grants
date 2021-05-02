@@ -7,6 +7,7 @@ export default function Register() {
   const [err, setErr] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+
   const submit = (e) => {
     if (!data) setErr("Please provide your username or email");
     e.preventDefault();

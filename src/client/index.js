@@ -8,6 +8,7 @@ import ScrollToTop from "./Components/Tools/ScrollToTop";
 import Header from "./Components/Header";
 import Footer from "./Components/Footer";
 import Home from "./Components/Home";
+import Ethos from "./Components/Ethos";
 import Learn from "./Components/Learn";
 import Tutorial from "./Components/Tutorials/Wallet";
 import Rarible from "./Components/Tutorials/Rarible";
@@ -50,6 +51,37 @@ const App = () => {
               <WaitForStateRehydration>
                 <Header />
                 <Switch>
+                  <Route
+                    path="/"
+                    exact
+                    component={Home}
+                    scrollRef={scrollRef ? scrollRef.current : null}
+                  />
+                  <Route path="/ethos" exact component={Ethos} />
+                  <Route path="/learn" exact component={Learn} />
+                  <Route path="/tutorial" exact component={Tutorial} />
+                  <Route path="/rarible" exact component={Rarible} />
+                  <Route path="/opensea" exact component={OpenSea} />
+                  <Route path="/team" exact component={Committee} />
+                  <Route path="/donate" exact component={Donate} />
+                  <Route path="/program" exact component={Program} />
+                  <Route
+                    path="/create-program"
+                    exact
+                    component={CreateProgram}
+                  />
+                  <Route path="/apply/:program" exact component={Apply} />
+                  <Route path="/curator/:org" exact component={Organizer} />
+                  <Route path="/curation" exact component={Curation} />
+                  <Route path="/testimony" exact component={Testimony} />
+                  <Route path="/register" exact component={Register} />
+                  <Route path="/login" exact component={Login} />
+                  <Route path="/forgotpassword" exact component={Forgot} />
+                  <Route
+                    path="/recoveraccount/:token"
+                    exact
+                    component={RecoverAccount}
+                  />
                   <Route path="/account" exact component={Account} />
                   <Route path="/u/:username" component={Profile} />
                   <Route path="/verifyemail/:id" component={VerifyEmail} />
@@ -65,6 +97,37 @@ const App = () => {
     </BrowserRouter>
   );
 };
+
+console.log(`
+♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥
+♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥
+♥♥♥♥♥♥♥♥♥♥♥&&&&&&&&&&&&&&&&&&&&&&♥♥♥♥♥♥♥♥♥♥
+♥♥♥♥♥♥&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&♥♥♥♥♥
+♥♥♥♥♥&&&%%%%####################%%%%&&&♥♥♥♥
+♥♥♥♥&&&&(                          .&&&&♥♥♥
+♥♥♥&&&&&(                         ,%&&&&♥♥♥
+♥♥♥&&&&&(   /%%%%%%%%%%%%%%##%#  ,%%&&&&♥♥♥
+♥♥♥♥&&&&(  *%%%%%%%%%%%%%%%%%#  ,%%&&&&♥♥♥♥
+♥♥♥♥♥&&&#**%&&&&&&&&&&%%%%%%#  *%%&&&&♥♥♥♥♥
+♥♥♥♥♥♥♥♥&&&&&&&&&&&&&&&&%%%#  *%&&&&&♥♥♥♥♥♥
+♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥&&&&&&&&%(  (&&&&&&♥♥♥♥♥♥♥
+♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥&&&&&&&/  /&&&&&&♥♥♥♥♥♥♥♥
+♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥&&&&&&*  (&&&&&&♥♥♥♥♥♥♥♥♥
+♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥&&&&&&*  /%&&&&&♥♥♥♥♥♥♥♥♥♥
+♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥&&&&&%.  *%&&&&&♥♥♥♥♥♥♥♥♥♥♥
+♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥&&&&&%,  .%&&&&&♥♥♥♥♥♥♥♥♥♥♥♥
+♥♥♥♥♥♥♥♥♥♥♥♥♥♥&&&&%%.   %%&&&&&♥♥♥♥♥♥♥♥♥♥♥♥
+♥♥♥♥♥♥♥♥♥♥♥♥♥&&&&%%.   *%%&&&&&♥♥♥♥♥♥♥♥♥♥♥♥
+♥♥♥♥♥♥♥♥♥♥♥♥&&&&%%.    (%%&&&&♥♥♥♥♥♥♥♥♥♥♥♥♥
+♥♥♥♥♥♥♥♥♥♥♥♥&&&&%*     .%%&&&&♥♥♥♥♥♥♥♥♥♥♥♥♥
+♥♥♥♥♥♥♥♥♥♥♥♥&&&&%        &&&&&♥♥♥♥♥♥♥♥♥♥♥♥♥
+♥♥♥♥♥♥♥♥♥♥♥♥♥&&&&*      .&&&&♥♥♥♥♥♥♥♥♥♥♥♥♥♥
+♥♥♥♥♥♥♥♥♥♥♥♥♥♥&&&&&&#(&&&&&&♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥
+♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥&&&&&&&&♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥
+♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥
+♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥
+
+`);
 
 const rootElement = document.getElementById("root");
 ReactDOM.render(

@@ -10,6 +10,7 @@ export default function Committee() {
       <div className="page-container margin-top">
         <div className="text-m">Advisors</div>
         <a
+          target="_blank"
           className="text-s text-grey pointer"
           href="https://y.at/%F0%9F%91%89%F0%9F%8E%B1%F0%9F%95%B3"
         >
@@ -17,6 +18,7 @@ export default function Committee() {
         </a>
         <div className="text-s">Sevens Developer & paradigm pusher</div>
         <a
+          target="_blank"
           className="text-s margin-top-s text-grey pointer"
           href="https://twitter.com/darlington"
         >
@@ -26,6 +28,7 @@ export default function Committee() {
           CEO of Monstercat music label & captain NFT gremlin
         </div>
         <a
+          target="_blank"
           className="text-s margin-top-s text-grey pointer"
           href="https://www.slimesunday.com"
         >
@@ -35,6 +38,7 @@ export default function Committee() {
           Digital Marketing @ Slime Sunday & art lover
         </div>
         <a
+          target="_blank"
           className="text-s margin-top-s text-grey pointer"
           href="https://twitter.com/EthArtX"
         >
@@ -42,6 +46,7 @@ export default function Committee() {
         </a>
         <div className="text-s">NFT podcaster & communications guru</div>
         <a
+          target="_blank"
           className="text-s margin-top-s text-grey pointer"
           href="https://3lau.com/"
         >
@@ -49,6 +54,7 @@ export default function Committee() {
         </a>
         <div className="text-s">Music producer & NFT innovator</div>
         <a
+          target="_blank"
           className="text-s margin-top-s text-grey pointer"
           href="https://www.instagram.com/yesladypheonix/"
         >
@@ -58,6 +64,7 @@ export default function Committee() {
           Co-Founder of Universe Contemporary & leading crypto art evangelist
         </div>
         <a
+          target="_blank"
           className="text-s margin-top-s text-grey pointer"
           href="https://twitter.com/axieking"
         >
@@ -65,6 +72,7 @@ export default function Committee() {
         </a>
         <div className="text-s">Traditional fine art & NFT collector</div>
         <a
+          target="_blank"
           className="text-s margin-top-s text-grey pointer"
           href="https://twitter.com/pablorfraile"
         >
@@ -74,6 +82,7 @@ export default function Committee() {
           Co-Founder of Museum of Crypto Art & NFT collector
         </div>
         <a
+          target="_blank"
           className="text-s margin-top-s text-grey pointer"
           href="https://twitter.com/LordTylerWard"
         >
@@ -81,6 +90,7 @@ export default function Committee() {
         </a>
         <div className="text-s">Founder of Barn Bridge & DeFi degen</div>
         <a
+          target="_blank"
           className="text-s margin-top-s text-grey pointer"
           href="https://y.at/%E2%AD%90%F0%9F%8E%AC%E2%AD%90"
         >
@@ -88,6 +98,7 @@ export default function Committee() {
         </a>
         <div className="text-s">Professional videographer & NFT collector</div>
         <a
+          target="_blank"
           className="text-s margin-top-s text-grey pointer"
           href="http://justinmaller.com/"
         >
@@ -95,6 +106,7 @@ export default function Committee() {
         </a>
         <div className="text-s">Digital Artist & CCO of Deviantart</div>
         <a
+          target="_blank"
           className="text-s margin-top-s text-grey pointer"
           href="https://parishilton.com/"
         >
@@ -102,6 +114,7 @@ export default function Committee() {
         </a>
         <div className="text-s">Entrepreneur & NFT and social pioneer</div>
         <a
+          target="_blank"
           className="text-s margin-top-s text-grey pointer"
           href="https://www.beeple-crap.com/"
         >
@@ -118,82 +131,93 @@ export default function Committee() {
           NessGraphics
         </div>
         <br />
-        <div
+        <a
           className="text-s margin-top-s text-grey pointer"
           href="https://www.instagram.com/fvckrender"
+          target="_blank"
         >
           FVCKRENDER
-        </div>
+        </a>
         <br />
-        <div
+        <a
           className="text-s margin-top-s text-grey pointer"
           href="https://aeforiadesign.com/"
+          target="_blank"
         >
           aeforia
-        </div>
+        </a>
         <br />
-        <div
+        <a
           className="text-s margin-top-s text-grey pointer"
           href="https://thankyoux.com/"
+          target="_blank"
         >
           ThankYouX
-        </div>
+        </a>
         <br />
-        <div
+        <a
           className="text-s margin-top-s text-grey pointer"
           href="https://maalavidaa.com/"
+          target="_blank"
         >
           Maalavidaa
-        </div>
+        </a>
         <br />
-        <div
+        <a
           className="text-s margin-top-s text-grey pointer"
           href="http://www.blakekathryn.com/"
+          target="_blank"
         >
           Blake Kathryn
-        </div>
+        </a>
         <br />
-        <div
+        <a
           className="text-s margin-top-s text-grey pointer"
           href="https://slimesunday.com/"
+          target="_blank"
         >
           slimesunday
-        </div>
+        </a>
         <br />
-        <div
+        <a
           className="text-s margin-top-s text-grey pointer"
           href="https://www.instagram.com/toomuchlag"
+          target="_blank"
         >
           toomuchlag
-        </div>
+        </a>
         <br />
-        <div
+        <a
           className="text-s margin-top-s text-grey pointer"
           href="https://www.victormosquera.com/"
+          target="_blank"
         >
           Victor Mosquera
-        </div>
+        </a>
         <br />
-        <div
+        <a
           className="text-s margin-top-s text-grey pointer"
           href="https://smeccea.com/"
+          target="_blank"
         >
           smeccea
-        </div>
+        </a>
         <br />
-        <div
+        <a
           className="text-s margin-top-s text-grey pointer"
           href="https://www.billelis.com/"
+          target="_blank"
         >
           Billelis
-        </div>
+        </a>
         <br />
-        <div
+        <a
           className="text-s margin-top-s text-grey pointer"
           href="https://www.behance.net/Filiphds"
+          target="_blank"
         >
           Filip Hodas
-        </div>
+        </a>
         <br />
         <br />
         <div className="text-m text-b">Partners</div>
@@ -201,6 +225,7 @@ export default function Committee() {
           <a
             className="text-s text-grey pointer"
             href="https://www.numomo.com/"
+            target="_blank"
           >
             Numomo Creative Agency
           </a>

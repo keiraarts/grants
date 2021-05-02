@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 
 export default function Committee() {
   return (
@@ -14,6 +15,7 @@ export default function Committee() {
           <a
             className="text-s text-rainbow pointer"
             href="https://etherscan.io/address/foundation.eth"
+            target="_blank"
           >
             foundation.eth
           </a>{" "}
@@ -24,6 +26,7 @@ export default function Committee() {
         <a
           className="text-s margin-top-s text-grey pointer"
           href="https://parishilton.com/"
+          target="_blank"
         >
           Paris Hiton
         </a>
@@ -31,6 +34,7 @@ export default function Committee() {
         <a
           className="text-s margin-top-s text-grey pointer"
           href="https://twitter.com/illestrater_"
+          target="_blank"
         >
           Tim Kang
         </a>
@@ -38,6 +42,7 @@ export default function Committee() {
         <a
           className="text-s margin-top-s text-grey pointer"
           href="https://twitter.com/etyoung"
+          target="_blank"
         >
           Eric Young
         </a>
@@ -45,6 +50,7 @@ export default function Committee() {
         <a
           className="text-s margin-top-s text-grey pointer"
           href="https://twitter.com/WhaleShark_Pro"
+          target="_blank"
         >
           Whaleshark
         </a>
@@ -52,6 +58,7 @@ export default function Committee() {
         <a
           className="text-s margin-top-s text-grey pointer"
           href="https://twitter.com/Weel25067618"
+          target="_blank"
         >
           Weel
         </a>
