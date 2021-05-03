@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function Committee() {
+export default function TeamPage() {
   return (
     <div className="content-block">
       <div className="text-l text-b">Committee</div>

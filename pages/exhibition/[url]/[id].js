@@ -1,20 +1,23 @@
 import React, { useEffect, useReducer, useState } from "react";
 import NFT from "../../../src/client/Components/ExhibitionNFT.js";
 
+import { apiUrl } from "../../../src/client/baseUrl";
 import { useSwipeable } from "react-swipeable";
 import { useHistory } from "react-router-dom";
 import { useStoreState } from "easy-peasy";
 import ReactAutolinker from "react-autolinker";
-import { apiUrl } from "../../../src/client/baseUrl";
+import { NextSeo } from "next-seo";
 import Link from "next/link";
 
 export async function getStaticPaths() {
   const res = await fetch(`${apiUrl()}/program/getGalleries`, {
     method: "GET",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      "User-Agent": "ANYTHING_WILL_WORK_HERE",
+    },
   });
 
-  // Get {program, gallery} object
   const data = await res.json();
 
   const paths = data
@@ -32,11 +35,17 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }) {
-  const res = await fetch(`${apiUrl()}/program/getGallery`, {
-    method: "POST",
-    body: JSON.stringify({ program: params.url, id: params.id }),
-    headers: { "Content-Type": "application/json" },
-  });
+  const res = await fetch(
+    `${apiUrl()}/program/getGallery/${params.url}/${params.id}`,
+    {
+      method: "GET",
+
+      headers: {
+        "User-Agent": "Internal",
+        "Content-Type": "application/json",
+      },
+    }
+  );
 
   const data = await res.json();
 
@@ -45,12 +54,10 @@ export async function getStaticProps({ params }) {
   };
 }
 
-export default function Exhibition({ data, id, url }) {
+export default function ExhibitionIndividual({ data, id, url }) {
   const history = useHistory();
   const small = useStoreState((state) => state.app.small);
   const order = Number(id);
-
-  console.log({ data });
 
   const [gallery, setGallery] = useState(data?.gallery);
   useEffect(() => {
@@ -58,8 +65,6 @@ export default function Exhibition({ data, id, url }) {
   }, [data?.gallery?.id]);
 
   const [exhibition] = useState({ ...data, gallery: undefined });
-
-  const [preload, dispatch] = useReducer((preload, { type, value }) => {}, []);
 
   function switchPage(direction) {
     // setSwipeDirection(direction);
@@ -88,6 +93,7 @@ export default function Exhibition({ data, id, url }) {
 
   return (
     <div className="content-block" {...handlers}>
+      <NextSeo title={gallery?.title} description={gallery?.description} />
       <div className="flex items-center w-full">
         <Link
           href={`/exhibition/${url}/${switchPage("previous")}`}

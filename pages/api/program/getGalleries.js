@@ -1,7 +1,6 @@
 import dbConnect from "../../../utils/dbConnect";
-import ProgramApplicant from "../../../models/programApplicantModel";
 import Program from "../../../models/programModel";
-import set from "lodash/set";
+import ProgramApplicant from "../../../models/programApplicantModel";
 
 export default async function handler(req, res) {
   const { method } = req;
@@ -9,7 +8,7 @@ export default async function handler(req, res) {
 
   switch (method) {
     case "GET":
-      let programs = await Program.find({ exhibiting: true })
+      const programs = await Program.find({ exhibiting: true })
         .populate("organizers")
         .populate(
           "curators",
@@ -20,8 +19,9 @@ export default async function handler(req, res) {
         const gallery = await ProgramApplicant.find(
           { program: program._id, published: true },
           (err, gallery) => {
-            gallery.forEach((e) => (e.tokenId = e.order));
-            return gallery;
+            return err
+              ? res.status(500).json(err)
+              : gallery.forEach((e) => (e.tokenId = e.order));
           }
         )
           .select(

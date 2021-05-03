@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { NextSeo } from "next-seo";
 import Link from "next/link";
 
-function HomePage() {
+export default function EthosPage() {
   return (
     <div className="content-block">
       <NextSeo
@@ -74,5 +74,3 @@ function HomePage() {
     </div>
   );
 }
-
-export default HomePage;

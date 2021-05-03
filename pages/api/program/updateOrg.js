@@ -1,5 +1,5 @@
 import auth from "../../../src/server/services/authorization-service";
-import auth from "../../../src/server/emails/templates";
+import templates from "../../../src/server/emails/templates";
 import dbConnect from "../../../utils/dbConnect";
 
 import ProgramApplicant from "../../../models/programApplicantModel";

@@ -4,7 +4,7 @@ import { Redirect, useHistory } from "react-router-dom";
 import { useStoreActions, useStoreState } from "easy-peasy";
 import validateUsername from "../utils/validateUsername";
 
-export default function Register() {
+export default function RegisterComponent() {
   const setAuth = useStoreActions((dispatch) => dispatch.user.setAuth);
   const auth = useStoreState((state) => state.user.auth);
   const history = useHistory();

@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
 import ReactAutolinker from "react-autolinker";
-import Link from "next/link";
 
 export default function Curation({ nft, small, blind }) {
   const [loaded, setLoaded] = useState(false);

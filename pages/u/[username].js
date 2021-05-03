@@ -3,8 +3,8 @@ import { useParams } from "react-router-dom";
 import { Redirect } from "react-router-dom";
 
 import { useStoreState, useStoreActions } from "easy-peasy";
+import { apiUrl } from "../../src/client/baseUrl";
 import ReactAutolinker from "react-autolinker";
-import { apiUrl } from "../src/client/baseUrl";
 import Link from "next/link";
 
 import Resizer from "../../src/client/Components/Tools/Resizer";
@@ -70,7 +70,7 @@ export default function Profile(props) {
       {!editCollection && (
         <div>
           {!data && (
-            <div className="center flex">
+            <div className="flex center">
               <div className="margin-top center">
                 <div className="loading">
                   <div></div>
@@ -112,7 +112,7 @@ export default function Profile(props) {
             <div className="flex-full" />
             <div className="share-icon-container">
               {auth && auth.username === user.username && (
-                <div className="text-s flex">
+                <div className="flex text-s">
                   <div className="flex-full" />
                   <span className="text-grey pointer" onClick={logMeOut}>
                     Logout

@@ -2,8 +2,6 @@
   "/_app": "pages/_app.js",
   "/_document": "pages/_document.js",
   "/_error": "pages/_error.js",
-  "/exhibition/[url]/[id]": "pages/exhibition/[url]/[id].js",
-  "/exhibition/[url]": "pages/exhibition/[url].js",
-  "/api/program/getGalleries": "pages/api/program/getGalleries.js",
-  "/api/program/getGallery": "pages/api/program/getGallery.js"
+  "/opensea": "pages/opensea.js",
+  "/": "pages/index.js"
 }

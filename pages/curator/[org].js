@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 
-import Resizer from "../../src/client/Components/Tools/Resizer";
+import { apiUrl } from "../../src/client/baseUrl";
 import ReactAutolinker from "react-autolinker";
 import doDashes from "../../utils/doDashes";
 import { useStoreState } from "easy-peasy";
-import { apiUrl } from "../baseUrl";
 
 export async function getServerSideProps(context) {
   const res = await fetch(`${apiUrl()}/program/getOrg`, {
@@ -91,7 +90,6 @@ export default function Organizer(props) {
 
   return (
     <div className="content-block">
-      <Resizer />
       <div>
         {organizer && (
           <div>

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { apiUrl } from "../src/client/baseUrl";
 
-export default function Register() {
+export default function ForgotPasswordPage() {
   const [data, setData] = useState(null);
 
   const [err, setErr] = useState(false);

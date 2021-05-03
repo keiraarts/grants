@@ -4,7 +4,7 @@ import { Redirect, useHistory } from "react-router-dom";
 import { useStoreActions, useStoreState } from "easy-peasy";
 import Link from "next/link";
 
-export default function Register() {
+export default function Login() {
   const setAuth = useStoreActions((dispatch) => dispatch.user.setAuth);
   const auth = useStoreState((state) => state.user.auth);
   const history = useHistory();

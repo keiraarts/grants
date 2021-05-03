@@ -1,8 +1,7 @@
 import React from "react";
 import { NextSeo } from "next-seo";
-// TODO: Add affiliate links to exchanges to recoup Mondodb costs?
 
-export default function Tutorial() {
+export default function WalletTutorial() {
   return (
     <div className="content-block">
       <NextSeo

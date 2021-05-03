@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function Rarible() {
+export default function OpenSea() {
   return (
     <div className="content-block">
       <div className="text-l text-b">Minting on OpenSea</div>

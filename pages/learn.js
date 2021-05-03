@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-export default function HomePage() {
+export default function LearnPage() {
   return (
     <div className="content-block">
       <div className="text-l text-b">

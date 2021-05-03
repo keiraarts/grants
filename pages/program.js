@@ -12,7 +12,7 @@ export async function getStaticProps() {
   return { props: { programs } };
 }
 
-export default function Program(props) {
+export default function ProgramPage(props) {
   const [programs] = useState(props?.programs);
 
   return (

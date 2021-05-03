@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function Rarible() {
+export default function RaribleTutorial() {
   return (
     <div className="content-block">
       <div className="text-l text-b">Minting on Rarible</div>

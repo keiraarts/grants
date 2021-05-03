@@ -5,6 +5,9 @@ import Header from "../src/client/Components/Header";
 import Footer from "../src/client/Components/Footer";
 import { StoreComponent, store } from "../src/client/redux";
 
+import { DefaultSeo } from "next-seo";
+import SEO from "../next-seo.config";
+
 import Router from "next/router";
 import NProgress from "nprogress";
 
@@ -20,6 +23,7 @@ function MyApp({ Component, pageProps }) {
   return (
     <StoreComponent store={store}>
       <div className="App">
+        <DefaultSeo {...SEO} />
         <div className="wrapper" />
         <div className="dim-gradient">
           <div className="site-content">

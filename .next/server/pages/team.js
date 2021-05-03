@@ -1,32 +1,174 @@
-/*
- * ATTENTION: An "eval-source-map" devtool has been used.
- * This devtool is neither made for production nor for readable output files.
- * It uses "eval()" calls to create a separate source file with attached SourceMaps in the browser devtools.
- * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
- * or disable the default devtool with "devtool: false".
- * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
- */
 (function() {
 var exports = {};
-exports.id = "pages/team";
-exports.ids = ["pages/team"];
+exports.id = 9038;
+exports.ids = [9038];
 exports.modules = {
 
-/***/ "./pages/team.js":
-/*!***********************!*\
-  !*** ./pages/team.js ***!
-  \***********************/
+/***/ 2582:
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": function() { return /* binding */ Committee; }\n/* harmony export */ });\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ \"react\");\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);\n\nfunction Committee() {\n  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"div\", {\n    className: \"content-block\"\n  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"div\", {\n    className: \"text-l text-b\"\n  }, \"Committee\"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"div\", {\n    className: \"text-s margin-top-s\"\n  }, \"Our shared love of art, music, and design\"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"div\", {\n    className: \"page-container margin-top\"\n  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"div\", {\n    className: \"text-m\"\n  }, \"Advisors\"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"a\", {\n    target: \"_blank\",\n    className: \"text-s text-grey pointer\",\n    href: \"https://y.at/%F0%9F%91%89%F0%9F%8E%B1%F0%9F%95%B3\"\n  }, \"Tim Kang (illestrater)\"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"div\", {\n    className: \"text-s\"\n  }, \"Sevens Developer & paradigm pusher\"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"a\", {\n    target: \"_blank\",\n    className: \"text-s margin-top-s text-grey pointer\",\n    href: \"https://twitter.com/darlington\"\n  }, \"Mike Darlington\"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"div\", {\n    className: \"text-s\"\n  }, \"CEO of Monstercat music label & captain NFT gremlin\"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"a\", {\n    target: \"_blank\",\n    className: \"text-s margin-top-s text-grey pointer\",\n    href: \"https://www.slimesunday.com\"\n  }, \"Devin Dube\"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"div\", {\n    className: \"text-s\"\n  }, \"Digital Marketing @ Slime Sunday & art lover\"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"a\", {\n    target: \"_blank\",\n    className: \"text-s margin-top-s text-grey pointer\",\n    href: \"https://twitter.com/EthArtX\"\n  }, \"Larry Saggese\"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"div\", {\n    className: \"text-s\"\n  }, \"NFT podcaster & communications guru\"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"a\", {\n    target: \"_blank\",\n    className: \"text-s margin-top-s text-grey pointer\",\n    href: \"https://3lau.com/\"\n  }, \"Justin Blau (3LAU)\"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"div\", {\n    className: \"text-s\"\n  }, \"Music producer & NFT innovator\"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"a\", {\n    target: \"_blank\",\n    className: \"text-s margin-top-s text-grey pointer\",\n    href: \"https://www.instagram.com/yesladypheonix/\"\n  }, \"Lady PheOnix\"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"div\", {\n    className: \"text-s\"\n  }, \"Co-Founder of Universe Contemporary & leading crypto art evangelist\"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"a\", {\n    target: \"_blank\",\n    className: \"text-s margin-top-s text-grey pointer\",\n    href: \"https://twitter.com/axieking\"\n  }, \"OhhShiny\"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"div\", {\n    className: \"text-s\"\n  }, \"Traditional fine art & NFT collector\"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"a\", {\n    target: \"_blank\",\n    className: \"text-s margin-top-s text-grey pointer\",\n    href: \"https://twitter.com/pablorfraile\"\n  }, \"Pablo\"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"div\", {\n    className: \"text-s\"\n  }, \"Co-Founder of Museum of Crypto Art & NFT collector\"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"a\", {\n    target: \"_blank\",\n    className: \"text-s margin-top-s text-grey pointer\",\n    href: \"https://twitter.com/LordTylerWard\"\n  }, \"Tyler Ward\"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"div\", {\n    className: \"text-s\"\n  }, \"Founder of Barn Bridge & DeFi degen\"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"a\", {\n    target: \"_blank\",\n    className: \"text-s margin-top-s text-grey pointer\",\n    href: \"https://y.at/%E2%AD%90%F0%9F%8E%AC%E2%AD%90\"\n  }, \"Brandon Kang\"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"div\", {\n    className: \"text-s\"\n  }, \"Professional videographer & NFT collector\"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"a\", {\n    target: \"_blank\",\n    className: \"text-s margin-top-s text-grey pointer\",\n    href: \"http://justinmaller.com/\"\n  }, \"Justin Maller\"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"div\", {\n    className: \"text-s\"\n  }, \"Digital Artist & CCO of Deviantart\"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"a\", {\n    target: \"_blank\",\n    className: \"text-s margin-top-s text-grey pointer\",\n    href: \"https://parishilton.com/\"\n  }, \"Paris Hilton\"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"div\", {\n    className: \"text-s\"\n  }, \"Entrepreneur & NFT and social pioneer\"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"a\", {\n    target: \"_blank\",\n    className: \"text-s margin-top-s text-grey pointer\",\n    href: \"https://www.beeple-crap.com/\"\n  }, \"Mike Winkelmann (beeple)\"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"div\", {\n    className: \"text-s\"\n  }, \"Renowned digital art director & professional hair trimmer\"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"div\", {\n    className: \"text-m margin-top\"\n  }, \"Artists\"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"div\", {\n    className: \"text-s margin-top-s text-grey pointer\",\n    href: \"https://nessgraphics.com/\"\n  }, \"NessGraphics\"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"br\", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"a\", {\n    className: \"text-s margin-top-s text-grey pointer\",\n    href: \"https://www.instagram.com/fvckrender\",\n    target: \"_blank\"\n  }, \"FVCKRENDER\"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"br\", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"a\", {\n    className: \"text-s margin-top-s text-grey pointer\",\n    href: \"https://aeforiadesign.com/\",\n    target: \"_blank\"\n  }, \"aeforia\"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"br\", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"a\", {\n    className: \"text-s margin-top-s text-grey pointer\",\n    href: \"https://thankyoux.com/\",\n    target: \"_blank\"\n  }, \"ThankYouX\"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"br\", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"a\", {\n    className: \"text-s margin-top-s text-grey pointer\",\n    href: \"https://maalavidaa.com/\",\n    target: \"_blank\"\n  }, \"Maalavidaa\"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"br\", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"a\", {\n    className: \"text-s margin-top-s text-grey pointer\",\n    href: \"http://www.blakekathryn.com/\",\n    target: \"_blank\"\n  }, \"Blake Kathryn\"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"br\", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"a\", {\n    className: \"text-s margin-top-s text-grey pointer\",\n    href: \"https://slimesunday.com/\",\n    target: \"_blank\"\n  }, \"slimesunday\"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"br\", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"a\", {\n    className: \"text-s margin-top-s text-grey pointer\",\n    href: \"https://www.instagram.com/toomuchlag\",\n    target: \"_blank\"\n  }, \"toomuchlag\"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"br\", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"a\", {\n    className: \"text-s margin-top-s text-grey pointer\",\n    href: \"https://www.victormosquera.com/\",\n    target: \"_blank\"\n  }, \"Victor Mosquera\"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"br\", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"a\", {\n    className: \"text-s margin-top-s text-grey pointer\",\n    href: \"https://smeccea.com/\",\n    target: \"_blank\"\n  }, \"smeccea\"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"br\", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"a\", {\n    className: \"text-s margin-top-s text-grey pointer\",\n    href: \"https://www.billelis.com/\",\n    target: \"_blank\"\n  }, \"Billelis\"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"br\", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"a\", {\n    className: \"text-s margin-top-s text-grey pointer\",\n    href: \"https://www.behance.net/Filiphds\",\n    target: \"_blank\"\n  }, \"Filip Hodas\"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"br\", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"br\", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"div\", {\n    className: \"text-m text-b\"\n  }, \"Partners\"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"div\", {\n    className: \"text-s margin-top\"\n  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"a\", {\n    className: \"text-s text-grey pointer\",\n    href: \"https://www.numomo.com/\",\n    target: \"_blank\"\n  }, \"Numomo Creative Agency\"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"div\", {\n    className: \"text-s\"\n  }, \"World's First Creative NFT Agency\")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"br\", null)));\n}//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly9ncmFudHMtYXJ0Ly4vcGFnZXMvdGVhbS5qcz82MzI5Il0sIm5hbWVzIjpbIkNvbW1pdHRlZSJdLCJtYXBwaW5ncyI6Ijs7Ozs7O0FBQUE7QUFFZSxTQUFTQSxTQUFULEdBQXFCO0FBQ2xDLHNCQUNFO0FBQUssYUFBUyxFQUFDO0FBQWYsa0JBQ0U7QUFBSyxhQUFTLEVBQUM7QUFBZixpQkFERixlQUVFO0FBQUssYUFBUyxFQUFDO0FBQWYsaURBRkYsZUFLRTtBQUFLLGFBQVMsRUFBQztBQUFmLGtCQUNFO0FBQUssYUFBUyxFQUFDO0FBQWYsZ0JBREYsZUFFRTtBQUNFLFVBQU0sRUFBQyxRQURUO0FBRUUsYUFBUyxFQUFDLDBCQUZaO0FBR0UsUUFBSSxFQUFDO0FBSFAsOEJBRkYsZUFTRTtBQUFLLGFBQVMsRUFBQztBQUFmLDBDQVRGLGVBVUU7QUFDRSxVQUFNLEVBQUMsUUFEVDtBQUVFLGFBQVMsRUFBQyx1Q0FGWjtBQUdFLFFBQUksRUFBQztBQUhQLHVCQVZGLGVBaUJFO0FBQUssYUFBUyxFQUFDO0FBQWYsMkRBakJGLGVBb0JFO0FBQ0UsVUFBTSxFQUFDLFFBRFQ7QUFFRSxhQUFTLEVBQUMsdUNBRlo7QUFHRSxRQUFJLEVBQUM7QUFIUCxrQkFwQkYsZUEyQkU7QUFBSyxhQUFTLEVBQUM7QUFBZixvREEzQkYsZUE4QkU7QUFDRSxVQUFNLEVBQUMsUUFEVDtBQUVFLGFBQVMsRUFBQyx1Q0FGWjtBQUdFLFFBQUksRUFBQztBQUhQLHFCQTlCRixlQXFDRTtBQUFLLGFBQVMsRUFBQztBQUFmLDJDQXJDRixlQXNDRTtBQUNFLFVBQU0sRUFBQyxRQURUO0FBRUUsYUFBUyxFQUFDLHVDQUZaO0FBR0UsUUFBSSxFQUFDO0FBSFAsMEJBdENGLGVBNkNFO0FBQUssYUFBUyxFQUFDO0FBQWYsc0NBN0NGLGVBOENFO0FBQ0UsVUFBTSxFQUFDLFFBRFQ7QUFFRSxhQUFTLEVBQUMsdUNBRlo7QUFHRSxRQUFJLEVBQUM7QUFIUCxvQkE5Q0YsZUFxREU7QUFB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RSxVQUFNLEVBQUM7QUFIVCxtQkE1TUYsZUFtTkUsc0VBbk5GLGVBb05FLHNFQXBORixlQXFORTtBQUFLLGFBQVMsRUFBQztBQUFmLGdCQXJORixlQXNORTtBQUFLLGFBQVMsRUFBQztBQUFmLGtCQUNFO0FBQ0UsYUFBUyxFQUFDLDBCQURaO0FBRUUsUUFBSSxFQUFDLHlCQUZQO0FBR0UsVUFBTSxFQUFDO0FBSFQsOEJBREYsZUFRRTtBQUFLLGFBQVMsRUFBQztBQUFmLHlDQVJGLENBdE5GLGVBZ09FLHNFQWhPRixDQUxGLENBREY7QUEwT0QiLCJmaWxlIjoiLi9wYWdlcy90ZWFtLmpzLmpzIiwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IFJlYWN0IGZyb20gXCJyZWFjdFwiO1xuXG5leHBvcnQgZGVmYXVsdCBmdW5jdGlvbiBDb21taXR0ZWUoKSB7XG4gIHJldHVybiAoXG4gICAgPGRpdiBjbGFzc05hbWU9XCJjb250ZW50LWJsb2NrXCI+XG4gICAgICA8ZGl2IGNsYXNzTmFtZT1cInRleHQtbCB0ZXh0LWJcIj5Db21taXR0ZWU8L2Rpdj5cbiAgICAgIDxkaXYgY2xhc3NOYW1lPVwidGV4dC1zIG1hcmdpbi10b3Atc1wiPlxuICAgICAgICBPdXIgc2hhcmVkIGxvdmUgb2YgYXJ0LCBtdXNpYywgYW5kIGRlc2lnblxuICAgICAgPC9kaXY+XG4gICAgICA8ZGl2IGNsYXNzTmFtZT1cInBhZ2UtY29udGFpbmVyIG1hcmdpbi10b3BcIj5cbiAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJ0ZXh0LW1cIj5BZHZpc29yczwvZGl2PlxuICAgICAgICA8YVxuICAgICAgICAgIHRhcmdldD1cIl9ibGFua1wiXG4gICAgICAgICAgY2xhc3NOYW1lPVwidGV4dC1zIHRleHQtZ3JleSBwb2ludGVyXCJcbiAgICAgICAgICBocmVmPVwiaHR0cHM6Ly95LmF0LyVGMCU5RiU5MSU4OSVGMCU5RiU4RSVCMSVGMCU5RiU5NSVCM1wiXG4gICAgICAgID5cbiAgICAgICAgICBUaW0gS2FuZyAoaWxsZXN0cmF0ZXIpXG4gICAgICAgIDwvYT5cbiAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJ0ZXh0LXNcIj5TZXZlbnMgRGV2ZWxvcGVyICYgcGFyYWRpZ20gcHVzaGVyPC9kaXY+XG4gICAgICAgIDxhXG4gICAgICAgICAgdGFyZ2V0PVwiX2JsYW5rXCJcbiAgICAgICAgICBjbGFzc05hbWU9XCJ0ZXh0LXMgbWFyZ2luLXRvcC1zIHRleHQtZ3JleSBwb2ludGVyXCJcbiAgICAgICAgICBocmVmPVwiaHR0cHM6Ly90d2l0dGVyLmNvbS9kYXJsaW5ndG9uXCJcbiAgICAgICAgPlxuICAgICAgICAgIE1pa2UgRGFybGluZ3RvblxuICAgICAgICA8L2E+XG4gICAgICAgIDxkaXYgY2xhc3NOYW1lPVwidGV4dC1zXCI+XG4gICAgICAgICAgQ0VPIG9mIE1vbnN0ZXJjYXQgbXVzaWMgbGFiZWwgJiBjYXB0YWluIE5GVCBncmVtbGluXG4gICAgICAgIDwvZGl2PlxuICAgICAgICA8YVxuICAgICAgICAgIHRhcmdldD1cIl9ibGFua1wiXG4gICAgICAgICAgY2xhc3NOYW1lPVwidGV4dC1zIG1hcmdpbi10b3AtcyB0ZXh0LWdyZXkgcG9pbnRlclwiXG4gICAgICAgICAgaHJlZj1cImh0dHBzOi8vd3d3LnNsaW1lc3VuZGF5LmNvbVwiXG4gICAgICAgID5cbiAgICAgICAgICBEZXZpbiBEdWJlXG4gICAgICAgIDwvYT5cbiAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJ0ZXh0LXNcIj5cbiAgICAgICAgICBEaWdpdGFsIE1hcmtldGluZyBAIFNsaW1lIFN1bmRheSAmIGFydCBsb3ZlclxuICAgICAgICA8L2Rpdj5cbiAgICAgICAgPGFcbiAgICAgICAgICB0YXJnZXQ9XCJfYmxhbmtcIlxuICAgICAgICAgIGNsYXNzTmFtZT1cInRleHQtcyBtYXJnaW4tdG9wLXMgdGV4dC1ncmV5IHBvaW50ZXJcIlxuICAgICAgICAgIGhyZWY9XCJodHRwczovL3R3aXR0ZXIuY29tL0V0aEFydFhcIlxuICAgICAgICA+XG4gICAgICAgICAgTGFycnkgU2FnZ2VzZVxuICAgICAgICA8L2E+XG4gICAgICAgIDxkaXYgY2xhc3NOYW1lPVwidGV4dC1zXCI+TkZUIHBvZGNhc3RlciAmIGNvbW11bmljYXRpb25zIGd1cnU8L2Rpdj5cbiAgICAgICAgPGFcbiAgICAgICAgICB0YXJnZXQ9XCJfYmxhbmtcIlxuICAgICAgICAgIGNsYXNzTmFtZT1cInRleHQtcyBtYXJnaW4tdG9wLXMgdGV4dC1ncmV5IHBvaW50ZXJcIlxuICAgICAgICAgIGhyZWY9XCJodHRwczovLzNsYXUuY29tL1wiXG4gICAgICAgID5cbiAgICAgICAgICBKdXN0aW4gQmxhdSAoM0xBVSlcbiAgICAgICAgPC9hPlxuICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cInRleHQtc1wiPk11c2ljIHByb2R1Y2VyICYgTkZUIGlubm92YXRvcjwvZGl2PlxuICAgICAgICA8YVxuICAgICAgICAgIHRhcmdldD1cIl9ibGFua1wiXG4gICAgICAgICAgY2xhc3NOYW1lPVwidGV4dC1zIG1hcmdpbi10b3AtcyB0ZXh0LWdyZXkgcG9pbnRlclwiXG4gICAgICAgICAgaHJlZj1cImh0dHBzOi8vd3d3Lmluc3RhZ3JhbS5jb20veWVzbGFkeXBoZW9uaXgvXCJcbiAgICAgICAgPlxuICAgICAgICAgIExhZHkgUGhlT25peFxuICAgICAgICA8L2E+XG4gICAgICAgIDxkaXYgY2xhc3NOYW1lPVwidGV4dC1zXCI+XG4gICAgICAgICAgQ28tRm91bmRlciBvZiBVbml2ZXJzZSBDb250ZW1wb3JhcnkgJiBsZWFkaW5nIGNyeXB0byBhcnQgZXZhbmdlbGlzdFxuICAgICAgICA8L2Rpdj5cbiAgICAgICAgPGFcbiAgICAgICAgICB0YXJnZXQ9XCJfYmxhbmtcIlxuICAgICAgICAgIGNsYXNzTmFtZT1cInRleHQtcyBtYXJnaW4tdG9wLXMgdGV4dC1ncmV5IHBvaW50ZXJcIlxuICAgICAgICAgIGhyZWY9XCJodHRwczovL3R3aXR0ZXIuY29tL2F4aWVraW5nXCJcbiAgICAgICAgPlxuICAgICAgICAgIE9oaFNoaW55XG4gICAgICAgIDwvYT5cbiAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJ0ZXh0LXNcIj5UcmFkaXRpb25hbCBmaW5lIGFydCAmIE5GVCBjb2xsZWN0b3I8L2Rpdj5cbiAgICAgICAgPGFcbiAgICAgICAgICB0YXJnZXQ9XCJfYmxhbmtcIlxuICAgICAgICAgIGNsYXNzTmFtZT1cInRleHQtcyBtYXJnaW4tdG9wLXMgdGV4dC1ncmV5IHBvaW50ZXJcIlxuICAgICAgICAgIGhyZWY9XCJodHRwczovL3R3aXR0ZXIuY29tL3BhYmxvcmZyYWlsZVwiXG4gICAgICAgID5cbiAgICAgICAgICBQYWJsb1xuICAgICAgICA8L2E+XG4gICAgICAgIDxkaXYgY2xhc3NOYW1lPVwidGV4dC1zXCI+XG4gICAgICAgICAgQ28tRm91bmRlciBvZiBNdXNldW0gb2YgQ3J5cHRvIEFydCAmIE5GVCBjb2xsZWN0b3JcbiAgICAgICAgPC9kaXY+XG4gICAgICAgIDxhXG4gICAgICAgICAgdGFyZ2V0PVwiX2JsYW5rXCJcbiAgICAgICAgICBjbGFzc05hbWU9XCJ0ZXh0LXMgbWFyZ2luLXRvcC1zIHRleHQtZ3JleSBwb2ludGVyXCJcbiAgICAgICAgICBocmVmPVwiaHR0cHM6Ly90d2l0dGVyLmNvbS9Mb3JkVHlsZXJXYXJkXCJcbiAgICAgICAgPlxuICAgICAgICAgIFR5bGVyIFdhcmRcbiAgICAgICAgPC9hPlxuICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cInRleHQtc1wiPkZvdW5kZXIgb2YgQmFybiBCcmlkZ2UgJiBEZUZpIGRlZ2VuPC9kaXY+XG4gICAgICAgIDxhXG4gICAgICAgICAgdGFyZ2V0PVwiX2JsYW5rXCJcbiAgICAgICAgICBjbGFzc05hbWU9XCJ0ZXh0LXMgbWFyZ2luLXRvcC1zIHRleHQtZ3JleSBwb2ludGVyXCJcbiAgICAgICAgICBocmVmPVwiaHR0cHM6Ly95LmF0LyVFMiVBRCU5MCVGMCU5RiU4RSVBQyVFMiVBRCU5MFwiXG4gICAgICAgID5cbiAgICAgICAgICBCcmFuZG9uIEthbmdcbiAgICAgICAgPC9hPlxuICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cInRleHQtc1wiPlByb2Zlc3Npb25hbCB2aWRlb2dyYXBoZXIgJiBORlQgY29sbGVjdG9yPC9kaXY+XG4gICAgICAgIDxhXG4gICAgICAgICAgdGFyZ2V0PVwiX2JsYW5rXCJcbiAgICAgICAgICBjbGFzc05hbWU9XCJ0ZXh0LXMgbWFyZ2luLXRvcC1zIHRleHQtZ3JleSBwb2ludGVyXCJcbiAgICAgICAgICBocmVmPVwiaHR0cDovL2p1c3Rpbm1hbGxlci5jb20vXCJcbiAgICAgICAgPlxuICAgICAgICAgIEp1c3RpbiBNYWxsZXJcbiAgICAgICAgPC9hPlxuICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cInRleHQtc1wiPkRpZ2l0YWwgQXJ0aXN0ICYgQ0NPIG9mIERldmlhbnRhcnQ8L2Rpdj5cbiAgICAgICAgPGFcbiAgICAgICAgICB0YXJnZXQ9XCJfYmxhbmtcIlxuICAgICAgICAgIGNsYXNzTmFtZT1cInRleHQtcyBtYXJnaW4tdG9wLXMgdGV4dC1ncmV5IHBvaW50ZXJcIlxuICAgICAgICAgIGhyZWY9XCJodHRwczovL3BhcmlzaGlsdG9uLmNvbS9cIlxuICAgICAgICA+XG4gICAgICAgICAgUGFyaXMgSGlsdG9uXG4gICAgICAgIDwvYT5cbiAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJ0ZXh0LXNcIj5FbnRyZXByZW5ldXIgJiBORlQgYW5kIHNvY2lhbCBwaW9uZWVyPC9kaXY+XG4gICAgICAgIDxhXG4gICAgICAgICAgdGFyZ2V0PVwiX2JsYW5rXCJcbiAgICAgICAgICBjbGFzc05hbWU9XCJ0ZXh0LXMgbWFyZ2luLXRvcC1zIHRleHQtZ3JleSBwb2ludGVyXCJcbiAgICAgICAgICBocmVmPVwiaHR0cHM6Ly93d3cuYmVlcGxlLWNyYXAuY29tL1wiXG4gICAgICAgID5cbiAgICAgICAgICBNaWtlIFdpbmtlbG1hbm4gKGJlZXBsZSlcbiAgICAgICAgPC9hPlxuICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cInRleHQtc1wiPlxuICAgICAgICAgIFJlbm93bmVkIGRpZ2l0YWwgYXJ0IGRpcmVjdG9yICYgcHJvZmVzc2lvbmFsIGhhaXIgdHJpbW1lclxuICAgICAgICA8L2Rpdj5cbiAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJ0ZXh0LW0gbWFyZ2luLXRvcFwiPkFydGlzdHM8L2Rpdj5cbiAgICAgICAgPGRpdlxuICAgICAgICAgIGNsYXNzTmFtZT1cInRleHQtcyBtYXJnaW4tdG9wLXMgdGV4dC1ncmV5IHBvaW50ZXJcIlxuICAgICAgICAgIGhyZWY9XCJodHRwczovL25lc3NncmFwaGljcy5jb20vXCJcbiAgICAgICAgPlxuICAgICAgICAgIE5lc3NHcmFwaGljc1xuICAgICAgICA8L2Rpdj5cbiAgICAgICAgPGJyIC8+XG4gICAgICAgIDxhXG4gICAgICAgICAgY2xhc3NOYW1lPVwidGV4dC1zIG1hcmdpbi10b3AtcyB0ZXh0LWdyZXkgcG9pbnRlclwiXG4gICAgICAgICAgaHJlZj1cImh0dHBzOi8vd3d3Lmluc3RhZ3JhbS5jb20vZnZja3JlbmRlclwiXG4gICAgICAgICAgdGFyZ2V0PVwiX2JsYW5rXCJcbiAgICAgICAgPlxuICAgICAgICAgIEZWQ0tSRU5ERVJcbiAgICAgICAgPC9hPlxuICAgICAgICA8YnIgLz5cbiAgICAgICAgPGFcbiAgICAgICAgICBjbGFzc05hbWU9XCJ0ZXh0LXMgbWFyZ2luLXRvcC1zIHRleHQtZ3JleSBwb2ludGVyXCJcbiAgICAgICAgICBocmVmPVwiaHR0cHM6Ly9hZWZvcmlhZGVzaWduLmNvbS9cIlxuICAgICAgICAgIHRhcmdldD1cIl9ibGFua1wiXG4gICAgICAgID5cbiAgICAgICAgICBhZWZvcmlhXG4gICAgICAgIDwvYT5cbiAgICAgICAgPGJyIC8+XG4gICAgICAgIDxhXG4gICAgICAgICAgY2xhc3NOYW1lPVwidGV4dC1zIG1hcmdpbi10b3AtcyB0ZXh0LWdyZXkgcG9pbnRlclwiXG4gICAgICAgICAgaHJlZj1cImh0dHBzOi8vdGhhbmt5b3V4LmNvbS9cIlxuICAgICAgICAgIHRhcmdldD1cIl9ibGFua1wiXG4gICAgICAgID5cbiAgICAgICAgICBUaGFua1lvdVhcbiAgICAgICAgPC9hPlxuICAgICAgICA8YnIgLz5cbiAgICAgICAgPGFcbiAgICAgICAgICBjbGFzc05hbWU9XCJ0ZXh0LXMgbWFyZ2luLXRvcC1zIHRleHQtZ3JleSBwb2ludGVyXCJcbiAgICAgICAgICBocmVmPVwiaHR0cHM6Ly9tYWFsYXZpZGFhLmNvbS9cIlxuICAgICAgICAgIHRhcmdldD1cIl9ibGFua1wiXG4gICAgICAgID5cbiAgICAgICAgICBNYWFsYXZpZGFhXG4gICAgICAgIDwvYT5cbiAgICAgICAgPGJyIC8+XG4gICAgICAgIDxhXG4gICAgICAgICAgY2xhc3NOYW1lPVwidGV4dC1zIG1hcmdpbi10b3AtcyB0ZXh0LWdyZXkgcG9pbnRlclwiXG4gICAgICAgICAgaHJlZj1cImh0dHA6Ly93d3cuYmxha2VrYXRocnluLmNvbS9cIlxuICAgICAgICAgIHRhcmdldD1cIl9ibGFua1wiXG4gICAgICAgID5cbiAgICAgICAgICBCbGFrZSBLYXRocnluXG4gICAgICAgIDwvYT5cbiAgICAgICAgPGJyIC8+XG4gICAgICAgIDxhXG4gICAgICAgICAgY2xhc3NOYW1lPVwidGV4dC1zIG1hcmdpbi10b3AtcyB0ZXh0LWdyZXkgcG9pbnRlclwiXG4gICAgICAgICAgaHJlZj1cImh0dHBzOi8vc2xpbWVzdW5kYXkuY29tL1wiXG4gICAgICAgICAgdGFyZ2V0PVwiX2JsYW5rXCJcbiAgICAgICAgPlxuICAgICAgICAgIHNsaW1lc3VuZGF5XG4gICAgICAgIDwvYT5cbiAgICAgICAgPGJyIC8+XG4gICAgICAgIDxhXG4gICAgICAgICAgY2xhc3NOYW1lPVwidGV4dC1zIG1hcmdpbi10b3AtcyB0ZXh0LWdyZXkgcG9pbnRlclwiXG4gICAgICAgICAgaHJlZj1cImh0dHBzOi8vd3d3Lmluc3RhZ3JhbS5jb20vdG9vbXVjaGxhZ1wiXG4gICAgICAgICAgdGFyZ2V0PVwiX2JsYW5rXCJcbiAgICAgICAgPlxuICAgICAgICAgIHRvb211Y2hsYWdcbiAgICAgICAgPC9hPlxuICAgICAgICA8YnIgLz5cbiAgICAgICAgPGFcbiAgICAgICAgICBjbGFzc05hbWU9XCJ0ZXh0LXMgbWFyZ2luLXRvcC1zIHRleHQtZ3JleSBwb2ludGVyXCJcbiAgICAgICAgICBocmVmPVwiaHR0cHM6Ly93d3cudmljdG9ybW9zcXVlcmEuY29tL1wiXG4gICAgICAgICAgdGFyZ2V0PVwiX2JsYW5rXCJcbiAgICAgICAgPlxuICAgICAgICAgIFZpY3RvciBNb3NxdWVyYVxuICAgICAgICA8L2E+XG4gICAgICAgIDxiciAvPlxuICAgICAgICA8YVxuICAgICAgICAgIGNsYXNzTmFtZT1cInRleHQtcyBtYXJnaW4tdG9wLXMgdGV4dC1ncmV5IHBvaW50ZXJcIlxuICAgICAgICAgIGhyZWY9XCJodHRwczovL3NtZWNjZWEuY29tL1wiXG4gICAgICAgICAgdGFyZ2V0PVwiX2JsYW5rXCJcbiAgICAgICAgPlxuICAgICAgICAgIHNtZWNjZWFcbiAgICAgICAgPC9hPlxuICAgICAgICA8YnIgLz5cbiAgICAgICAgPGFcbiAgICAgICAgICBjbGFzc05hbWU9XCJ0ZXh0LXMgbWFyZ2luLXRvcC1zIHRleHQtZ3JleSBwb2ludGVyXCJcbiAgICAgICAgICBocmVmPVwiaHR0cHM6Ly93d3cuYmlsbGVsaXMuY29tL1wiXG4gICAgICAgICAgdGFyZ2V0PVwiX2JsYW5rXCJcbiAgICAgICAgPlxuICAgICAgICAgIEJpbGxlbGlzXG4gICAgICAgIDwvYT5cbiAgICAgICAgPGJyIC8+XG4gICAgICAgIDxhXG4gICAgICAgICAgY2xhc3NOYW1lPVwidGV4dC1zIG1hcmdpbi10b3AtcyB0ZXh0LWdyZXkgcG9pbnRlclwiXG4gICAgICAgICAgaHJlZj1cImh0dHBzOi8vd3d3LmJlaGFuY2UubmV0L0ZpbGlwaGRzXCJcbiAgICAgICAgICB0YXJnZXQ9XCJfYmxhbmtcIlxuICAgICAgICA+XG4gICAgICAgICAgRmlsaXAgSG9kYXNcbiAgICAgICAgPC9hPlxuICAgICAgICA8YnIgLz5cbiAgICAgICAgPGJyIC8+XG4gICAgICAgIDxkaXYgY2xhc3NOYW1lPVwidGV4dC1tIHRleHQtYlwiPlBhcnRuZXJzPC9kaXY+XG4gICAgICAgIDxkaXYgY2xhc3NOYW1lPVwidGV4dC1zIG1hcmdpbi10b3BcIj5cbiAgICAgICAgICA8YVxuICAgICAgICAgICAgY2xhc3NOYW1lPVwidGV4dC1zIHRleHQtZ3JleSBwb2ludGVyXCJcbiAgICAgICAgICAgIGhyZWY9XCJodHRwczovL3d3dy5udW1vbW8uY29tL1wiXG4gICAgICAgICAgICB0YXJnZXQ9XCJfYmxhbmtcIlxuICAgICAgICAgID5cbiAgICAgICAgICAgIE51bW9tbyBDcmVhdGl2ZSBBZ2VuY3lcbiAgICAgICAgICA8L2E+XG4gICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJ0ZXh0LXNcIj5Xb3JsZCdzIEZpcnN0IENyZWF0aXZlIE5GVCBBZ2VuY3k8L2Rpdj5cbiAgICAgICAgPC9kaXY+XG4gICAgICAgIDxiciAvPlxuICAgICAgPC9kaXY+XG4gICAgPC9kaXY+XG4gICk7XG59XG4iXSwic291cmNlUm9vdCI6IiJ9\n//# sourceURL=webpack-internal:///./pages/team.js\n");
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": function() { return /* binding */ TeamPage; }
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(9297);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+
+function TeamPage() {
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "content-block"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "text-l text-b"
+  }, "Committee"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "text-s margin-top-s"
+  }, "Our shared love of art, music, and design"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "page-container margin-top"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "text-m"
+  }, "Advisors"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("a", {
+    target: "_blank",
+    className: "text-s text-grey pointer",
+    href: "https://y.at/%F0%9F%91%89%F0%9F%8E%B1%F0%9F%95%B3"
+  }, "Tim Kang (illestrater)"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "text-s"
+  }, "Sevens Developer & paradigm pusher"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("a", {
+    target: "_blank",
+    className: "text-s margin-top-s text-grey pointer",
+    href: "https://twitter.com/darlington"
+  }, "Mike Darlington"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "text-s"
+  }, "CEO of Monstercat music label & captain NFT gremlin"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("a", {
+    target: "_blank",
+    className: "text-s margin-top-s text-grey pointer",
+    href: "https://www.slimesunday.com"
+  }, "Devin Dube"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "text-s"
+  }, "Digital Marketing @ Slime Sunday & art lover"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("a", {
+    target: "_blank",
+    className: "text-s margin-top-s text-grey pointer",
+    href: "https://twitter.com/EthArtX"
+  }, "Larry Saggese"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "text-s"
+  }, "NFT podcaster & communications guru"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("a", {
+    target: "_blank",
+    className: "text-s margin-top-s text-grey pointer",
+    href: "https://3lau.com/"
+  }, "Justin Blau (3LAU)"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "text-s"
+  }, "Music producer & NFT innovator"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("a", {
+    target: "_blank",
+    className: "text-s margin-top-s text-grey pointer",
+    href: "https://www.instagram.com/yesladypheonix/"
+  }, "Lady PheOnix"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "text-s"
+  }, "Co-Founder of Universe Contemporary & leading crypto art evangelist"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("a", {
+    target: "_blank",
+    className: "text-s margin-top-s text-grey pointer",
+    href: "https://twitter.com/axieking"
+  }, "OhhShiny"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "text-s"
+  }, "Traditional fine art & NFT collector"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("a", {
+    target: "_blank",
+    className: "text-s margin-top-s text-grey pointer",
+    href: "https://twitter.com/pablorfraile"
+  }, "Pablo"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "text-s"
+  }, "Co-Founder of Museum of Crypto Art & NFT collector"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("a", {
+    target: "_blank",
+    className: "text-s margin-top-s text-grey pointer",
+    href: "https://twitter.com/LordTylerWard"
+  }, "Tyler Ward"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "text-s"
+  }, "Founder of Barn Bridge & DeFi degen"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("a", {
+    target: "_blank",
+    className: "text-s margin-top-s text-grey pointer",
+    href: "https://y.at/%E2%AD%90%F0%9F%8E%AC%E2%AD%90"
+  }, "Brandon Kang"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "text-s"
+  }, "Professional videographer & NFT collector"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("a", {
+    target: "_blank",
+    className: "text-s margin-top-s text-grey pointer",
+    href: "http://justinmaller.com/"
+  }, "Justin Maller"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "text-s"
+  }, "Digital Artist & CCO of Deviantart"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("a", {
+    target: "_blank",
+    className: "text-s margin-top-s text-grey pointer",
+    href: "https://parishilton.com/"
+  }, "Paris Hilton"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "text-s"
+  }, "Entrepreneur & NFT and social pioneer"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("a", {
+    target: "_blank",
+    className: "text-s margin-top-s text-grey pointer",
+    href: "https://www.beeple-crap.com/"
+  }, "Mike Winkelmann (beeple)"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "text-s"
+  }, "Renowned digital art director & professional hair trimmer"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "text-m margin-top"
+  }, "Artists"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "text-s margin-top-s text-grey pointer",
+    href: "https://nessgraphics.com/"
+  }, "NessGraphics"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("a", {
+    className: "text-s margin-top-s text-grey pointer",
+    href: "https://www.instagram.com/fvckrender",
+    target: "_blank"
+  }, "FVCKRENDER"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("a", {
+    className: "text-s margin-top-s text-grey pointer",
+    href: "https://aeforiadesign.com/",
+    target: "_blank"
+  }, "aeforia"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("a", {
+    className: "text-s margin-top-s text-grey pointer",
+    href: "https://thankyoux.com/",
+    target: "_blank"
+  }, "ThankYouX"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("a", {
+    className: "text-s margin-top-s text-grey pointer",
+    href: "https://maalavidaa.com/",
+    target: "_blank"
+  }, "Maalavidaa"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("a", {
+    className: "text-s margin-top-s text-grey pointer",
+    href: "http://www.blakekathryn.com/",
+    target: "_blank"
+  }, "Blake Kathryn"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("a", {
+    className: "text-s margin-top-s text-grey pointer",
+    href: "https://slimesunday.com/",
+    target: "_blank"
+  }, "slimesunday"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("a", {
+    className: "text-s margin-top-s text-grey pointer",
+    href: "https://www.instagram.com/toomuchlag",
+    target: "_blank"
+  }, "toomuchlag"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("a", {
+    className: "text-s margin-top-s text-grey pointer",
+    href: "https://www.victormosquera.com/",
+    target: "_blank"
+  }, "Victor Mosquera"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("a", {
+    className: "text-s margin-top-s text-grey pointer",
+    href: "https://smeccea.com/",
+    target: "_blank"
+  }, "smeccea"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("a", {
+    className: "text-s margin-top-s text-grey pointer",
+    href: "https://www.billelis.com/",
+    target: "_blank"
+  }, "Billelis"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("a", {
+    className: "text-s margin-top-s text-grey pointer",
+    href: "https://www.behance.net/Filiphds",
+    target: "_blank"
+  }, "Filip Hodas"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "text-m text-b"
+  }, "Partners"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "text-s margin-top"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("a", {
+    className: "text-s text-grey pointer",
+    href: "https://www.numomo.com/",
+    target: "_blank"
+  }, "Numomo Creative Agency"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "text-s"
+  }, "World's First Creative NFT Agency")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("br", null)));
+}
 
 /***/ }),
 
-/***/ "react":
-/*!************************!*\
-  !*** external "react" ***!
-  \************************/
+/***/ 9297:
 /***/ (function(module) {
 
 "use strict";
@@ -41,7 +183,7 @@ module.exports = require("react");;
 var __webpack_require__ = require("../webpack-runtime.js");
 __webpack_require__.C(exports);
 var __webpack_exec__ = function(moduleId) { return __webpack_require__(__webpack_require__.s = moduleId); }
-var __webpack_exports__ = (__webpack_exec__("./pages/team.js"));
+var __webpack_exports__ = (__webpack_exec__(2582));
 module.exports = __webpack_exports__;
 
 })();

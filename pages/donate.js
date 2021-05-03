@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function Committee() {
+export default function DonatePage() {
   return (
     <div className="content-block">
       <div className="text-l text-b">Donors</div>

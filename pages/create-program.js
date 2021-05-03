@@ -9,12 +9,11 @@ export async function getStaticProps() {
     headers: {
       "Accept": "application/json",
       "Content-Type": "application/json",
-      "Authorization": auth.token,
+      "Authorization": auth?.token,
     },
   });
 
   const orgs = await res.json();
-
   return { props: { orgs } };
 }
 
@@ -48,7 +47,8 @@ export default function Application(props) {
         !data.criteria)
     )
       setErr("Please complete all required fields");
-    else if (!auth || !auth.username) setErr("You must be logged in to submit");
+    else if (!auth || !auth?.bodyusername)
+      setErr("You must be logged in to submit");
     else {
       setErr(false);
       setSubmitting(true);
@@ -58,7 +58,7 @@ export default function Application(props) {
         headers: {
           "Accept": "application/json",
           "Content-Type": "application/json",
-          "Authorization": auth.token,
+          "Authorization": auth?.token,
         },
       })
         .then((res) => res.json())
@@ -76,7 +76,7 @@ export default function Application(props) {
           charitable, or humanitarian cause. Providing grants, at the minimum,
           must cover all costs for minting recipients' NFTs.
         </div>
-        {(!auth || !auth.username) && (
+        {(!auth || !auth?.username) && (
           <Link to="/login" className="margin-top text-mid text-grey">
             You must have an account to submit a program
           </Link>

@@ -1,6 +1,5 @@
 import React from "react";
-import { usePromise } from "promise-hook";
-import { apiUrl } from "../src/client/baseUrl";
+import { apiUrl } from "../../src/client/baseUrl";
 
 export async function getServerSideProps(context) {
   const { id } = context.query;
