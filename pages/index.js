@@ -5,7 +5,7 @@ import moment from "moment";
 import Link from "next/link";
 
 export async function getStaticProps() {
-  const res = await fetch(`${apiUrl()}/programs/getPrograms`, {
+  const res = await fetch(`${apiUrl()}/program/getPrograms`, {
     method: "GET",
     headers: { "Content-Type": "application/json" },
   });
@@ -50,7 +50,11 @@ function HomePage(props) {
           {programs?.map((item, index) => {
             if (item.exhibiting) {
               return (
-                <a href={`/${item.url}`} className="flex" key={index}>
+                <a
+                  href={`/exhibition/${item.url}`}
+                  className="flex"
+                  key={index}
+                >
                   <div className="home-button flex-full">
                     <div className="flex">
                       <a href={`/curator/${item.organizers[0].url}`}>

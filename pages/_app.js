@@ -1,5 +1,6 @@
 import React from "react";
 import "../src/client/styles.scss";
+import "../src/client/tailwind.css";
 import Header from "../src/client/Components/Header";
 import Footer from "../src/client/Components/Footer";
 import { StoreComponent, store } from "../src/client/redux";

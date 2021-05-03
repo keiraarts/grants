@@ -4,6 +4,9 @@ module.exports = withOffline({
   future: {
     webpack5: true,
   },
+  images: {
+    domains: ["cdn.grants.art", "*.grants.art"],
+  },
   workboxOpts: {
     swDest: process.env.NEXT_EXPORT
       ? "service-worker.js"

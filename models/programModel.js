@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 require("./organizerModel");
+require("./userModel");
 
 const program = {
   organizers: [
