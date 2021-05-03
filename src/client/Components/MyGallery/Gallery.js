@@ -56,7 +56,7 @@ const addNFT = ({ data, index, width }) => {
         <img src={ data.image } className='block-art-image' />
       }
       </div>
-      <div className='flex'>
+      <div className='flex margin-top-xs'>
         <div className='small-button flex-full' onClick={ () => data.addToGallery(data) }>
           Add to Gallery
         </div>

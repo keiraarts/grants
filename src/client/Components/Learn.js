@@ -72,10 +72,10 @@ export default function Committee() {
           are the same as OpenSea's - but everything works in-house. We do not present historical sales data on Sevens because we believe that immediately presenting a valuation creates bias
           towards the art piece, but you may certainly find that info on OpenSea. We also operate as decentralized as possible, so you must use an Ethereum wallet to create transactions.` } />
         <Block title='Do artists receive royalties?' text={ `We have 10% secondary sale royalties built within our contracts, but it currently will only be paid out if an artwork is resold on Rarible.
-          As we are reliant on using OpenSea auction and listing mechanics, royalties unfortunately will not be paid out until they implement our contract's royalty standard
-          and they have expressed their intent to do so in the future.` } />
+          As we are reliant on using OpenSea auction and listing mechanics, royalties unfortunately will not be paid out until OpenSea implements our contract's royalty standard
+          in which they have expressed their intent to do so in the future.` } />
         <Block title='Do you take profits?' text={ `We take 0% on all sales. We are fortunate and grateful to be able to operate pro-bono and have gracious donors to help fund our programs.
-          But, there is an automated 2.5% fee that OpenSea takes for using their integrations on any exchanges that happens in-house.` } />
+          But, there is an automated 2.5% fee that OpenSea takes for using their integrations on any sales that happens in-house.` } />
         <div className='margin-top-l text-l text-b'>
           <strong>Technical FAQ</strong>
         </div>

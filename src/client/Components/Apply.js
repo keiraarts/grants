@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useParams } from "react-router-dom";
 import { useStoreState } from 'easy-peasy';
 import { apiUrl } from '../baseUrl';
@@ -7,6 +7,10 @@ import moment from 'moment';
 import ReactAutolinker from 'react-autolinker';
 import ReactModal from 'react-modal';
 import DatePicker from 'react-mobile-datepicker';
+import FullScreen from '../assets/fullscreen.png';
+import MinScreen from '../assets/minscreen.png';
+import Muted from '../assets/muted.png';
+import Unmuted from '../assets/unmuted.png';
 
 import Resizer from './Tools/Resizer.js';
 
@@ -63,6 +67,72 @@ export default function Application() {
   const { program } = useParams();
   const auth = useStoreState(state => state.user.auth);
   const small = useStoreState(state => state.app.small);
+
+  const [loaded, setLoaded] = useState(false);
+  const video = useRef();
+
+  const [isFullScreen, setFullScreen] = useState(false);
+  function fullScreen() {
+    if (video.current) {
+      video.current.muted = false;
+      if (video.current.requestFullScreen) {
+        video.current.requestFullScreen();
+      } else if (video.current.webkitRequestFullScreen) {
+        video.current.webkitRequestFullScreen();
+      } else if (video.current.mozRequestFullScreen) {
+        video.current.mozRequestFullScreen();
+      } else if (video.current.msRequestFullscreen) {
+        video.current.msRequestFullscreen();
+      } else if (video.current.webkitEnterFullscreen) {
+        video.current.webkitEnterFullscreen(); //for iphone this code worked
+      }
+
+      setMuted(false);
+    } else {
+      if (document.documentElement.requestFullScreen) {
+        if (isFullScreen) document.exitFullscreen();
+        else document.documentElement.requestFullScreen();
+      } else if (document.documentElement.webkitRequestFullScreen) {
+        if (isFullScreen) document.webkitExitFullscreen();
+        else document.documentElement.webkitRequestFullScreen();
+      } else if (document.documentElement.mozRequestFullScreen) {
+        if (isFullScreen) document.mozExitFullscreen();
+        else document.documentElement.mozRequestFullScreen();
+      } else if (document.documentElement.msRequestFullscreen) {
+        if (isFullScreen) document.msExitFullscreen();
+        else document.documentElement.msRequestFullscreen();
+      } else if (document.documentElement.webkitEnterFullscreen) {
+        if (isFullScreen) document.webkitExitFullscreen();
+        else document.documentElement.webkitEnterFullscreen()
+      }
+
+      setFullScreen(!isFullScreen);
+    }
+  }
+
+  useEffect(() => {
+    document.addEventListener('webkitfullscreenchange', (event) => {
+      if (!document.webkitIsFullScreen) {
+        setFullScreen(false);
+        if (video.current) {
+          setTimeout(() => {
+            video.current.play();
+          });
+        }
+      } else setFullScreen(true);
+    });
+
+    return () => {
+      document.removeEventListener('fullscreenchange', () => {});
+    }
+  }, [])
+
+  const [muted, setMuted] = useState(true);
+  function toggleAudio() {
+    video.current.muted = !video.current.muted;
+    if (video.current.muted) setMuted(true)
+    else setMuted(false);
+  }
 
   const [user, setUser] = useState(null);
   const [programInfo, setProgram] = useState(null);
@@ -187,7 +257,6 @@ export default function Application() {
           'Content-Type': 'application/json',
           'Authorization': auth.token
         },
-  
       })
         .then(res => res.json())
         .then(json => {
@@ -202,6 +271,8 @@ export default function Application() {
   if (programInfo) isAdmin = (auth && programInfo.organizers[0].admins.findIndex(admin => admin === auth.id) >= 0)
   let applied;
   if (user && user.applications && programInfo) applied = user.applications.find(e => e.program === programInfo.id);
+
+  console.log('wff', video);
 
   return (
     <div className='content-block'>
@@ -432,13 +503,28 @@ export default function Application() {
                     <div className='frame gallery-art-container'>
                       <div className='frame-shadow'>
                         { (data.ext === 'mp4' || data.ext === 'mov') ?
-                          <video muted loop autoPlay webkit-playsinline='true' playsInline className='gallery-art' key={ data.key }>
+                          <video muted loop autoPlay webkit-playsinline='true' playsInline className='gallery-art' key={ data.key } onLoad={ () => setLoaded(true) } ref={ video }>
                             <source src={ data.art } />
                             Sorry, your browser doesn't support embedded videos.
                           </video>
                           :
                           <img className='gallery-art' src={ data.art } />
                         }
+                      </div>
+                    </div>
+                    <div className='flex margin-top-s'>
+                      <div className='flex-full' />
+                      { (data.ext === 'mp4' || data.ext === 'mov') &&
+                        <div onClick={ () => toggleAudio() } className='pointer'>
+                          { muted ?
+                            <img src={ Muted } className='frame-control' />
+                            :
+                            <img src={ Unmuted } className='frame-control' />
+                          }
+                        </div>
+                      }
+                      <div onClick={ () => fullScreen() } className='pointer'>
+                        <img src={ FullScreen } className='margin-left-s frame-control' />
                       </div>
                     </div>
                   </div>
@@ -526,13 +612,28 @@ export default function Application() {
                   <div className='frame gallery-art-container'>
                     <div className='frame-shadow'>
                       { (applied.art.split('.')[1] === 'mp4' || applied.art.split('.')[1] === 'mov') ?
-                        <video muted loop autoPlay webkit-playsinline='true' playsInline className='gallery-art'>
+                        <video muted loop autoPlay webkit-playsinline='true' playsInline className='gallery-art' onLoad={ () => setLoaded(true) } ref={ video }>
                           <source src={ `https://cdn.grants.art/${ applied.art }` } />
                           Sorry, your browser doesn't support embedded videos.
                         </video>
                         :
                         <img className='gallery-art' src={ `https://cdn.grants.art/${ applied.art }` } />
                       }
+                    </div>
+                  </div>
+                  <div className='flex margin-top-s'>
+                    <div className='flex-full' />
+                    { (applied.art.split('.')[1] === 'mp4' || applied.art.split('.')[1] === 'mov') &&
+                      <div onClick={ () => toggleAudio() } className='pointer'>
+                        { muted ?
+                          <img src={ Muted } className='frame-control' />
+                          :
+                          <img src={ Unmuted } className='frame-control' />
+                        }
+                      </div>
+                    }
+                    <div onClick={ () => fullScreen() } className='pointer'>
+                      <img src={ FullScreen } className='margin-left-s frame-control' />
                     </div>
                   </div>
                 </div>
