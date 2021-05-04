@@ -6,8 +6,6 @@ const ExhibitionNFT = ({ small, nft, src, metadata, hidden, contract }) => {
   const [loaded, setLoaded] = useState(true);
   const video = useRef();
 
-  console.log({ nft, metadata });
-
   const [isFullScreen, setFullScreen] = useState(false);
   function fullScreen() {
     if (video.current) {
