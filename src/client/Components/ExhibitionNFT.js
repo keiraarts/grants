@@ -187,7 +187,7 @@ const ExhibitionNFT = ({ small, nft, src, metadata, hidden, contract }) => {
             }`}
           >
             <div className="w-full frame gallery-art-container">
-              <div className="w-full min-h-screen-60 frame-shadow">
+              <div className="w-full min-h-screen-50 frame-shadow">
                 {(nft.imageType === "mp4" || nft.imageType === "mov") && (
                   <video
                     muted
@@ -195,14 +195,13 @@ const ExhibitionNFT = ({ small, nft, src, metadata, hidden, contract }) => {
                     autoPlay
                     webkit-playsinline="true"
                     playsInline
-                    key={`${src}-1`}
                     className={`gallery-art`}
-                    onCanPlay={() => setLoaded(true)}
-                    onCanPlayThrough={() => setLoaded(true)}
                     ref={video}
                   >
-                    <source src={src} type={`video/${nft.imageType}`} />
-                    Sorry, your browser doesn't support embedded videos.
+                    <source
+                      src={`https://cdn.grants.art/${nft.art}`}
+                      type={`video/${nft.imageType}`}
+                    />
                   </video>
                 )}
 
