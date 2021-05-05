@@ -23,32 +23,24 @@ export default function Header() {
         </a>
         <br />
       </div>
-      <div className="flex social-icons margin-top center">
+      <div className="flex flex-row space-x-4 margin-top center">
         <a href="https://twitter.com/sevensgrant">
-          <img
-            src="/assets/twitter.png"
-            className="social-icon"
-            alt="Twitter"
-          />
+          <img src="/assets/twitter.png" className="w-8 h-8" alt="Twitter" />
         </a>
 
         <a href="https://instagram.com/sevensgrant">
           <img
             src="/assets/instagram.png"
-            className="social-icon"
+            className="w-8 h-8"
             alt="Instagram"
           />
         </a>
         <a href="https://discord.gg/YB4HDKwxyc">
-          <img
-            src="/assets/discord.png"
-            className="social-icon"
-            alt="Instagram"
-          />
+          <img src="/assets/discord.png" className="w-8 h-8" alt="Instagram" />
         </a>
 
         <a href="mailto:tim@grants.art">
-          <img src="/assets/email.png" className="social-icon" alt="Email" />
+          <img src="/assets/email.png" className="w-8 h-8" alt="Email" />
         </a>
       </div>
     </div>

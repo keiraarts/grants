@@ -109,93 +109,15 @@ const ExhibitionNFT = ({
     >
       {nft ? (
         <div className="gallery-container full-width">
-          {!isFullScreen && !small && (
-            <div className={`gallery-description`}>
-              <div className="text-s">
-                <div className="gallery-plate metal linear">
-                  <div className="text-s">
-                    <strong>{nft.user.artistName}</strong>
-                    <br />
-                    {nft.user.country}{" "}
-                    {nft.user.birthYear && `(b. ${nft.user.birthYear})`}
-                  </div>
-                  <div className="margin-top-s text-s text-b">
-                    <strong>
-                      <i>{nft.title || "Untitled"}</i>
-                    </strong>
-                    , 2021
-                    <br />
-                    {nft.canvas ? (
-                      <div className="text-xs">{nft.canvas}</div>
-                    ) : (
-                      <div>{nft.imageType.toUpperCase()} as NFT</div>
-                    )}
-                  </div>
-                  <div className="text-xs margin-top-s">
-                    {nft.description.trim()}
-                  </div>
-                </div>
-              </div>
-              <div className="flex margin-top-s center">
-                {website && (
-                  <div>
-                    <img
-                      src={"/assets/website.png"}
-                      className="account-social-web pointer"
-                      alt="Website"
-                      onClick={() => openLink(website)}
-                    />
-                  </div>
-                )}
-                {twitter && (
-                  <div>
-                    <img
-                      src="/assets/twitter.png"
-                      className="account-social pointer"
-                      alt="Twitter"
-                      onClick={() =>
-                        openLink(
-                          twitter.substring(0, 4) === "http" ||
-                            twitter.substring(0, 3) === "www"
-                            ? twitter
-                            : `https://twitter.com/${twitter}`
-                        )
-                      }
-                    />
-                  </div>
-                )}
-                {instagram && (
-                  <div>
-                    <img
-                      src={"/assets/instagram.png"}
-                      className="account-social pointer"
-                      alt="Instagram"
-                      onClick={() =>
-                        openLink(
-                          instagram.substring(0, 4) === "http" ||
-                            instagram.substring(0, 3) === "www"
-                            ? instagram
-                            : `https://instagram.com/${instagram}`
-                        )
-                      }
-                    />
-                  </div>
-                )}
-              </div>
-              {!small && !hidden && (
-                <OpenMarket tokenId={nft.order} contract={contract} />
-              )}
-            </div>
-          )}
           <div
-            className={`flex-full center ${
+            className={`flex-full xl:pr-10 center ${
               small
                 ? "gallery-frame-container-small"
                 : "gallery-frame-container"
             }`}
           >
             <div className="w-full frame gallery-art-container">
-              <div className="w-full min-h-screen-50 frame-shadow">
+              <div className="w-full min-h-screen-40 frame-shadow">
                 {(nft.imageType === "mp4" || nft.imageType === "mov") && (
                   <video
                     muted
@@ -273,7 +195,7 @@ const ExhibitionNFT = ({
             )}
             <div className="margin-top-s" />
           </div>
-          {!isFullScreen && small && (
+          {!isFullScreen && (
             <div className={`gallery-description`}>
               <div className="text-s">
                 <div className="gallery-plate metal linear">
