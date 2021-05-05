@@ -151,7 +151,6 @@ export default function Collection({ editing, setEditCollection, galleries, addN
     if (window.ethereum) {
       window.ethereum.enable();
     } else {
-      provider.enable();
       web3.eth.getAccounts((e, accounts) => {
         if (e) throw e;
         setProvider({ ...provider, selectedAddress: accounts[0] })

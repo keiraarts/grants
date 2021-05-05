@@ -15,17 +15,11 @@ export default function WalletConnect() {
         setProvider(null);
       }
     } else {
+      console.log('yo wtf');
       const fm = new Fortmatic('pk_live_B635DD2C775F3285');
       window.web3 = new Web3(fm.getProvider());
       const provider = window.web3.currentProvider;
-      web3.eth.getAccounts((e, accounts) => {
-        if (e) throw e;
-        else if (accounts && accounts[0]) {
-          setProvider({ ...provider, selectedAddress: accounts[0] })
-        } else {
-          setProvider(provider);
-        }
-      });
+      setProvider(provider);
     }
   }
 
