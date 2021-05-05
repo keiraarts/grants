@@ -260,7 +260,7 @@ const ExhibitionNFT = ({ small, nft, src, metadata, hidden, contract }) => {
 
             <div className="margin-top-s" />
           </div>
-          {!isFullScreen && small && (
+          {!isFullScreen && (
             <div className={`gallery-description md:pl-10`}>
               <div className="text-s">
                 <div className="gallery-plate metal linear">
