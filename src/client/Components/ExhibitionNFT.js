@@ -11,15 +11,8 @@ const ExhibitionNFT = ({
   hidden,
   contract,
 }) => {
-  const [loaded, setLoaded] = useState(false);
+  const [loaded, setLoaded] = useState(true);
   const video = useRef();
-
-  console.log({ nft });
-  useEffect(() => {
-    if (src) {
-      setLoaded(true);
-    }
-  }, [src]);
 
   const [isFullScreen, setFullScreen] = useState(false);
   function fullScreen() {
@@ -66,7 +59,7 @@ const ExhibitionNFT = ({
         setFullScreen(false);
         if (video.current) {
           setTimeout(() => {
-            video.current.play();
+            video?.current?.play();
           });
         }
       } else setFullScreen(true);
@@ -98,7 +91,7 @@ const ExhibitionNFT = ({
   useEffect(() => {
     if (loaded && video.current) {
       video.current.addEventListener("pause", (e) => {
-        video.current.play();
+        video.current?.play();
       });
     }
   }, [loaded]);
