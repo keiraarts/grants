@@ -103,7 +103,7 @@ export default function Profile() {
               }
               { (user.city || user.country) &&
                 <div className='text-s margin-top-xs'>
-                  <img className='earth-icon' src={ Earth } />{ user.city }, { user.country }
+                  <img className='earth-icon' src={ Earth } />{ user.city ? `${ user.city }, ` : '' }{ user.country }
                 </div>
               }
             </div>

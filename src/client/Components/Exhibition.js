@@ -30,6 +30,7 @@ export default function Exhibition() {
 
   const [gallery, setGallery] = useState(null);
   const [exhibition, setExhibition] = useState({});
+  const [enterId, setEnterId] = useState(null);
   useEffect(() => {
     fetch(`${ apiUrl() }/program/getGallery`, {
       method: 'POST',
@@ -37,7 +38,11 @@ export default function Exhibition() {
       headers: { 'Content-Type': 'application/json' },
     }).then(res => res.json())
     .then(json => {
-      if (json && json.gallery) setGallery(json.gallery)
+      if (json && json.gallery) {
+        setGallery(json.gallery)
+        if (id) setEnterId(id)
+        else setEnterId(Math.floor(Math.random() * (json.gallery.length ? json.gallery.length : 1)) + 1);
+      }
       if (json && json.name) setExhibition({ ...json, gallery: undefined });
     });
   }, [])
@@ -67,7 +72,7 @@ export default function Exhibition() {
 
   useEffect(() => {
     if (gallery && gallery.length && !preload.length) {
-      const index = order;
+      const index = enterId;
       let before = index - 4;
       if (before <= 0) before = 1;
       let after = index + 4;
@@ -89,7 +94,7 @@ export default function Exhibition() {
         }
       }
     }
-  }, [gallery])
+  }, [enterId])
 
   function updatePreload(direction, currentToken) {
     let inc;
@@ -119,9 +124,7 @@ export default function Exhibition() {
     }
   }
 
-  // const [swipeDirection, setSwipeDirection] = useState(null);
   function switchPage(direction) {
-    // setSwipeDirection(direction);
     if (gallery) {
       if (id === '1' && direction === 'previous') return gallery.length;
       else if (gallery && direction === 'next' && Number(id) === gallery.length) return 1;
@@ -191,7 +194,7 @@ export default function Exhibition() {
         <div className='line-breaks'>
           { (gallery && gallery.length) ?
             <div className='margin-top-l center'>
-              <Link to={ `/${ url }/${ Math.floor(Math.random() * (gallery.length ? gallery.length : 1)) + 1  }` } className='button'>
+              <Link to={ `/${ url }/${ enterId  }` } className='button'>
                 <span className='text-l'>Enter Gallery</span>
               </Link>
             </div>

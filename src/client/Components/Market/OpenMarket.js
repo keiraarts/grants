@@ -82,7 +82,6 @@ export default function OpenMarket({ tokenId, contract }) {
   // tokenId = 10;
 
   const [gotAsset, setAsset] = useState({});
-  // const [provider, setProvider] = useState(null);
   const [seaport, setSeaport] = useState(null);
   const [bids, setBids] = useState(null);
   const [auction, setAuction] = useState(null);
@@ -144,7 +143,6 @@ export default function OpenMarket({ tokenId, contract }) {
     })
 
     let newBids = [];
-    let end;
     let foundListed = false;
     if (orders && orders.length) {
       let foundEnd = false;
@@ -220,7 +218,6 @@ export default function OpenMarket({ tokenId, contract }) {
     setUnverified(false);
     connectWallet();
     if (provider && provider.selectedAddress) {
-      // if (auth.wallet && auth.wallet.toLowerCase() !== provider.selectedAddress.toLowerCase()) setUnverified(true);
       if (bid <= 0) setBidErr('Your bid must be higher than 0 WETH');
       else {
         setBidErr(false);
@@ -255,7 +252,6 @@ export default function OpenMarket({ tokenId, contract }) {
   const createAuction = async () => {
     connectWallet();
     if (provider && provider.selectedAddress) {
-      // if (auth.wallet && auth.wallet.toLowerCase() !== provider.selectedAddress.toLowerCase()) setUnverified(true);
       if (reserve < 1.07) setBidErr('Your reserve price must start at 1 WETH');
       else {
         setBidErr(false);
@@ -279,7 +275,6 @@ export default function OpenMarket({ tokenId, contract }) {
   const listArt = async () => {
     connectWallet();
     if (provider && provider.selectedAddress) {
-      // if (auth.wallet && auth.wallet.toLowerCase() !== provider.selectedAddress.toLowerCase()) setUnverified(true);
       if (list <= 0) setBidErr('Your list price must be higher than 0 WETH');
       else {
         setBidErr(false);
@@ -328,15 +323,11 @@ export default function OpenMarket({ tokenId, contract }) {
   const purchase = async (order) => {
     connectWallet();
     if (provider && provider.selectedAddress) {
-      // if (auth.wallet && auth.wallet.toLowerCase() !== provider.selectedAddress.toLowerCase()) setUnverified(true);
-      // else {
-      if (!order) order = listed;
-      const foundOrder = seaportOrders.find(o => o.hash.toLowerCase() === order.order_hash);
+      const foundOrder = seaportOrders.find(o => o.side === 1 && !o.closing_date);
       await seaport.fulfillOrder({
         order: foundOrder,
         accountAddress: provider.selectedAddress,
       })
-      // }
     }
   }
 
@@ -401,7 +392,7 @@ export default function OpenMarket({ tokenId, contract }) {
     address = asset.owner.user.username;
   }
 
-  if ((asset && asset.owner) && asset.owner.address === '0x47bcd42b8545c23031e9918c3d823be4100d4e87') address = 'Sevens Foundation';
+  if ((asset && asset.owner) && asset.owner.address === '0x47bcd42b8545c23031e9918c3d823be4100d4e87') address = 'Sevens Foundation - Not For Sale';
   if ((asset && asset.owner) && asset.owner.address &&
       provider && provider.selectedAddress && asset.owner.address.toLowerCase() === provider.selectedAddress.toLowerCase()) {
       address = `You - ${ address }`;
@@ -427,7 +418,7 @@ export default function OpenMarket({ tokenId, contract }) {
         ariaHideApp={ false }
       >
         <div className='flex-v font'>
-          <div className='flex'>
+          <div className='flex center'>
             <div className='small-button' onClick={ () => toggleView('fixed') }>
               Fixed Price
             </div>
@@ -541,7 +532,7 @@ export default function OpenMarket({ tokenId, contract }) {
             <img src={ OpenSeaLogo } className='block-social' alt='OpenSea' onClick={ () => openLink(asset.permalink) } />
           </div>
           { !isOwner ?
-            <div className='flex'> 
+            <div className='flex margin-top-s'> 
               <div className='form__group field'>
                 <input type='number' className='form__field' placeholder='Bid Amount' name='amount' id='amount' required maxLength='100' onChange={e => { setBid(e.target.value); setBidErr(null); } } />
                 <label className='form__label_s'>Bid Amount { balance !== null ? `(${ balance } WETH)` : '(WETH)' }</label>
@@ -580,7 +571,7 @@ export default function OpenMarket({ tokenId, contract }) {
                 <div className='text-s'>List Price</div>
                 Ξ{ Web3.utils.fromWei(listed.current_price, 'ether') }
               </div>
-              <div className='flex-full' />
+              <div className='small-space' />
               { listed.maker.address.toLowerCase() !== connectedAddress && <input type='submit' value='Purchase Artwork' className='small-button' onClick={ purchase } /> }
             </div>
           }
@@ -602,7 +593,11 @@ export default function OpenMarket({ tokenId, contract }) {
                         { (isOwner && bid.maker.address.toLowerCase() !== connectedAddress) && <span className='text-s text-grey pointer' onClick={ () => purchase(bid) }>&nbsp;- Accept</span> }
                       </div>
                     }
-                    <span className='text-xs'>{ (bid.maker.address.toLowerCase() === connectedAddress) ? 'You - ' : '' }{ bid.user }</span>
+                    <div className='flex margin-top-xs'>
+                      <span className='pointer flex' onClick={ () => openLink(`https://opensea.io/accounts/${ bid.maker.address }`) }>
+                        <span className='text-xs'>{ (bid.maker.address.toLowerCase() === connectedAddress) ? 'You - ' : '' }{ bid.user }</span>
+                      </span>
+                    </div>
                   </div>
                 );
               })

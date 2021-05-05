@@ -387,7 +387,7 @@ export default function Account() {
                   </div>
                 }
               </div>
-              { (verifiedWallet) &&
+              { (!verifiedWallet) &&
                 <div className='margin-top-s'>
                   <div className='text-s'>If you are using MetaMask mobile, please load this website within the app's built-in browser<br />
                   We also support Fortmatic wallets but we <strong>strongly recommend MetaMask</strong></div>
