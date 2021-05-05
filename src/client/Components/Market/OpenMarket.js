@@ -1,13 +1,14 @@
 import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useStoreState } from 'easy-peasy';
+import { useStoreState, useStoreActions } from 'easy-peasy';
 import useInterval from '@use-it/interval';
 import { OpenSeaPort, Network, EventType } from 'opensea-js';
 import ReactModal from 'react-modal';
 import DatePicker from 'react-mobile-datepicker';
-import Web3 from 'web3';
 import moment from 'moment';
+import Fortmatic from 'fortmatic';
+import Web3 from 'web3';
 
 import OpenSeaLogo from '../../assets/opensea.png';
 import AuctionTimer from './AuctionTimer';
@@ -75,6 +76,7 @@ const dateConfig = {
 export default function OpenMarket({ tokenId, contract }) {
   const auth = useStoreState(state => state.user.auth);
   const provider = useStoreState(state => state.eth.provider);
+  const setProvider = useStoreActions(dispatch => dispatch.eth.setProvider);
 
   // contract = '0x3f4200234e26d2dfbc55fcfd9390bc128d5e2cca';
   // tokenId = 10;
@@ -342,9 +344,17 @@ export default function OpenMarket({ tokenId, contract }) {
   async function connectWallet() {
     if (provider) {
       setBidErr(null);
-      const createdSeaport = new OpenSeaPort(provider, {
-        networkName: Network.Main
-      })
+      let createdSeaport;
+      if (window.ethereum) {
+        createdSeaport = new OpenSeaPort(provider, {
+          networkName: Network.Main
+        })
+      } else {
+        const fm = new Fortmatic('pk_live_B635DD2C775F3285');
+        createdSeaport = new OpenSeaPort(fm.getProvider(), {
+          networkName: Network.Main
+        })
+      }
 
       if (listener && seaport) {
         seaport.removeListener(listener);
@@ -371,6 +381,12 @@ export default function OpenMarket({ tokenId, contract }) {
       }).catch(e => {
         if (e.code === -32002)
         setBidErr('MetaMask is already requesting login!')
+      });
+    } else {
+      provider.enable();
+      web3.eth.getAccounts((e, accounts) => {
+        if (e) throw e;
+        setProvider({ ...provider, selectedAddress: accounts[0] })
       });
     }
   }
@@ -511,7 +527,13 @@ export default function OpenMarket({ tokenId, contract }) {
             </div>
             :
             <div className='margin-top-s text-xs'>
-              My Wallet: { `${ provider.selectedAddress.slice(0,8).toLowerCase() }...${ provider.selectedAddress.slice(-4).toLowerCase() }` }
+              { provider.selectedAddress &&
+                <div>
+                  <strong>My Wallet</strong><br />
+                  <div className='text-xxs'>{ provider.selectedAddress }</div>
+                  {/* { `${ provider.selectedAddress.slice(0,8).toLowerCase() }...${ provider.selectedAddress.slice(-4).toLowerCase() }` } */}
+                </div>
+              }
             </div>
           }
           <div className='text-xs margin-top-s'>

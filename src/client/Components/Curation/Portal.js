@@ -264,7 +264,6 @@ export default function Portal() {
       if (json.success) {
         if (finalize) {
           const mintable = newOrder ? newOrder : filteredResults.mintable;
-          console.log('WTF', mintable);
           mintable.forEach(result => result.prepared = true);
           setResults([...mintable, ...filteredResults.unmintable])
           setSelectedProgram({ ...selectedProgram, finalized: true })

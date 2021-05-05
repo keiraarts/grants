@@ -2,14 +2,15 @@ const User = require('mongoose').model('User');
 const ProgramApplicant = require('mongoose').model('ProgramApplicant');
 const jsonwebtoken = require('jsonwebtoken');
 const crypto = require('crypto');
-const ethers = require('ethers');
+const Web3 = require('web3');
 const fetch = require('node-fetch');
 const auth = require('../../services/authorization-service');
 const nodemailer = require('nodemailer');
 const templates = require('../../emails/templates');
 const errorMessages = require('../../services/error-messages');
-const { existsSync } = require('fs');
 
+const mainnet = `https://mainnet.infura.io/v3/${process.env.INFURA}`
+const web3 = new Web3( new Web3.providers.HttpProvider(mainnet) )
 const ENV = process.env;
 
 function validateUsername(string) {
@@ -199,8 +200,8 @@ exports.verifyWallet = (req, res, next) => {
       if (err) return res.json(err);
       if (!user) return res.status(401).json({ err: 'Authentication error' }); 
       else {
-        const signedAddress = ethers.utils.verifyMessage('Verify wallet address for Sevens Foundation', req.body.signature);
-        if (signedAddress === req.body.address) {
+        const signedAddress = web3.eth.accounts.recover('Verify wallet address for Sevens Foundation', req.body.signature);
+        if (signedAddress.toLowerCase() === req.body.address.toLowerCase()) {
           user.wallet = signedAddress;
           user.save();
           return res.json(true);
