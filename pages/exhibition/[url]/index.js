@@ -8,6 +8,9 @@ import ReactAutolinker from "react-autolinker";
 import { apiUrl } from "../../../src/client/baseUrl";
 import Link from "next/link";
 
+import dbConnect from "../../../utils/dbConnect";
+import Program from "../../../models/programModel";
+
 export async function getStaticPaths() {
   await dbConnect();
 
