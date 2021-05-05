@@ -129,7 +129,7 @@ const ExhibitionNFT = ({
                     ref={video}
                   >
                     <source
-                      src={`https://cdn.grants.art/${nft.art}`}
+                      src={`https://cdn.grants.art/${nft.artWeb}`}
                       type={`video/${nft.imageType}`}
                     />
                   </video>
@@ -138,7 +138,7 @@ const ExhibitionNFT = ({
                 {!["mov", "mp4"].includes(nft.imageType) && (
                   <Image
                     alt={`${nft.user.artistName} ${nft.description} `}
-                    className="gallery-art frame"
+                    className="bg-white gallery-art frame"
                     src={`https://cdn.grants.art/${nft.art}`}
                     layout="responsive"
                     width={metadata?.width}
