@@ -3,12 +3,10 @@ import templates from "../../../src/server/emails/templates";
 import dbConnect from "../../../utils/dbConnect";
 
 import ProgramApplicant from "../../../models/programApplicantModel";
-import Organizer from "../../../models/organizerModel";
 import Program from "../../../models/programModel";
 import User from "../../../models/userModel";
 
 import getMediaDimensions from "get-media-dimensions";
-import { videoResize } from "node-video-resize";
 import gifResize from "@gumlet/gif-resize";
 import { promisify } from "util";
 import { Duplex } from "stream";
@@ -58,14 +56,6 @@ const compressor = async (file, fileWeb) => {
           (width / dimensions.width) * dimensions.height
         );
         console.log(width, height);
-        videoResize({
-          inputPath: input,
-          outputPath: output,
-          format: "mp4",
-          size: `${width}x${height}`,
-        }).then(() => {
-          resolve();
-        });
       });
     } else {
       console.log("ELSING");
