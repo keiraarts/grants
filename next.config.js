@@ -59,6 +59,11 @@ module.exports = withOffline({
   async rewrites() {
     return [
       {
+        source: "/",
+        destination: "/home",
+      },
+
+      {
         source: "/service-worker.js",
         destination: "/_next/static/service-worker.js",
       },
