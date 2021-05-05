@@ -319,8 +319,11 @@ export default function Application() {
         <div className='text-s font'>
           By submitting your artwork you agree to and honor the grant logistics and criteria and&nbsp;
           <strong>will NOT MINT your piece elsewhere before the curation process is completed.</strong><br /><br />
-          <input type='submit' value='Cancel' className='small-button' onClick={ () => setConfirmOpen(false) } />
-          <input type='submit' value='Submit' className='small-button margin-left-s' onClick={ submit } />
+          You also agree that your submission <strong>does not infringe on any copyrights</strong> and that your work is originally created by you.<br /><br />
+          <div className='center'>
+            <input type='submit' value='Cancel' className='small-button' onClick={ () => setConfirmOpen(false) } />
+            <input type='submit' value='Submit' className='small-button margin-left-s' onClick={ submit } />
+          </div>
         </div>
       </ReactModal>
       <div>
@@ -487,6 +490,9 @@ export default function Application() {
             <div className='form__group field'>
               <label className='file__label'>Art Submission (JPG, PNG, GIF, WEBP, or MP4 - Max 77MB)</label>
               <input type='file' className='form__field' placeholder='Artwork' name='artwork' id='name' accept='image/jpeg, image/png, image/gif, image/webp, video/mp4' required onChange={ (e) => uploadHandler(e.target) } />
+            </div>
+            <div className='margin-top-s text-s'>
+              <em>One submission per artist per exhibition</em>
             </div>
             <div className='margin-top-l'>Submission Preview</div>
             { user &&
