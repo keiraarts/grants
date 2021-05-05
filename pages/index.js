@@ -103,7 +103,11 @@ export default function Home(props) {
           {programs?.map((item, index) => {
             if (!item.exhibiting) {
               return (
-                <a href={`/${item.url}`} className="flex" key={index}>
+                <a
+                  href={`/exhibition/${item.url}`}
+                  className="flex"
+                  key={index}
+                >
                   <div className="home-button flex-full">
                     <div className="flex">
                       <a
