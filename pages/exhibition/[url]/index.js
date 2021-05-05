@@ -8,8 +8,27 @@ import ReactAutolinker from "react-autolinker";
 import { apiUrl } from "../../../src/client/baseUrl";
 import Link from "next/link";
 
-export async function getServerSideProps(context) {
-  const url = context?.query.url;
+export async function getStaticPaths() {
+  await dbConnect();
+
+  const programs = await Program.find({ exhibiting: true })
+    .populate("organizers")
+    .populate("curators", "artistName first last instagram twitter website");
+
+  const paths = programs.map((row) => {
+    return { params: { url: row.program.url } };
+  });
+
+  console.log({ paths });
+
+  return {
+    paths: paths,
+    fallback: true,
+  };
+}
+
+export async function getStaticProps({ params }) {
+  const url = params.url;
   const res = await fetch(`${apiUrl()}/program/getGalleryInformation/${url}`);
 
   const data = await res.json();
