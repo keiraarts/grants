@@ -65,11 +65,6 @@ module.exports = withOffline({
         source: "/service-worker.js",
         destination: "/_next/static/service-worker.js",
       },
-      {
-        source: "/",
-        destination: "",
-        permanent: true,
-      },
     ];
   },
 });
