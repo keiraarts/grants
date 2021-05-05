@@ -6,6 +6,8 @@ const ExhibitionNFT = ({ small, nft, src, metadata, hidden, contract }) => {
   const [loaded, setLoaded] = useState(true);
   const video = useRef();
 
+  console.log({ nft });
+
   const [isFullScreen, setFullScreen] = useState(false);
   function fullScreen() {
     if (video.current) {
@@ -101,86 +103,6 @@ const ExhibitionNFT = ({ small, nft, src, metadata, hidden, contract }) => {
     >
       {nft ? (
         <div className="w-full gallery-container">
-          {/*   {!isFullScreen && !small && (
-            <div className={`gallery-description`}>
-              <div className="text-s">
-                <div className="gallery-plate metal linear">
-                  <div className="text-s">
-                    <strong>{nft.user.artistName}</strong>
-                    <br />
-                    {nft.user.country}{" "}
-                    {nft.user.birthYear && `(b. ${nft.user.birthYear})`}
-                  </div>
-                  <div className="margin-top-s text-s text-b">
-                    <strong>
-                      <i>{nft.title || "Untitled"}</i>
-                    </strong>
-                    , 2021
-                    <br />
-                    {nft.canvas ? (
-                      <div className="text-xs">{nft.canvas}</div>
-                    ) : (
-                      <div>{nft.imageType.toUpperCase()} as NFT</div>
-                    )}
-                  </div>
-                  <div className="text-xs margin-top-s">
-                    {nft.description.trim()}
-                  </div>
-                </div>
-              </div>
-              <div className="flex margin-top-s center">
-                {website && (
-                  <div>
-                    <a href={website}>
-                      <img
-                        src="/assets/website.png"
-                        className="account-social-web pointer"
-                        alt="Website"
-                      />
-                    </a>
-                  </div>
-                )}
-                {twitter && (
-                  <div>
-                    <a
-                      href={
-                        twitter.substring(0, 4) === "http" ||
-                        twitter.substring(0, 3) === "www"
-                          ? twitter
-                          : `https://twitter.com/${twitter}`
-                      }
-                    >
-                      <img
-                        src="/assets/twitter.png"
-                        className="account-social pointer"
-                        alt="Twitter"
-                      />
-                    </a>
-                  </div>
-                )}
-                {instagram && (
-                  <div>
-                    <a
-                      href={
-                        instagram.substring(0, 4) === "http" ||
-                        instagram.substring(0, 3) === "www"
-                          ? instagram
-                          : `https://instagram.com/${instagram}`
-                      }
-                    >
-                      <img
-                        src="/assets/instagram.png"
-                        className="account-social pointer"
-                      />
-                    </a>
-                  </div>
-                )}
-              </div>
-              {!small && !hidden && (
-                <OpenMarket tokenId={nft.order} contract={contract} />
-              )}
-            </div>
-          )} */}
           <div
             className={`flex-full center ${
               small ? "gallery-frame-container-small" : ""
@@ -207,7 +129,7 @@ const ExhibitionNFT = ({ small, nft, src, metadata, hidden, contract }) => {
 
                 {!["mov", "mp4"].includes(nft.imageType) && (
                   <Image
-                    alt={`${nft.user.artistName} ${nft.description} `}
+                    alt={`${nft.user.artistName}`}
                     className="gallery-art frame"
                     src={`https://cdn.grants.art/${nft.art}`}
                     layout="responsive"
