@@ -17,8 +17,6 @@ export async function getStaticProps() {
     .populate("organizers")
     .sort("order");
 
-  console.log({ programs });
-
   return {
     props: { programs: JSON.parse(JSON.stringify(programs)) },
   };
@@ -59,40 +57,42 @@ export default function Home(props) {
           {programs?.map((item, index) => {
             if (item.exhibiting) {
               return (
-                <a
-                  href={`/exhibition/${item.url}`}
-                  className="flex"
-                  key={index}
-                >
-                  <div className="home-button flex-full">
-                    <div className="flex">
-                      <a href={`/curator/${item.organizers[0].url}`}>
-                        <div className="text-rainbow text-s">
-                          <strong>{item.organizers[0].name}</strong>
-                        </div>
-                      </a>
-                      <div className="flex-full" />
-                      {item.organizers[0].logo && (
-                        <a
-                          href={`/curator/${item.organizers[0].url}`}
-                          className="home-logo-c margin-top-minus"
-                        >
-                          <img
-                            className="home-logo"
-                            src={`https://cdn.grants.art/${item.organizers[0].logo}`}
-                          />
+                <Link key={index} href={`/exhibition/${item.url}`}>
+                  <a
+                    href={`/exhibition/${item.url}`}
+                    className="flex"
+                    key={index}
+                  >
+                    <div className="home-button flex-full">
+                      <div className="flex">
+                        <a href={`/curator/${item.organizers[0].url}`}>
+                          <div className="text-rainbow text-s">
+                            <strong>{item.organizers[0].name}</strong>
+                          </div>
                         </a>
-                      )}
+                        <div className="flex-full" />
+                        {item.organizers[0].logo && (
+                          <a
+                            href={`/curator/${item.organizers[0].url}`}
+                            className="home-logo-c margin-top-minus"
+                          >
+                            <img
+                              className="home-logo"
+                              src={`https://cdn.grants.art/${item.organizers[0].logo}`}
+                            />
+                          </a>
+                        )}
+                      </div>
+                      <div className="margin-top-s">
+                        <strong>{item.name}</strong>
+                      </div>
+                      <div className="text-s margin-top-xs">{item.tagline}</div>
+                      <div className="text-grey text-s margin-top-s">
+                        <strong>View Exhibition</strong>
+                      </div>
                     </div>
-                    <div className="margin-top-s">
-                      <strong>{item.name}</strong>
-                    </div>
-                    <div className="text-s margin-top-xs">{item.tagline}</div>
-                    <div className="text-grey text-s margin-top-s">
-                      <strong>View Exhibition</strong>
-                    </div>
-                  </div>
-                </a>
+                  </a>
+                </Link>
               );
             }
           })}

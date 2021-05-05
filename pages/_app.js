@@ -21,19 +21,19 @@ Router.events.on("routeChangeComplete", () => {
 
 function MyApp({ Component, pageProps }) {
   return (
-    <StoreComponent store={store}>
-      <div className="App">
-        <DefaultSeo {...SEO} />
-        <div className="wrapper" />
-        <div className="dim-gradient">
+    <div className="App">
+      <DefaultSeo {...SEO} />
+      <div className="wrapper" />
+      <div className="dim-gradient">
+        <StoreComponent store={store}>
           <div className="site-content">
             <Header />
             <Component {...pageProps} />
             <Footer />
           </div>
-        </div>
+        </StoreComponent>
       </div>
-    </StoreComponent>
+    </div>
   );
 }
 

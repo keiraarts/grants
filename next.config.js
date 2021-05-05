@@ -1,8 +1,5 @@
 const withOffline = require("next-offline");
 module.exports = withOffline({
-  future: {
-    webpack5: true,
-  },
   images: {
     domains: ["cdn.grants.art", "*.grants.art"],
   },
@@ -32,7 +29,7 @@ module.exports = withOffline({
           {
             key: "Cache-Control",
             value:
-              "public, max-age=180, s-maxage=180, stale-while-revalidate=180",
+              "public, max-age=18000, s-maxage=18000, stale-while-revalidate=18000",
           },
         ],
       },
@@ -42,7 +39,7 @@ module.exports = withOffline({
           {
             key: "Cache-Control",
             value:
-              "public, max-age=180, s-maxage=180, stale-while-revalidate=180",
+              "public, max-age=18000, s-maxage=18000, stale-while-revalidate=18000",
           },
         ],
       },
@@ -52,7 +49,7 @@ module.exports = withOffline({
           {
             key: "Cache-Control",
             value:
-              "public, max-age=180, s-maxage=180, stale-while-revalidate=180",
+              "public, max-age=18000, s-maxage=18000, stale-while-revalidate=18000",
           },
         ],
       },
@@ -69,11 +66,6 @@ module.exports = withOffline({
       {
         source: "/follow",
         destination: "https://twitter.com/SevensGrant",
-      },
-
-      {
-        source: "/",
-        destination: "/home",
       },
     ];
   },

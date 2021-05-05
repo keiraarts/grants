@@ -1,5 +1,4 @@
 import React from "react";
-import "regenerator-runtime/runtime";
 import Document, { Html, Head, Main, NextScript } from "next/document";
 
 class MyDocument extends Document {
