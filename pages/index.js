@@ -5,7 +5,7 @@ import Link from "next/link";
 import dbConnect from "../utils/dbConnect";
 import Program from "../models/programModel";
 
-export async function getServerSideProps() {
+export async function getStaticProps() {
   await dbConnect();
 
   const programs = await Program.find({ active: true }, (err, data) => {
