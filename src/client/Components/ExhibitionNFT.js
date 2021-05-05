@@ -125,7 +125,7 @@ const ExhibitionNFT = ({
                     autoPlay
                     webkit-playsinline="true"
                     playsInline
-                    className={`gallery-art`}
+                    className={`gallery-art w-full`}
                     ref={video}
                   >
                     <source
@@ -137,7 +137,7 @@ const ExhibitionNFT = ({
 
                 {!["mov", "mp4"].includes(nft.imageType) && (
                   <Image
-                    alt={`${nft.user.artistName} ${nft.description} `}
+                    alt={`${nft.user.artistName} ${nft.description}`}
                     className="bg-white gallery-art frame"
                     src={`https://cdn.grants.art/${nft.art}`}
                     layout="responsive"
