@@ -117,7 +117,7 @@ const ExhibitionNFT = ({
             }`}
           >
             <div className="w-full frame gallery-art-container">
-              <div className="w-full min-h-screen-40 frame-shadow">
+              <div className="w-full min-h-screen-30 frame-shadow">
                 {(nft.imageType === "mp4" || nft.imageType === "mov") && (
                   <video
                     muted
