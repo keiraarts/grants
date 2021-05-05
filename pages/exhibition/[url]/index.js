@@ -18,11 +18,9 @@ export async function getStaticPaths() {
     .populate("organizers")
     .populate("curators", "artistName first last instagram twitter website");
 
-  const paths = programs.map((row) => {
-    return { params: { url: row.program.url } };
+  const paths = programs.map((program) => {
+    return { params: { url: program.url } };
   });
-
-  console.log({ paths });
 
   return {
     paths: paths,
@@ -196,23 +194,31 @@ export default function Exhibition({ data, url }) {
                           : `${curator.first} ${curator.last}`}
                       </strong>
                     </div>
-                    <div className="flex center">
+                    <div className="flex items-center space-x-3 text-base center">
                       {curator.website && (
-                        <div className="margin-top-xs">
-                          <a href={curator.website}>
+                        <div className="margin-top-xs font-base">
+                          <a
+                            target="_blank"
+                            href={curator.website}
+                            className="w-full"
+                          >
                             <img
                               src="/assets/website.png"
-                              className="curator-icon-web pointer"
+                              className="w-5 h-5 cursor-pointer"
                             />
                           </a>
                         </div>
                       )}
                       {curator.twitter && (
                         <div className="margin-top-xs">
-                          <a href={`https://twitter.com/${curator.twitter}`}>
+                          <a
+                            target="_blank"
+                            className="block"
+                            href={`https://twitter.com/${curator.twitter}`}
+                          >
                             <img
                               src="/assets/twitter.png"
-                              className="curator-icon pointer"
+                              className="w-6 h-6 cursor-pointer"
                             />
                           </a>
                         </div>
@@ -220,11 +226,13 @@ export default function Exhibition({ data, url }) {
                       {curator.instagram && (
                         <div className="margin-top-xs">
                           <a
+                            target="_blank"
+                            className="block"
                             href={`https://instagram.com/${curator.instagram}`}
                           >
                             <img
                               src="/assets/instagram.png"
-                              className="curator-icon pointer"
+                              className="w-6 h-6 cursor-pointer"
                               alt="Instagram"
                             />
                           </a>
