@@ -10,6 +10,7 @@ import getMediaDimensions from "get-media-dimensions";
 import gifResize from "@gumlet/gif-resize";
 import { promisify } from "util";
 import { Duplex } from "stream";
+import ffmpeg from "ffmpeg";
 import nodemailer from "nodemailer";
 import hbjs from "handbrake-js";
 import crypto from "crypto";
@@ -56,6 +57,26 @@ const compressor = async (file, fileWeb) => {
           (width / dimensions.width) * dimensions.height
         );
         console.log(width, height);
+
+        try {
+          var process = new ffmpeg(input);
+          process.then(
+            function (video) {
+              video
+                .setVideoFormat("mp4")
+                .setVideoSize(`${width}?`, true, true, "#fff")
+                .save(output, function (error, file) {
+                  if (!error) console.log("Video file: " + file);
+                });
+            },
+            function (err) {
+              console.log("Error: " + err);
+            }
+          );
+        } catch (e) {
+          console.log(e.code);
+          console.log(e.msg);
+        }
       });
     } else {
       console.log("ELSING");
