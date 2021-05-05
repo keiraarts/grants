@@ -121,10 +121,12 @@ export default function Curation({ nft, small, blind }) {
                   { nft.user.instagram && <div><img src={ Instagram } className='account-social pointer' alt='Instagram' onClick={ () => openLink(`https://instagram.com/${ nft.user.instagram }`) } /></div> }
                 </div>
               }
-              <div className='margin-top-s text-s'>
-                <div className='text-m'>Statement of Intent</div>
-                <ReactAutolinker text={ nft.statement } />
-              </div>
+              { nft.statement &&
+                <div className='margin-top-s text-s'>
+                  <div className='text-m'>Statement of Intent</div>
+                  <ReactAutolinker text={ nft.statement } />
+                </div>
+              }
               { nft.additional &&
                 <div className='margin-top-s text-s'>
                   <div className='text-m'>Additional Info</div>

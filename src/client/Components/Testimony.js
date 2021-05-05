@@ -19,7 +19,7 @@ export default function Committee() {
       </div>
       <div className='page-container'>
         <div className='text-s margin-top'>
-          <i>If you would like to share your experiences in short, please <a href='mailto:tim@grants.art' className='text-s text-grey pointer'>email us</a> your testimony.</i>
+          <i>If you would like to share your experiences in short, please <a href='mailto:sevens@grants.art' className='text-s text-grey pointer'>email us</a> your testimony.</i>
         </div>
         <div className='text-s margin-top'>
           "Thanks to the NFT, I’ve merged my 'Personal Projects' folder to my 'Work' folder now. I wake up to do what my artist’s motivations, thoughts and ideas speak to me.

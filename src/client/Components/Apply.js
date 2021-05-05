@@ -226,7 +226,7 @@ export default function Application() {
   const [err, setErr] = useState(false);
   const preSubmit = () => {
     if (!data.art) setErr('No artwork selected');
-    else if (!data.statement) setErr('Please write a statement of intent');
+    else if (!programInfo.bypassStatement && !data.statement) setErr('Please write a statement of intent');
     else if (!data.title || !data.description) setErr('Please provide an artwork title and description');
     else if (!user) setErr('Please log in to submit');
     else if (auth && !auth.wallet) setErr('Please verify a wallet to submit');
@@ -239,7 +239,7 @@ export default function Application() {
     setConfirmOpen(false);
     e.preventDefault();
     if (!data.art) setErr('No artwork selected');
-    else if (!data.statement) setErr('Please write a statement of intent');
+    else if (!programInfo.bypassStatement && !data.statement) setErr('Please write a statement of intent');
     else if (!data.title || !data.description) setErr('Please provide an artwork title and description');
     else if (!data.canvas) setErr('Please specify the tools used for your artwork');
     else if (!user) setErr('Please log in to submit');
@@ -271,8 +271,6 @@ export default function Application() {
   if (programInfo) isAdmin = (auth && programInfo.organizers[0].admins.findIndex(admin => admin === auth.id) >= 0)
   let applied;
   if (user && user.applications && programInfo) applied = user.applications.find(e => e.program === programInfo.id);
-
-  console.log('wff', video);
 
   return (
     <div className='content-block'>
@@ -319,7 +317,8 @@ export default function Application() {
         ariaHideApp={ false }
       >
         <div className='text-s font'>
-          By submitting your artwork you agree to and honor the grant logistics and criteria and will not mint your piece elsewhere before the curation process is completed.<br /><br />
+          By submitting your artwork you agree to and honor the grant logistics and criteria and&nbsp;
+          <strong>will NOT MINT your piece elsewhere before the curation process is completed.</strong><br /><br />
           <input type='submit' value='Cancel' className='small-button' onClick={ () => setConfirmOpen(false) } />
           <input type='submit' value='Submit' className='small-button margin-left-s' onClick={ submit } />
         </div>
@@ -393,6 +392,18 @@ export default function Application() {
                     <input type='text' className='form__field' placeholder='Intent' name='intent' id='intent' required maxLength='50' value={ programInfo.passcode } onChange={e => setProgram({ ...programInfo, passcode: e.target.value, isProtected: e.target.value ? true : false })} />
                     <label className='form__label'>Secret phrase to submit (Optional)</label>
                   </div>
+                  <div>
+                    <div className='text-s margin-top form__title'>Require Statement of Intent</div>
+                    <div className='select-dropdown margin-top-minus'>
+                      <select name='Mint' className='text-black' value={ programInfo.bypassStatement } required onChange={e => setProgram({ ...programInfo, bypassStatement: e.target.value })}>
+                        <option value='default' disabled hidden>
+                          Select an option
+                        </option>
+                        <option value='false'>Yes</option>
+                        <option value='true'>No</option>
+                      </select>
+                    </div>
+                  </div>
                   <div className='margin-top-s text-s'>
                     <strong>Submissions Open Time</strong><br/>
                     { programInfo.open ? moment(programInfo.open).format('ddd MMM Do h:mm A') : '' }
@@ -451,10 +462,12 @@ export default function Application() {
                 <label className='form__label'>Secret Phrase</label>
               </div>
             }
-            <div className='form__group field'>
-              <textarea type='text' className='form__field intent-field' placeholder='Intent' name='intent' id='intent' required maxLength='2000' onChange={e => setData({ ...data, statement: e.target.value })} />
-              <label className='form__label'>Statement of Intent (2000 chars)</label>
-            </div>
+            { (programInfo && !programInfo.bypassStatement) &&
+              <div className='form__group field'>
+                <textarea type='text' className='form__field intent-field' placeholder='Intent' name='intent' id='intent' required maxLength='2000' onChange={e => setData({ ...data, statement: e.target.value })} />
+                <label className='form__label'>Statement of Intent (2000 chars)</label>
+              </div>
+            }
             <div className='form__group field'>
               <textarea type='text' className='form__field intent-field' placeholder='Additional' name='additional' id='additional' maxLength='2000' onChange={e => setData({ ...data, additional: e.target.value })} />
               <label className='form__label'>Additional Information (Optional 2000 chars)</label>

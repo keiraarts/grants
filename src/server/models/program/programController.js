@@ -193,6 +193,7 @@ exports.updateProgram = async (req, res) => {
   program.isProtected = req.body.passcode ? true : false;
   program.tagline = req.body.tagline;
   program.description = req.body.description;
+  program.bypassStatement = req.body.bypassStatement;
   program.logistics = req.body.logistics;
   program.criteria = req.body.criteria;
   program.open = req.body.open;
@@ -413,9 +414,9 @@ exports.submitApplication = async (req, res) => {
   const user = await User.findById(jwt.id);
   if (!user || !jwt) return res.json({ error: 'Authentication error' });
   if (!user.artistName || !user.city || !user.country || !user.twitter || !user.instagram || !user.website || !user.emailVerified || !user.wallet) return res.json({ error: 'User profile incomplete' });
-  if (!req.body.program || !req.body.statement || !req.body.title || !req.body.description || !req.body.art) return res.json({ error: 'Application incomplete' });
 
   const program = await Program.findById(req.body.program);
+  if (!req.body.program || (!program.bypassStatement && !req.body.statement) || !req.body.title || !req.body.description || !req.body.art) return res.json({ error: 'Application incomplete' });
   if (!program) return res.json({ error: 'Program does not exist' });
   if (program.isProtected && req.body.passcode !== program.passcode) return res.json({ error: 'The secret phrase was incorrect' });
   if (new Date() < program.open || new Date() > program.close) return res.json({ error: 'Submissions are closed' });

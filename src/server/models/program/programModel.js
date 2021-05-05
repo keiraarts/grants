@@ -118,6 +118,9 @@ const program = {
     closeApplication: {
         type: Boolean,
     },
+    bypassStatement: {
+        type: Boolean,
+    },
     perpetual: {
         type: Boolean,
         default: false
@@ -213,7 +216,6 @@ const programApplicant = {
     statement: {
         type:  String,
         trim:  true,
-        required: true
     },
     additional: {
         type:  String,

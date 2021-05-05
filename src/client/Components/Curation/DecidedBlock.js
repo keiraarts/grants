@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import ReactModal from 'react-modal';
 import ReactAutolinker from 'react-autolinker';
 
+import MinScreen from '../../assets/minscreen.png';
 import Twitter from '../../assets/twitter.png';
 import Instagram from '../../assets/instagram.png';
 import Web from '../../assets/website.png';
@@ -19,6 +20,67 @@ export default function DecidedBlock({ nft, undo, type, blind }) {
   const [loaded, didLoad] = useState(false);
   const [infoOpen, setInfoOpen] = useState(false);
   const imageType = nft.artWeb.split('.')[1];
+  const video = useRef();
+
+  const [isFullScreen, setFullScreen] = useState(false);
+  function fullScreen() {
+    if (!(imageType === 'mp4' || imageType === 'mov')) {
+      if (document.documentElement.requestFullScreen) {
+        if (isFullScreen) document.exitFullscreen();
+        else document.documentElement.requestFullScreen();
+      } else if (document.documentElement.webkitRequestFullScreen) {
+        if (isFullScreen) document.webkitExitFullscreen();
+        else document.documentElement.webkitRequestFullScreen();
+      } else if (document.documentElement.mozRequestFullScreen) {
+        if (isFullScreen) document.mozExitFullscreen();
+        else document.documentElement.mozRequestFullScreen();
+      } else if (document.documentElement.msRequestFullscreen) {
+        if (isFullScreen) document.msExitFullscreen();
+        else document.documentElement.msRequestFullscreen();
+      } else if (document.documentElement.webkitEnterFullscreen) {
+        if (isFullScreen) document.webkitExitFullscreen();
+        else document.documentElement.webkitEnterFullscreen()
+      }
+    }
+
+    setFullScreen(!isFullScreen);
+  }
+
+  useEffect(() => {
+    document.addEventListener('webkitfullscreenchange', (event) => {
+      if (!document.webkitIsFullScreen) {
+        setFullScreen(false);
+      }
+    });
+
+    return () => {
+      document.removeEventListener('fullscreenchange', () => {});
+    }
+  }, [])
+
+  useEffect(() => {
+    if (isFullScreen && (imageType === 'mp4' || imageType === 'mov')) {
+      if (video.current.requestFullScreen) {
+        video.current.requestFullScreen();
+      } else if (video.current.webkitRequestFullScreen) {
+        video.current.webkitRequestFullScreen();
+      } else if (video.current.mozRequestFullScreen) {
+        video.current.mozRequestFullScreen();
+      } else if (video.current.msRequestFullscreen) {
+        video.current.msRequestFullscreen();
+      } else if (video.current.webkitEnterFullscreen) {
+        video.current.webkitEnterFullscreen(); //for iphone this code worked
+      }
+    }
+  }, [isFullScreen])
+
+  useEffect(() => {
+    if (loaded && video.current) {
+      video.current.addEventListener('pause', (e) => {
+        video.current.play();
+      });
+    }
+  }, [loaded])
 
   return (
     <div className='margin-top-minus'>
@@ -62,10 +124,12 @@ export default function DecidedBlock({ nft, undo, type, blind }) {
               { nft.user.instagram && <div><img src={ Instagram } className='account-social pointer' alt='Instagram' onClick={ () => openLink(`https://instagram.com/${ nft.user.instagram }`) } /></div> }
             </div>
           }
-          <div className='margin-top-s text-s'>
-            <div className='text-m'>Statement of Intent</div>
-            <ReactAutolinker text={ nft.statement } />
-          </div>
+          { nft.statement &&
+            <div className='margin-top-s text-s'>
+              <div className='text-m'>Statement of Intent</div>
+              <ReactAutolinker text={ nft.statement } />
+            </div>
+          }
           { nft.additional &&
             <div className='margin-top-s text-s'>
               <div className='text-m'>Additional Info</div>
@@ -74,14 +138,20 @@ export default function DecidedBlock({ nft, undo, type, blind }) {
           }
         </div>
       </ReactModal>
+      { (isFullScreen && !(imageType === 'mp4' || imageType === 'mov')) &&
+        <div className='fullscreen-container'>
+          <img src={ MinScreen } className='frame-exit pointer' onClick={ () => fullScreen() } />
+          <img className='gallery-art-fullscreen' src={ `https://cdn.grants.art/${ nft.art }` } />
+        </div>
+      }
       <div className='gallery-block'>
         { (!loaded) && <div className='block-loading'><div className='loading'><div></div><div></div></div></div> }
-        { imageType === 'mp4' ?
+        { imageType === 'mp4' || imageType === 'mov' ?
           <video muted loop autoPlay webkit-playsinline='true' playsInline preload='none' className='block-art-image' onCanPlay={ () => didLoad(true) }>
-              <source src={ `https://cdn.grants.art/${ nft.artWeb }` }
-                      type="video/mp4" />
-              Sorry, your browser doesn't support embedded videos.
-            </video>
+            <source src={ `https://cdn.grants.art/${ nft.artWeb }` }
+                    type="video/mp4" />
+            Sorry, your browser doesn't support embedded videos.
+          </video>
           :
           <img src={ `https://cdn.grants.art/${ nft.artWeb }` } className='block-art-image' onLoad={ () => didLoad(true) } />
         }
@@ -95,9 +165,20 @@ export default function DecidedBlock({ nft, undo, type, blind }) {
         { undo && <div className='small-space' /> }
         <div className='small-button flex-full' onClick={ () => setInfoOpen(true) }>
           View Info
-        </div>  
+        </div>
+        <div className='small-space' />
+        <div className='small-button flex-full' onClick={ () => fullScreen() }>
+          Full Screen
+        </div>
       </div>
       <div className='margin-top-s' />
+      { (isFullScreen && (imageType === 'mp4' || imageType === 'mov')) &&
+        <video muted loop autoPlay webkit-playsinline='true' playsInline preload='none' className={ `block-art-image ${ !isFullScreen ? 'hidden' : '' }` } onCanPlay={ () => didLoad(true) } ref={ video }>
+          <source src={ `https://cdn.grants.art/${ nft.art }` }
+                  type="video/mp4" />
+          Sorry, your browser doesn't support embedded videos.
+        </video>
+      }
     </div>
   );
 }

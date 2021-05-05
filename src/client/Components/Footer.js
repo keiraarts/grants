@@ -25,7 +25,7 @@ export default function Header() {
         <img src={ Twitter } className='social-icon' alt='Twitter' onClick={ () => openLink('https://twitter.com/sevensgrant') } />
         <img src={ Instagram } className='social-icon' alt='Instagram' onClick={ () => openLink('https://instagram.com/sevensgrant') } />
         <img src={ Discord } className='social-icon' alt='Instagram' onClick={ () => openLink('https://discord.gg/YB4HDKwxyc') } />
-        <a href='mailto:tim@grants.art'><img src={ Email } className='social-icon' alt='Email' /></a>
+        <a href='mailto:sevens@grants.art'><img src={ Email } className='social-icon' alt='Email' /></a>
       </div>
     </div>
   );
