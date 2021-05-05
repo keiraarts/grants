@@ -387,10 +387,11 @@ export default function Account() {
                   </div>
                 }
               </div>
-              { (!verifiedWallet) &&
-                <div>
-                  <Link to='/tutorial' className='text-s text-grey pointer'>Setup a wallet</Link>
-                  <div className='text-s'>We strongly recommend MetaMask but also support Fortmatic wallets</div>
+              { (verifiedWallet) &&
+                <div className='margin-top-s'>
+                  <div className='text-s'>If you are using MetaMask mobile, please load this website within the app's built-in browser<br />
+                  We also support Fortmatic wallets but we <strong>strongly recommend MetaMask</strong></div>
+                  <Link to='/tutorial' className='text-s text-grey pointer'>Wallet Setup Guide</Link>
                 </div>
               }
               { !editingAccount && <div><input type='submit' value='Edit Account' className='submit-button' onClick={ () => { setEditingAccount(true); setUpdateUser(user) } } /></div> }
