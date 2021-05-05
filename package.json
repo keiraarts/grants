@@ -1,7 +1,7 @@
 {
   "name": "grants-art",
   "engine": "15.14.11",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "React Project based on React, Nextjs, MongoDB",
   "scripts": {
     "dev": "next dev",
