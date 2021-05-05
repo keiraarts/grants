@@ -32,7 +32,6 @@
     "crypto": "^1.0.1",
     "dotenv": "^6.2.0",
     "easy-peasy": "^4.0.1",
-    "ethers": "^5.0.30",
     "express": "^4.16.4",
     "file-type": "^16.3.0",
     "fortmatic": "^2.2.1",

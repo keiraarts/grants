@@ -374,7 +374,6 @@ export default function OpenMarket({ tokenId, contract }) {
         setBidErr('MetaMask is already requesting login!')
       });
     } else {
-      provider.enable();
       web3.eth.getAccounts((e, accounts) => {
         if (e) throw e;
         setProvider({ ...provider, selectedAddress: accounts[0] })
