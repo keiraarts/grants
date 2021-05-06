@@ -725,6 +725,33 @@ exports.finalizeDeferred = async (req, res) => {
 }
 
 
+exports.getEmails = async (req, res) => {
+  const jwt = auth(req.headers.authorization, res, (jwt) => jwt);
+  const organizer = await Organizer.findOne({ _id: req.body.org, admins: jwt.id });
+  if (!organizer) return res.json({ error: 'Authentication error' });
+  const program = await Program.findById(req.body.program);
+  if (!program) return res.json({ error: 'Authentication error' });
+
+  let query;
+  if (req.body.type === 'all') {
+    query = {};
+  } else if (req.body.type === 'approved') {
+    query = { order: { $exists: true } };
+  } else if (req.body.type === 'deferred') {
+    query = { order: { $exists: false }, finalized: true };
+  }
+
+  const applicants = await ProgramApplicant.find({ program: program.id, ...query }).populate('user', 'email');
+
+  let emails = [];
+  applicants.forEach(applicant => {
+    emails.push([applicant.user.email]);
+  })
+
+  return res.json({ success: emails });
+}
+
+
 exports.flagApplicant = (req, res) => {
   auth(req.headers.authorization, res, (jwt) => {
     User.findById(jwt.id, (err, user) => {
@@ -772,54 +799,3 @@ exports.removeFlag = (req, res) => {
     });
   });
 };
-
-// setTimeout(() => {
-//   Applicant.find({ published: { $ne: true }, order: { $exists: false } }, (err, applicants) => {
-//     applicants.forEach(applicant => {
-//       const transfer = {
-//         user:           applicant.user,
-//         program:        '605fef70830ed668addb44ab',
-//         url:            applicant.website,
-//         statement:      applicant.statement,
-//         additional:     applicant.additional,
-//         title:          applicant.title,
-//         description:    applicant.description,
-//         art:            applicant.art,
-//         artWeb:         applicant.artWeb,
-//         ineligible:     applicant.ineligible,
-//         flagged:        applicant.flagged,
-//         approvalCount:  applicant.approvalCount,
-//         rejectCount:    applicant.rejectCount,
-//         approved:       applicant.approved,
-//         rejected:       applicant.rejected,
-//         emailed:        applicant.emailed,
-//         accepted:       applicant.accepted,
-//         published:      applicant.published,
-//         order:          applicant.order,
-//       };
-
-//       // console.log('WTF', transfer);
-//       // const newApplicant = new ProgramApplicant(transfer);
-//       // newApplicant.save((err, data) => {
-//       //   if (err) console.log('WTF', err);
-//       // });
-//       // console.log(applicant.email);
-//     })
-
-//     console.log(applicants.length);
-//   })
-// })
-
-
-// setTimeout(() => {
-//   return ProgramApplicant.find({ order: { $exists: true } }, (err2, data) => {
-//     let count = 0;
-//     data.forEach(e => {
-//       e.finalized = true;
-//       e.save();
-//       count++;
-//     })
-
-//     console.log('COUNT', count);
-//   })
-// })

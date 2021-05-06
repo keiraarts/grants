@@ -63,6 +63,7 @@
     "react": "next",
     "react-autolinker": "^1.0.7",
     "react-beautiful-dnd": "^13.1.0",
+    "react-csv": "^2.0.3",
     "react-dom": "next",
     "react-icons": "^3.5.0",
     "react-mobile-datepicker": "^4.0.2",

@@ -2,26 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useStoreState } from 'easy-peasy';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import Web3 from 'web3';
+import { CSVLink } from 'react-csv';
 import { apiUrl } from '../../baseUrl';
 
 
 import WalletConnect from '../Web3/WalletConnect';
 import Drag from '../../assets/drag.png';
 import '../../styles.scss';
-
-const getCurrentGasPrices = async () => {
-  let response = await fetch('https://ethgasstation.info/json/ethgasAPI.json').then(res => res.json());
-  console.log('GOT GAS', response);
-  let prices = {
-    low: response.safeLow / 10,
-    medium: response.average / 10,
-    high: response.fast / 10,
-    super: response.fastest / 10
-  }
-
-  return prices
-}
 
 const reorder = (list, startIndex, endIndex) => {
   const result = Array.from(list);
@@ -188,6 +175,25 @@ export default function Admin({ selectedProgram, setSelectedProgram, programs, s
       },
     }).then(res => res.json())
     .then(json => {});
+  }
+
+  const [emails, setEmails] = useState(null);
+  const getEmails = (type) => {
+    setEmails(null);
+    fetch(`${ apiUrl() }/program/getEmails`, {
+      method: 'POST',
+      body: JSON.stringify({ program: selectedProgram.id, org: selectedProgram.organizers[0].id, type }),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': auth.token
+      },
+    }).then(res => res.json())
+    .then(json => {
+      if (json.success) {
+        setEmails(json.success);
+      }
+    });
   }
 
   const updateMintTo = (mintToArtist) => {
@@ -409,7 +415,7 @@ export default function Admin({ selectedProgram, setSelectedProgram, programs, s
         </div>
       </div>
       <div className='margin-top'>
-        <div className='text-s'>Hide results from curators: <strong>{ selectedProgram.hideResults ? 'Yes' : 'No' }</strong></div>
+        <div className='text-s'>Hide final results from curators: <strong>{ selectedProgram.hideResults ? 'Yes' : 'No' }</strong></div>
         <div className='margin-top-xs'>
           { selectedProgram.hideResults ?
             <div className='small-button' onClick={ () => toggleResults(false) }>
@@ -421,6 +427,28 @@ export default function Admin({ selectedProgram, setSelectedProgram, programs, s
             </div>
           }
         </div>
+      </div>
+      <div className='margin-top'>
+        <div className='text-s'>Get Applicant Emails</div>
+        <div className='margin-top-xs flex'>
+          <div className='small-button' onClick={ () => getEmails('all') }>
+            All
+          </div>
+          <div className='small-space' />
+          <div className='small-button' onClick={ () => getEmails('approved') }>
+            Finalized
+          </div>
+          <div className='small-space' />
+          <div className='small-button' onClick={ () => getEmails('deferred') }>
+            Deferred
+          </div>
+        </div>
+        { (emails && emails.length > 0) &&
+          <CSVLink data={ emails } className='margin-top-s text-grey text-s'>Download CSV (Email Count: { emails.length })</CSVLink>
+        }
+        { (emails && emails.length === 0) &&
+          <div className='margin-top-s text-s'>No data - did you finalize your applicants?</div>
+        }
       </div>
       <div className='margin-top text-mid'>
         Curators:

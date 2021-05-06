@@ -67,7 +67,6 @@ const addNFT = ({ data, index, width }) => {
 
 function openLink(page)
 {
-  console.log('OPENING', page);
   let win = window.open(page, '_blank');
   win.focus();
 }

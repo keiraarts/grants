@@ -105,7 +105,6 @@ export default function Account() {
       from,
     }, function(error, result) {
       if (error) throw error;
-      console.log(result);
       if (result && result.result) {
         fetch(`${ apiUrl() }/verifyWallet`, {
           method: 'POST',
