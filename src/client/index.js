@@ -1,8 +1,8 @@
-import React, { useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import { StoreComponent, store } from './redux';
 import { useStoreRehydrated } from 'easy-peasy';
-import { BrowserRouter, Route, Switch, Router } from "react-router-dom";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { ModalProvider } from "react-modal-hook";
 import ScrollToTop from './Components/Tools/ScrollToTop';
 import Header from './Components/Header';
@@ -40,11 +40,16 @@ const App = () => {
 
   const scrollRef = useRef(null);
 
+  const [scroll, setScroll] = useState(false);
+  const updateScroll = (val) => {
+    setScroll(val);
+  }
+
   return (
     <BrowserRouter>
       <ScrollToTop />
       <StoreComponent store={ store }>
-        <div className='App'>
+        <div className={ !scroll ? 'App-No-Scroll' : 'App' }>
           <div className='wrapper' />
           <div className='dim-gradient' ref={ scrollRef }>
             <div className='site-content'>
@@ -70,10 +75,16 @@ const App = () => {
                   <Route path="/forgotpassword" exact component={ Forgot } />
                   <Route path="/recoveraccount/:token" exact component={ RecoverAccount } />
                   <Route path="/account" exact component={ Account } />
-                  <Route path="/u/:username" component={ Profile } />
                   <Route path="/verifyemail/:id" component={ VerifyEmail } />
-                  <Route path="/:url/:id" component={ Exhibition } />
-                  <Route path="/:url" component={ Exhibition } />
+                  <Route path="/u/:username" render={ () => (
+                    <Profile updateScroll={ updateScroll } />
+                  )} />
+                  <Route path="/:url/:id" render={ () => (
+                    <Exhibition updateScroll={ updateScroll } />
+                  )} />
+                  <Route path="/:url" render={ () => (
+                    <Exhibition updateScroll={ updateScroll } />
+                  )} />
                 </Switch>
                 <Footer/>
               </WaitForStateRehydration>

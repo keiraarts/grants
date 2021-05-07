@@ -1,6 +1,6 @@
 import React, { useEffect, useReducer, useState, useRef } from 'react';
 import { useSwipeable } from 'react-swipeable';
-import { useParams, useLocation, useHistory } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import { useStoreState } from 'easy-peasy';
 import { Link } from "react-router-dom";
 import ReactAutolinker from 'react-autolinker';
@@ -22,7 +22,7 @@ function openLink(page)
 
 const NFT = React.memo(GenesisNFT);
 
-export default function Exhibition() {
+export default function Exhibition({ updateScroll }) {
   const history = useHistory();
   const small = useStoreState(state => state.app.small);
   const nftRef = useRef();
@@ -33,6 +33,7 @@ export default function Exhibition() {
   const [exhibition, setExhibition] = useState({});
   const [enterId, setEnterId] = useState(null);
   useEffect(() => {
+    updateScroll(false);
     fetch(`${ apiUrl() }/program/getGallery`, {
       method: 'POST',
       body: JSON.stringify({ program: url }),

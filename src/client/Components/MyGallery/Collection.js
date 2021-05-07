@@ -58,7 +58,6 @@ export default function Collection({ editing, setEditCollection, galleries, addN
         },
       }).then(res => res.json())
     .then(async json => {
-      console.log(json.assets);
       if (json.assets) {
         if (json.assets.length) {
           json.assets.forEach(asset => {
@@ -79,8 +78,13 @@ export default function Collection({ editing, setEditCollection, galleries, addN
               addToGallery
             })
           })
-          getMyAssets(offset + 50, items)
-        } else setShowData(items);
+          setShowData(items);
+          getMyAssets(offset + 50, items);
+        } else {
+          setShowData(items);
+        }
+      } else {
+        getMyAssets(offset, items);
       }
     })
   }
