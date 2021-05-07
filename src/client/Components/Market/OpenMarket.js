@@ -78,8 +78,8 @@ export default function OpenMarket({ tokenId, contract, resizeContainer }) {
   const provider = useStoreState(state => state.eth.provider);
   const setProvider = useStoreActions(dispatch => dispatch.eth.setProvider);
 
-  contract = '0x3f4200234e26d2dfbc55fcfd9390bc128d5e2cca';
-  tokenId = 10;
+  // contract = '0x3f4200234e26d2dfbc55fcfd9390bc128d5e2cca';
+  // tokenId = 10;
 
   const [gotAsset, setAsset] = useState({});
   const [seaport, setSeaport] = useState(null);
