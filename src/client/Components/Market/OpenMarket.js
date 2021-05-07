@@ -73,7 +73,7 @@ const dateConfig = {
 };
 
 
-export default function OpenMarket({ tokenId, contract, resizeContainer }) {
+export default function OpenMarket({ tokenId, contract, resizeContainer, ethPrice }) {
   const auth = useStoreState(state => state.user.auth);
   const provider = useStoreState(state => state.eth.provider);
   const setProvider = useStoreActions(dispatch => dispatch.eth.setProvider);
@@ -155,7 +155,9 @@ export default function OpenMarket({ tokenId, contract, resizeContainer }) {
           foundListed = true;
           setListed(order);
         } else if (order.side === 0) {
-          order.value = Number(Web3.utils.fromWei(order.base_price, 'ether'));
+          order.currency = order.payment_token_contract.symbol;
+          order.ethValue = Number(Web3.utils.fromWei(order.base_price, 'ether'));
+          order.value = ((order.currency === 'USDC') ? (Number(order.base_price) / 1000000) : (order.currency === 'DAI' ? order.ethValue : order.ethValue * ethPrice)).toFixed(2);
           order.user = (order.maker && order.maker.user) ? order.maker.user.username : 'Anonymous';
           order.time = order.listing_time * 1000;
           newBids.push(order);
@@ -171,7 +173,7 @@ export default function OpenMarket({ tokenId, contract, resizeContainer }) {
         setSeaportOrders(orders);
       }
 
-      if (newBids) setBids(_.orderBy(newBids, ['value'], ['desc']));
+      if (newBids) setBids(newBids);
     } else setBids([]);
 
 
@@ -581,19 +583,11 @@ export default function OpenMarket({ tokenId, contract, resizeContainer }) {
               bids.map((bid, index)=>{
                 return (
                   <div className='margin-top-s' key={ index }>
-                    { index === 0 ?
-                      <div>
-                        <strong>Bid of Ξ{ bid.value }</strong>
-                        { (bid.maker.address.toLowerCase() === connectedAddress) && <span className='text-s text-grey pointer' onClick={ () => cancelOrder(bid) }>&nbsp;- Cancel</span> }
-                        { (isOwner && bid.maker.address.toLowerCase() !== connectedAddress) && <span className='text-s text-grey pointer' onClick={ () => purchase(bid) }>&nbsp;- Accept</span> }
-                      </div>
-                      :
-                      <div>
-                        Bid of Ξ{ bid.value }
-                        { (bid.maker.address.toLowerCase() === connectedAddress) && <span className='text-s text-grey pointer' onClick={ () => cancelOrder(bid) }>&nbsp;- Cancel</span> }
-                        { (isOwner && bid.maker.address.toLowerCase() !== connectedAddress) && <span className='text-s text-grey pointer' onClick={ () => purchase(bid) }>&nbsp;- Accept</span> }
-                      </div>
-                    }
+                    <div>
+                      <span>Bid of ${ bid.value } ({ (bid.currency === 'DAI' || bid.currency === 'USDC') ? bid.currency : `Ξ${ bid.ethValue }` })</span>
+                      { (bid.maker.address.toLowerCase() === connectedAddress) && <span className='text-s text-grey pointer' onClick={ () => cancelOrder(bid) }>&nbsp;- Cancel</span> }
+                      { (isOwner && bid.maker.address.toLowerCase() !== connectedAddress) && <span className='text-s text-grey pointer' onClick={ () => purchase(bid) }>&nbsp;- Accept</span> }
+                    </div>
                     <div className='flex margin-top-xs'>
                       <span className='pointer flex' onClick={ () => openLink(`https://opensea.io/accounts/${ bid.maker.address }`) }>
                         <span className='text-xs'>{ (bid.maker.address.toLowerCase() === connectedAddress) ? 'You - ' : '' }{ bid.user }</span>

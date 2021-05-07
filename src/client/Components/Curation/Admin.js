@@ -323,6 +323,7 @@ export default function Admin({ selectedProgram, setSelectedProgram, programs, s
               <label className='form__label'>Top Artworks Threshold Count</label>
             </div>
           }
+          <div className='margin-top' />
         </div>
       }
       <div className='text-s margin-top form__title'>Blind Curation</div>

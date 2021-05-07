@@ -32,6 +32,7 @@ export default function Exhibition({ updateScroll }) {
   const [gallery, setGallery] = useState(null);
   const [exhibition, setExhibition] = useState({});
   const [enterId, setEnterId] = useState(null);
+  const [ethPrice, setEthPrice] = useState(null);
   useEffect(() => {
     updateScroll(false);
     fetch(`${ apiUrl() }/program/getGallery`, {
@@ -46,6 +47,19 @@ export default function Exhibition({ updateScroll }) {
         else setEnterId(Math.floor(Math.random() * (json.gallery.length ? json.gallery.length : 1)) + 1);
       }
       if (json && json.name) setExhibition({ ...json, gallery: undefined });
+    });
+
+    fetch(`https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd`, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+    }).then(res => res.json())
+    .then(json => {
+      if (json && json.ethereum) {
+        setEthPrice(json.ethereum.usd)
+      }
     });
   }, [])
 
@@ -241,9 +255,9 @@ export default function Exhibition({ updateScroll }) {
       }
       { (id && gallery && gallery.length) &&
         <div>
-          <NFT key={ order - 2 } small={ small } nft={ gallery[order - 2] } src={ src1 } contract={ exhibition.contract } setHeight={ setHeight } order={ 1 } important hidden />
-          <NFT key={ order - 1} small={ small } nft={ gallery[order - 1] } src={ src2 } contract={ exhibition.contract } setHeight={ setHeight } order={ 2 } important />
-          <NFT key={ order } small={ small } nft={ gallery[order] } src={ src3 } contract={ exhibition.contract } setHeight={ setHeight } order={ 3 } important hidden />
+          <NFT key={ order - 2 } small={ small } nft={ gallery[order - 2] } src={ src1 } contract={ exhibition.contract } setHeight={ setHeight } order={ 1 } ethPrice={ ethPrice } important hidden />
+          <NFT key={ order - 1} small={ small } nft={ gallery[order - 1] } src={ src2 } contract={ exhibition.contract } setHeight={ setHeight } order={ 2 } ethPrice={ ethPrice } important />
+          <NFT key={ order } small={ small } nft={ gallery[order] } src={ src3 } contract={ exhibition.contract } setHeight={ setHeight } order={ 3 } ethPrice={ ethPrice } important hidden />
         </div>
       }
       <div ref={ nftRef } className='exhibition-height' />
