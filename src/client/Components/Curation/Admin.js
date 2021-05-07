@@ -268,6 +268,21 @@ export default function Admin({ selectedProgram, setSelectedProgram, programs, s
       <div className='text-mid flex'>
         <div>
           <div className='text-s'>
+            Exhibition Contract
+          </div>
+          { programAdmin.contractAddress ?
+            <div>{ programAdmin.contractAddress }</div>
+            :
+            <div>Not Created</div>
+          }
+        </div>
+        { (!programAdmin.contractAddress && !exhibition) &&
+          <div className='small-button margin-left-s' onClick={ () => exhibitionCreation() }>Create</div>
+        }
+      </div>
+      <div className='text-mid flex margin-top'>
+        <div>
+          <div className='text-s'>
             Exhibition Criteria
           </div>
           { selectedProgram.passByVotes ?
@@ -308,32 +323,17 @@ export default function Admin({ selectedProgram, setSelectedProgram, programs, s
               <label className='form__label'>Top Artworks Threshold Count</label>
             </div>
           }
-          <div className='text-s margin-top form__title'>Blind Curation</div>
-          <div className='select-dropdown margin-top-minus'>
-            <select name='Mint' className='text-black' defaultValue={ `${ newCriteria.blindVoting }` } value={ `${ newCriteria.blindVoting }` } required onChange={e => setNewCriteria({ ...newCriteria, blindVoting: (e.target.value === 'true') })}>
-              <option value='default' disabled hidden>
-                Select an option
-              </option>
-              <option value='false'>Show Artist Info</option>
-              <option value='true'>Hide Artist Info</option>
-            </select>
-          </div>
         </div>
       }
-      <div className='margin-top text-mid flex'>
-        <div>
-          <div className='text-s'>
-            Exhibition Contract
-          </div>
-          { programAdmin.contractAddress ?
-            <div>{ programAdmin.contractAddress }</div>
-            :
-            <div>Not Created</div>
-          }
-        </div>
-        { (!programAdmin.contractAddress && !exhibition) &&
-          <div className='small-button margin-left-s' onClick={ () => exhibitionCreation() }>Create</div>
-        }
+      <div className='text-s margin-top form__title'>Blind Curation</div>
+      <div className='select-dropdown margin-top-minus'>
+        <select name='Mint' className='text-black' defaultValue={ `${ newCriteria.blindVoting }` } value={ `${ newCriteria.blindVoting }` } required onChange={e => setNewCriteria({ ...newCriteria, blindVoting: (e.target.value === 'true') })}>
+          <option value='default' disabled hidden>
+            Select an option
+          </option>
+          <option value='false'>Show Artist Info</option>
+          <option value='true'>Hide Artist Info</option>
+        </select>
       </div>
       { exhibition &&
         <div>
@@ -376,30 +376,24 @@ export default function Admin({ selectedProgram, setSelectedProgram, programs, s
           { exhibitionErr && <div className='text-err text-s'>{ exhibitionErr }</div> }
         </div>
       }
-      <div className='margin-top text-mid flex'>
-        <div>
-          <div className='text-s'>
-            Mint to Artist or Curator
-          </div>
-          <div className='select-dropdown margin-top-minus'>
-            <select name='Mint' className='text-black' defaultValue={ `${ programAdmin.mintToArtist }` } value={ `${ programAdmin.mintToArtist }` } required onChange={e => updateMintTo(e.target.value === "true") }>
-              <option value='default' disabled hidden>
-                Select an option
-              </option>
-              <option value='true'>Artist&nbsp;&nbsp;&nbsp;&nbsp;</option>
-              <option value='false'>Curator&nbsp;&nbsp;&nbsp;&nbsp;</option>
-            </select>
-          </div>
-          { !programAdmin.mintToArtist && 
-            <div className='margin-top-s'>
-              <div className='text-xs'>
-                Address
-              </div>
-              <div className='text-s'>{ selectedProgram.organizers[0].wallet }</div>
-            </div>
-          }
-        </div>
+      <div className='text-s margin-top form__title'>Mint to Artist or Curator</div>
+      <div className='select-dropdown margin-top-minus'>
+        <select name='Mint' className='text-black' defaultValue={ `${ programAdmin.mintToArtist }` } value={ `${ programAdmin.mintToArtist }` } required onChange={e => updateMintTo(e.target.value === "true") }>
+          <option value='default' disabled hidden>
+            Select an option
+          </option>
+          <option value='true'>Artist&nbsp;&nbsp;&nbsp;&nbsp;</option>
+          <option value='false'>Curator&nbsp;&nbsp;&nbsp;&nbsp;</option>
+        </select>
       </div>
+      { !programAdmin.mintToArtist && 
+        <div className='margin-top-s'>
+          <div className='text-xs'>
+            Address
+          </div>
+          <div className='text-s'>{ selectedProgram.organizers[0].wallet }</div>
+        </div>
+      }
       <div className='margin-top'>
         <div className='text-s'>Allow curators to vote: <strong>{ selectedProgram.curationLock ? 'No' : 'Yes' }</strong></div>
         <div className='margin-top-xs'>

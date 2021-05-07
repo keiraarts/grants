@@ -7,7 +7,9 @@ const log = require('ololog').configure({ time: true })
 const Arweave = require('arweave');
 const fetch = require('node-fetch');
 const hre = require("hardhat")
+const nodemailer = require('nodemailer');
 
+const templates = require('../emails/templates');
 const auth = require('./authorization-service');
 const Sevens = require('../../../artifacts/contracts/Sevens.sol/Sevens.json');
 const SevensFactory = require('../../../artifacts/contracts/SevensFactory.sol/SevensFactory.json');
@@ -34,6 +36,17 @@ const web3WS = new Web3( new Web3.providers.WebsocketProvider(mainnetWS) )
 const MINT_WALLET = process.env.WALLET;
 web3.eth.defaultAccount = MINT_WALLET;
 const FACTORY_ADDRESS = process.env.FACTORY_ADDRESS;
+
+const transporter = nodemailer.createTransport({
+  host: 'email-smtp.us-east-1.amazonaws.com',
+  port: 465,
+  secure: true,
+  auth: {
+    user: process.env.SES_USER,
+    pass: process.env.SES_PASS
+  }
+});
+
 
 const getCurrentGasPrices = async () => {
   let response = await axios.get('https://ethgasstation.info/json/ethgasAPI.json')
@@ -223,6 +236,7 @@ const mint = async (applicants, program, organizer) => {
                       tran.off('receipt');
                       tran.off('transactionHash');
                       tran.off('confirmation');
+                      transporter.sendMail(templates.minted(user.email, user.artistName, program.name, `https://grants.art/${ program.url }/${ applicant.order }`));
                       resolve();
                     }
                     console.log('confirmation: ' + confirmationNumber);

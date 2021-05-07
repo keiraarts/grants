@@ -361,7 +361,7 @@ export default function Portal() {
         Let's highlight great art.
       </div>
       { !selectedProgram ?
-        <div>
+        <div className='margin-top'>
           { !loaded &&
             <div className='flex center'>
               <div className='block-loading'><div className='loading'><div></div><div></div></div></div>

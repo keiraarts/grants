@@ -25,6 +25,7 @@ const NFT = React.memo(GenesisNFT);
 export default function Exhibition() {
   const history = useHistory();
   const small = useStoreState(state => state.app.small);
+  const nftRef = useRef();
   const { url, id } = useParams();
   const order = Number(id);
 
@@ -149,11 +150,15 @@ export default function Exhibition() {
     onSwipedRight: (eventData) => {
       if (id) { updatePreload('previous', order); history.push(`/${ url }/${ switchPage('previous') }`) }
     },
-    onSwipedLeft: (eventData) => { 
+    onSwipedLeft: (eventData) => {
       if (id) { updatePreload('next', order); history.push(`/${ url }/${ switchPage('next') }`) }
     },
     preventDefaultTouchmoveEvent: true,
   });
+
+  const setHeight = (height) => {
+    if (nftRef && nftRef.current) nftRef.current.style.marginTop = `${ height }px`;
+  }
 
   return (
     <div className='content-block' { ...handlers }>
@@ -234,13 +239,13 @@ export default function Exhibition() {
         </div>
       }
       { (id && gallery && gallery.length) &&
-        <div className='gallery-min-height'>
-          <NFT key={ order - 2 } small={ small } nft={ gallery[order - 2] } src={ src1 } contract={ exhibition.contract } important hidden />
-          <NFT key={ order - 1} small={ small } nft={ gallery[order - 1] } src={ src2 } contract={ exhibition.contract } important />
-          <NFT key={ order } small={ small } nft={ gallery[order] } src={ src3 } contract={ exhibition.contract } important hidden />
+        <div>
+          <NFT key={ order - 2 } small={ small } nft={ gallery[order - 2] } src={ src1 } contract={ exhibition.contract } setHeight={ setHeight } order={ 1 } important hidden />
+          <NFT key={ order - 1} small={ small } nft={ gallery[order - 1] } src={ src2 } contract={ exhibition.contract } setHeight={ setHeight } order={ 2 } important />
+          <NFT key={ order } small={ small } nft={ gallery[order] } src={ src3 } contract={ exhibition.contract } setHeight={ setHeight } order={ 3 } important hidden />
         </div>
       }
-      <div className='margin-top-l' />
+      <div ref={ nftRef } className='exhibition-height' />
     </div>
   );
 }

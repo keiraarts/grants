@@ -58,6 +58,7 @@ export default function Collection({ editing, setEditCollection, galleries, addN
         },
       }).then(res => res.json())
     .then(async json => {
+      console.log(json.assets);
       if (json.assets) {
         if (json.assets.length) {
           json.assets.forEach(asset => {

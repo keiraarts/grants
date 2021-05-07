@@ -81,6 +81,10 @@ export default function Committee() {
           <span className='text-s text-grey pointer' onClick={ () => openLink('https://www.playboy.com/custom/playboy-x-slimesunday') }>Playboy</span>
           <div className='text-s'>Culture Progressor</div>
         </div>
+        <div className='text-s margin-top'>
+          <span className='text-s text-grey pointer' onClick={ () => openLink('https://www.ymugroup.com/') }>YMU Group</span>
+          <div className='text-s'>Arts & Talent Management</div>
+        </div>
         <br />
       </div>
     </div>
