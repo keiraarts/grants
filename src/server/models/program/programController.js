@@ -739,6 +739,8 @@ exports.getEmails = async (req, res) => {
     query = { order: { $exists: true } };
   } else if (req.body.type === 'deferred') {
     query = { order: { $exists: false }, finalized: true };
+  } else {
+    return res.json({ error: 'Issue retrieving emails' });
   }
 
   const applicants = await ProgramApplicant.find({ program: program.id, ...query }).populate('user', 'email');
@@ -749,6 +751,30 @@ exports.getEmails = async (req, res) => {
   })
 
   return res.json({ success: emails });
+}
+
+exports.getWallets = async (req, res) => {
+  const jwt = auth(req.headers.authorization, res, (jwt) => jwt);
+  const organizer = await Organizer.findOne({ _id: req.body.org, admins: jwt.id });
+  if (!organizer) return res.json({ error: 'Authentication error' });
+  const program = await Program.findById(req.body.program);
+  if (!program) return res.json({ error: 'Authentication error' });
+
+  let query;
+  if (req.body.type === 'minted') {
+    query = { published: true };
+  } else {
+    return res.json({ error: 'Issue retrieving wallets' });
+  }
+
+  const applicants = await ProgramApplicant.find({ program: program.id, ...query }).populate('user', 'artistName wallet');
+
+  let wallets = [];
+  applicants.forEach(applicant => {
+    wallets.push([applicant.user.artistName, applicant.user.wallet]);
+  })
+
+  return res.json({ success: wallets });
 }
 
 

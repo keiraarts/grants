@@ -231,7 +231,7 @@ export default function Application() {
     else if (!user) setErr('Please log in to submit');
     else if (auth && !auth.wallet) setErr('Please verify a wallet to submit');
     else if (user && !user.user.emailVerified) setErr('Please verify your email to submit');
-    else if (user && (!user.user.artistName || !user.user.city || !user.user.country || !user.user.twitter || !user.user.website)) setErr('Please complete your user profile to submit');
+    else if (user && (!user.user.artistName || !user.user.city || !user.user.country || !user.user.twitter || !user.user.website)) setErr('Please fully complete your user profile to submit');
     else setConfirmOpen(true);
   }
 
@@ -245,7 +245,7 @@ export default function Application() {
     else if (!user) setErr('Please log in to submit');
     else if (auth && !auth.wallet) setErr('Please verify a wallet to submit');
     else if (user && !user.user.emailVerified) setErr('Please verify your email to submit');
-    else if (user && (!user.user.artistName || !user.user.city || !user.user.country || !user.user.twitter || !user.user.website)) setErr('Please complete your user profile to submit');
+    else if (user && (!user.user.artistName || !user.user.city || !user.user.country || !user.user.twitter || !user.user.website)) setErr('Please fully complete your user profile to submit');
     else {
       setErr(false);
       setSubmitting(true);

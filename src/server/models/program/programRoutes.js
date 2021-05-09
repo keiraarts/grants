@@ -26,6 +26,7 @@ module.exports = (app) => {
   app.post('/api/program/finalizeApproved', program.finalizeApproved);
   app.post('/api/program/finalizeDeferred', program.finalizeDeferred);
   app.post('/api/program/getEmails', program.getEmails);
+  app.post('/api/program/getWallets', program.getWallets);
   app.post('/api/program/flagApplicant', program.flagApplicant);
   app.post('/api/program/removeFlag', program.removeFlag);
 };

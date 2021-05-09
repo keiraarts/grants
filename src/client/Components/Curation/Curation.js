@@ -84,7 +84,7 @@ export default function Curation({ nft, small, blind }) {
   const imageType = nft.art.split('.')[1];
 
   return (
-    <div className={ `margin-top flex full-width ${ !small && 'side-space' }` }>
+    <div className={ `margin-top flex full-width` }>
       { nft ?
         <div className='gallery-container full-width'>
           { (!isFullScreen && !small) &&

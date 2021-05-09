@@ -123,7 +123,7 @@ const ExhibitionNFT = ({ small, nft, src, important, hidden, contract, setHeight
 
   const contentProps = useSpring({
     opacity: order !== 2 ? 0 : 1,
-    marginLeft: order === 2 ? 0 : (order === 1 ? -2000 : 2000),
+    marginLeft: order === 2 ? 0 : (order < 2 ? -2000 : 2000),
     config: { duration: 500 }
   });
 
@@ -136,7 +136,7 @@ const ExhibitionNFT = ({ small, nft, src, important, hidden, contract, setHeight
   return (
     <div style={{ position: 'relative' }} ref={ containerRef }>
       <animated.div
-        className={ `margin-top flex full-width ${ !small && 'side-space' }` }
+        className={ `margin-top flex full-width` }
         style={{
           position: 'absolute',
           ...contentProps }}

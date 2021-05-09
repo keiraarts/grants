@@ -270,9 +270,8 @@ export default function Account() {
               <div className='text-s'>
                 @{ updateUser.twitter }
               </div>
-              { highlightConfirm && <div className='text-s margin-top-s text-err'><strong>Please press Confirm Verification after tweeting!</strong></div> }
               <div className='text-s margin-top'>
-                <em>All fields and verifications (email, wallet, & twitter) are required in order to submit artwork on Sevens</em>
+                <em>*All* fields and verifications (email, wallet, & twitter) are required in order to submit artwork on Sevens</em>
               </div>
               { err &&
                 <div className='margin-top-s text-s text-err'>
@@ -361,6 +360,7 @@ export default function Account() {
                       <div className='flex-full' />
                     </div>
                   }
+                  { highlightConfirm && <div className='text-s margin-top-s text-err'><strong>Please press Confirm Verification after tweeting!</strong></div> }
                   { err &&
                     <div className='margin-top-s text-s text-err'>
                       { err }

@@ -31,7 +31,7 @@ function shuffle(array) {
   return array;
 }
 
-export default function Portal() {
+export default function Portal({ updateScroll }) {
   const small = useStoreState(state => state.app.small);
   const cols = useStoreState(state => state.app.cols);
   const auth = useStoreState(state => state.user.auth);
@@ -45,6 +45,7 @@ export default function Portal() {
   const [resultsTab, setResultsTab] = useState('results');
   const [adminTab, setAdminTab] = useState(false);
   useEffect(() => {
+    updateScroll(true);
     fetch(`${ apiUrl() }/program/getCurationPrograms`, {
       method: 'post',
       headers: {
@@ -576,7 +577,7 @@ export default function Portal() {
                       <Curation nft={ applicants.unapproved[0] } small={ small } blind={ selectedProgram.blindVoting } />
                     </React.Fragment>
                     :
-                    <div className='margin-top-s'>
+                    <div className='margin-top'>
                       <ArtList list={ applicants.unapproved } blind={ selectedProgram.blindVoting } type='approve' contentRef={ contentRef } cols={ cols } />
                     </div>
                   }

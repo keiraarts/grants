@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
-import { useStoreActions } from 'easy-peasy';
+import { useStoreState, useStoreActions } from 'easy-peasy';
 import Fortmatic from 'fortmatic';
 import Web3 from 'web3';
 
 export default function WalletConnect() {
+  const provider = useStoreState(state => state.eth.provider);
   const setProvider = useStoreActions(dispatch => dispatch.eth.setProvider);
 
   function connectWallet() {
@@ -15,10 +16,12 @@ export default function WalletConnect() {
         setProvider(null);
       }
     } else {
-      const fm = new Fortmatic('pk_live_B635DD2C775F3285');
-      window.web3 = new Web3(fm.getProvider());
-      const provider = window.web3.currentProvider;
-      setProvider(provider);
+      if (!(provider && provider.selectedAddress)) { 
+        const fm = new Fortmatic('pk_live_B635DD2C775F3285');
+        window.web3 = new Web3(fm.getProvider());
+        const provider = window.web3.currentProvider;
+        setProvider(provider);
+      }
     }
   }
 

@@ -255,9 +255,11 @@ export default function Exhibition({ updateScroll }) {
       }
       { (id && gallery && gallery.length) &&
         <div>
+          <NFT key={ order - 3 } small={ small } nft={ gallery[order - 2] } src={ src1 } contract={ exhibition.contract } setHeight={ setHeight } order={ 0 } ethPrice={ ethPrice } important hidden />
           <NFT key={ order - 2 } small={ small } nft={ gallery[order - 2] } src={ src1 } contract={ exhibition.contract } setHeight={ setHeight } order={ 1 } ethPrice={ ethPrice } important hidden />
           <NFT key={ order - 1} small={ small } nft={ gallery[order - 1] } src={ src2 } contract={ exhibition.contract } setHeight={ setHeight } order={ 2 } ethPrice={ ethPrice } important />
           <NFT key={ order } small={ small } nft={ gallery[order] } src={ src3 } contract={ exhibition.contract } setHeight={ setHeight } order={ 3 } ethPrice={ ethPrice } important hidden />
+          <NFT key={ order + 1 } small={ small } nft={ gallery[order] } src={ src3 } contract={ exhibition.contract } setHeight={ setHeight } order={ 4 } ethPrice={ ethPrice } important hidden />
         </div>
       }
       <div ref={ nftRef } className='exhibition-height' />

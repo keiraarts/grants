@@ -68,7 +68,9 @@ const App = () => {
                   <Route path="/create-program" exact component={ CreateProgram } />
                   <Route path="/apply/:program" exact component={ Apply } />
                   <Route path="/curator/:org" exact component={ Organizer } />
-                  <Route path="/curation" exact component = {Curation } />
+                  <Route path="/curation" render={ () => (
+                    <Curation updateScroll={ updateScroll } />
+                  )} />
                   <Route path="/testimony" exact component={ Testimony } />
                   <Route path="/register" exact component={ Register } />
                   <Route path="/login" exact component={ Login } />

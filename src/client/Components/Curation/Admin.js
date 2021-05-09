@@ -3,8 +3,11 @@ import { Link } from 'react-router-dom';
 import { useStoreState } from 'easy-peasy';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { CSVLink } from 'react-csv';
+import ReactModal from 'react-modal';
 import { apiUrl } from '../../baseUrl';
-
+import Fortmatic from 'fortmatic';
+import Web3 from 'web3';
+import DisperseABI from '../Web3/DisperseABI.json';
 
 import WalletConnect from '../Web3/WalletConnect';
 import Drag from '../../assets/drag.png';
@@ -16,6 +19,14 @@ const reorder = (list, startIndex, endIndex) => {
   result.splice(endIndex, 0, removed);
 
   return result;
+};
+
+const sum = (vals) => {
+  let sum = new Web3.utils.BN('0');
+  vals.forEach(val => {
+    sum = sum.add(new Web3.utils.BN(Web3.utils.toWei(`${ val }`, 'ether')))
+  });
+  return sum;
 };
 
 export default function Admin({ selectedProgram, setSelectedProgram, programs, setPrograms, auth }) {
@@ -178,7 +189,9 @@ export default function Admin({ selectedProgram, setSelectedProgram, programs, s
   }
 
   const [emails, setEmails] = useState(null);
+  const [gettingE, setGettinE] = useState(false);
   const getEmails = (type) => {
+    setGettinE(true);
     setEmails(null);
     fetch(`${ apiUrl() }/program/getEmails`, {
       method: 'POST',
@@ -192,8 +205,74 @@ export default function Admin({ selectedProgram, setSelectedProgram, programs, s
     .then(json => {
       if (json.success) {
         setEmails(json.success);
+        setGettinE(false);
       }
     });
+  }
+
+  const [wallets, setWallets] = useState(null);
+  const [grants, setGrants] = useState([]);
+  const [grantAll, setGrantAll] = useState(0.05);
+  const [gettingW, setGettingW] = useState(false);
+  const [walletOpen, setWalletOpen] = useState(false);
+  const getWallets = (type) => {
+    setGettingW(true);
+    setWallets(null);
+    fetch(`${ apiUrl() }/program/getWallets`, {
+      method: 'POST',
+      body: JSON.stringify({ program: selectedProgram.id, org: selectedProgram.organizers[0].id, type }),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': auth.token
+      },
+    }).then(res => res.json())
+    .then(json => {
+      if (json.success) {
+        setGrants(Array(json.success.length).fill(grantAll));
+        setWallets(json.success);
+        setGettingW(false);
+      }
+    });
+  }
+
+  const setGrant = (index, amt) => {
+    grants[index] = amt;
+    setGrants([...grants]);
+  }
+
+  const distribute = () => {
+    const contractAddress = '0xd152f549545093347a162dce210e7293f1452150';
+    let web3;
+    if (window.ethereum) {
+      web3 = new Web3(provider);
+    } else {
+      const fm = new Fortmatic('pk_live_B635DD2C775F3285');
+      web3 = new Web3(fm.getProvider());
+    }
+    const Contract = new web3.eth.Contract(DisperseABI, contractAddress);
+
+    const addresses = [];
+    const values = [];
+    wallets.forEach(wallet => addresses.push(wallet[1]))
+    grants.forEach(grant => values.push(new Web3.utils.BN(Web3.utils.toWei(`${ grant }`, 'ether'))));
+
+    Contract.methods.disperseEther(addresses, values).send({
+      from: provider.selectedAddress,
+      value: new Web3.utils.BN(sum(grants).toString())
+    })
+    .then(e => console.log(e));
+  }
+
+  const removeRecipient = (index) => {
+    setWallets([
+      ...wallets.slice(0, index),
+      ...wallets.slice(index + 1)
+    ]);
+    setGrants([
+      ...grants.slice(0, index),
+      ...grants.slice(index + 1)
+    ]);
   }
 
   const updateMintTo = (mintToArtist) => {
@@ -265,6 +344,69 @@ export default function Admin({ selectedProgram, setSelectedProgram, programs, s
   return (
     <div className='margin-top'>
       <WalletConnect />
+      <ReactModal
+        isOpen={ walletOpen }
+        className='modal-container'
+        onRequestClose={ () => setWalletOpen(false) }
+        shouldCloseOnOverlayClick={ true }
+        ariaHideApp={ false }
+      >
+        <div className='text-mid center'>
+          <strong>Distribute Grants in ETH</strong>
+          <div className='text-s margin-top'>
+            Set grant amount for all recipients
+            <div className='flex center'>
+              <div className='flex-full' />
+              <div className='small-button v-center' onClick={ () => { setGrants(Array(wallets.length).fill(grantAll)) } }>
+                Set
+              </div>
+              <div className='small-space' />
+              <div className='input-small'>
+                <div className='form__group-full field'>
+                  <input type='number' className='form__field' placeholder='Number' name='number' id='number' value={ grantAll } onChange={e => setGrantAll(Number(e.target.value)) } />
+                  <label className='form__label'>ETH</label>
+                </div>
+              </div>
+              <div className='flex-full' />
+            </div>
+          </div>
+          <div className='text-s margin-top'>
+            <div className='center'>
+              <div className='button v-center' onClick={ () => { distribute() } }>
+                Distribute Grants
+              </div>
+            </div>
+            <div className='text-xs margin-top-s'>
+              { wallets && wallets.length } recipients ({ grants && grants.length && Web3.utils.fromWei(sum(grants).toString(), 'ether') } ETH)
+            </div>
+          </div>
+          <div className='margin-top'>
+            <strong>Grant Recipients</strong>
+          </div>
+          { wallets && wallets.length && wallets.map((item, index) => 
+            (<div className='center margin-top'>
+              <div>
+                { item[0] }
+                <div className='text-xxs'>{ item[1] }</div>
+              </div>
+              <div className='flex center'>
+                <div className='flex-full' />
+                <div className='small-button v-center' onClick={ () => removeRecipient(index) }>
+                  Remove
+                </div>
+                <div className='small-space' />
+                <div className='input-small'>
+                  <div className='form__group-full field'>
+                    <input type='number' className='form__field' placeholder='Number' name='number' id='number' maxLength='4' value={ grants[index] } onChange={e => { setGrant(index, Number(e.target.value)) } } />
+                    <label className='form__label'>ETH</label>
+                  </div>
+                </div>
+                <div className='flex-full' />
+              </div>
+            </div>)
+          )}
+        </div>
+      </ReactModal>
       <div className='text-mid flex'>
         <div>
           <div className='text-s'>
@@ -425,23 +567,53 @@ export default function Admin({ selectedProgram, setSelectedProgram, programs, s
       </div>
       <div className='margin-top'>
         <div className='text-s'>Get Applicant Emails</div>
-        <div className='margin-top-xs flex'>
-          <div className='small-button' onClick={ () => getEmails('all') }>
-            All
+        { !gettingE ?
+          <div className='margin-top-xs flex'>
+            <div className='small-button' onClick={ () => getEmails('all') }>
+              All
+            </div>
+            <div className='small-space' />
+            <div className='small-button' onClick={ () => getEmails('approved') }>
+              Finalized
+            </div>
+            <div className='small-space' />
+            <div className='small-button' onClick={ () => getEmails('deferred') }>
+              Deferred
+            </div>
           </div>
-          <div className='small-space' />
-          <div className='small-button' onClick={ () => getEmails('approved') }>
-            Finalized
+          :
+          <div className='margin-top-xs'>
+            <div className="loading"><div></div><div></div></div>
           </div>
-          <div className='small-space' />
-          <div className='small-button' onClick={ () => getEmails('deferred') }>
-            Deferred
-          </div>
-        </div>
+        }
         { (emails && emails.length > 0) &&
           <CSVLink data={ emails } className='margin-top-s text-grey text-s'>Download CSV (Email Count: { emails.length })</CSVLink>
         }
         { (emails && emails.length === 0) &&
+          <div className='margin-top-s text-s'>No data - did you finalize your applicants?</div>
+        }
+      </div>
+      <div className='margin-top'>
+        <div className='text-s'>Distribute ETH Grants</div>
+        { !gettingW ?
+          <div className='margin-top-xs flex'>
+            <div className='small-button' onClick={ () => getWallets('minted') }>
+              Retrieve Wallets
+            </div>
+            <div className='small-space' />
+          </div>
+          :
+          <div className='margin-top-xs'>
+            <div className="loading"><div></div><div></div></div>
+          </div>
+        }
+        { (wallets && wallets.length > 0) &&
+          <div className='margin-top-s text-grey text-s pointer' onClick={ () => { setWalletOpen(true) } }>Prepare Grant & Send ETH</div>
+        }
+        { (wallets && wallets.length > 0) &&
+          <div><CSVLink data={ wallets } className='margin-top-s text-grey text-s'>Download CSV (Wallet Count: { wallets.length })</CSVLink></div>
+        }
+        { (wallets && wallets.length === 0) &&
           <div className='margin-top-s text-s'>No data - did you finalize your applicants?</div>
         }
       </div>

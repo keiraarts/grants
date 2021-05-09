@@ -100,6 +100,30 @@ a {
   position: fixed;
 }
 
+.modal-container {
+  background-color: rgba(255, 255, 255, 0.85);
+  border: solid 0.1rem black;
+  font-family: 'Roboto Slab', sans-serif;
+  border-radius: 1rem;
+  border-image: linear-gradient(to bottom right, #b827fc 0%, #2c90fc 25%, #b8fd33 50%, #fec837 75%, #fd1892 100%);
+  border-image-slice: 1;
+  overflow-y: scroll;
+  display: block;
+  position: absolute;
+  height: auto;
+  bottom:0;
+  top:0;
+  left:0;
+  right:0;
+  margin: 5vh;
+  padding: 2rem;
+}
+
+.input-small {
+  width: 5rem;
+
+}
+
 .flex {
   display: flex;
 }
@@ -248,7 +272,7 @@ a {
 }
 
 .text-xxs {
-  font-size: 0.7rem;
+  font-size: 0.6rem;
 }
 
 .text-err {
