@@ -326,7 +326,10 @@ export default function OpenMarket({ tokenId, contract, resizeContainer, ethPric
   const purchase = async (order) => {
     connectWallet();
     if (provider && provider.selectedAddress) {
-      const foundOrder = seaportOrders.find(o => o.side === 1 && !o.closing_date);
+      let foundOrder;
+      if (order) foundOrder = seaportOrders.find(o => o.hash.toLowerCase() === order.order_hash);
+      else foundOrder = seaportOrders.find(o => o.side === 1 && !o.closing_date);
+      console.log('wtf', seaportOrders);
       await seaport.fulfillOrder({
         order: foundOrder,
         accountAddress: provider.selectedAddress,

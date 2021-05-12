@@ -37,8 +37,6 @@ export default function Ethos() {
         <br /><br />
         We believe in a bright future for artistry across the globe, and we are excited to welcome others into this new era through our shared passion for art, music, and design.
         <br /><br />
-        We give much gratitude to our <Link to='/donate' className='text-rainbow remove-a' onClick={ () => window.scrollTo(0, 0) }>donors</Link>.
-        <br /><br />
       </div>
     </div>
   );

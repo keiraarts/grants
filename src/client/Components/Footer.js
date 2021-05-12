@@ -18,7 +18,7 @@ export default function Header() {
   return (
     <div className='footer'>
       <div className='center text-s'>
-        Curated by <Link to='/team' className='remove-a'><div className='text-grey'>Sevens Foundation Committee</div></Link><br /><br />
+        Supported by <Link to='/team' className='remove-a'><div className='text-grey'>Sevens Foundation Committee</div></Link><br /><br />
         Developed by <a className='text-rainbow pointer' onClick={ () => openLink('https://y.at/%F0%9F%91%89%F0%9F%8E%B1%F0%9F%95%B3') }>illestrater</a><br />
       </div>
       <div className='social-icons margin-top flex center'>

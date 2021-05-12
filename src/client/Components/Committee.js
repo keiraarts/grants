@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from "react-router-dom";
 
 import '../styles.scss';
 
@@ -18,7 +19,9 @@ export default function Committee() {
         Our shared love of art, music, and design
       </div>
       <div className='page-container margin-top'>
-        <div className='text-m'>Advisors</div>
+        <Link to='/donate' className='text-rainbow remove-a'>Sevens Foundation's Donors</Link>
+        <div className='text-s'>Our sincerest thanks to you all</div>
+        <div className='text-m margin-top'>Advisors</div>
         <span className='text-s text-grey pointer' onClick={ () => openLink('https://y.at/%F0%9F%91%89%F0%9F%8E%B1%F0%9F%95%B3') }>Tim Kang (illestrater)</span>
         <div className='text-s'>Sevens Developer & paradigm pusher</div>
         <span className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://twitter.com/darlington') }>Mike Darlington</span>
