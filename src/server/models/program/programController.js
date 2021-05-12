@@ -553,7 +553,7 @@ exports.getGallery = async (req, res) => {
       organizerUrl: program.organizers[0].url
     });
   }).select('-approved -rejected -program -statement -additional -ineligible -flagged -approvalCount -rejectCount -emailed -accepted')
-  .populate('user', 'artistName birthYear country city website twitter instagram')
+  .populate('user', 'artistName birthYear country city website twitter instagram wallet')
   .sort('order');
 };
 
@@ -771,7 +771,7 @@ exports.getWallets = async (req, res) => {
 
   let wallets = [];
   applicants.forEach(applicant => {
-    wallets.push([applicant.user.artistName, applicant.user.wallet]);
+    wallets.push([applicant.user.artistName, applicant.user.wallet, applicant.order]);
   })
 
   return res.json({ success: wallets });

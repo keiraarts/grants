@@ -73,8 +73,7 @@ const dateConfig = {
 };
 
 
-export default function OpenMarket({ tokenId, contract, resizeContainer, ethPrice }) {
-  const auth = useStoreState(state => state.user.auth);
+export default function OpenMarket({ tokenId, contract, resizeContainer, ethPrice, artistWallet }) {
   const provider = useStoreState(state => state.eth.provider);
   const setProvider = useStoreActions(dispatch => dispatch.eth.setProvider);
 
@@ -388,13 +387,13 @@ export default function OpenMarket({ tokenId, contract, resizeContainer, ethPric
   let asset = {};
   if (gotAsset && gotAsset.assets && gotAsset.assets[0]) asset = gotAsset.assets[0];
 
-  let isOwner = false, username = null;
+  let isOwner = false, isArtist = false;
   let address = (asset && asset.owner && asset.owner.address) ? asset.owner.address : null;
   if (asset && asset.owner && asset.owner.user && asset.owner.user.username) {
-    username = asset.owner.user.username;
     address = asset.owner.user.username;
   }
 
+  if ((asset && asset.owner) && asset.owner.address.toLowerCase() === artistWallet.toLowerCase()) isArtist = true;
   if ((asset && asset.owner) && asset.owner.address === '0x47bcd42b8545c23031e9918c3d823be4100d4e87') address = 'Sevens Foundation - Not For Sale';
   if ((asset && asset.owner) && asset.owner.address &&
       provider && provider.selectedAddress && asset.owner.address.toLowerCase() === provider.selectedAddress.toLowerCase()) {
@@ -593,12 +592,19 @@ export default function OpenMarket({ tokenId, contract, resizeContainer, ethPric
                         <span className='text-xs'>{ (bid.maker.address.toLowerCase() === connectedAddress) ? 'You - ' : '' }{ bid.user }</span>
                       </span>
                     </div>
+                    { bid.expiration_time ?
+                      <div className='margin-top-xs text-xxs'>
+                        Expires { moment(bid.expiration_time * 1000).fromNow() }
+                      </div>
+                      :
+                      <></>
+                    }
                   </div>
                 );
               })
               :
               <div className='margin-top text-mid'>
-                No active bids
+                { isArtist ? 'Tendering Bids ❤️' : 'No active bids' }
               </div>
             }
           </div>

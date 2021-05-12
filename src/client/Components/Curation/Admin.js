@@ -8,6 +8,7 @@ import { apiUrl } from '../../baseUrl';
 import Fortmatic from 'fortmatic';
 import Web3 from 'web3';
 import DisperseABI from '../Web3/DisperseABI.json';
+import GenesisABI from '../Web3/GenesisABI.json';
 
 import WalletConnect from '../Web3/WalletConnect';
 import Drag from '../../assets/drag.png';
@@ -263,6 +264,27 @@ export default function Admin({ selectedProgram, setSelectedProgram, programs, s
     })
     .then(e => console.log(e));
   }
+  
+  // const distributeGenesis = async () => {
+  //   const contractAddress = '0xc0b4777897a2a373da8cb1730135062e77b7baec';
+  //   let web3;
+  //   if (window.ethereum) {
+  //     web3 = new Web3(provider);
+  //   } else {
+  //     const fm = new Fortmatic('pk_live_B635DD2C775F3285');
+  //     web3 = new Web3(fm.getProvider());
+  //   }
+  //   const Contract = new web3.eth.Contract(GenesisABI, contractAddress);
+
+  //   for (const wallet of wallets) {
+  //     if (wallet[2] !== 59) {
+  //       await Contract.methods.safeTransferFrom(provider.selectedAddress, wallet[1], wallet[2]).send({
+  //         from: provider.selectedAddress,
+  //       })
+  //       .then(e => console.log(e));
+  //     }
+  //   }
+  // }
 
   const removeRecipient = (index) => {
     setWallets([
@@ -610,6 +632,11 @@ export default function Admin({ selectedProgram, setSelectedProgram, programs, s
         { (wallets && wallets.length > 0) &&
           <div className='margin-top-s text-grey text-s pointer' onClick={ () => { setWalletOpen(true) } }>Prepare Grant & Send ETH</div>
         }
+        {/* { (wallets && wallets.length > 0) &&
+          <div>
+            <div className='margin-top-s text-grey text-s pointer' onClick={ () => { distributeGenesis() } }>Distribute Genesis</div>
+          </div>
+        } */}
         { (wallets && wallets.length > 0) &&
           <div><CSVLink data={ wallets } className='margin-top-s text-grey text-s'>Download CSV (Wallet Count: { wallets.length })</CSVLink></div>
         }
