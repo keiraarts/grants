@@ -217,6 +217,7 @@ export default function Exhibition({ updateScroll }) {
               <Link to={ `/${ url }/${ enterId  }` } className='button'>
                 <span className='text-l'>Enter Gallery</span>
               </Link>
+              <div className='margin-top'>{ gallery.length } Artworks</div>
             </div>
             :
             <div className='flex center'>

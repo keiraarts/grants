@@ -528,6 +528,7 @@ export default function OpenMarket({ tokenId, contract, resizeContainer, ethPric
                   <strong>My Wallet</strong><br />
                   <div className='text-xxs'>{ provider.selectedAddress }</div>
                   {/* { `${ provider.selectedAddress.slice(0,8).toLowerCase() }...${ provider.selectedAddress.slice(-4).toLowerCase() }` } */}
+                  <div className='text-xxs margin-top-xs'>{ balance !== null ? `Balance: ${ balance } WETH` : '' }</div>
                 </div>
               }
             </div>
@@ -540,10 +541,10 @@ export default function OpenMarket({ tokenId, contract, resizeContainer, ethPric
             </div>
           </div>
           { !isOwner ?
-            <div className='flex margin-top-s'> 
+            <div className='flex margin-top-s'>
               <div className='form__group field'>
                 <input type='number' className='form__field' placeholder='Bid Amount' name='amount' id='amount' required maxLength='100' onChange={e => { setBid(e.target.value); setBidErr(null); } } />
-                <label className='form__label_s'>Bid Amount { balance !== null ? `(${ balance } WETH)` : '(WETH)' }</label>
+                <label className='form__label_s'>Bid Amount (WETH)</label>
               </div>
               &nbsp;<input type='submit' value='Place Bid' className='button-min-size small-button' onClick={ placeBid } />
             </div>
