@@ -154,7 +154,7 @@ const program = {
     },
     mintToArtist: {
         type: Boolean,
-        default: false,
+        default: true,
     },
     curationLock: {
         type: Boolean,
@@ -164,6 +164,18 @@ const program = {
         type: Boolean,
         default: false,
     },
+    advancedCuration: {
+        type: Boolean,
+        default: false,
+    },
+    advancedMetrics: [{
+        metric: {
+            type: String,
+        },
+        weight: {
+            type: Number
+        }
+    }],
     curatorAddress: {
         type: String
     },

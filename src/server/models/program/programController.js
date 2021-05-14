@@ -213,6 +213,9 @@ exports.updateCurationCriteria = async (req, res) => {
   program.blindVoting = req.body.blindVoting;
   program.topThreshold = req.body.topThreshold;
   program.voteThreshold = req.body.voteThreshold;
+  program.advancedCuration = req.body.advancedCuration;
+  program.advancedMetrics = req.body.advancedMetrics;
+  console.log(req.body.advancedMetrics, program.advancedMetrics);
   program.save();
   return res.json({ success: true });
 };
@@ -563,9 +566,9 @@ exports.getCurationPrograms = async (req, res) => {
     const user = await User.findById(jwt.id);
     if (!user) return res.json({ error: 'Authentication error' });
     const programs = await Program.find({ curators: jwt.id })
-      .select('organizer name url perpetual passByVotes topThreshold voteThreshold blindVoting mintToArtist hideResults curationLock finalized mintInProgress').populate('organizers');
+      .select('organizer name url perpetual passByVotes advancedCuration advancedMetrics topThreshold voteThreshold blindVoting mintToArtist hideResults curationLock finalized mintInProgress').populate('organizers');
     const sample = await Program.findById('60708c75525e3e035e8e2eb8')
-      .select('organizer name url perpetual passByVotes topThreshold voteThreshold blindVoting mintToArtist hideResults curationLock finalized mintInProgress').populate('organizers');
+      .select('organizer name url perpetual passByVotes advancedCuration advancedMetrics topThreshold voteThreshold blindVoting mintToArtist hideResults curationLock finalized mintInProgress').populate('organizers');
     if (jwt.id !== '6035e7415f0a684942f4e17c') programs.push(sample);
 
     return res.json({ success: programs });
@@ -825,3 +828,4 @@ exports.removeFlag = (req, res) => {
     });
   });
 };
+
