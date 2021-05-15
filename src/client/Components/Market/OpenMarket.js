@@ -230,7 +230,7 @@ export default function OpenMarket({ tokenId, contract, resizeContainer, ethPric
             tokenAddress: contract
           },
           accountAddress: provider.selectedAddress,
-          expirationTime: Math.round(Date.now() / 1000 + 60 * 60 * 24 * 7),
+          // expirationTime: Math.round(Date.now() / 1000 + 60 * 60 * 24 * 7),
           startAmount: bid,
         }).catch(err => {
           let error = err.message.replace('API Error 400: [\'', '');
