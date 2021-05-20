@@ -128,7 +128,6 @@ export default function Admin({ selectedProgram, setSelectedProgram, programs, s
   }
 
   const setMetricWeight = (index, weight) => {
-    console.log('new', index, weight);
     newMetrics[index].weight = weight;
     setNewMetrics([...newMetrics])
   }
@@ -575,7 +574,7 @@ export default function Admin({ selectedProgram, setSelectedProgram, programs, s
           }
           { newCriteria.advancedCuration &&
             <div>
-              <div className='flex margin-top-s'> 
+              <div className='flex margin-top-s'>
                 <div className='form__group field'>
                   <input type='text' className='form__field' placeholder='Scoring Metric' name='amount' id='amount' value={ metricVal } maxLength='50' onChange={e => setMetricVal(e.target.value) } />
                   <label className='form__label'>Scoring Metric</label>
@@ -726,7 +725,7 @@ export default function Admin({ selectedProgram, setSelectedProgram, programs, s
         </div>
       </div>
       <div className='margin-top'>
-        <div className='text-s'>Get Applicant Emails</div>
+        <div className='text-s'>Get Applicant Data</div>
         { !gettingE ?
           <div className='margin-top-xs flex'>
             <div className='small-button' onClick={ () => getEmails('all') }>
@@ -747,7 +746,7 @@ export default function Admin({ selectedProgram, setSelectedProgram, programs, s
           </div>
         }
         { (emails && emails.length > 0) &&
-          <CSVLink data={ emails } className='margin-top-s text-grey text-s'>Download CSV (Email Count: { emails.length })</CSVLink>
+          <CSVLink data={ emails } className='margin-top-s text-grey text-s'>Download CSV (Artist Count: { emails.length })</CSVLink>
         }
         { (emails && emails.length === 0) &&
           <div className='margin-top-s text-s'>No data - did you finalize your applicants?</div>

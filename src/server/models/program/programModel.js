@@ -293,6 +293,17 @@ const programApplicant = {
             ref:      'User',
         },
     }],
+    score: {
+        type: Number,
+        default: 0,
+    },
+    scores: [{
+        user: {
+            type:     mongoose.Schema.ObjectId,
+            ref:      'User',
+        },
+        score: mongoose.Schema.Types.Mixed
+    }],
     emailed: {
         type: Boolean,
         default: false

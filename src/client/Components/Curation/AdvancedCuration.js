@@ -27,7 +27,7 @@ function shuffle(array) {
   return array;
 }
 
-export default function AdvancedCuration({ selectedProgram, curateToggle }) {
+export default function AdvancedCuration({ selectedProgram, curateToggle, setSelectedProgram }) {
   const small = useStoreState(state => state.app.small);
   const cols = useStoreState(state => state.app.cols);
   const auth = useStoreState(state => state.user.auth);
@@ -57,14 +57,9 @@ export default function AdvancedCuration({ selectedProgram, curateToggle }) {
       } else {
         results.forEach(result => {
           if (!result.finalized) {
-            if (selectedProgram.passByVotes && !result.published) {
-              if (result.approvalCount >= selectedProgram.voteThreshold) filtered.mintable.push(result);
-              else filtered.unmintable.push(result);
-            } else if (!result.published) {
-              if (i < selectedProgram.topThreshold) filtered.mintable.push(result);
-              else filtered.unmintable.push(result);
-              i++;
-            }
+            if (i < selectedProgram.topThreshold) filtered.mintable.push(result);
+            else filtered.unmintable.push(result);
+            i++;
           } else {
             if (result.published) final.minted.push(result);
             else final.unminted.push(result);
@@ -79,7 +74,7 @@ export default function AdvancedCuration({ selectedProgram, curateToggle }) {
 
   const loadCuration = program => {
     setApplicants({});
-    fetch(`${ apiUrl() }/program/viewAllApplications`, {
+    fetch(`${ apiUrl() }/program/viewAllScoring`, {
       method: 'POST',
       body: JSON.stringify({ program: program._id }),
       headers: {
@@ -89,12 +84,15 @@ export default function AdvancedCuration({ selectedProgram, curateToggle }) {
       },
     })
     .then(res => res.json())
-    .then(json => setApplicants({
-      ...json,
-      unapproved: shuffle(json.unapproved),
-    }))
+    .then(json => {
+      setApplicants({
+        ...json,
+        unscored: shuffle(json.unscored),
+        scored: json.scored,
+      })
+    })
 
-    fetch(`${ apiUrl() }/program/viewResults`, {
+    fetch(`${ apiUrl() }/program/viewScoredResults`, {
       method: 'POST',
       body: JSON.stringify({ program: program._id }),
       headers: {
@@ -107,38 +105,46 @@ export default function AdvancedCuration({ selectedProgram, curateToggle }) {
     .then(json => setResults(json))
   }
 
+  const [score, setScore] = useState({})
+  const setMetric = (metric, val) => {
+    const newScore = {...score}
+    if (val > 100) val = 100;
+    if (val < 1) val = 1;
+    newScore[metric] = Number(val);
+    setScore(newScore);
+  }
+
+  useEffect(() => {
+    if (selectedProgram && selectedProgram.advancedMetrics) {
+      const score = {}
+      selectedProgram.advancedMetrics.forEach(item => {
+        score[item.metric.toLowerCase().replace(/\s+/g, '')] = 50;
+      })
+
+      setScore(score)
+    }
+  }, [selectedProgram])
+
   useEffect(() => {
     loadCuration(selectedProgram);
   }, [])
 
-  const decide = (type) => {
-    const id = applicants.unapproved[0].id;
-    let update;
-    const unapproved = applicants.unapproved.slice(1);
-    if (type === 'approve') {
-      const approved = [applicants.unapproved[0], ...applicants.approved];
-      update = {
-        ...applicants,
-        unapproved,
-        approved
-      }
-
-      const index = results.findIndex(e => e.id === id)
-      results[index].approvalCount++;
-      setResults([...results]);
-    } else if (type === 'reject') {
-      const rejected = [applicants.unapproved[0], ...applicants.rejected];
-      update = {
-        ...applicants,
-        unapproved,
-        rejected
-      }
+  const submitScore = () => {
+    let newScore = applicants.unscored[0];
+    newScore.scores.push({ score: { ...score }, user: auth.id });
+    const unscored = applicants.unscored.slice(1);
+    const scored = [newScore, ...applicants.scored];
+    const update = {
+      ...applicants,
+      unscored,
+      scored
     }
 
     setApplicants(update);
-    fetch(`${ apiUrl() }/program/approveOrReject`, {
+
+    fetch(`${ apiUrl() }/program/submitScore`, {
       method: 'POST',
-      body: JSON.stringify({ id, type }),
+      body: JSON.stringify({ id: applicants.unscored[0].id, score, program: selectedProgram._id }),
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
@@ -147,42 +153,33 @@ export default function AdvancedCuration({ selectedProgram, curateToggle }) {
     })
     .then(res => res.json())
     .then(json => {})
+
+    selectedProgram.advancedMetrics.forEach(item => {
+      score[item.metric.toLowerCase().replace(/\s+/g, '')] = 50;
+    })
+
+    setScore(score)
   }
 
   const undo = (id, type) => {
-    let update;
-    if (type === 'approve') {
-      const index = applicants.approved.findIndex(e => e.id === id);
-      const unapproved = [applicants.approved[index], ...applicants.unapproved];
-      update = {
-        ...applicants,
-        unapproved,
-        approved: [
-          ...applicants.approved.slice(0, index),
-          ...applicants.approved.slice(index + 1)
-        ]
-      }
-
-      const rIndex = results.findIndex(e => e.id === id)
-      results[rIndex].approvalCount--;
-      setResults([...results]);
-    } else if (type === 'reject') {
-      const index = applicants.rejected.findIndex(e => e.id === id);
-      const unapproved = [applicants.rejected[index], ...applicants.unapproved];
-      update = {
-        ...applicants,
-        unapproved,
-        rejected: [
-          ...applicants.rejected.slice(0, index),
-          ...applicants.rejected.slice(index + 1)
-        ]
-      }
+    const index = applicants.scored.findIndex(e => e.id === id);
+    const undoScored = applicants.scored[index];
+    const removeScoreIndex = undoScored.scores.findIndex(e => e.user === auth.id);
+    undoScored.scores = [...undoScored.scores.slice(0, removeScoreIndex), ...undoScored.scores.slice(removeScoreIndex + 1)]
+    const unscored = [undoScored, ...applicants.unscored];
+    const update = {
+      ...applicants,
+      unscored,
+      scored: [
+        ...applicants.scored.slice(0, index),
+        ...applicants.scored.slice(index + 1)
+      ]
     }
 
     setApplicants(update);
-    fetch(`${ apiUrl() }/program/undoApplicant`, {
+    fetch(`${ apiUrl() }/program/undoScoredApplicant`, {
       method: 'POST',
-      body: JSON.stringify({ id, type }),
+      body: JSON.stringify({ id, program: selectedProgram._id }),
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
@@ -296,6 +293,7 @@ export default function AdvancedCuration({ selectedProgram, curateToggle }) {
             Are you sure you want to finalize these artworks?<br /><br />
             <strong>{ filteredResults.mintable.length } artworks</strong> will be prepared for you to re-order them
             to your liking before minting.<br /><br />
+            <em>Please refresh to ensure you have the latest scores</em><br/><br/>
             <div className='center'>
               <div className='small-button button-red' onClick={ () => setApproveConfirm(false) }>Cancel</div><br /><br />
               <div className='margin-top-s small-button button-green' onClick={ () => finalizeApproved(true) }>Confirm</div>
@@ -333,15 +331,9 @@ export default function AdvancedCuration({ selectedProgram, curateToggle }) {
                   </div>
                 </div>
                 <div className='info-block-space' />
-                <div className={ viewTab === 'approved' ? 'info-block info-block-selected button-green' : 'info-block button-green' } onClick={ () => setViewTab('approved') }>
-                  <div className={ viewTab === 'approved' ? 'text-grey' : '' }>
-                    Approved
-                  </div>
-                </div>
-                <div className='info-block-space' />
-                <div className={ viewTab === 'deferred' ? 'info-block info-block-selected button-red' : 'info-block button-red' } onClick={ () => setViewTab('deferred') }>
-                  <div className={ viewTab === 'deferred' ? 'text-grey' : '' }>
-                    Deferred
+                <div className={ viewTab === 'scored' ? 'info-block info-block-selected button-green' : 'info-block button-green' } onClick={ () => setViewTab('scored') }>
+                  <div className={ viewTab === 'scored' ? 'text-grey' : '' }>
+                    Scored
                   </div>
                 </div>
               </div>
@@ -397,7 +389,7 @@ export default function AdvancedCuration({ selectedProgram, curateToggle }) {
                   { reorder ?
                     <ReorderList list={ filteredResults.mintable } setNewOrder={ setNewOrder } />
                     :
-                    <ArtList list={ filteredResults.mintable } blind={ selectedProgram.blindVoting } type='approve' contentRef={ contentRef } cols={ cols } />
+                    <ArtList list={ filteredResults.mintable } blind={ selectedProgram.blindVoting } type='approve' contentRef={ contentRef } cols={ cols } finalScore />
                   }
                   <div className='flex margin-top'>
                     Not Enough Votes (Total: { filteredResults.unmintable.length})
@@ -407,7 +399,7 @@ export default function AdvancedCuration({ selectedProgram, curateToggle }) {
                     </div>
                   </div>
                   <div className='margin-top' />
-                  <ArtList list={ filteredResults.unmintable } blind={ selectedProgram.blindVoting } type='approve' contentRef={ contentRef } cols={ cols } />
+                  <ArtList list={ filteredResults.unmintable } blind={ selectedProgram.blindVoting } type='approve' contentRef={ contentRef } cols={ cols } finalScore />
                 </div>
               }
               { resultsTab === 'minted' &&
@@ -428,11 +420,11 @@ export default function AdvancedCuration({ selectedProgram, curateToggle }) {
           }
           { viewTab === 'curate' && curateToggle &&
             <div className='margin-top-s'>
-              { (applicants && applicants.unapproved && applicants.unapproved.length) ?
+              { (applicants && applicants.unscored && applicants.unscored.length) ?
                 <div>
                   { !selectedProgram.curationLock ?
-                    <div className='flex'>
-                      Remaining: { applicants.unapproved.length }
+                    <div className='flex margin-top-s'>
+                      Remaining: { applicants.unscored.length }
                       <div className='flex-full' />
                       <img src={ Tile } className={ curationView === 'gallery' ? 'curation-control' : 'curation-control-selected' } onClick={ () => setCurationView('tile') } />
                       <img src={ Gallery } className={ curationView === 'tile' ? 'margin-left-s curation-control' : 'margin-left-s curation-control-selected' } onClick={ () => setCurationView('gallery') } />
@@ -447,23 +439,44 @@ export default function AdvancedCuration({ selectedProgram, curateToggle }) {
                     </div>
                   }
                   { (curationView === 'gallery' && !selectedProgram.curationLock) &&
-                    <div className='flex margin-top-s'>
-                      <div className='small-button flex-full' onClick={ () => decide('approve') }>
-                        Approve
+                    <div className='margin-top-s'>
+                      <div>
+                        { selectedProgram.advancedMetrics.map((item, index) => {
+                          const metricField = item.metric.toLowerCase().replace(/\s+/g, '');
+                          return (
+                            <div className='flex margin-top-s' key={ index }>
+                              <div>
+                                <div className='text-s'><strong>{ item.metric }</strong></div>
+                                <div className='slidecontainer'>
+                                  <input type='range' min='1' max='100' className='slider' id={ metricField } value={ score[metricField] } onChange={ (e) => setMetric(metricField, e.target.value) } />
+                                </div>
+                              </div>
+                              <div className='small-space' />
+                              <div className='flex'>
+                                <div className='form__group field margin-top-minus'>
+                                  <input type='number' className='form__field' placeholder='Value' value={ score[metricField] } name='amount' id='amount' max='100' onChange={e => setMetric(metricField, e.target.value) } />
+                                  <label className='form__label'>Value</label>
+                                </div>
+                              </div>
+                            </div>
+                            )
+                          })
+                        }
                       </div>
-                      <div className='info-block-space' />
-                      <div className='small-button flex-full' onClick={ () => decide('reject') }>
-                        Defer
+                      <div className='flex margin-top-s'>
+                        <div className='small-button flex-full' onClick={ submitScore }>
+                          Submit Score
+                        </div>
                       </div>
                     </div>
                   }
                   { (curationView === 'gallery' && !selectedProgram.curationLock) ?
-                    <React.Fragment key={ applicants.unapproved[0].id }>
-                      <Curation nft={ applicants.unapproved[0] } small={ small } blind={ selectedProgram.blindVoting } />
+                    <React.Fragment key={ applicants.unscored[0].id }>
+                      <Curation nft={ applicants.unscored[0] } small={ small } blind={ selectedProgram.blindVoting } />
                     </React.Fragment>
                     :
                     <div className='margin-top'>
-                      <ArtList list={ applicants.unapproved } blind={ selectedProgram.blindVoting } type='approve' contentRef={ contentRef } cols={ cols } />
+                      <ArtList list={ applicants.unscored } blind={ selectedProgram.blindVoting } type='approve' contentRef={ contentRef } cols={ cols } />
                     </div>
                   }
                 </div>
@@ -477,24 +490,28 @@ export default function AdvancedCuration({ selectedProgram, curateToggle }) {
           }
         </div>
       }
-      { (viewTab === 'approved' && selectedProgram) &&
+      { (viewTab === 'scored' && selectedProgram && curateToggle) &&
         <div className='margin-top'>
-          { applicants && applicants.approved &&
+          { applicants && applicants.scored &&
             <div>
-              Total: { applicants.approved.length }
+              Total: { applicants.scored.length }
+              <div className='margin-top'>
+                <div className='text-mid'><strong>Scoring Calculation</strong></div>
+                { selectedProgram && selectedProgram.advancedMetrics && selectedProgram.advancedMetrics.length > 0 ?
+                  <div className='text-xs'>
+                    ({ 
+                      selectedProgram.advancedMetrics.map((item, index) => {
+                        return (<span key={ index }>{ item.metric } * { item.weight }%{ index !== selectedProgram.advancedMetrics.length - 1 ? ' + ' : '' }</span>)
+                      })
+                    })
+                    / { selectedProgram.advancedMetrics.length }
+                  </div>
+                  :
+                  <div>Admin has not yet set any metrics</div>
+                }
+              </div>
               <div className='margin-top' />
-              <ArtList list={ applicants.approved } blind={ selectedProgram.blindVoting } undo={ undo } type='approve' contentRef={ contentRef } cols={ cols } />
-            </div>
-          }
-        </div>
-      }
-      { (viewTab === 'deferred' && selectedProgram) &&
-        <div className='margin-top'>
-          { applicants && applicants.rejected &&
-            <div>
-              Total: { applicants.rejected.length }
-              <div className='margin-top' />
-              <ArtList list={ applicants.rejected } blind={ selectedProgram.blindVoting } undo={ undo } type='reject' contentRef={ contentRef } cols={ cols } />
+              <ArtList list={ applicants.scored } blind={ selectedProgram.blindVoting } undo={ undo } type='approve' contentRef={ contentRef } cols={ cols } metrics={ selectedProgram.advancedMetrics } user={ auth.id } />
             </div>
           }
         </div>

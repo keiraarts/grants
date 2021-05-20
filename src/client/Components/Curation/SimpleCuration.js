@@ -27,7 +27,7 @@ function shuffle(array) {
   return array;
 }
 
-export default function SimpleCuration({ selectedProgram, curateToggle }) {
+export default function SimpleCuration({ selectedProgram, curateToggle, setSelectedProgram }) {
   const small = useStoreState(state => state.app.small);
   const cols = useStoreState(state => state.app.cols);
   const auth = useStoreState(state => state.user.auth);
@@ -477,7 +477,7 @@ export default function SimpleCuration({ selectedProgram, curateToggle }) {
           }
         </div>
       }
-      { (viewTab === 'approved' && selectedProgram) &&
+      { (viewTab === 'approved' && selectedProgram && curateToggle) &&
         <div className='margin-top'>
           { applicants && applicants.approved &&
             <div>
@@ -488,7 +488,7 @@ export default function SimpleCuration({ selectedProgram, curateToggle }) {
           }
         </div>
       }
-      { (viewTab === 'deferred' && selectedProgram) &&
+      { (viewTab === 'deferred' && selectedProgram && curateToggle) &&
         <div className='margin-top'>
           { applicants && applicants.rejected &&
             <div>

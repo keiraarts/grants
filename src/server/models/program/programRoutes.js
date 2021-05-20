@@ -22,6 +22,10 @@ module.exports = (app) => {
   app.post('/api/program/viewAllApplications', program.viewAllApplications);
   app.post('/api/program/viewResults', program.viewResults);
   app.post('/api/program/approveOrReject', program.approveOrReject);
+  app.post('/api/program/viewAllScoring', program.viewAllScoring);
+  app.post('/api/program/submitScore', program.submitScore);
+  app.post('/api/program/undoScoredApplicant', program.undoScoredApplicant);
+  app.post('/api/program/viewScoredResults', program.viewScoredResults);
   app.post('/api/program/undoApplicant', program.undoApplicant);
   app.post('/api/program/finalizeApproved', program.finalizeApproved);
   app.post('/api/program/finalizeDeferred', program.finalizeDeferred);

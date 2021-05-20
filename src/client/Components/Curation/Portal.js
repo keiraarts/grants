@@ -58,11 +58,9 @@ export default function Portal({ updateScroll }) {
   const closePage = () => {
     setSelectedProgram(null);
     setAdminTab(false);
-    setViewTab('curate');
   }
 
   const isAdmin = selectedProgram && selectedProgram.organizers[0].admins.find(e => e === auth.id);
-  console.log(selectedProgram);
 
   return (
     <div className='content-block' ref={ contentRef }>
@@ -125,16 +123,16 @@ export default function Portal({ updateScroll }) {
               <div>
                 { !adminTab &&
                   <div>
-                    { curateToggle ?
+                    { !curateToggle ?
                       <div>
-                        <div className='small-button' onClick={ () => setCurateToggle(false) }>
+                        <div className='small-button' onClick={ () => setCurateToggle(true) }>
                           Curation
                           <img src={ Switch } className='switch-icon' />
                         </div>
                       </div>
                     :
                       <div>
-                        <div className='small-button' onClick={ () => setCurateToggle(true) }>
+                        <div className='small-button' onClick={ () => setCurateToggle(false) }>
                           Results
                           <img src={ Switch } className='switch-icon' />
                         </div>
@@ -158,10 +156,10 @@ export default function Portal({ updateScroll }) {
         />
       }
       { (selectedProgram && !adminTab && !selectedProgram.advancedCuration) &&
-        <SimpleCuration selectedProgram={ selectedProgram } curateToggle={ curateToggle } />
+        <SimpleCuration selectedProgram={ selectedProgram } curateToggle={ curateToggle } setSelectedProgram={ setSelectedProgram } />
       }
       { (selectedProgram && !adminTab && selectedProgram.advancedCuration) &&
-        <AdvancedCuration selectedProgram={ selectedProgram } curateToggle={ curateToggle } />
+        <AdvancedCuration selectedProgram={ selectedProgram } curateToggle={ curateToggle } setSelectedProgram={ setSelectedProgram } />
       }
     </div>
   );
