@@ -539,7 +539,7 @@ export default function Admin({ selectedProgram, setSelectedProgram, programs, s
           </div>
           <div className='text-s margin-top form__title'>Curation Type</div>
           <div className='select-dropdown margin-top-minus'>
-            <select name='Mint' className='text-black' defaultValue={ `${ newCriteria.advancedCuration }` } value={ `${ newCriteria.advancedCuration }` } required onChange={e => setNewCriteria({ ...newCriteria, advancedCuration: (e.target.value === 'true') }) }>
+            <select name='Mint' className='text-black' defaultValue={ `${ newCriteria.advancedCuration }` } value={ `${ newCriteria.advancedCuration }` } required onChange={e => setNewCriteria({ ...newCriteria, advancedCuration: (e.target.value === 'true'), passByVotes: (e.target.value === 'true') ? false : newCriteria.passByVotes }) }>
               <option value='default' disabled hidden>
                 Select an option
               </option>

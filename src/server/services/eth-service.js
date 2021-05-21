@@ -460,17 +460,13 @@ module.exports = (app) => {
     if (program.mintInProgress) return res.json({ error: 'Minting is already in progress' });
     if (!program.mintToArtist && !organizer.wallet) return res.json({ error: 'Curator must verify wallet' });
 
-    if (program.passByVotes) {
-      ProgramApplicant.find({ program: req.body.id, order: { $exists: true }, published: false }, (err, applicants) => {
-        program.mintInProgress = true;
-        program.exhibiting = true;
-        program.save();
+    ProgramApplicant.find({ program: req.body.id, order: { $exists: true }, published: false }, (err, applicants) => {
+      program.mintInProgress = true;
+      program.exhibiting = true;
+      program.save();
 
-        mint(applicants, program, organizer);
-      })
-    } else {
-      ProgramApplicant.find({ })
-    }
+      mint(applicants, program, organizer);
+    }).sort('order');
   });
 
   app.post('/api/program/createExhibition', async (req, res) => {
