@@ -1319,6 +1319,10 @@ input[type=number] {
   background-color: rgb(255,182,193);
 }
 
+.button-blue {
+  background-color: rgb(182, 246, 255);
+}
+
 .small-button:hover {
   background-image: repeating-linear-gradient(45deg, violet, indigo, blue, green, yellow, orange, red, violet);
   background-clip: text;

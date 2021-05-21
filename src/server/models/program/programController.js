@@ -213,7 +213,32 @@ exports.updateCurationCriteria = async (req, res) => {
   program.blindVoting = req.body.blindVoting;
   program.topThreshold = req.body.topThreshold;
   program.voteThreshold = req.body.voteThreshold;
+  program.advancedCuration = req.body.advancedCuration;
+  program.advancedMetrics = req.body.advancedMetrics;
   program.save();
+
+  if (req.body.advancedCuration) {
+    const applicants = await ProgramApplicant.find({ program: req.body.id });
+    applicants.forEach(applicant => {
+      let score = 0;
+      applicant.scores.forEach(item => {
+        let individualScore = 0;
+        program.advancedMetrics.forEach(e => {
+          let foundScore = item.score[e.metric.toLowerCase().replace(/\s+/g, '')];
+          if (foundScore) {
+            individualScore += e.weight * foundScore / 100;
+          }
+        })
+  
+        score += individualScore / program.advancedMetrics.length;
+      })
+
+      console.log('applicant score', score);
+  
+      applicant.score = Number((score / applicant.scores.length) || 0).toFixed(2);
+      applicant.save();
+    })
+  }
   return res.json({ success: true });
 };
 
@@ -563,9 +588,9 @@ exports.getCurationPrograms = async (req, res) => {
     const user = await User.findById(jwt.id);
     if (!user) return res.json({ error: 'Authentication error' });
     const programs = await Program.find({ curators: jwt.id })
-      .select('organizer name url perpetual passByVotes topThreshold voteThreshold blindVoting mintToArtist hideResults curationLock finalized mintInProgress').populate('organizers');
+      .select('organizer name url perpetual passByVotes advancedCuration advancedMetrics topThreshold voteThreshold blindVoting mintToArtist hideResults curationLock finalized mintInProgress').populate('organizers');
     const sample = await Program.findById('60708c75525e3e035e8e2eb8')
-      .select('organizer name url perpetual passByVotes topThreshold voteThreshold blindVoting mintToArtist hideResults curationLock finalized mintInProgress').populate('organizers');
+      .select('organizer name url perpetual passByVotes advancedCuration advancedMetrics topThreshold voteThreshold blindVoting mintToArtist hideResults curationLock finalized mintInProgress').populate('organizers');
     if (jwt.id !== '6035e7415f0a684942f4e17c') programs.push(sample);
 
     return res.json({ success: programs });
@@ -599,12 +624,15 @@ exports.viewResults = async (req, res) => {
   const user = await User.findById(jwt.id);
   if (!user) return res.json({ error: 'Authentication error' });
 
+  const program = await Program.findById(req.body.program);
+  if (!program) return res.json({ error: 'Could not find data' });
+
   return ProgramApplicant.find({ program: req.body.program }, (err, data) => {
     return err ?
         res.status(500).json(err) :
         res.json(data);
   }).populate('user', 'artistName birthYear country city website twitter instagram')
-  .sort('order')
+  .sort(program.finalized ? 'order' : '-approvalCount')
   .select('-approved -rejected')
 };
 
@@ -639,6 +667,132 @@ exports.approveOrReject = async (req, res) => {
       return res.json(true);
     }
   })
+};
+
+
+exports.viewAllScoring = async (req, res) => {
+  const jwt = auth(req.headers.authorization, res, (jwt) => jwt);
+  const user = await User.findById(jwt.id);
+  if (!user) return res.json({ error: 'Authentication error' });
+
+  const isCurator = await Program.find({ curators: user._id });
+  if (!isCurator) return res.json({ error: 'Authentication error' });
+
+  return ProgramApplicant.find({ program: req.body.program, ineligible: { $ne: true }, finalized: { $ne: true } }, (err, data) => {
+    const unscored = [], scored = [];
+    data.forEach(e => {
+      if (e.scores.find(g => g.user.equals(jwt.id))) scored.push(e);
+      else unscored.push(e);
+    })
+
+    return err ?
+        res.status(500).json(err) :
+        res.json({ unscored, scored });
+  }).populate('user', 'artistName birthYear country city website twitter instagram')
+};
+
+exports.submitScore = async (req, res) => {
+  const jwt = auth(req.headers.authorization, res, (jwt) => jwt);
+  const user = await User.findById(jwt.id);
+  if (!user) return res.json({ error: 'Authentication error' });
+
+  const isCurator = await Program.find({ curators: user._id });
+  if (!isCurator) return res.json({ error: 'Authentication error' });
+  if (isCurator.curationLock) return res.json({ error: 'Curation locked' });
+
+  const program = await Program.findById(req.body.program);
+  if (!program) return res.json({ error: 'Could not find data' });
+
+  return ProgramApplicant.findById(req.body.id, (err2, data) => {
+    if (err2) return res.status(500).json(err);
+    else {
+      const index = data.scores ? data.scores.findIndex(e => e.user && e.user.equals(jwt.id)) : -1;
+      if (index < 0) {
+        const newScore = {
+          user: jwt.id,
+          score: req.body.score
+        }
+
+        if (data.scores) data.scores.push(newScore);
+        else data.scores = [newScore];
+
+        let score = 0;
+        data.scores.forEach(item => {
+          let individualScore = 0;
+          program.advancedMetrics.forEach(e => {
+            let foundScore = item.score[e.metric.toLowerCase().replace(/\s+/g, '')];
+            if (foundScore) {
+              individualScore += e.weight * foundScore / 100;
+            }
+          })
+
+          score += individualScore / program.advancedMetrics.length;
+        })
+  
+        data.score = Number(score / data.scores.length).toFixed(2);
+        data.save();
+      }
+
+      return res.json(true);
+    }
+  })
+};
+
+exports.undoScoredApplicant = async (req, res) => {
+  const jwt = auth(req.headers.authorization, res, (jwt) => jwt);
+  const user = await User.findById(jwt.id);
+  if (!user) return res.json({ error: 'Authentication error' });
+
+  const isCurator = await Program.find({ curators: user._id });
+  if (!isCurator) return res.json({ error: 'Authentication error' });
+
+  const program = await Program.findById(req.body.program);
+  if (!program) return res.json({ error: 'Could not find data' });
+
+  return ProgramApplicant.findById(req.body.id, (err2, data) => {
+    if (err2) return res.status(500).json(err);
+    else {
+      const index = data.scores.findIndex(e => e.user.equals(jwt.id));
+      if (index >= 0) {
+        data.scores.splice(index, 1);
+
+        let score = 0;
+        data.scores.forEach(item => {
+          let individualScore = 0;
+          program.advancedMetrics.forEach(e => {
+            let foundScore = item.score[e.metric.toLowerCase().replace(/\s+/g, '')];
+            if (foundScore) {
+              individualScore += e.weight * foundScore / 100;
+            }
+          })
+
+          score += individualScore / program.advancedMetrics.length;
+        })
+  
+        data.score = Number((score / data.scores.length) || 0).toFixed(2) || 0;
+        data.save();
+      }
+
+      return res.json(true);
+    }
+  })
+};
+
+exports.viewScoredResults = async (req, res) => {
+  const jwt = auth(req.headers.authorization, res, (jwt) => jwt);
+  const user = await User.findById(jwt.id);
+  if (!user) return res.json({ error: 'Authentication error' });
+
+  const program = await Program.findById(req.body.program);
+  if (!program) return res.json({ error: 'Could not find data' });
+
+  return ProgramApplicant.find({ program: req.body.program }, (err, data) => {
+    return err ?
+        res.status(500).json(err) :
+        res.json(data);
+  }).populate('user', 'artistName birthYear country city website twitter instagram')
+  .sort(program.finalized ? 'order' : '-score')
+  .select('-approved -rejected')
 };
 
 exports.undoApplicant = async (req, res) => {
@@ -743,11 +897,11 @@ exports.getEmails = async (req, res) => {
     return res.json({ error: 'Issue retrieving emails' });
   }
 
-  const applicants = await ProgramApplicant.find({ program: program.id, ...query }).populate('user', 'email');
+  const applicants = await ProgramApplicant.find({ program: program.id, ...query }).populate('user', 'username first last country birthYear city email');
 
   let emails = [];
   applicants.forEach(applicant => {
-    emails.push([applicant.user.email]);
+    emails.push([applicant.user.username, applicant.user.first, applicant.user.last, applicant.user.country, applicant.user.city, applicant.user.birthYear, applicant.user.email, `https://grants.art/${ program.url }/${ applicant.order }`]);
   })
 
   return res.json({ success: emails });
@@ -825,3 +979,4 @@ exports.removeFlag = (req, res) => {
     });
   });
 };
+

@@ -34,20 +34,29 @@ export default function Admin({ selectedProgram, setSelectedProgram, programs, s
   const provider = useStoreState(state => state.eth.provider);
 
   const [newCriteria, setNewCriteria] = useState(false);
+  const [newMetrics, setNewMetrics] = useState([]);
+  const [metricVal, setMetricVal] = useState('');
   const [foundUsers, setFoundUsers] = useState([]);
   const [search, setSearch] = useState(false);
   const [criteria, setCriteria] = useState(false);
   const [programAdmin, setProgramAdmin] = useState({});
 
+  const initCriteria = () => {
+    setNewCriteria({
+      passByVotes: selectedProgram.passByVotes,
+      blindVoting: selectedProgram.blindVoting,
+      topThreshold: selectedProgram.topThreshold,
+      voteThreshold: selectedProgram.voteThreshold,
+      advancedCuration: selectedProgram.advancedCuration,
+      advancedMetrics: selectedProgram.advancedMetrics
+    });
+    setMetricVal('');
+    setNewMetrics(selectedProgram.advancedMetrics || []);
+  }
+
   useEffect(() => {
     if (selectedProgram){
-      setNewCriteria({
-        passByVotes: selectedProgram.passByVotes,
-        blindVoting: selectedProgram.blindVoting,
-        topThreshold: selectedProgram.topThreshold,
-        voteThreshold: selectedProgram.voteThreshold
-      });
-
+      initCriteria();
       setProgramAdmin({});
       fetch(`${ apiUrl() }/program/getProgramAdmin`, {
         method: 'POST',
@@ -64,14 +73,32 @@ export default function Admin({ selectedProgram, setSelectedProgram, programs, s
   }, [])
 
   const saveCriteria = () => {
-    setSelectedProgram({ ...selectedProgram, passByVotes: newCriteria.passByVotes, blindVoting: newCriteria.blindVoting, topThreshold: newCriteria.topThreshold, voteThreshold: newCriteria.voteThreshold });
+    setSelectedProgram({
+      ...selectedProgram,
+      passByVotes: newCriteria.passByVotes,
+      blindVoting: newCriteria.blindVoting,
+      topThreshold: newCriteria.topThreshold,
+      voteThreshold: newCriteria.voteThreshold,
+      advancedCuration: newCriteria.advancedCuration,
+      advancedMetrics: newMetrics
+    });
+
     setCriteria(false);
     const index = programs.findIndex(e => e.id === selectedProgram.id)
-    programs[index] = { ...programs[index], passByVotes: newCriteria.passByVotes, blindVoting: newCriteria.blindVoting, topThreshold: newCriteria.topThreshold, voteThreshold: newCriteria.voteThreshold };
+    programs[index] = {
+      ...programs[index],
+      passByVotes: newCriteria.passByVotes,
+      blindVoting: newCriteria.blindVoting,
+      topThreshold: newCriteria.topThreshold,
+      voteThreshold: newCriteria.voteThreshold,
+      advancedCuration: newCriteria.advancedCuration,
+      advancedMetrics: newMetrics
+    };
+
     setPrograms(programs);
     fetch(`${ apiUrl() }/program/updateCurationCriteria`, {
       method: 'POST',
-      body: JSON.stringify({ ...newCriteria, id: selectedProgram.id, org: selectedProgram.organizers[0].id }),
+      body: JSON.stringify({ ...newCriteria, advancedMetrics: newMetrics, id: selectedProgram.id, org: selectedProgram.organizers[0].id }),
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
@@ -79,6 +106,30 @@ export default function Admin({ selectedProgram, setSelectedProgram, programs, s
       },
     }).then(res => res.json())
     .then(json => {});
+  }
+
+  const addMetric = (metric) => {
+    if (metric !== '') {
+      setNewMetrics([...newMetrics, { metric, weight: 50 }]);
+      setMetricVal('');
+    }
+  }
+
+  const removeMetric = (metric) => {
+    if (metric !== '') {
+      const index = newMetrics.findIndex(e => e.metric === metric);
+      if (index >= 0) {
+        setNewMetrics([
+          ...newMetrics.slice(0, index),
+          ...newMetrics.slice(index + 1)
+        ]);
+      }
+    }
+  }
+
+  const setMetricWeight = (index, weight) => {
+    newMetrics[index].weight = weight;
+    setNewMetrics([...newMetrics])
   }
 
   const searchUsers = (search) => {
@@ -266,7 +317,7 @@ export default function Admin({ selectedProgram, setSelectedProgram, programs, s
   }
   
   // const distributeGenesis = async () => {
-  //   const contractAddress = '0xc0b4777897a2a373da8cb1730135062e77b7baec';
+  //   const contractAddress = '0xf6e716ba2a2f4acb3073d79b1fc8f1424758c2aa';
   //   let web3;
   //   if (window.ethereum) {
   //     web3 = new Web3(provider);
@@ -276,14 +327,27 @@ export default function Admin({ selectedProgram, setSelectedProgram, programs, s
   //   }
   //   const Contract = new web3.eth.Contract(GenesisABI, contractAddress);
 
+  //   let addresses = []
+  //   let tokens = []
   //   for (const wallet of wallets) {
-  //     if (wallet[2] !== 59) {
-  //       await Contract.methods.safeTransferFrom(provider.selectedAddress, wallet[1], wallet[2]).send({
-  //         from: provider.selectedAddress,
-  //       })
-  //       .then(e => console.log(e));
+  //     if (wallet[2] !== 72 && wallet[2] !== 114) {
+  //       addresses.push(wallet[1]);
+  //       tokens.push(wallet[2]);
+  //       // await Contract.methods.safeTransferFrom(provider.selectedAddress, wallet[1], wallet[2]).send({
+  //       //   from: provider.selectedAddress,
+  //       // })
+  //       // .then(e => console.log(e));
   //     }
   //   }
+
+  //   addresses = addresses.slice(100, 145);
+  //   tokens = tokens.slice(100, 145);
+  //   console.log(addresses, tokens);
+
+  //   await Contract.methods.batchTransfer(provider.selectedAddress, addresses, tokens).send({
+  //     from: provider.selectedAddress,
+  //   })
+  //   .then(e => console.log(e));
   // }
 
   const removeRecipient = (index) => {
@@ -457,25 +521,46 @@ export default function Admin({ selectedProgram, setSelectedProgram, programs, s
         </div>
         { criteria ?
           <div>
-            <div className='small-button margin-left-s' onClick={ () => setCriteria(!criteria) }>Cancel</div>
+            <div className='small-button margin-left-s' onClick={ () => { setCriteria(!criteria); initCriteria() } }>Cancel</div>
             <div className='small-button margin-left-s' onClick={ () => saveCriteria() }>Save</div>
           </div>
           :
           <div className='small-button margin-left-s' onClick={ () => setCriteria(!criteria) }>Edit</div>
         }
       </div>
+      <div className='text-xs'>
+        { selectedProgram.advancedCuration ? 'Scoring System Curation' : 'Approve/Defer Curation' }
+      </div>
       { criteria &&
-        <div>
-          <div className='text-s margin-top form__title'>Selection Type</div>
+        <div className='margin-top'>
+          <div className='line-spacer' />
+          <div className='margin-top text-mid'>
+            <strong>Adjust Selection Parameters</strong>
+          </div>
+          <div className='text-s margin-top form__title'>Curation Type</div>
           <div className='select-dropdown margin-top-minus'>
-            <select name='Mint' className='text-black' defaultValue={ `${ newCriteria.passByVotes }` } value={ `${ newCriteria.passByVotes }` } required onChange={e => setNewCriteria({ ...newCriteria, passByVotes: (e.target.value === 'true') })}>
+            <select name='Mint' className='text-black' defaultValue={ `${ newCriteria.advancedCuration }` } value={ `${ newCriteria.advancedCuration }` } required onChange={e => setNewCriteria({ ...newCriteria, advancedCuration: (e.target.value === 'true'), passByVotes: (e.target.value === 'true') ? false : newCriteria.passByVotes }) }>
               <option value='default' disabled hidden>
                 Select an option
               </option>
-              <option value='false'>Top Submissions</option>
-              <option value='true'>Vote Count</option>
+              <option value='false'>Approve / Defer</option>
+              <option value='true'>Scoring System</option>
             </select>
           </div>
+          { !newCriteria.advancedCuration &&
+            <div>
+              <div className='text-s margin-top-s form__title'>Selection Type</div>
+              <div className='select-dropdown margin-top-minus'>
+                <select name='Mint' className='text-black' defaultValue={ `${ newCriteria.passByVotes }` } value={ `${ newCriteria.passByVotes }` } required onChange={e => setNewCriteria({ ...newCriteria, passByVotes: (e.target.value === 'true') })}>
+                  <option value='default' disabled hidden>
+                    Select an option
+                  </option>
+                  <option value='false'>Top Submissions</option>
+                  <option value='true'>Vote Count</option>
+                </select>
+              </div>
+            </div>
+          }
           { newCriteria.passByVotes ?
             <div className='form__group field'>
               <input type='number' className='form__field' placeholder='Number' name='number' id='number' maxLength='4' value={ `${ newCriteria.voteThreshold }` } onChange={e => setNewCriteria({ ...newCriteria, voteThreshold: Number(e.target.value) }) } />
@@ -487,7 +572,59 @@ export default function Admin({ selectedProgram, setSelectedProgram, programs, s
               <label className='form__label'>Top Artworks Threshold Count</label>
             </div>
           }
+          { newCriteria.advancedCuration &&
+            <div>
+              <div className='flex margin-top-s'>
+                <div className='form__group field'>
+                  <input type='text' className='form__field' placeholder='Scoring Metric' name='amount' id='amount' value={ metricVal } maxLength='50' onChange={e => setMetricVal(e.target.value) } />
+                  <label className='form__label'>Scoring Metric</label>
+                </div>
+                &nbsp;<input type='submit' value='Add' className='button-min-size small-button' onClick={ () => addMetric(metricVal) } />
+              </div>
+              <div className='margin-top-xs text-xs'>Examples: Lighting, Theme Accuracy, Composition</div>
+              <div className='margin-top'>
+                <div className='text-mid'><strong>Scoring Calculation</strong></div>
+                { newMetrics && newMetrics.length > 0 ?
+                  <div className='text-s margin-top-s'>
+                    ({ 
+                      newMetrics.map((item, index) => {
+                        return (<span key={ index }>{ item.metric } * { item.weight }{ index !== newMetrics.length - 1 ? ' + ' : '' }</span>)
+                      })
+                    })
+                    / { newMetrics.length }
+                  </div>
+                  :
+                  <div className='margin-top-s text-s'>
+                    Add a scoring metric / 1
+                  </div>
+                }
+              </div>
+            </div>
+          }
+          { (newCriteria.advancedCuration && newMetrics && newMetrics.length > 0) &&
+            <div className='margin-top-s'>
+              { newMetrics.map((item, index) => {
+                return (
+                  <div className='margin-top-s' key={ index }>
+                    <div className='flex'>
+                      <div>
+                        <div className='text-s'><strong>{ item.metric }</strong></div>
+                        <div className='margin-top-xs text-xxs'>Weight: { item.weight }</div>
+                      </div>
+                      <div className='small-space' />
+                      <input type='submit' value='Remove' className='button-min-size small-button' onClick={ () => removeMetric(item.metric) } />
+                    </div>
+                    <div className='slidecontainer'>
+                      <input type='range' min='1' max='100' value={ item.weight } className='slider' id={ item.metric } onChange={ (e) => setMetricWeight(index, e.target.value) } />
+                    </div>
+                  </div>
+                )
+                })
+              }
+            </div>
+          }
           <div className='margin-top' />
+          <div className='line-spacer' />
         </div>
       }
       <div className='text-s margin-top form__title'>Blind Curation</div>
@@ -588,7 +725,7 @@ export default function Admin({ selectedProgram, setSelectedProgram, programs, s
         </div>
       </div>
       <div className='margin-top'>
-        <div className='text-s'>Get Applicant Emails</div>
+        <div className='text-s'>Get Applicant Data</div>
         { !gettingE ?
           <div className='margin-top-xs flex'>
             <div className='small-button' onClick={ () => getEmails('all') }>
@@ -609,7 +746,7 @@ export default function Admin({ selectedProgram, setSelectedProgram, programs, s
           </div>
         }
         { (emails && emails.length > 0) &&
-          <CSVLink data={ emails } className='margin-top-s text-grey text-s'>Download CSV (Email Count: { emails.length })</CSVLink>
+          <CSVLink data={ emails } className='margin-top-s text-grey text-s'>Download CSV (Artist Count: { emails.length })</CSVLink>
         }
         { (emails && emails.length === 0) &&
           <div className='margin-top-s text-s'>No data - did you finalize your applicants?</div>

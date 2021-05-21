@@ -5,7 +5,7 @@ import '@appnest/masonry-layout';
 import DecidedBlock from './DecidedBlock';
 import '../../styles.scss';
 
-export default function ArtList({ list, type, undo, blind, contentRef, cols }) {
+export default function ArtList({ list, type, undo, blind, contentRef, cols, metrics, user, finalScore }) {
   const [showData, setShowData] = useState(null);
 
   useEffect(() => {
@@ -24,7 +24,7 @@ export default function ArtList({ list, type, undo, blind, contentRef, cols }) {
         <React.Fragment key={ showData.length }>
           <masonry-layout cols={ cols }>
             { showData.map((item, index) => {
-                return (<DecidedBlock key={ index } nft={ item } undo={ undo ? () => undo(item.id, type) : undefined } blind={ blind } type={ type } />);
+                return (<DecidedBlock key={ index } nft={ item } undo={ undo ? () => undo(item.id, type) : undefined } blind={ blind } type={ type } metrics={ metrics } user={ user } finalScore={ finalScore } />);
             }) }
           </masonry-layout>
         </React.Fragment>

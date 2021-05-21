@@ -406,8 +406,8 @@ export default function OpenMarket({ tokenId, contract, resizeContainer, ethPric
 
   let err = false, reserveMet = 0;
   if (reserve && viewTab === 'auction' && reserve < 1.07) err = 'Your minimum bid must start at 1.07WETH';
-  if (auction && bids && bids.length && bids[0].value >= Number(Web3.utils.fromWei((Math.round(Number(auction.base_price).toFixed(2) * 1000) / 100).toString(), 'ether')).toFixed(2)) {
-    reserveMet = bids[0].value;
+  if (auction && bids && bids.length && bids[0].ethValue >= Number(Web3.utils.fromWei((Math.round(Number(auction.base_price).toFixed(2) * 1000) / 100).toString(), 'ether')).toFixed(2)) {
+    reserveMet = bids[0].ethValue;
   }
 
   const connectedAddress = (provider && provider.selectedAddress) ? provider.selectedAddress.toLowerCase() : null;
@@ -510,6 +510,7 @@ export default function OpenMarket({ tokenId, contract, resizeContainer, ethPric
         <div className='text-mid font'>
           Auction.<br /><br />
           Each new highest bid within 10 minutes of the auction ending will add an additional 10 minutes to the clock.
+          { auction && auction.base_price === '0' && <div className='text-s margin-top-s'>If you are the owner, please cancel and reset auction using Sevens to fix reserve.</div> }
         </div>
       </ReactModal>
       <div className='text-mid'>
@@ -568,7 +569,11 @@ export default function OpenMarket({ tokenId, contract, resizeContainer, ethPric
               <div className='text-s'>Live Auction</div>
               <div className='margin-top-xs text-mid'>
                 <span className='text-grey pointer' onClick={ () => setInfoOpen(true) }>
-                  <strong>Ξ{ Number(Web3.utils.fromWei((Math.round(Number(auction.base_price).toFixed(2) * 1000) / 100).toString(), 'ether')).toFixed(2) } Reserve { reserveMet === 0 ? 'Price' : 'Met' }</strong>
+                  { auction.base_price !== '0' ?
+                    <strong>Ξ{ Number(Web3.utils.fromWei((Math.round(Number(auction.base_price).toFixed(2) * 1000) / 100).toString(), 'ether')).toFixed(2) } Reserve { reserveMet === 0 ? 'Price' : 'Met' }</strong>
+                    :
+                    <strong>Reserve Price Unknown</strong>
+                  }
                 </span>
               </div>
               <AuctionTimer time={ auctionEnd } />

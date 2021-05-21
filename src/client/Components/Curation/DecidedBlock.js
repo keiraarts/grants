@@ -16,7 +16,7 @@ function openLink(page)
 }
 
 
-export default function DecidedBlock({ nft, undo, type, blind }) {
+export default function DecidedBlock({ nft, undo, type, blind, metrics, user, finalScore }) {
   const [loaded, didLoad] = useState(false);
   const [infoOpen, setInfoOpen] = useState(false);
   const imageType = nft.artWeb.split('.')[1];
@@ -46,7 +46,18 @@ export default function DecidedBlock({ nft, undo, type, blind }) {
     setFullScreen(!isFullScreen);
   }
 
+  const [score, setScore] = useState(0);
   useEffect(() => {
+    if (metrics && nft && nft.scores && nft.scores.length) {
+      const foundScore = nft.scores.find(e => e.user === user);
+      let totalScore = 0
+      metrics.forEach(item => {
+        totalScore += foundScore.score[item.metric.toLowerCase().replace(/\s+/g, '')] * item.weight / 100
+      })
+      totalScore = (totalScore / metrics.length).toFixed(2);
+      setScore(totalScore);
+    }
+
     document.addEventListener('webkitfullscreenchange', (event) => {
       if (!document.webkitIsFullScreen) {
         setFullScreen(false);
@@ -156,6 +167,20 @@ export default function DecidedBlock({ nft, undo, type, blind }) {
           <img src={ `https://cdn.grants.art/${ nft.artWeb }` } className='block-art-image' onLoad={ () => didLoad(true) } />
         }
       </div>
+      { score ?
+        <div className='text-s margin-top-xs'>
+          My Score: { score || 0 }
+        </div>
+        :
+        <></>
+      }
+      { finalScore ?
+        <div className='text-s margin-top-xs'>
+          Average Score: { nft.score || 0 }
+        </div>
+        :
+        <></>
+      }
       <div className='flex margin-top-xs'>
         { undo &&
           <div className='small-button flex-full' onClick={ () => undo(nft.id, type) }>
