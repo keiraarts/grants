@@ -728,7 +728,8 @@ exports.submitScore = async (req, res) => {
           }
         })
 
-        newScore.userScore = userScore.toFixed(2);
+        const finalScore = userScore / program.advancedMetrics.length;
+        newScore.userScore = finalScore.toFixed(2);
 
         if (data.scores) data.scores.push(newScore);
         else data.scores = [newScore];
