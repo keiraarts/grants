@@ -160,7 +160,7 @@ export default function Curation({ nft, small, blind }) {
             { (isFullScreen && !video.current) &&
               <div className='fullscreen-container'>
                 <img src={ MinScreen } className='frame-exit pointer' onClick={ () => fullScreen() } />
-                <img className='gallery-art-fullscreen' src={ `https://cdn.grants.art/${ nft.artWeb }` } />
+                <img className='gallery-art-fullscreen' src={ `https://cdn.grants.art/${ nft.art }` } />
               </div>
             }
             { !loaded ?
