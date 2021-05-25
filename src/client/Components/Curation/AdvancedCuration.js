@@ -39,6 +39,7 @@ export default function AdvancedCuration({ selectedProgram, curateToggle, setSel
   const [resultsTab, setResultsTab] = useState('results');
 
   const [applicants, setApplicants] = useState({});
+
   const [results, setResults] = useState([]);
   const [filteredResults, setFilteredResults] = useState({ mintable: [], unmintable: [] });
   const [finalResults, setFinalResults] = useState({ minted: [], unminted: [] });
@@ -131,9 +132,30 @@ export default function AdvancedCuration({ selectedProgram, curateToggle, setSel
 
   const submitScore = () => {
     let newScore = applicants.unscored[0];
-    newScore.scores.push({ score: { ...score }, user: auth.id });
+    let userScore = 0;
+    selectedProgram.advancedMetrics.forEach(e => {
+      let foundScore = score[e.metric.toLowerCase().replace(/\s+/g, '')];
+      if (foundScore) {
+        userScore += e.weight * foundScore / 100;
+      }
+    })
+
+    newScore.scores.push({ score: { ...score }, userScore, user: auth.id });
     const unscored = applicants.unscored.slice(1);
-    const scored = [newScore, ...applicants.scored];
+    let index = 0;
+    applicants.scored.forEach(e => {
+      e.scores.forEach(j => {
+        if (j.user === auth.id && userScore < j.userScore) {
+          index++;
+        }
+      })
+    })
+
+    const scored = [
+      ...applicants.scored.slice(0, index),
+      newScore,
+      ...applicants.scored.slice(index)
+    ];
     const update = {
       ...applicants,
       unscored,
@@ -258,6 +280,11 @@ export default function AdvancedCuration({ selectedProgram, curateToggle, setSel
   }
 
   const isAdmin = selectedProgram && selectedProgram.organizers[0].admins.find(e => e === auth.id);
+  let topScores = [], bottomScores = [];
+  if (applicants && applicants.scored && applicants.scored.length) {
+    topScores = applicants.scored.slice(0, selectedProgram.topThreshold);
+    bottomScores = applicants.scored.slice(selectedProgram.topThreshold, applicants.scored.length);
+  }
 
   return (
     <div className='content-block' ref={ contentRef }>
@@ -494,7 +521,6 @@ export default function AdvancedCuration({ selectedProgram, curateToggle, setSel
         <div className='margin-top'>
           { applicants && applicants.scored &&
             <div>
-              Total: { applicants.scored.length }
               <div className='margin-top'>
                 <div className='text-mid'><strong>Scoring Calculation</strong></div>
                 { selectedProgram && selectedProgram.advancedMetrics && selectedProgram.advancedMetrics.length > 0 ?
@@ -511,7 +537,39 @@ export default function AdvancedCuration({ selectedProgram, curateToggle, setSel
                 }
               </div>
               <div className='margin-top' />
-              <ArtList list={ applicants.scored } blind={ selectedProgram.blindVoting } undo={ undo } type='approve' contentRef={ contentRef } cols={ cols } metrics={ selectedProgram.advancedMetrics } user={ auth.id } />
+              My Top { selectedProgram.topThreshold }
+              <div className='margin-top' />
+              { topScores && topScores.length ?
+                <ArtList
+                  list={ topScores }
+                  blind={ selectedProgram.blindVoting }
+                  undo={ undo }
+                  type='approve'
+                  contentRef={ contentRef }
+                  cols={ cols }
+                  metrics={ selectedProgram.advancedMetrics }
+                  user={ auth.id }
+                />
+              :
+                <div className='text-mid'><em>No scored submissions</em></div>
+              }
+              <div className='margin-top' />
+              My bottom scores
+              <div className='margin-top' />
+              { bottomScores && bottomScores.length ?
+                <ArtList
+                  list={ bottomScores }
+                  blind={ selectedProgram.blindVoting }
+                  undo={ undo }
+                  type='approve'
+                  contentRef={ contentRef }
+                  cols={ cols }
+                  metrics={ selectedProgram.advancedMetrics }
+                  user={ auth.id }
+                />
+              :
+                <div className='text-mid'><em>No scored submissions</em></div>
+              }
             </div>
           }
         </div>

@@ -1,4 +1,5 @@
 const ENV = process.env;
+const _ = require('lodash');
 const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
@@ -669,7 +670,6 @@ exports.approveOrReject = async (req, res) => {
   })
 };
 
-
 exports.viewAllScoring = async (req, res) => {
   const jwt = auth(req.headers.authorization, res, (jwt) => jwt);
   const user = await User.findById(jwt.id);
@@ -685,9 +685,16 @@ exports.viewAllScoring = async (req, res) => {
       else unscored.push(e);
     })
 
+    const myScores = scored.sort((a, b) => {
+      let foundA, foundB;
+      a.scores.forEach(e => { if (e.user.equals(jwt.id)) foundA = e })
+      b.scores.forEach(e => { if (e.user.equals(jwt.id)) foundB = e })
+      return (foundA.userScore > foundB.userScore) ? -1 : 1;
+    });
+
     return err ?
         res.status(500).json(err) :
-        res.json({ unscored, scored });
+        res.json({ unscored, scored: myScores });
   }).populate('user', 'artistName birthYear country city website twitter instagram')
 };
 
@@ -712,6 +719,16 @@ exports.submitScore = async (req, res) => {
           user: jwt.id,
           score: req.body.score
         }
+
+        let userScore = 0;
+        program.advancedMetrics.forEach(e => {
+          let foundScore = req.body.score[e.metric.toLowerCase().replace(/\s+/g, '')];
+          if (foundScore) {
+            userScore += e.weight * foundScore / 100;
+          }
+        })
+
+        newScore.userScore = userScore;
 
         if (data.scores) data.scores.push(newScore);
         else data.scores = [newScore];

@@ -302,6 +302,7 @@ const programApplicant = {
             type:     mongoose.Schema.ObjectId,
             ref:      'User',
         },
+        userScore: Number,
         score: mongoose.Schema.Types.Mixed
     }],
     emailed: {
