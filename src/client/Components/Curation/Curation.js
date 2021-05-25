@@ -74,7 +74,7 @@ export default function Curation({ nft, small, blind }) {
     }
   }, [])
 
-  const [muted, setMuted] = useState(true);
+  const [muted, setMuted] = useState(false);
   function toggleAudio() {
     video.current.muted = !video.current.muted;
     if (video.current.muted) setMuted(true)
@@ -140,7 +140,7 @@ export default function Curation({ nft, small, blind }) {
               <div className='frame-shadow'>
                 { imageType === 'mp4' ?
                   <div>
-                    <video muted loop autoPlay webkit-playsinline='true' playsInline className={ `gallery-art ${ !loaded && 'hidden'}` } onCanPlay={ () => setLoaded(true) } ref={ video }>
+                    <video loop autoPlay webkit-playsinline='true' playsInline className={ `gallery-art ${ !loaded && 'hidden'}` } onCanPlay={ () => setLoaded(true) } ref={ video }>
                       <source src={ `https://cdn.grants.art/${ nft.art }` } />
                       Sorry, your browser doesn't support embedded videos.
                     </video>

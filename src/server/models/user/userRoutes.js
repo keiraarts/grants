@@ -12,5 +12,6 @@ module.exports = (app) => {
   app.post('/api/verifyEmail', user.verifyEmail);
   app.post('/api/requestPassword', user.requestPassword);
   app.post('/api/recoverPassword', user.recoverPassword);
+  app.post('/api/newPassword', user.newPassword);
   app.post('/api/twitter', user.twitter);
 };

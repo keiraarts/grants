@@ -562,7 +562,7 @@ exports.updateApplication = async (req, res) => {
 };
 
 exports.getGallery = async (req, res) => {
-  const program = await Program.findOne({ url: req.body.program }).populate('organizers').populate('curators', 'artistName first last instagram twitter website');
+  const program = await Program.findOne({ url: req.body.program }).populate('organizers').populate('curators', 'username artistName first last instagram twitter website');
   return ProgramApplicant.find({ program: program._id, published: true }, (err, gallery) => {
     gallery.forEach(e => {
       e.tokenId = e.order

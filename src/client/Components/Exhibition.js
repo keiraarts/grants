@@ -242,7 +242,7 @@ export default function Exhibition({ updateScroll }) {
             { exhibition && exhibition.curators && exhibition.curators.map((curator, index) => {
               return (
                 <div className='margin-top' key={ index }>
-                  <div><strong>{ curator.artistName ? `${ curator.artistName }` : `${ curator.first } ${ curator.last }` }</strong></div>
+                  <div><strong>{ curator.artistName ? `${ curator.artistName }` : (!curator.first || !curator.last) ? curator.username : `${ curator.first } ${ curator.last }` }</strong></div>
                   <div className='flex center'>
                     { curator.website && <div className='margin-top-xs'><img src={ Web } className='curator-icon-web pointer' alt='Website' onClick={ () => openLink(curator.website) } /></div> }
                     { curator.twitter && <div className='margin-top-xs'><img src={ Twitter } className='curator-icon pointer' alt='Twitter' onClick={ () => openLink(`https://twitter.com/${ curator.twitter }`) } /></div> }

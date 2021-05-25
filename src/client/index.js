@@ -25,6 +25,7 @@ import Register from "./Components/Register";
 import Login from "./Components/Login";
 import Forgot from "./Components/Forgot";
 import RecoverAccount from "./Components/RecoverAccount";
+import ChangePassword from "./Components/ChangePassword";
 import Account from "./Components/Account";
 import Profile from "./Components/Profile";
 import Exhibition from "./Components/Exhibition";
@@ -75,6 +76,7 @@ const App = () => {
                   <Route path="/register" exact component={ Register } />
                   <Route path="/login" exact component={ Login } />
                   <Route path="/forgotpassword" exact component={ Forgot } />
+                  <Route path="/changepassword" exact component={ ChangePassword } />
                   <Route path="/recoveraccount/:token" exact component={ RecoverAccount } />
                   <Route path="/account" exact component={ Account } />
                   <Route path="/verifyemail/:id" component={ VerifyEmail } />

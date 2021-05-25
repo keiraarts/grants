@@ -474,15 +474,16 @@ export default function AdvancedCuration({ selectedProgram, curateToggle, setSel
                             <div className='flex margin-top-s' key={ index }>
                               <div>
                                 <div className='text-s'><strong>{ item.metric }</strong></div>
+                                <div className='text-s'>Weight: { item.weight }%</div>
                                 <div className='slidecontainer'>
                                   <input type='range' min='1' max='100' className='slider' id={ metricField } value={ score[metricField] } onChange={ (e) => setMetric(metricField, e.target.value) } />
                                 </div>
                               </div>
                               <div className='small-space' />
                               <div className='flex'>
-                                <div className='form__group field margin-top-minus'>
+                                <div className='form__group field'>
                                   <input type='number' className='form__field' placeholder='Value' value={ score[metricField] } name='amount' id='amount' max='100' onChange={e => setMetric(metricField, e.target.value) } />
-                                  <label className='form__label'>Value</label>
+                                  <label className='form__label'>Score Value</label>
                                 </div>
                               </div>
                             </div>

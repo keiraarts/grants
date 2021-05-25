@@ -267,6 +267,29 @@ exports.recoverPassword = (req, res, next) => {
   });
 };
 
+exports.newPassword = (req, res, next) => {
+  auth(req.headers.authorization, res, (jwt) => {
+    User.findById(jwt.id, (err, user) => {
+      if (err) {
+          return next(err);
+      } else if (!user) {
+          return res.status(401).json({ error: `Invalid request` });
+      }
+
+      if (req.body.password) {
+        if (user.hashPassword(req.body.password) !== user.password) return res.json({ error: 'Your current password does not match' });
+        else if (!req.body.newPassword) return res.json({ error: 'Your new password cannot be blank' });
+        else {
+          user.salt = new Buffer(crypto.randomBytes(16).toString('base64'), 'base64');
+          user.password = crypto.pbkdf2Sync(req.body.newPassword, user.salt, 10000, 64, 'sha1').toString('base64');
+          user.save();
+          return res.json({ success: 'Password changed' });
+        }
+      }
+    });
+  });
+};
+
 exports.twitter = async (req, res, next) => {
   const jwt = auth(req.headers.authorization, res, (jwt) => jwt);
   const user = await User.findById(jwt.id);

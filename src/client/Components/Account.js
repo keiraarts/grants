@@ -393,7 +393,14 @@ export default function Account() {
                   <Link to='/tutorial' className='text-s text-grey pointer'>Wallet Setup Guide</Link>
                 </div>
               }
-              { !editingAccount && <div><input type='submit' value='Edit Account' className='submit-button' onClick={ () => { setEditingAccount(true); setUpdateUser(user) } } /></div> }
+              { !editingAccount &&
+                <div className='flex'>
+                  <input type='submit' value='Edit Account' className='submit-button' onClick={ () => { setEditingAccount(true); setUpdateUser(user) } } />
+                  <div className='small-space' />
+                  <Link to='/changepassword' className='submit-button text-black'>Change Password</Link>
+                  <div className='flex-full' />
+                </div>
+              }
             </div>
           }
           <br />

@@ -4,7 +4,7 @@ import { apiUrl } from '../baseUrl';
 
 import '../styles.scss';
 
-export default function Register() {
+export default function Recover() {
   const { token } = useParams();
 
   const [data, setData] = useState({});

@@ -30,7 +30,7 @@ export default function Gallery() {
         </div>
         <div className='flex-full' />
         <div className='text-s center'>
-          <Link to='/curation' className='small-button'><div className='text-grey'>Curation</div></Link>
+          <Link to='/curation' className='small-button'><div className='text-rainbow'>Curation</div></Link>
         </div>
       </div>
       <div className='text-s margin-top-s text-desc'>
