@@ -537,7 +537,7 @@ export default function OpenMarket({ tokenId, contract, resizeContainer, ethPric
           <div className='text-xs margin-top-s'>
             <strong>Owner</strong><br />
             <div className='text-xxs margin-top-minus'>
-              { address }{ isArtist ? ' (Creator)' : '' }
+              { address }{ isArtist ? ' (Artist)' : '' }
               { address && <img src={ OpenSeaLogo } className='block-social' alt='OpenSea' onClick={ () => openLink(asset.permalink) } /> }
             </div>
           </div>
