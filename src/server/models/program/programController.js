@@ -589,9 +589,9 @@ exports.getCurationPrograms = async (req, res) => {
     const user = await User.findById(jwt.id);
     if (!user) return res.json({ error: 'Authentication error' });
     const programs = await Program.find({ curators: jwt.id })
-      .select('organizer name url perpetual passByVotes advancedCuration advancedMetrics topThreshold voteThreshold blindVoting mintToArtist hideResults curationLock finalized mintInProgress').populate('organizers');
+      .select('organizer name url perpetual passByVotes advancedCuration advancedMetrics topThreshold voteThreshold blindVoting mintToArtist hideResults curationLock prizeRewarded consolationURL consolationURLWeb finalized mintInProgress').populate('organizers');
     const sample = await Program.findById('60708c75525e3e035e8e2eb8')
-      .select('organizer name url perpetual passByVotes advancedCuration advancedMetrics topThreshold voteThreshold blindVoting mintToArtist hideResults curationLock finalized mintInProgress').populate('organizers');
+      .select('organizer name url perpetual passByVotes advancedCuration advancedMetrics topThreshold voteThreshold blindVoting mintToArtist hideResults curationLock prizeRewarded consolationURL consolationURLWeb finalized mintInProgress').populate('organizers');
     if (jwt.id !== '6035e7415f0a684942f4e17c') programs.push(sample);
 
     return res.json({ success: programs });
@@ -925,6 +925,7 @@ exports.getEmails = async (req, res) => {
   return res.json({ success: emails });
 }
 
+
 exports.getWallets = async (req, res) => {
   const jwt = auth(req.headers.authorization, res, (jwt) => jwt);
   const organizer = await Organizer.findOne({ _id: req.body.org, admins: jwt.id });
@@ -947,6 +948,89 @@ exports.getWallets = async (req, res) => {
   })
 
   return res.json({ success: wallets });
+}
+
+
+exports.consolationArt = async (req, res) => {
+  const jwt = auth(req.headers.authorization, res, (jwt) => jwt);
+  const organizer = await Organizer.findOne({ _id: req.body.org, admins: jwt.id });
+  if (!organizer) return res.json({ error: 'Authentication error' });
+  const program = await Program.findById(req.body.program);
+  if (!program) return res.json({ error: 'Authentication error' });
+
+  await Object.keys(req.body).forEach(async (item) => {
+    if (item === 'art') {
+      let ext, image;
+      ext = req.body[item].split(';')[0].match(/jpeg|png|gif|webp|mp4/)[0];
+      image = req.body[item].replace(/^data:image\/\w+;base64,/, '');
+      image = image.replace(/^data:video\/mp4;base64,/, '');
+      let buf = new Buffer.from(image, 'base64');
+
+      const name = crypto.randomBytes(20).toString('hex');
+
+      program.consolationURL = `${ name }.${ ext }`;
+      program.consolationURLWeb = `${ name }-web.${ ext }`;
+
+      const saveImage = promisify(fs.writeFile);
+      await saveImage(path.join(__dirname, `../../images/${ program.consolationURL }`), buf)
+      await compressor(program.consolationURL, program.consolationURLWeb);
+      if (ext === 'mp4') {
+        await hbjs.run({
+          input: path.join(__dirname, `../../images/${ program.consolationURL }`),
+          output: path.join(__dirname, `../../images/video-${ program.consolationURL }`),
+          preset: 'Vimeo YouTube HQ 2160p60 4K',
+        })
+      }
+
+      const uploader = await spaces.uploadFile({
+        localFile: path.join(__dirname, `../../images/${ ext === 'mp4' ? `video-${ program.consolationURL }` : program.consolationURL }`),
+        s3Params: {
+          Bucket: 'grants',
+          Key: `${ program.consolationURL }`,
+          ACL: 'public-read'
+        }
+      });
+
+      const uploader2 = await spaces.uploadFile({
+        localFile: path.join(__dirname, `../../images/${ program.consolationURLWeb }`),
+        s3Params: {
+          Bucket: 'grants',
+          Key: `${ program.consolationURLWeb }`,
+          ACL: 'public-read'
+        }
+      });
+
+      uploader.on('end', () => {
+        program.save();
+        fs.unlink(path.join(__dirname, `../../images/${ program.consolationURL }`), (err2) => {
+          if (err2 !== null) {
+            console.log(err2);
+          }
+          return null;
+        });
+
+        if (ext === 'mp4') {
+          fs.unlink(path.join(__dirname, `../../images/video-${ program.consolationURL }`), (err2) => {
+            if (err2 !== null) {
+              console.log(err2);
+            }
+            return null;
+          });
+        }
+      });
+
+      uploader2.on('end', () => {
+        fs.unlink(path.join(__dirname, `../../images/${ program.consolationURLWeb }`), (err2) => {
+          if (err2 !== null) {
+            console.log(err2);
+          }
+          return null;
+        });
+      });
+
+      res.json({ success: program.consolationURL });
+    }
+  });
 }
 
 
@@ -998,3 +1082,33 @@ exports.removeFlag = (req, res) => {
   });
 };
 
+
+async function downloadGallery() {
+  ProgramApplicant.find({ program: '6070ea37982e298b11fe062b' }, async (err, artists) => {
+    for (const artist of artists) {
+      await new Promise((resolve, reject) => {
+        const params = {
+          localFile: path.join(__dirname, `../../images/${ artist.art }`),
+          s3Params: {
+            Bucket: 'grants',
+            Key: `${ artist.art }`,
+          }
+        }
+  
+        const downloader = spaces.downloadFile(params);
+        downloader.on('error', function(err) {
+          console.error("unable to download:", err.stack);
+        });
+        downloader.on('progress', function() {
+          console.log("progress", downloader.progressAmount, downloader.progressTotal);
+        });
+        downloader.on('end', function() {
+          resolve();
+          console.log("done downloading");
+        });
+      })
+    }
+  });
+}
+
+// downloadGallery();

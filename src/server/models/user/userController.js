@@ -4,8 +4,9 @@ const jsonwebtoken = require('jsonwebtoken');
 const crypto = require('crypto');
 const Web3 = require('web3');
 const fetch = require('node-fetch');
-const auth = require('../../services/authorization-service');
 const nodemailer = require('nodemailer');
+
+const auth = require('../../services/authorization-service');
 const templates = require('../../emails/templates');
 const errorMessages = require('../../services/error-messages');
 

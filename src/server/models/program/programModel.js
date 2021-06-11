@@ -148,6 +148,16 @@ const program = {
         type: Boolean,
         default: false,
     },
+    consolationURL: {
+        type: String,
+    },
+    consolationURLWeb: {
+        type: String,
+    },
+    prizeRewarded: {
+        type: Boolean,
+        default: false,
+    },
     ownershipTransferred: {
         type: Boolean,
         default: false,

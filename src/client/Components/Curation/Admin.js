@@ -424,8 +424,59 @@ export default function Admin({ selectedProgram, setSelectedProgram, programs, s
     }
   }
 
+  const [err, setErr] = useState(null);
+  const [consolation, setConsolation] = useState(false);
+  const [prize, setPrize] = useState({});
+  const uploadHandler = (target) => {
+    setErr(false);
+    const file = target.files[0];
+    const reader = new FileReader();
+    const ext = target.value.substr(target.value.length - 3).toLowerCase();
+    reader.readAsDataURL(file);
+    reader.onload = async () => {
+      if (file.size < 120000000) {
+        fetch(`${ apiUrl() }/program/consolationArt`, {
+          method: 'POST',
+          body: JSON.stringify({ art: reader.result, program: selectedProgram.id, org: selectedProgram.organizers[0].id }),
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': auth.token
+          },
+        })
+          .then(res => res.json())
+          .then(json => {
+            setSelectedProgram({ ...selectedProgram, art: reader.result, consolationURL: json.success, imageType: ext })
+            if (json && json.error) { setErr(json.error); }
+          });
+      } else {
+        setErr('File size too large');
+      }
+    }
+  };
+
+  const mintConsolation = () => {
+    fetch(`${ apiUrl() }/program/consolationPrize`, {
+      method: 'POST',
+      body: JSON.stringify({ title: prize.title, description: prize.desc, program: selectedProgram.id, org: selectedProgram.organizers[0].id, wallet: provider.selectedAddress }),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': auth.token
+      },
+    })
+      .then(res => res.json())
+      .then(json => {
+        setConsolation(false);
+        setSelectedProgram({ ...selectedProgram, prizeRewarded: true });
+        if (json && json.error) { setErr(json.error); }
+      });
+  }
+
   const verified = (auth.wallet) ? `${ auth.wallet.slice(0,8).toLowerCase() }...${ auth.wallet.slice(-4).toLowerCase() }` : 'No verified wallet';
   const connected = (provider && provider.selectedAddress) ? `${ provider.selectedAddress.slice(0,8) }...${ provider.selectedAddress.slice(-4) }` : 'No connected wallet';
+
+  if (selectedProgram && selectedProgram.consolationURL) selectedProgram.imageType = selectedProgram.consolationURL.split('.')[1];
 
   return (
     <div className='margin-top'>
@@ -491,6 +542,48 @@ export default function Admin({ selectedProgram, setSelectedProgram, programs, s
               </div>
             </div>)
           )}
+        </div>
+      </ReactModal>
+      <ReactModal
+        isOpen={ consolation }
+        className='modal-container'
+        onRequestClose={ () => setConsolation(false) }
+        shouldCloseOnOverlayClick={ true }
+        ariaHideApp={ false }
+      >
+        <div className='text-mid center'>
+          <strong>Consolation Prize NFT</strong>
+          <div className='text-s margin-top'>
+            <div className='center'>
+              <div className='flex center'>
+                <div className='form__group field'>
+                  <input type='text' className='form__field' placeholder='Name' name='name' id='name' maxLength='77' value={ prize.title } onChange={e => setPrize({ ...prize, title: e.target.value }) } />
+                  <label className='form__label'>NFT Title</label>
+                </div>
+              </div>
+              <div className='flex center'>
+                <div className='form__group field'>
+                  <textarea type='text' className='form__field intent-field' placeholder='Description' name='description' id='description' required maxLength='2000' value={ prize.desc } onChange={e => setPrize({ ...prize, desc: e.target.value }) } />
+                  <label className='form__label'>NFT Description (2000 Chars)</label>
+                </div>
+              </div>
+              <div className='button v-center' onClick={ () => { mintConsolation() } }>
+                Mint Consolation NFT to All Applicants
+              </div>
+            </div>
+            <div className='flex center'>
+              <div className='consolation-frame-two'>
+                { (selectedProgram.imageType === 'mp4' || selectedProgram.imageType === 'mov') ?
+                  <video muted loop autoPlay webkit-playsinline='true' playsInline className='gallery-art'>
+                    <source src={ selectedProgram.art ? selectedProgram.art : `https://cdn.grants.art/${ selectedProgram.consolationURLWeb }` } />
+                    Sorry, your browser doesn't support embedded videos.
+                  </video>
+                  :
+                  <img className='gallery-art' src={ selectedProgram.art ? selectedProgram.art : `https://cdn.grants.art/${ selectedProgram.consolationURLWeb }` } />
+                }
+              </div>
+            </div>
+          </div>
         </div>
       </ReactModal>
       <div className='text-mid flex'>
@@ -779,6 +872,41 @@ export default function Admin({ selectedProgram, setSelectedProgram, programs, s
         }
         { (wallets && wallets.length === 0) &&
           <div className='margin-top-s text-s'>No data - did you finalize your applicants?</div>
+        }
+      </div>
+      <div className='margin-top'>
+        <div className='text-s'>Consolation NFT / Prize</div>
+        <div className='flex'>
+          <div className='form__group field'>
+            <label className='file__label'>Upload (JPG, PNG, GIF, WEBP, or MP4 - Max 77MB)</label>
+            <input type='file' className='form__field' placeholder='Artwork' name='artwork' id='name' accept='image/jpeg, image/png, image/gif, image/webp, video/mp4' required onChange={ (e) => uploadHandler(e.target) } />
+          </div>
+          <div className='small-space' />
+        </div>
+        { selectedProgram.consolationURL &&
+          <div>
+            <div className='consolation-frame'>
+              { (selectedProgram.imageType === 'mp4' || selectedProgram.imageType === 'mov') ?
+                <video muted loop autoPlay webkit-playsinline='true' playsInline className='gallery-art'>
+                  <source src={ selectedProgram.art ? selectedProgram.art : `https://cdn.grants.art/${ selectedProgram.consolationURLWeb }` } />
+                  Sorry, your browser doesn't support embedded videos.
+                </video>
+                :
+                <img className='gallery-art' src={ selectedProgram.art ? selectedProgram.art : `https://cdn.grants.art/${ selectedProgram.consolationURLWeb }` } />
+              }
+            </div>
+            { !selectedProgram.prizeRewarded ?
+              <div className='margin-top-xs flex'>
+                <div className='small-button' onClick={ () => setConsolation(true) }>
+                  Create Consolation NFT
+                </div>
+              </div>
+              :
+              <div className='margin-top-xs flex text-mid'>
+                Consolation Prize Distributed
+              </div>
+            }
+          </div>
         }
       </div>
       <div className='margin-top text-mid'>
