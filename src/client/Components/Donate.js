@@ -22,12 +22,16 @@ export default function Committee() {
           Sevens Foundation is a non-profit organization committed to helping artists.
           Our donation address is <span className='text-s text-rainbow pointer' onClick={ () => openLink('https://etherscan.io/address/foundation.eth') }>foundation.eth</span> and intend to transition this to a decentralized autonomous organization. 
         </div>
-        <div className='text-m margin-top'>Grant Donors</div>
+        <div className='margin-top' />
         <span className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://parishilton.com/') }>Paris Hiton</span>
         <div className='text-s'>Platinum Donor</div>
+        <span className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://www.sothebys.com/en/') }>Sotheby's</span>
+        <div className='text-s'>Gold Donor</div>
         <span className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://friendswithyou.com/') }>FriendsWithYou</span>
         <div className='text-s'>Gold Donor</div>
         <span className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://diplo.com/') }>Diplo</span>
+        <div className='text-s'>Gold Donor</div>
+        <span className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://www.saveartspace.org/team') }>Justin Aversano</span>
         <div className='text-s'>Gold Donor</div>
         <span className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://twitter.com/illestrater_') }>Tim Kang</span>
         <div className='text-s'>Gold Donor</div>

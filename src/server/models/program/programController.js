@@ -578,7 +578,7 @@ exports.getGallery = async (req, res) => {
       organizer: program.organizers[0].name,
       organizerUrl: program.organizers[0].url
     });
-  }).select('-approved -rejected -program -statement -additional -ineligible -flagged -approvalCount -rejectCount -emailed -accepted')
+  }).select('-approved -rejected -program -statement -additional -ineligible -flagged -approvalCount -rejectCount -emailed -accepted -score -scores')
   .populate('user', 'artistName birthYear country city website twitter instagram wallet')
   .sort('order');
 };

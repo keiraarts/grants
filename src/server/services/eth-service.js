@@ -221,9 +221,9 @@ const mint = async (applicants, program, organizer) => {
             nonce,
             to: address,
             from: MINT_WALLET,
-            gas: new web3.utils.BN(estimatedGas * 1.5),
-            gasLimit: block.gasLimit * 1.5,
-            gasPrice: gasPrices.super * 1000000000,
+            gas: new web3.utils.BN(Math.ceil(estimatedGas * 1.5)),
+            gasLimit: Math.ceil(block.gasLimit * 1.5),
+            gasPrice: Math.ceil(gasPrices.super * 1000000000),
             data: encoded
           }
 
@@ -308,9 +308,9 @@ const addMinterAndTransfer = async (wallet, address, program) => {
       nonce,
       to: address,
       from: MINT_WALLET,
-      gas: new web3.utils.BN(estimatedGas * 1.5),
-      gasLimit: block.gasLimit * 1.5,
-      gasPrice: gasPrices.high * 1000000000,
+      gas: new web3.utils.BN(Math.ceil(estimatedGas * 1.5)),
+      gasLimit: Math.ceil(block.gasLimit * 1.5),
+      gasPrice: Math.ceil(gasPrices.high * 1000000000),
       data: encoded
     }
 
@@ -344,9 +344,9 @@ const addMinterAndTransfer = async (wallet, address, program) => {
       nonce,
       to: address,
       from: MINT_WALLET,
-      gas: new web3.utils.BN(estimatedGas * 1.5),
-      gasLimit: block.gasLimit * 1.5,
-      gasPrice: gasPrices.high * 1000000000,
+      gas: new web3.utils.BN(Math.ceil(estimatedGas * 1.5)),
+      gasLimit: Math.ceil(block.gasLimit * 1.5),
+      gasPrice: Math.ceil(gasPrices.high * 1000000000),
       data: transferEncoded
     }
 
@@ -414,9 +414,9 @@ const createExhibition = async (wallet, name, symbol, program) => {
       nonce,
       to: FACTORY_ADDRESS,
       from: MINT_WALLET,
-      gas: new web3.utils.BN(estimatedGas * 1.5),
-      gasLimit: block.gasLimit * 1.5,
-      gasPrice: gasPrices.high * 1000000000,
+      gas: new web3.utils.BN(Math.ceil(estimatedGas * 1.5)),
+      gasLimit: Math.ceil(block.gasLimit * 1.5),
+      gasPrice: Math.ceil(gasPrices.high * 1000000000),
       data: encoded
     }
 
@@ -474,8 +474,8 @@ const consolationTransfer = async (address, wallet, title, description, symbol, 
       to: address,
       from: MINT_WALLET,
       gas: 10000000,
-      gasLimit: block.gasLimit * 1.5,
-      gasPrice: gasPrices.high * 1000000000,
+      gasLimit: Math.ceil(block.gasLimit * 1.5),
+      gasPrice: Math.ceil(gasPrices.high * 1000000000),
       data: encoded
     }
 
@@ -505,8 +505,8 @@ const consolationTransfer = async (address, wallet, title, description, symbol, 
       to: address,
       from: MINT_WALLET,
       gas: 10000000,
-      gasLimit: block.gasLimit * 1.5,
-      gasPrice: gasPrices.high * 1000000000,
+      gasLimit: Math.ceil(block.gasLimit * 1.5),
+      gasPrice: Math.ceil(gasPrices.high * 1000000000),
       data: transferEncoded
     }
 
@@ -551,8 +551,8 @@ const createConsolationContract = async (wallet, title, description, symbol, pro
       to: MATIC_FACTORY,
       from: MINT_WALLET,
       gas: 5000000,
-      gasLimit: block.gasLimit * 1.5,
-      gasPrice: gasPrices.high * 1000000000,
+      gasLimit: Math.ceil(block.gasLimit * 1.5),
+      gasPrice: Math.ceil(gasPrices.high * 1000000000),
       data: encoded
     }
 
@@ -679,8 +679,8 @@ const consolationPrize = async (address, curatorWallet, title, description, unus
         to: address,
         from: MINT_WALLET,
         gas: 3000000,
-        gasLimit: block.gasLimit * 1.5,
-        gasPrice: gasPrices.super * 1000000000,
+        gasLimit: Math.ceil(block.gasLimit * 1.5),
+        gasPrice: Math.ceil(gasPrices.super * 1000000000),
         data: encoded
       }
 

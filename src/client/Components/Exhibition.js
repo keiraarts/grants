@@ -4,8 +4,9 @@ import { useParams, useHistory } from "react-router-dom";
 import { useStoreState } from 'easy-peasy';
 import { Link } from "react-router-dom";
 import ReactAutolinker from 'react-autolinker';
-import GenesisNFT from './ExhibitionNFT.js';
-import Resizer from './Tools/Resizer.js';
+import GenesisNFT from './ExhibitionNFT';
+import Gallery from './ExhibitionGallery';
+import Resizer from './Tools/Resizer';
 import { apiUrl } from '../baseUrl';
 
 import Web from '../assets/website.png';
@@ -16,6 +17,8 @@ import '../styles.scss';
 
 function openLink(page)
 {
+  console.log('yo', page);
+  if (page.indexOf('http') < 0) page = `http://${ page }`;
   let win = window.open(page, '_blank');
   win.focus();
 }
@@ -34,7 +37,6 @@ export default function Exhibition({ updateScroll }) {
   const [enterId, setEnterId] = useState(null);
   const [ethPrice, setEthPrice] = useState(null);
   useEffect(() => {
-    updateScroll(false);
     fetch(`${ apiUrl() }/program/getGallery`, {
       method: 'POST',
       body: JSON.stringify({ program: url }),
@@ -62,6 +64,11 @@ export default function Exhibition({ updateScroll }) {
       }
     });
   }, [])
+
+  useEffect(() => {
+    if (id === 'all') updateScroll(true);
+    else updateScroll(false);
+  }, [id]);
 
   const [preload, dispatch] = useReducer((preload, { type, value }) => {
     if (type === 'add') {
@@ -163,10 +170,10 @@ export default function Exhibition({ updateScroll }) {
 
   const handlers = useSwipeable({
     onSwipedRight: (eventData) => {
-      if (id) { updatePreload('previous', order); history.push(`/${ url }/${ switchPage('previous') }`) }
+      if (id && id !== 'all') { updatePreload('previous', order); history.push(`/${ url }/${ switchPage('previous') }`) }
     },
     onSwipedLeft: (eventData) => {
-      if (id) { updatePreload('next', order); history.push(`/${ url }/${ switchPage('next') }`) }
+      if (id && id !== 'all') { updatePreload('next', order); history.push(`/${ url }/${ switchPage('next') }`) }
     },
     preventDefaultTouchmoveEvent: true,
   });
@@ -179,7 +186,7 @@ export default function Exhibition({ updateScroll }) {
     <div className='content-block' { ...handlers }>
       <Resizer />
       <div className='flex'>
-        { id &&
+        { (id && id !== 'all') &&
           <Link to={ `/${ url }/${ switchPage('previous') }` } className='relative margin-top-s' onClick={ () => updatePreload('previous', order) }>
             <div className='round'>
               <div id='cta'>
@@ -196,10 +203,10 @@ export default function Exhibition({ updateScroll }) {
                 <strong>{ exhibition.organizer }</strong>
               </Link>
             }
-            { exhibition.name && <div><strong>{ exhibition.name } Exhibition</strong></div> }
+            { exhibition.name && <div><Link className='text-black' to={ `/${ url }/all` }><strong>{ exhibition.name } Exhibition</strong></Link></div> }
           </div>
         </div>
-        { id &&
+        { (id && id !== 'all') &&
           <Link to={ `/${ url }/${ switchPage('next') }` } className='relative margin-top-s' onClick={ () => updatePreload('next', order) }>
             <div className='round arrow-right'>
               <div id='cta'>
@@ -210,6 +217,11 @@ export default function Exhibition({ updateScroll }) {
           </Link>
         }
       </div>
+      { id === 'all' &&
+        <div className='margin-top-l'>
+          { gallery && <Gallery nfts={ gallery } url={ url } /> }
+        </div>
+      }
       { !id &&
         <div className='line-breaks'>
           { (gallery && gallery.length) ?
@@ -254,7 +266,7 @@ export default function Exhibition({ updateScroll }) {
           </div>
         </div>
       }
-      { (id && gallery && gallery.length) &&
+      { (id && id !== 'all' && gallery && gallery.length) &&
         <div>
           <NFT key={ order - 3 } small={ small } nft={ gallery[order - 2] } src={ src1 } contract={ exhibition.contract } setHeight={ setHeight } order={ 0 } ethPrice={ ethPrice } important hidden />
           <NFT key={ order - 2 } small={ small } nft={ gallery[order - 2] } src={ src1 } contract={ exhibition.contract } setHeight={ setHeight } order={ 1 } ethPrice={ ethPrice } important hidden />
