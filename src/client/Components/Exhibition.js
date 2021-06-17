@@ -35,6 +35,7 @@ export default function Exhibition({ updateScroll }) {
   const [gallery, setGallery] = useState(null);
   const [exhibition, setExhibition] = useState({});
   const [enterId, setEnterId] = useState(null);
+  const [audio, setAudio] = useState(true);
   const [ethPrice, setEthPrice] = useState(null);
   useEffect(() => {
     fetch(`${ apiUrl() }/program/getGallery`, {
@@ -203,7 +204,7 @@ export default function Exhibition({ updateScroll }) {
                 <strong>{ exhibition.organizer }</strong>
               </Link>
             }
-            { exhibition.name && <div><Link className='text-black' to={ `/${ url }/all` }><strong>{ exhibition.name } Exhibition</strong></Link></div> }
+            { exhibition.name && <div><strong>{ exhibition.name } Exhibition</strong></div> }
           </div>
         </div>
         { (id && id !== 'all') &&
@@ -268,11 +269,11 @@ export default function Exhibition({ updateScroll }) {
       }
       { (id && id !== 'all' && gallery && gallery.length) &&
         <div>
-          <NFT key={ order - 3 } small={ small } nft={ gallery[order - 2] } src={ src1 } contract={ exhibition.contract } setHeight={ setHeight } order={ 0 } ethPrice={ ethPrice } important hidden />
-          <NFT key={ order - 2 } small={ small } nft={ gallery[order - 2] } src={ src1 } contract={ exhibition.contract } setHeight={ setHeight } order={ 1 } ethPrice={ ethPrice } important hidden />
-          <NFT key={ order - 1} small={ small } nft={ gallery[order - 1] } src={ src2 } contract={ exhibition.contract } setHeight={ setHeight } order={ 2 } ethPrice={ ethPrice } important />
-          <NFT key={ order } small={ small } nft={ gallery[order] } src={ src3 } contract={ exhibition.contract } setHeight={ setHeight } order={ 3 } ethPrice={ ethPrice } important hidden />
-          <NFT key={ order + 1 } small={ small } nft={ gallery[order] } src={ src3 } contract={ exhibition.contract } setHeight={ setHeight } order={ 4 } ethPrice={ ethPrice } important hidden />
+          <NFT key={ order - 3 } small={ small } nft={ gallery[order - 2] } src={ src1 } contract={ exhibition.contract } setHeight={ setHeight } order={ 0 } ethPrice={ ethPrice } setAudio={ setAudio } audio={ audio } url={ url } important hidden />
+          <NFT key={ order - 2 } small={ small } nft={ gallery[order - 2] } src={ src1 } contract={ exhibition.contract } setHeight={ setHeight } order={ 1 } ethPrice={ ethPrice } setAudio={ setAudio } audio={ audio } url={ url } important hidden />
+          <NFT key={ order - 1} small={ small } nft={ gallery[order - 1] } src={ src2 } contract={ exhibition.contract } setHeight={ setHeight } order={ 2 } ethPrice={ ethPrice } setAudio={ setAudio } audio={ audio } url={ url } important />
+          <NFT key={ order } small={ small } nft={ gallery[order] } src={ src3 } contract={ exhibition.contract } setHeight={ setHeight } order={ 3 } ethPrice={ ethPrice } setAudio={ setAudio } audio={ audio } url={ url } important hidden />
+          <NFT key={ order + 1 } small={ small } nft={ gallery[order] } src={ src3 } contract={ exhibition.contract } setHeight={ setHeight } order={ 4 } ethPrice={ ethPrice } setAudio={ setAudio } audio={ audio } url={ url } important hidden />
         </div>
       }
       <div ref={ nftRef } className='exhibition-height' />

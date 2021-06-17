@@ -1,9 +1,11 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useSpring, animated } from 'react-spring'
+import { Link } from "react-router-dom";
 import OpenMarket from './Market/OpenMarket.js';
 
 import Secure from '../assets/secure.png';
 import FullScreen from '../assets/fullscreen.png';
+import Tile from '../assets/tile.png';
 import MinScreen from '../assets/minscreen.png';
 import Muted from '../assets/muted.png';
 import Unmuted from '../assets/unmuted.png';
@@ -20,7 +22,7 @@ function openLink(page)
   win.focus();
 }
 
-const ExhibitionNFT = ({ small, nft, src, important, hidden, contract, setHeight, order, ethPrice }) => {
+const ExhibitionNFT = ({ small, nft, src, important, hidden, contract, setHeight, order, ethPrice, audio, setAudio, url }) => {
   const [loaded, setLoaded] = useState(false);
   const video = useRef();
   const nftRef = useRef();
@@ -100,6 +102,7 @@ const ExhibitionNFT = ({ small, nft, src, important, hidden, contract, setHeight
   const [muted, setMuted] = useState(true);
   function toggleAudio() {
     video.current.muted = !video.current.muted;
+    setAudio(!video.current.muted)
     if (video.current.muted) setMuted(true)
     else setMuted(false);
   }
@@ -112,8 +115,10 @@ const ExhibitionNFT = ({ small, nft, src, important, hidden, contract, setHeight
 
     if (!hidden && video.current) {
       video.current.currentTime = 0;
-      video.current.muted = false;
-      setMuted(false);
+      if (audio) {
+        video.current.muted = false;
+        setMuted(false);
+      }
     }
   }, [hidden])
 
@@ -212,7 +217,10 @@ const ExhibitionNFT = ({ small, nft, src, important, hidden, contract, setHeight
                 </div>
                 :
                 <div className='flex margin-top-s'>
-                  <img src={ Secure } className='margin-top-xs frame-control pointer' onClick={ () => openLink(`https://arweave.net/${ nft.arweave }`) } />
+                  <Link to={ `/${ url }/all` } className='pointer'>
+                    <img src={ Tile } className='frame-control' />
+                  </Link>
+                  <img src={ Secure } className='margin-left-s margin-top-xs frame-control pointer' onClick={ () => openLink(`https://arweave.net/${ nft.arweave }`) } />
                   <div className='flex-full' />
                   { video && video.current &&
                     <div onClick={ () => toggleAudio() } className='pointer'>
