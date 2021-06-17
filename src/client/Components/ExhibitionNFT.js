@@ -35,7 +35,9 @@ const ExhibitionNFT = ({ small, nft, src, important, hidden, contract, setHeight
   }, [hidden, nftRef])
 
   useEffect(() => {
-    if (src) { setLoaded(true); }
+    if (src) {
+      setLoaded(true);
+    }
   }, [src])
 
   const [isFullScreen, setFullScreen] = useState(false);
@@ -110,6 +112,8 @@ const ExhibitionNFT = ({ small, nft, src, important, hidden, contract, setHeight
 
     if (!hidden && video.current) {
       video.current.currentTime = 0;
+      video.current.muted = false;
+      setMuted(false);
     }
   }, [hidden])
 
