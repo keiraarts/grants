@@ -23,11 +23,15 @@ function openLink(page)
   win.focus();
 }
 
-export default function Profile() {
+export default function Profile({ updateScroll }) {
   const { username } = useParams();
   const auth = useStoreState(state => state.user.auth);
   const setAuth = useStoreActions(dispatch => dispatch.user.setAuth);
   const small = useStoreState(state => state.app.small);
+
+  useEffect(() => {
+    updateScroll(true);
+  }, [])
 
   const [data, setData] = useState(null);
   useEffect(() => {
@@ -103,7 +107,7 @@ export default function Profile() {
               }
               { (user.city || user.country) &&
                 <div className='text-s margin-top-xs'>
-                  <img className='earth-icon' src={ Earth } />{ user.city }, { user.country }
+                  <img className='earth-icon' src={ Earth } />{ user.city ? `${ user.city }, ` : '' }{ user.country }
                 </div>
               }
             </div>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import NFT from "../../../src/client/Components/ExhibitionNFT.js";
+import NFT from "../../src/client/Components/ExhibitionNFT";
 
 import { useSwipeable } from "react-swipeable";
 import { useHistory } from "react-router-dom";
@@ -8,11 +8,13 @@ import ReactAutolinker from "react-autolinker";
 import { NextSeo } from "next-seo";
 import Link from "next/link";
 
-import dbConnect from "../../../utils/dbConnect";
-import Program from "../../../models/programModel";
-import ProgramApplicant from "../../../models/programApplicantModel";
+import dbConnect from "../../utils/dbConnect";
+import Program from "../../models/programModel";
+import ProgramApplicant from "../../models/programApplicantModel";
+import { useRouter } from "next/router";
 import probe from "probe-image-size";
 import set from "lodash/set";
+import axios from "axios";
 
 export async function getStaticPaths() {
   await dbConnect();
@@ -93,6 +95,9 @@ export async function getStaticProps({ params }) {
   }
 
   const data = {
+    // Params get re-used to find index position
+    ...params,
+    // Values for nested components
     gallery,
     imageMetadata,
     contract: program.contractAddress,
@@ -112,14 +117,64 @@ export async function getStaticProps({ params }) {
   };
 }
 
-export default function ExhibitionIndividual({ data, id, url }) {
-  const history = useHistory();
-  const small = useStoreState((state) => state.app.small);
+export default function ExhibitionIndividual(props) {
+  const { id, url } = props;
+  if (!id || !url) return <></>;
 
+  const history = useHistory();
+  const router = useRouter();
+
+  const small = useStoreState((state) => state.app.small);
   const [gallery, setGallery] = useState(data?.gallery);
+  const [ethPrice, setEthPrice] = useState();
+  const [data, setData] = useState(props?.data);
+
+  // Trigger image changes
   useEffect(() => {
     setGallery(data?.gallery);
   }, [data?.gallery?.id]);
+
+  // Lows next artist without rendering new page
+  const LoadNextArtist = (val = 1) => {
+    const next = parseFloat(data.id) + val;
+
+    axios
+      .get(`/api/program/getGallery/${url}/${next}`)
+      .then((res) => {
+        router.push(`/${url}/${next}`, undefined, { shallow: true });
+        setGallery(res.data?.gallery);
+        setData(res.data);
+      })
+      .catch((err) => console.error(err));
+  };
+
+  // Alloe navigation with arrow keys
+  useEffect(() => {
+    function handleKeyUp(event) {
+      switch (event.key) {
+        case "ArrowRight":
+          LoadNextArtist(1);
+          break;
+
+        case "ArrowLeft":
+          LoadNextArtist(-1);
+          break;
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyUp);
+    return () => window.removeEventListener("keydown", handleKeyUp);
+  }, [data.id]);
+
+  useEffect(() => {
+    axios
+      .get(
+        `https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd`
+      )
+      .then((res) => res.json())
+      .then((json) => setEthPrice(json.ethereum.usd))
+      .catch((error) => console.error(error));
+  }, []);
 
   const [exhibition] = useState({ ...data, gallery: undefined });
 
@@ -151,29 +206,19 @@ export default function ExhibitionIndividual({ data, id, url }) {
     <div className="content-block" {...handlers}>
       <NextSeo title={gallery?.title} description={gallery?.description} />
       <div className="flex items-center w-full">
-        <Link
-          href={`/exhibition/${url}/${switchPage("previous")}`}
-          className="relative margin-top-s"
-        >
-          <div className="round">
-            <div id="cta">
-              <span className="arrow-left segunda previous"></span>
-              <span className="arrow-left primera previous"></span>
-            </div>
+        <a className="relative round" onClick={() => LoadNextArtist(-1)}>
+          <div id="cta">
+            <span className="arrow-left segunda previous"></span>
+            <span className="arrow-left primera previous"></span>
           </div>
-        </Link>
+        </a>
 
-        <div className="flex-full">
+        <div className="flex-full ">
           <div className="center text-m text-b margin-top-minus">
             {exhibition.organizer && (
-              <Link passHref href={`/curator/${exhibition.organizerUrl}`}>
-                <a
-                  className="text-rainbow text-s margin-top-minus"
-                  href={`/curator/${exhibition.organizerUrl}`}
-                >
-                  <strong>{exhibition.organizer}</strong>
-                </a>
-              </Link>
+              <a className="text-rainbow text-s margin-top-minus">
+                <strong>{exhibition.organizer}</strong>
+              </a>
             )}
             {exhibition.name && (
               <div>
@@ -183,26 +228,21 @@ export default function ExhibitionIndividual({ data, id, url }) {
           </div>
         </div>
 
-        <Link href={`/exhibition/${url}/${switchPage("next")}`}>
-          <a
-            className="relative"
-            href={`/exhibition/${url}/${switchPage("next")}`}
-          >
-            <div className="round arrow-right">
-              <div id="cta">
-                <span className="arrow primera next"></span>
-                <span className="arrow segunda next"></span>
-              </div>
+        <a className="relative round" onClick={() => LoadNextArtist(1)}>
+          <div className="-mt-1 arrow-right">
+            <div id="cta">
+              <span className="arrow primera next"></span>
+              <span className="arrow segunda next"></span>
             </div>
-          </a>
-        </Link>
+          </div>
+        </a>
       </div>
       {!id && (
         <div className="line-breaks">
           {gallery && gallery.length ? (
             <div className="margin-top-l center">
               <Link
-                href={`/exhibition/${url}/${
+                href={`/${url}/${
                   Math.floor(
                     Math.random() * (gallery.length ? gallery.length : 1)
                   ) + 1
@@ -294,12 +334,14 @@ export default function ExhibitionIndividual({ data, id, url }) {
         </div>
       )}
       {id && gallery && (
-        <div className="gallery-min-height" id={gallery.id}>
+        <div className="h-full gallery-min-height" id={gallery.id}>
           <NFT
+            params={{ id, url }}
             key={gallery.id}
             src={gallery.id}
             small={small}
             nft={gallery}
+            ethPrice={ethPrice}
             contract={exhibition.contract}
             metadata={data.imageMetadata}
             important

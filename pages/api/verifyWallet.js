@@ -21,11 +21,13 @@ export default async function handler(req, res) {
             if (!user)
               return res.status(401).json({ err: "Authentication error" });
             else {
-              const signedAddress = ethers.utils.verifyMessage(
+              const signedAddress = web3.eth.accounts.recover(
                 "Verify wallet address for Sevens Foundation",
                 req.body.signature
               );
-              if (signedAddress === req.body.address) {
+              if (
+                signedAddress.toLowerCase() === req.body.address.toLowerCase()
+              ) {
                 user.wallet = signedAddress;
                 user.save();
                 return res.json(true);

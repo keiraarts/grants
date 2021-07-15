@@ -64,6 +64,11 @@ export default function Tutorial() {
           a transaction. All of these prompts will ask you, through MetaMask, to
           sign the action which verifies that you are physical owner of the
           keys.
+        <div className='text-s margin-top-s'>
+          When you use an Ethereum app (decentralized app / dApp), the site may prompt you verify an action that you do, such as logging in or sending a transaction.
+          All of these prompts will ask you, through MetaMask, to sign the action which verifies that you are physical owner of the keys.
+          <br /><br />
+          <strong>If you are using MetaMask on a mobile device, be sure to open websites *within* the MetaMask app's built in web browser!</strong>
         </div>
         <div className="text-m margin-top">
           4) Fund Your MetaMask Wallet (Optional)

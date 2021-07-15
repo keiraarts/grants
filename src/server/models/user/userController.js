@@ -2,14 +2,16 @@ const User = require("mongoose").model("User");
 const ProgramApplicant = require("mongoose").model("ProgramApplicant");
 const jsonwebtoken = require("jsonwebtoken");
 const crypto = require("crypto");
-const ethers = require("ethers");
+const Web3 = require("web3");
 const fetch = require("node-fetch");
-const auth = require("../../services/authorization-service");
 const nodemailer = require("nodemailer");
+
+const auth = require("../../services/authorization-service");
 const templates = require("../../emails/templates");
 const errorMessages = require("../../services/error-messages");
-const { existsSync } = require("fs");
 
+const mainnet = `https://mainnet.infura.io/v3/${process.env.INFURA}`;
+const web3 = new Web3(new Web3.providers.HttpProvider(mainnet));
 const ENV = process.env;
 
 function validateUsername(string) {
@@ -319,11 +321,11 @@ exports.verifyWallet = (req, res, next) => {
       if (err) return res.json(err);
       if (!user) return res.status(401).json({ err: "Authentication error" });
       else {
-        const signedAddress = ethers.utils.verifyMessage(
+        const signedAddress = web3.eth.accounts.recover(
           "Verify wallet address for Sevens Foundation",
           req.body.signature
         );
-        if (signedAddress === req.body.address) {
+        if (signedAddress.toLowerCase() === req.body.address.toLowerCase()) {
           user.wallet = signedAddress;
           user.save();
           return res.json(true);
@@ -415,6 +417,36 @@ exports.recoverPassword = (req, res, next) => {
     user.save();
 
     return res.json({ success: "Password changed" });
+  });
+};
+
+exports.newPassword = (req, res, next) => {
+  auth(req.headers.authorization, res, (jwt) => {
+    User.findById(jwt.id, (err, user) => {
+      if (err) {
+        return next(err);
+      } else if (!user) {
+        return res.status(401).json({ error: `Invalid request` });
+      }
+
+      if (req.body.password) {
+        if (user.hashPassword(req.body.password) !== user.password)
+          return res.json({ error: "Your current password does not match" });
+        else if (!req.body.newPassword)
+          return res.json({ error: "Your new password cannot be blank" });
+        else {
+          user.salt = new Buffer(
+            crypto.randomBytes(16).toString("base64"),
+            "base64"
+          );
+          user.password = crypto
+            .pbkdf2Sync(req.body.newPassword, user.salt, 10000, 64, "sha1")
+            .toString("base64");
+          user.save();
+          return res.json({ success: "Password changed" });
+        }
+      }
+    });
   });
 };
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { useStoreState } from "easy-peasy";
 import { apiUrl } from "../baseUrl";
@@ -7,8 +7,12 @@ import moment from "moment";
 import ReactAutolinker from "react-autolinker";
 import ReactModal from "react-modal";
 import DatePicker from "react-mobile-datepicker";
-
 import Resizer from "./Tools/Resizer.js";
+
+function openLink(page) {
+  let win = window.open(page, "_blank");
+  win.focus();
+}
 
 const monthMap = {
   "1": "Jan",
@@ -54,6 +58,72 @@ export default function Application() {
   const { program } = useParams();
   const auth = useStoreState((state) => state.user.auth);
   const small = useStoreState((state) => state.app.small);
+
+  const [loaded, setLoaded] = useState(false);
+  const video = useRef();
+
+  const [isFullScreen, setFullScreen] = useState(false);
+  function fullScreen() {
+    if (video.current) {
+      video.current.muted = false;
+      if (video.current.requestFullScreen) {
+        video.current.requestFullScreen();
+      } else if (video.current.webkitRequestFullScreen) {
+        video.current.webkitRequestFullScreen();
+      } else if (video.current.mozRequestFullScreen) {
+        video.current.mozRequestFullScreen();
+      } else if (video.current.msRequestFullscreen) {
+        video.current.msRequestFullscreen();
+      } else if (video.current.webkitEnterFullscreen) {
+        video.current.webkitEnterFullscreen(); //for iphone this code worked
+      }
+
+      setMuted(false);
+    } else {
+      if (document.documentElement.requestFullScreen) {
+        if (isFullScreen) document.exitFullscreen();
+        else document.documentElement.requestFullScreen();
+      } else if (document.documentElement.webkitRequestFullScreen) {
+        if (isFullScreen) document.webkitExitFullscreen();
+        else document.documentElement.webkitRequestFullScreen();
+      } else if (document.documentElement.mozRequestFullScreen) {
+        if (isFullScreen) document.mozExitFullscreen();
+        else document.documentElement.mozRequestFullScreen();
+      } else if (document.documentElement.msRequestFullscreen) {
+        if (isFullScreen) document.msExitFullscreen();
+        else document.documentElement.msRequestFullscreen();
+      } else if (document.documentElement.webkitEnterFullscreen) {
+        if (isFullScreen) document.webkitExitFullscreen();
+        else document.documentElement.webkitEnterFullscreen();
+      }
+
+      setFullScreen(!isFullScreen);
+    }
+  }
+
+  useEffect(() => {
+    document.addEventListener("webkitfullscreenchange", (event) => {
+      if (!document.webkitIsFullScreen) {
+        setFullScreen(false);
+        if (video.current) {
+          setTimeout(() => {
+            video.current.play();
+          });
+        }
+      } else setFullScreen(true);
+    });
+
+    return () => {
+      document.removeEventListener("fullscreenchange", () => {});
+    };
+  }, []);
+
+  const [muted, setMuted] = useState(true);
+  function toggleAudio() {
+    video.current.muted = !video.current.muted;
+    if (video.current.muted) setMuted(true);
+    else setMuted(false);
+  }
 
   const [user, setUser] = useState(null);
   const [programInfo, setProgram] = useState(null);
@@ -164,7 +234,8 @@ export default function Application() {
   const [err, setErr] = useState(false);
   const preSubmit = () => {
     if (!data.art) setErr("No artwork selected");
-    else if (!data.statement) setErr("Please write a statement of intent");
+    else if (!programInfo.bypassStatement && !data.statement)
+      setErr("Please write a statement of intent");
     else if (!data.title || !data.description)
       setErr("Please provide an artwork title and description");
     else if (!user) setErr("Please log in to submit");
@@ -179,7 +250,7 @@ export default function Application() {
         !user.user.twitter ||
         !user.user.website)
     )
-      setErr("Please complete your user profile to submit");
+      setErr("Please fully complete your user profile to submit");
     else setConfirmOpen(true);
   };
 
@@ -187,7 +258,8 @@ export default function Application() {
     setConfirmOpen(false);
     e.preventDefault();
     if (!data.art) setErr("No artwork selected");
-    else if (!data.statement) setErr("Please write a statement of intent");
+    else if (!programInfo.bypassStatement && !data.statement)
+      setErr("Please write a statement of intent");
     else if (!data.title || !data.description)
       setErr("Please provide an artwork title and description");
     else if (!data.canvas)
@@ -204,7 +276,7 @@ export default function Application() {
         !user.user.twitter ||
         !user.user.website)
     )
-      setErr("Please complete your user profile to submit");
+      setErr("Please fully complete your user profile to submit");
     else {
       setErr(false);
       setSubmitting(true);
@@ -308,28 +380,38 @@ export default function Application() {
       >
         <div className="text-s font">
           By submitting your artwork you agree to and honor the grant logistics
-          and criteria and will not mint your piece elsewhere before the
-          curation process is completed.
+          and criteria and&nbsp;
+          <strong>
+            will NOT MINT your piece elsewhere before the curation process is
+            completed.
+          </strong>
           <br />
           <br />
-          <input
-            type="submit"
-            value="Cancel"
-            className="small-button"
-            onClick={() => setConfirmOpen(false)}
-          />
-          <input
-            type="submit"
-            value="Submit"
-            className="small-button margin-left-s"
-            onClick={submit}
-          />
+          You also agree that your submission{" "}
+          <strong>does not infringe on any copyrights</strong> and that your
+          work is originally created by you.
+          <br />
+          <br />
+          <div className="center">
+            <input
+              type="submit"
+              value="Cancel"
+              className="small-button"
+              onClick={() => setConfirmOpen(false)}
+            />
+            <input
+              type="submit"
+              value="Submit"
+              className="small-button margin-left-s"
+              onClick={submit}
+            />
+          </div>
         </div>
       </ReactModal>
       <div>
         {programInfo && (
           <div>
-            <div className="text-l flex">
+            <div className="flex text-l">
               <strong>{programInfo.name}</strong>
               <div className="flex-full" />
               {isAdmin && (
@@ -510,6 +592,31 @@ export default function Application() {
                       Secret phrase to submit (Optional)
                     </label>
                   </div>
+                  <div>
+                    <div className="text-s margin-top form__title">
+                      Require Statement of Intent
+                    </div>
+                    <div className="select-dropdown margin-top-minus">
+                      <select
+                        name="Mint"
+                        className="text-black"
+                        value={programInfo.bypassStatement}
+                        required
+                        onChange={(e) =>
+                          setProgram({
+                            ...programInfo,
+                            bypassStatement: e.target.value,
+                          })
+                        }
+                      >
+                        <option value="default" disabled hidden>
+                          Select an option
+                        </option>
+                        <option value="false">Yes</option>
+                        <option value="true">No</option>
+                      </select>
+                    </div>
+                  </div>
                   <div className="margin-top-s text-s">
                     <strong>Submissions Open Time</strong>
                     <br />
@@ -616,23 +723,25 @@ export default function Application() {
                 <label className="form__label">Secret Phrase</label>
               </div>
             )}
-            <div className="form__group field">
-              <textarea
-                type="text"
-                className="form__field intent-field"
-                placeholder="Intent"
-                name="intent"
-                id="intent"
-                required
-                maxLength="2000"
-                onChange={(e) =>
-                  setData({ ...data, statement: e.target.value })
-                }
-              />
-              <label className="form__label">
-                Statement of Intent (2000 chars)
-              </label>
-            </div>
+            {programInfo && !programInfo.bypassStatement && (
+              <div className="form__group field">
+                <textarea
+                  type="text"
+                  className="form__field intent-field"
+                  placeholder="Intent"
+                  name="intent"
+                  id="intent"
+                  required
+                  maxLength="2000"
+                  onChange={(e) =>
+                    setData({ ...data, statement: e.target.value })
+                  }
+                />
+                <label className="form__label">
+                  Statement of Intent (2000 chars)
+                </label>
+              </div>
+            )}
             <div className="form__group field">
               <textarea
                 type="text"
@@ -704,6 +813,9 @@ export default function Application() {
                 onChange={(e) => uploadHandler(e.target)}
               />
             </div>
+            <div className="margin-top-s text-s">
+              <em>One submission per artist per exhibition</em>
+            </div>
             <div className="margin-top-l">Submission Preview</div>
             {user && (
               <div className="margin-top gallery-container full-width">
@@ -730,7 +842,7 @@ export default function Application() {
                           {/* { data.ext } as NFT */}
                           <div className="text-xs">{data.canvas}</div>
                         </div>
-                        <div className="margin-top-s text-xs">
+                        <div className="text-xs margin-top-s">
                           {data.description || "Missing Description"}
                         </div>
                       </div>
@@ -756,6 +868,8 @@ export default function Application() {
                             playsInline
                             className="gallery-art"
                             key={data.key}
+                            onLoad={() => setLoaded(true)}
+                            ref={video}
                           >
                             <source src={data.art} />
                             Sorry, your browser doesn't support embedded videos.
@@ -763,6 +877,24 @@ export default function Application() {
                         ) : (
                           <img className="gallery-art" src={data.art} />
                         )}
+                      </div>
+                    </div>
+                    <div className="flex margin-top-s">
+                      <div className="flex-full" />
+                      {(data.ext === "mp4" || data.ext === "mov") && (
+                        <div onClick={() => toggleAudio()} className="pointer">
+                          {muted ? (
+                            <img src="../muted" className="frame-control" />
+                          ) : (
+                            <img src="../unmuted" className="frame-control" />
+                          )}
+                        </div>
+                      )}
+                      <div onClick={() => fullScreen()} className="pointer">
+                        <img
+                          src="../fullscreen.png"
+                          className="margin-left-s frame-control"
+                        />
                       </div>
                     </div>
                   </div>
@@ -786,7 +918,7 @@ export default function Application() {
                           {/* { data.ext } as NFT */}
                           <div className="text-xs">{data.canvas}</div>
                         </div>
-                        <div className="margin-top-s text-xs">
+                        <div className="text-xs margin-top-s">
                           {data.description}
                         </div>
                       </div>
@@ -886,7 +1018,7 @@ export default function Application() {
                           </div>
                         )}
                       </div>
-                      <div className="margin-top-s text-xs">
+                      <div className="text-xs margin-top-s">
                         {applied.description}
                       </div>
                     </div>
@@ -912,6 +1044,8 @@ export default function Application() {
                           webkit-playsinline="true"
                           playsInline
                           className="gallery-art"
+                          onLoad={() => setLoaded(true)}
+                          ref={video}
                         >
                           <source
                             src={`https://cdn.grants.art/${applied.art}`}
@@ -924,6 +1058,25 @@ export default function Application() {
                           src={`https://cdn.grants.art/${applied.art}`}
                         />
                       )}
+                    </div>
+                  </div>
+                  <div className="flex margin-top-s">
+                    <div className="flex-full" />
+                    {(applied.art.split(".")[1] === "mp4" ||
+                      applied.art.split(".")[1] === "mov") && (
+                      <div onClick={() => toggleAudio()} className="pointer">
+                        {muted ? (
+                          <img src="../muted" className="frame-control" />
+                        ) : (
+                          <img src="../unmuted" className="frame-control" />
+                        )}
+                      </div>
+                    )}
+                    <div onClick={() => fullScreen()} className="pointer">
+                      <img
+                        src="../fullscreen.png"
+                        className="margin-left-s frame-control"
+                      />
                     </div>
                   </div>
                 </div>
@@ -952,7 +1105,7 @@ export default function Application() {
                           </div>
                         )}
                       </div>
-                      <div className="margin-top-s text-xs">
+                      <div className="text-xs margin-top-s">
                         {applied.description}
                       </div>
                     </div>

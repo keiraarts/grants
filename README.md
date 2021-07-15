@@ -35,7 +35,7 @@ git clone https://github.com/illestrater/grants.git
 cd grants
 
 # Install dependencies
-yarn
+yarn install
 
 # Use correct node engine for OpenSea packages
 nvm install 14.15.11

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import { useStoreState } from "easy-peasy";
 import {
   usePositioner,
@@ -6,6 +6,7 @@ import {
   useContainerPosition,
   MasonryScroller,
 } from "masonic";
+
 import { useWindowSize } from "@react-hook/window-size";
 
 export default function Collection({ nfts, add }) {
@@ -61,7 +62,7 @@ const addNFT = ({ data, index, width }) => {
           <img src={data.image} className="block-art-image" />
         )}
       </div>
-      <div className="flex">
+      <div className="flex margin-top-xs">
         <div
           className="small-button flex-full"
           onClick={() => data.addToGallery(data)}
@@ -74,7 +75,6 @@ const addNFT = ({ data, index, width }) => {
 };
 
 function openLink(page) {
-  console.log("OPENING", page);
   let win = window.open(page, "_blank");
   win.focus();
 }

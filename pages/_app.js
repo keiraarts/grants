@@ -4,12 +4,12 @@ import "../src/client/tailwind.css";
 import Header from "../src/client/Components/Header";
 import Footer from "../src/client/Components/Footer";
 import { StoreComponent, store } from "../src/client/redux";
+import { AnimateSharedLayout } from "framer-motion";
 
 import { DefaultSeo } from "next-seo";
 import SEO from "../next-seo.config";
-
-import Router from "next/router";
 import NProgress from "nprogress";
+import Router from "next/router";
 
 Router.events.on("routeChangeStart", (url) => {
   NProgress.start();
@@ -28,7 +28,9 @@ function MyApp({ Component, pageProps }) {
         <StoreComponent store={store}>
           <div className="site-content">
             <Header />
-            <Component {...pageProps} />
+            <AnimateSharedLayout>
+              <Component {...pageProps} />
+            </AnimateSharedLayout>
             <Footer />
           </div>
         </StoreComponent>

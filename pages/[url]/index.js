@@ -1,15 +1,15 @@
 import React, { useEffect, useReducer, useState } from "react";
-import NFT from "../../../src/client/Components/ExhibitionNFT.js";
+import NFT from "../../src/client/Components/ExhibitionNFT.js";
 
 import { useSwipeable } from "react-swipeable";
 import { useHistory } from "react-router-dom";
 import { useStoreState } from "easy-peasy";
 import ReactAutolinker from "react-autolinker";
-import { apiUrl } from "../../../src/client/baseUrl";
+import { apiUrl } from "../../src/client/baseUrl";
 import Link from "next/link";
 
-import dbConnect from "../../../utils/dbConnect";
-import Program from "../../../models/programModel";
+import dbConnect from "../../utils/dbConnect";
+import Program from "../../models/programModel";
 
 export async function getStaticPaths() {
   await dbConnect();
@@ -99,7 +99,7 @@ export default function Exhibition({ data, url }) {
       <div className="flex">
         {id && (
           <Link
-            href={`/exhibition/${url}/${switchPage("previous")}`}
+            href={`/${url}/${switchPage("previous")}`}
             className="relative margin-top-s"
           >
             <div className="round">
@@ -127,7 +127,7 @@ export default function Exhibition({ data, url }) {
           </div>
         </div>
         {id && (
-          <Link href={`/exhibition/${url}/${switchPage("next")}`}>
+          <Link href={`/${url}/${switchPage("next")}`}>
             <a className="relative margin-top-s">
               <div className="round arrow-right">
                 <div id="cta">
@@ -144,7 +144,7 @@ export default function Exhibition({ data, url }) {
           {gallery && gallery.length ? (
             <div className="margin-top-l center">
               <Link
-                href={`/exhibition/${url}/${
+                href={`/${url}/${
                   Math.floor(
                     Math.random() * (gallery.length ? gallery.length : 1)
                   ) + 1
@@ -194,7 +194,7 @@ export default function Exhibition({ data, url }) {
                           : `${curator.first} ${curator.last}`}
                       </strong>
                     </div>
-                    <div className="flex items-center space-x-3 text-base center">
+                    <div className="flex items-center justify-center space-x-3 text-base center">
                       {curator.website && (
                         <div className="margin-top-xs font-base">
                           <a

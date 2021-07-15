@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from "react-router-dom";
 
 import '../styles.scss';
 
@@ -18,7 +19,9 @@ export default function Committee() {
         Our shared love of art, music, and design
       </div>
       <div className='page-container margin-top'>
-        <div className='text-m'>Advisors</div>
+        <Link to='/donate' className='text-rainbow remove-a'>Sevens Foundation's Donors</Link>
+        <div className='text-s'>Our sincerest thanks to you all</div>
+        <div className='text-m margin-top'>Advisors</div>
         <span className='text-s text-grey pointer' onClick={ () => openLink('https://y.at/%F0%9F%91%89%F0%9F%8E%B1%F0%9F%95%B3') }>Tim Kang (illestrater)</span>
         <div className='text-s'>Sevens Developer & paradigm pusher</div>
         <span className='text-s margin-top-s text-grey pointer' onClick={ () => openLink('https://twitter.com/darlington') }>Mike Darlington</span>
@@ -76,6 +79,14 @@ export default function Committee() {
         <div className='text-s margin-top'>
           <span className='text-s text-grey pointer' onClick={ () => openLink('https://www.numomo.com/') }>Numomo Creative Agency</span>
           <div className='text-s'>World's First Creative NFT Agency</div>
+        </div>
+        <div className='text-s margin-top'>
+          <span className='text-s text-grey pointer' onClick={ () => openLink('https://www.playboy.com/custom/playboy-x-slimesunday') }>Playboy</span>
+          <div className='text-s'>Culture Progressor</div>
+        </div>
+        <div className='text-s margin-top'>
+          <span className='text-s text-grey pointer' onClick={ () => openLink('https://www.ymugroup.com/') }>YMU Group</span>
+          <div className='text-s'>Arts & Talent Management</div>
         </div>
         <br />
       </div>

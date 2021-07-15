@@ -16,7 +16,10 @@ export default async function handler(req, res) {
         const user = await User.findById(jwt.id);
         if (!user) return res.json({ error: "Authentication error" });
 
-        return ProgramApplicant.find(
+        const program = await Program.findById(req.body.program);
+        if (!program) return res.json({ error: "Could not find data" });
+
+        const result = await ProgramApplicant.find(
           { program: req.body.program },
           (err, data) => {
             return err ? res.status(500).json(err) : res.json(data);
@@ -26,8 +29,10 @@ export default async function handler(req, res) {
             "user",
             "artistName birthYear country city website twitter instagram"
           )
-          .sort("order")
+          .sort(program.finalized ? "order" : "-approvalCount")
           .select("-approved -rejected");
+
+        res.json(result);
       } catch (error) {
         res.status(400).json({ success: false });
       }

@@ -1,34 +1,34 @@
 import React, { useEffect, useReducer, useState, useRef } from "react";
 import { useSwipeable } from "react-swipeable";
-import { useParams, useLocation, useHistory } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import { useStoreState } from "easy-peasy";
 import { Link } from "react-router-dom";
 import ReactAutolinker from "react-autolinker";
-import GenesisNFT from "./ExhibitionNFT.js";
-import Resizer from "./Tools/Resizer.js";
+import GenesisNFT from "./ExhibitionNFT";
+import Gallery from "./ExhibitionGallery";
+import Resizer from "./Tools/Resizer";
 import { apiUrl } from "../baseUrl";
 
-import Web from "../assets/website.png";
-import Twitter from "../assets/twitter.png";
-import Instagram from "../assets/instagram.png";
-
-import "../styles.scss";
-
 function openLink(page) {
+  if (page.indexOf("http") < 0) page = `http://${page}`;
   let win = window.open(page, "_blank");
   win.focus();
 }
 
 const NFT = React.memo(GenesisNFT);
 
-export default function Exhibition() {
+export default function Exhibition({ updateScroll }) {
   const history = useHistory();
   const small = useStoreState((state) => state.app.small);
+  const nftRef = useRef();
   const { url, id } = useParams();
   const order = Number(id);
 
   const [gallery, setGallery] = useState(null);
   const [exhibition, setExhibition] = useState({});
+  const [enterId, setEnterId] = useState(null);
+  const [audio, setAudio] = useState(true);
+  const [ethPrice, setEthPrice] = useState(null);
   useEffect(() => {
     fetch(`${apiUrl()}/program/getGallery`, {
       method: "POST",
@@ -37,10 +37,41 @@ export default function Exhibition() {
     })
       .then((res) => res.json())
       .then((json) => {
-        if (json && json.gallery) setGallery(json.gallery);
+        if (json && json.gallery) {
+          setGallery(json.gallery);
+          if (id) setEnterId(id);
+          else
+            setEnterId(
+              Math.floor(
+                Math.random() * (json.gallery.length ? json.gallery.length : 1)
+              ) + 1
+            );
+        }
         if (json && json.name) setExhibition({ ...json, gallery: undefined });
       });
+
+    fetch(
+      `https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd`,
+      {
+        method: "GET",
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json",
+        },
+      }
+    )
+      .then((res) => res.json())
+      .then((json) => {
+        if (json && json.ethereum) {
+          setEthPrice(json.ethereum.usd);
+        }
+      });
   }, []);
+
+  useEffect(() => {
+    if (id === "all") updateScroll(true);
+    else updateScroll(false);
+  }, [id]);
 
   const [preload, dispatch] = useReducer((preload, { type, value }) => {
     if (type === "add") {
@@ -67,7 +98,7 @@ export default function Exhibition() {
 
   useEffect(() => {
     if (gallery && gallery.length && !preload.length) {
-      const index = order;
+      const index = enterId;
       let before = index - 4;
       if (before <= 0) before = 1;
       let after = index + 4;
@@ -94,7 +125,7 @@ export default function Exhibition() {
         }
       }
     }
-  }, [gallery]);
+  }, [enterId]);
 
   function updatePreload(direction, currentToken) {
     let inc;
@@ -130,9 +161,7 @@ export default function Exhibition() {
     }
   }
 
-  // const [swipeDirection, setSwipeDirection] = useState(null);
   function switchPage(direction) {
-    // setSwipeDirection(direction);
     if (gallery) {
       if (id === "1" && direction === "previous") return gallery.length;
       else if (gallery && direction === "next" && Number(id) === gallery.length)
@@ -162,13 +191,13 @@ export default function Exhibition() {
 
   const handlers = useSwipeable({
     onSwipedRight: (eventData) => {
-      if (id) {
+      if (id && id !== "all") {
         updatePreload("previous", order);
         history.push(`/${url}/${switchPage("previous")}`);
       }
     },
     onSwipedLeft: (eventData) => {
-      if (id) {
+      if (id && id !== "all") {
         updatePreload("next", order);
         history.push(`/${url}/${switchPage("next")}`);
       }
@@ -176,21 +205,25 @@ export default function Exhibition() {
     preventDefaultTouchmoveEvent: true,
   });
 
+  const setHeight = (height) => {
+    if (nftRef && nftRef.current)
+      nftRef.current.style.marginTop = `${height}px`;
+  };
+
   return (
     <div className="content-block" {...handlers}>
       <Resizer />
       <div className="flex">
-        {id && (
-          <Link href={`/${url}/${switchPage("previous")}`}>
-            <a
-              className="relative margin-top-s"
-              onClick={() => updatePreload("previous", order)}
-            >
-              <div className="round">
-                <div id="cta">
-                  <span className="arrow-left segunda previous"></span>
-                  <span className="arrow-left primera previous"></span>
-                </div>
+        {id && id !== "all" && (
+          <Link
+            to={`/${url}/${switchPage("previous")}`}
+            className="relative margin-top-s"
+            onClick={() => updatePreload("previous", order)}
+          >
+            <a className="round">
+              <div id="cta">
+                <span className="arrow-left segunda previous"></span>
+                <span className="arrow-left primera previous"></span>
               </div>
             </a>
           </Link>
@@ -211,7 +244,7 @@ export default function Exhibition() {
             )}
           </div>
         </div>
-        {id && (
+        {id && id !== "all" && (
           <Link
             to={`/${url}/${switchPage("next")}`}
             className="relative margin-top-s"
@@ -226,20 +259,19 @@ export default function Exhibition() {
           </Link>
         )}
       </div>
+      {id === "all" && (
+        <div className="margin-top-l">
+          {gallery && <Gallery nfts={gallery} url={url} />}
+        </div>
+      )}
       {!id && (
         <div className="line-breaks">
           {gallery && gallery.length ? (
             <div className="margin-top-l center">
-              <Link
-                to={`/${url}/${
-                  Math.floor(
-                    Math.random() * (gallery.length ? gallery.length : 1)
-                  ) + 1
-                }`}
-                className="button"
-              >
+              <Link to={`/${url}/${enterId}`} className="button">
                 <span className="text-l">Enter Gallery</span>
               </Link>
+              <div className="margin-top">{gallery.length} Artworks</div>
             </div>
           ) : (
             <div className="flex center">
@@ -275,6 +307,8 @@ export default function Exhibition() {
                       <strong>
                         {curator.artistName
                           ? `${curator.artistName}`
+                          : !curator.first || !curator.last
+                          ? curator.username
                           : `${curator.first} ${curator.last}`}
                       </strong>
                     </div>
@@ -282,7 +316,7 @@ export default function Exhibition() {
                       {curator.website && (
                         <div className="margin-top-xs">
                           <img
-                            src={Web}
+                            src={"../web"}
                             className="curator-icon-web pointer"
                             alt="Website"
                             onClick={() => openLink(curator.website)}
@@ -292,7 +326,7 @@ export default function Exhibition() {
                       {curator.twitter && (
                         <div className="margin-top-xs">
                           <img
-                            src={Twitter}
+                            src={"../twitter.png"}
                             className="curator-icon pointer"
                             alt="Twitter"
                             onClick={() =>
@@ -304,7 +338,7 @@ export default function Exhibition() {
                       {curator.instagram && (
                         <div className="margin-top-xs">
                           <img
-                            src={Instagram}
+                            src={"../instagram.png"}
                             className="curator-icon pointer"
                             alt="Instagram"
                             onClick={() =>
@@ -319,40 +353,154 @@ export default function Exhibition() {
                   </div>
                 );
               })}
+            <div className="margin-top-l" />
+            <ReactAutolinker
+              text={exhibition.description}
+              className="text-mid"
+            />
+            {exhibition && exhibition.curators && (
+              <div className="margin-top-l center">Curated By</div>
+            )}
+            <div className="text-s margin-top-s center">
+              {exhibition &&
+                exhibition.curators &&
+                exhibition.curators.map((curator, index) => {
+                  return (
+                    <div className="margin-top" key={index}>
+                      <div>
+                        <strong>
+                          {curator.artistName
+                            ? `${curator.artistName}`
+                            : `${curator.first} ${curator.last}`}
+                        </strong>
+                      </div>
+                      <div className="flex center">
+                        {curator.website && (
+                          <div className="margin-top-xs">
+                            <img
+                              src={"../web.png"}
+                              className="curator-icon-web pointer"
+                              alt="Website"
+                              onClick={() => openLink(curator.website)}
+                            />
+                          </div>
+                        )}
+                        {curator.twitter && (
+                          <div className="margin-top-xs">
+                            <img
+                              src={"../twitter.png"}
+                              className="curator-icon pointer"
+                              alt="Twitter"
+                              onClick={() =>
+                                openLink(
+                                  `https://twitter.com/${curator.twitter}`
+                                )
+                              }
+                            />
+                          </div>
+                        )}
+                        {curator.instagram && (
+                          <div className="margin-top-xs">
+                            <img
+                              src={"../instagram.png"}
+                              className="curator-icon pointer"
+                              alt="Instagram"
+                              onClick={() =>
+                                openLink(
+                                  `https://instagram.com/${curator.instagram}`
+                                )
+                              }
+                            />
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+            </div>
           </div>
+
+          {id && id !== "all" && gallery && gallery.length && (
+            <div>
+              <NFT
+                key={order - 3}
+                small={small}
+                nft={gallery[order - 2]}
+                src={src1}
+                contract={exhibition.contract}
+                setHeight={setHeight}
+                order={0}
+                ethPrice={ethPrice}
+                setAudio={setAudio}
+                audio={audio}
+                url={url}
+                important
+                hidden
+              />
+              <NFT
+                key={order - 2}
+                small={small}
+                nft={gallery[order - 2]}
+                src={src1}
+                contract={exhibition.contract}
+                setHeight={setHeight}
+                order={1}
+                ethPrice={ethPrice}
+                setAudio={setAudio}
+                audio={audio}
+                url={url}
+                important
+                hidden
+              />
+              <NFT
+                key={order - 1}
+                small={small}
+                nft={gallery[order - 1]}
+                src={src2}
+                contract={exhibition.contract}
+                setHeight={setHeight}
+                order={2}
+                ethPrice={ethPrice}
+                setAudio={setAudio}
+                audio={audio}
+                url={url}
+                important
+              />
+              <NFT
+                key={order}
+                small={small}
+                nft={gallery[order]}
+                src={src3}
+                contract={exhibition.contract}
+                setHeight={setHeight}
+                order={3}
+                ethPrice={ethPrice}
+                setAudio={setAudio}
+                audio={audio}
+                url={url}
+                important
+                hidden
+              />
+              <NFT
+                key={order + 1}
+                small={small}
+                nft={gallery[order]}
+                src={src3}
+                contract={exhibition.contract}
+                setHeight={setHeight}
+                order={4}
+                ethPrice={ethPrice}
+                setAudio={setAudio}
+                audio={audio}
+                url={url}
+                important
+                hidden
+              />
+            </div>
+          )}
+          <div ref={nftRef} className="exhibition-height" />
         </div>
       )}
-      {id && gallery && gallery.length && (
-        <div className="gallery-min-height">
-          <NFT
-            key={order - 2}
-            small={small}
-            nft={gallery[order - 2]}
-            src={src1}
-            contract={exhibition.contract}
-            important
-            hidden
-          />
-          <NFT
-            key={order - 1}
-            small={small}
-            nft={gallery[order - 1]}
-            src={src2}
-            contract={exhibition.contract}
-            important
-          />
-          <NFT
-            key={order}
-            small={small}
-            nft={gallery[order]}
-            src={src3}
-            contract={exhibition.contract}
-            important
-            hidden
-          />
-        </div>
-      )}
-      <div className="margin-top-l" />
     </div>
   );
 }

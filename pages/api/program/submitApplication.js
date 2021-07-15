@@ -56,7 +56,6 @@ const compressor = async (file, fileWeb) => {
         const height = Math.round(
           (width / dimensions.width) * dimensions.height
         );
-        console.log(width, height);
 
         try {
           var process = new ffmpeg(input);
@@ -127,16 +126,16 @@ export default async function handler(req, res) {
     !user.wallet
   )
     return res.json({ error: "User profile incomplete" });
+
+  const program = await Program.findById(req.body.program);
   if (
     !req.body.program ||
-    !req.body.statement ||
+    (!program.bypassStatement && !req.body.statement) ||
     !req.body.title ||
     !req.body.description ||
     !req.body.art
   )
     return res.json({ error: "Application incomplete" });
-
-  const program = await Program.findById(req.body.program);
   if (!program) return res.json({ error: "Program does not exist" });
   if (program.isProtected && req.body.passcode !== program.passcode)
     return res.json({ error: "The secret phrase was incorrect" });

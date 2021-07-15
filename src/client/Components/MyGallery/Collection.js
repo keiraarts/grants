@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useStoreState } from "easy-peasy";
+import { useStoreState, useStoreActions } from "easy-peasy";
 import ReactModal from "react-modal";
 import { apiUrl } from "../../baseUrl";
 
@@ -20,6 +20,7 @@ export default function Collection({
 }) {
   const auth = useStoreState((state) => state.user.auth);
   const provider = useStoreState((state) => state.eth.provider);
+  const setProvider = useStoreActions((dispatch) => dispatch.eth.setProvider);
 
   const [gallery, setGallery] = useState(null);
   const [myNFTs, setMyNFTs] = useState([]);
@@ -89,10 +90,16 @@ export default function Collection({
                 addToGallery,
               });
             });
+            setShowData(items);
             getMyAssets(offset + 50, items);
-          } else setShowData(items);
+          } else {
+            setShowData(items);
+          }
+        } else {
+          getMyAssets(offset, items);
         }
-      });
+      })
+      .catch((err) => console.error(err));
   }
 
   const [manage, setManage] = useState(null);
@@ -161,6 +168,11 @@ export default function Collection({
   const connectWallet = () => {
     if (window.ethereum) {
       window.ethereum.enable();
+    } else {
+      web3.eth.getAccounts((e, accounts) => {
+        if (e) throw e;
+        setProvider({ ...provider, selectedAddress: accounts[0] });
+      });
     }
   };
 

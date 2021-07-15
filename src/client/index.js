@@ -1,8 +1,8 @@
-import React, { useRef } from "react";
+import React, { useState, useRef } from "react";
 import ReactDOM from "react-dom";
 import { StoreComponent, store } from "./redux";
 import { useStoreRehydrated } from "easy-peasy";
-import { BrowserRouter, Route, Switch, Router } from "react-router-dom";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { ModalProvider } from "react-modal-hook";
 import ScrollToTop from "./Components/Tools/ScrollToTop";
 import Header from "./Components/Header";
@@ -25,6 +25,7 @@ import Register from "./Components/Register";
 import Login from "./Components/Login";
 import Forgot from "./Components/Forgot";
 import RecoverAccount from "./Components/RecoverAccount";
+import ChangePassword from "./Components/ChangePassword";
 import Account from "./Components/Account";
 import Profile from "./Components/Profile";
 import Exhibition from "./Components/Exhibition";
@@ -40,11 +41,16 @@ const App = () => {
 
   const scrollRef = useRef(null);
 
+  const [scroll, setScroll] = useState(false);
+  const updateScroll = (val) => {
+    setScroll(val);
+  };
+
   return (
     <BrowserRouter>
       <ScrollToTop />
       <StoreComponent store={store}>
-        <div className="App">
+        <div className={!scroll ? "App-No-Scroll" : "App"}>
           <div className="wrapper" />
           <div className="dim-gradient" ref={scrollRef}>
             <div className="site-content">
@@ -53,10 +59,11 @@ const App = () => {
                 <Switch>
                   <Route
                     path="/"
+                    exact
                     component={Home}
                     scrollRef={scrollRef ? scrollRef.current : null}
                   />
-
+                  <Route path="/ethos" exact component={Ethos} />
                   <Route path="/learn" exact component={Learn} />
                   <Route path="/tutorial" exact component={Tutorial} />
                   <Route path="/rarible" exact component={Rarible} />
@@ -64,23 +71,45 @@ const App = () => {
                   <Route path="/team" exact component={Committee} />
                   <Route path="/donate" exact component={Donate} />
                   <Route path="/program" exact component={Program} />
-                  <Route path="/create-program" component={CreateProgram} />
+                  <Route
+                    path="/create-program"
+                    exact
+                    component={CreateProgram}
+                  />
                   <Route path="/apply/:program" exact component={Apply} />
                   <Route path="/curator/:org" exact component={Organizer} />
-                  <Route path="/curation" exact component={Curation} />
+                  <Route
+                    path="/curation"
+                    render={() => <Curation updateScroll={updateScroll} />}
+                  />
                   <Route path="/testimony" exact component={Testimony} />
                   <Route path="/register" exact component={Register} />
                   <Route path="/login" exact component={Login} />
                   <Route path="/forgotpassword" exact component={Forgot} />
                   <Route
+                    path="/changepassword"
+                    exact
+                    component={ChangePassword}
+                  />
+                  <Route
                     path="/recoveraccount/:token"
+                    exact
                     component={RecoverAccount}
                   />
                   <Route path="/account" exact component={Account} />
-                  <Route path="/u/:username" component={Profile} />
                   <Route path="/verifyemail/:id" component={VerifyEmail} />
-                  <Route path="/:url/:id" component={Exhibition} />
-                  <Route path="/:url" component={Exhibition} />
+                  <Route
+                    path="/u/:username"
+                    render={() => <Profile updateScroll={updateScroll} />}
+                  />
+                  <Route
+                    path="/:url/:id"
+                    render={() => <Exhibition updateScroll={updateScroll} />}
+                  />
+                  <Route
+                    path="/:url"
+                    render={() => <Exhibition updateScroll={updateScroll} />}
+                  />
                 </Switch>
                 <Footer />
               </WaitForStateRehydration>

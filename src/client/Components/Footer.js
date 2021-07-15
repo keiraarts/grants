@@ -1,9 +1,9 @@
 import React from "react";
 import Link from "next/link";
 
-export default function Header() {
+export default function Footer() {
   return (
-    <div className="footer">
+    <footer className="block footer">
       <div className="center text-s">
         Curated by{" "}
         <Link href="/team">
@@ -38,11 +38,7 @@ export default function Header() {
         <a href="https://discord.gg/YB4HDKwxyc">
           <img src="/assets/discord.png" className="w-8 h-8" alt="Instagram" />
         </a>
-
-        <a href="mailto:tim@grants.art">
-          <img src="/assets/email.png" className="w-8 h-8" alt="Email" />
-        </a>
       </div>
-    </div>
+    </footer>
   );
 }

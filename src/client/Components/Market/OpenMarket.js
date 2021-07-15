@@ -1,13 +1,14 @@
 import _ from "lodash";
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { useStoreState } from "easy-peasy";
+import Link from "next/link";
+import { useStoreState, useStoreActions } from "easy-peasy";
 import useInterval from "@use-it/interval";
 import { OpenSeaPort, Network, EventType } from "opensea-js";
 import ReactModal from "react-modal";
 import DatePicker from "react-mobile-datepicker";
-import Web3 from "web3";
 import moment from "moment";
+import Fortmatic from "fortmatic";
+import Web3 from "web3";
 
 import AuctionTimer from "./AuctionTimer";
 import WalletConnect from "../Web3/WalletConnect";
@@ -68,15 +69,20 @@ const dateConfig = {
   },
 };
 
-export default function OpenMarket({ tokenId, contract }) {
-  const auth = useStoreState((state) => state.user.auth);
+export default function OpenMarket({
+  tokenId,
+  contract,
+  resizeContainer,
+  ethPrice,
+  artistWallet,
+}) {
   const provider = useStoreState((state) => state.eth.provider);
+  const setProvider = useStoreActions((dispatch) => dispatch.eth.setProvider);
 
   // contract = '0x3f4200234e26d2dfbc55fcfd9390bc128d5e2cca';
   // tokenId = 10;
 
   const [gotAsset, setAsset] = useState({});
-  // const [provider, setProvider] = useState(null);
   const [seaport, setSeaport] = useState(null);
   const [bids, setBids] = useState(null);
   const [auction, setAuction] = useState(null);
@@ -103,7 +109,8 @@ export default function OpenMarket({ tokenId, contract }) {
           setAsset(json);
           setRetryAsset(0);
         }
-      });
+      })
+      .catch((err) => console.error(err));
   }
 
   const [retryAsset, setRetryAsset] = useState(0);
@@ -144,10 +151,10 @@ export default function OpenMarket({ tokenId, contract }) {
 
           return json.orders;
         }
-      });
+      })
+      .catch((err) => console.error(err));
 
     let newBids = [];
-    let end;
     let foundListed = false;
     if (orders && orders.length) {
       let foundEnd = false;
@@ -160,7 +167,16 @@ export default function OpenMarket({ tokenId, contract }) {
           foundListed = true;
           setListed(order);
         } else if (order.side === 0) {
-          order.value = Number(Web3.utils.fromWei(order.base_price, "ether"));
+          order.currency = order.payment_token_contract.symbol;
+          order.ethValue = Number(
+            Web3.utils.fromWei(order.base_price, "ether")
+          );
+          order.value = (order.currency === "USDC"
+            ? Number(order.base_price) / 1000000
+            : order.currency === "DAI"
+            ? order.ethValue
+            : order.ethValue * ethPrice
+          ).toFixed(2);
           order.user =
             order.maker && order.maker.user
               ? order.maker.user.username
@@ -179,7 +195,7 @@ export default function OpenMarket({ tokenId, contract }) {
         setSeaportOrders(orders);
       }
 
-      if (newBids) setBids(_.orderBy(newBids, ["value"], ["desc"]));
+      if (newBids) setBids(newBids);
     } else setBids([]);
 
     if (!foundListed) {
@@ -187,6 +203,8 @@ export default function OpenMarket({ tokenId, contract }) {
       setListed(null);
       setAuctionEnd(null);
     }
+
+    resizeContainer();
   }
 
   async function getBalance(accountAddress, existingSeaport) {
@@ -227,7 +245,6 @@ export default function OpenMarket({ tokenId, contract }) {
     setUnverified(false);
     connectWallet();
     if (provider && provider.selectedAddress) {
-      // if (auth.wallet && auth.wallet.toLowerCase() !== provider.selectedAddress.toLowerCase()) setUnverified(true);
       if (bid <= 0) setBidErr("Your bid must be higher than 0 WETH");
       else {
         setBidErr(false);
@@ -238,7 +255,7 @@ export default function OpenMarket({ tokenId, contract }) {
               tokenAddress: contract,
             },
             accountAddress: provider.selectedAddress,
-            expirationTime: Math.round(Date.now() / 1000 + 60 * 60 * 24 * 7),
+            // expirationTime: Math.round(Date.now() / 1000 + 60 * 60 * 24 * 7),
             startAmount: bid,
           })
           .catch((err) => {
@@ -266,7 +283,6 @@ export default function OpenMarket({ tokenId, contract }) {
   const createAuction = async () => {
     connectWallet();
     if (provider && provider.selectedAddress) {
-      // if (auth.wallet && auth.wallet.toLowerCase() !== provider.selectedAddress.toLowerCase()) setUnverified(true);
       if (reserve < 1.07) setBidErr("Your reserve price must start at 1 WETH");
       else {
         setBidErr(false);
@@ -290,7 +306,6 @@ export default function OpenMarket({ tokenId, contract }) {
   const listArt = async () => {
     connectWallet();
     if (provider && provider.selectedAddress) {
-      // if (auth.wallet && auth.wallet.toLowerCase() !== provider.selectedAddress.toLowerCase()) setUnverified(true);
       if (list <= 0) setBidErr("Your list price must be higher than 0 WETH");
       else {
         setBidErr(false);
@@ -349,17 +364,18 @@ export default function OpenMarket({ tokenId, contract }) {
   const purchase = async (order) => {
     connectWallet();
     if (provider && provider.selectedAddress) {
-      // if (auth.wallet && auth.wallet.toLowerCase() !== provider.selectedAddress.toLowerCase()) setUnverified(true);
-      // else {
-      if (!order) order = listed;
-      const foundOrder = seaportOrders.find(
-        (o) => o.hash.toLowerCase() === order.order_hash
-      );
+      let foundOrder;
+      if (order)
+        foundOrder = seaportOrders.find(
+          (o) => o.hash.toLowerCase() === order.order_hash
+        );
+      else
+        foundOrder = seaportOrders.find((o) => o.side === 1 && !o.closing_date);
+
       await seaport.fulfillOrder({
         order: foundOrder,
         accountAddress: provider.selectedAddress,
       });
-      // }
     }
   };
 
@@ -367,9 +383,17 @@ export default function OpenMarket({ tokenId, contract }) {
   async function connectWallet() {
     if (provider) {
       setBidErr(null);
-      const createdSeaport = new OpenSeaPort(provider, {
-        networkName: Network.Main,
-      });
+      let createdSeaport;
+      if (window.ethereum) {
+        createdSeaport = new OpenSeaPort(provider, {
+          networkName: Network.Main,
+        });
+      } else {
+        const fm = new Fortmatic("pk_live_B635DD2C775F3285");
+        createdSeaport = new OpenSeaPort(fm.getProvider(), {
+          networkName: Network.Main,
+        });
+      }
 
       if (listener && seaport) {
         seaport.removeListener(listener);
@@ -402,6 +426,11 @@ export default function OpenMarket({ tokenId, contract }) {
           if (e.code === -32002)
             setBidErr("MetaMask is already requesting login!");
         });
+    } else {
+      web3.eth.getAccounts((e, accounts) => {
+        if (e) throw e;
+        setProvider({ ...provider, selectedAddress: accounts[0] });
+      });
     }
   };
 
@@ -410,20 +439,25 @@ export default function OpenMarket({ tokenId, contract }) {
     asset = gotAsset.assets[0];
 
   let isOwner = false,
-    username = null;
+    isArtist = false;
   let address =
     asset && asset.owner && asset.owner.address ? asset.owner.address : null;
   if (asset && asset.owner && asset.owner.user && asset.owner.user.username) {
-    username = asset.owner.user.username;
     address = asset.owner.user.username;
   }
 
   if (
     asset &&
     asset.owner &&
+    asset.owner.address.toLowerCase() === artistWallet?.toLowerCase()
+  )
+    isArtist = true;
+  if (
+    asset &&
+    asset.owner &&
     asset.owner.address === "0x47bcd42b8545c23031e9918c3d823be4100d4e87"
   )
-    address = "Sevens Foundation";
+    address = "Sevens Foundation - Not For Sale";
   if (
     asset &&
     asset.owner &&
@@ -444,7 +478,7 @@ export default function OpenMarket({ tokenId, contract }) {
     auction &&
     bids &&
     bids.length &&
-    bids[0].value >=
+    bids[0].ethValue >=
       Number(
         Web3.utils.fromWei(
           (
@@ -454,7 +488,7 @@ export default function OpenMarket({ tokenId, contract }) {
         )
       ).toFixed(2)
   ) {
-    reserveMet = bids[0].value;
+    reserveMet = bids[0].ethValue;
   }
 
   const connectedAddress =
@@ -473,7 +507,7 @@ export default function OpenMarket({ tokenId, contract }) {
         ariaHideApp={false}
       >
         <div className="flex-v font">
-          <div className="flex">
+          <div className="flex center">
             <div className="small-button" onClick={() => toggleView("fixed")}>
               Fixed Price
             </div>
@@ -611,6 +645,12 @@ export default function OpenMarket({ tokenId, contract }) {
           <br />
           Each new highest bid within 10 minutes of the auction ending will add
           an additional 10 minutes to the clock.
+          {auction && auction.base_price === "0" && (
+            <div className="text-s margin-top-s">
+              If you are the owner, please cancel and reset auction using Sevens
+              to fix reserve.
+            </div>
+          )}
         </div>
       </ReactModal>
       <div className="text-mid">
@@ -626,25 +666,37 @@ export default function OpenMarket({ tokenId, contract }) {
             </div>
           ) : (
             <div className="text-xs margin-top-s">
-              My Wallet:{" "}
-              {`${provider.selectedAddress
-                .slice(0, 8)
-                .toLowerCase()}...${provider.selectedAddress
-                .slice(-4)
-                .toLowerCase()}`}
+              {provider.selectedAddress && (
+                <div>
+                  <strong>My Wallet</strong>
+                  <br />
+                  <div className="text-xxs">{provider.selectedAddress}</div>
+                  {/* { `${ provider.selectedAddress.slice(0,8).toLowerCase() }...${ provider.selectedAddress.slice(-4).toLowerCase() }` } */}
+                  <div className="text-xxs margin-top-xs">
+                    {balance !== null ? `Balance: ${balance} WETH` : ""}
+                  </div>
+                </div>
+              )}
             </div>
           )}
-          <div className="flex items-center justify-start text-xs margin-top-s">
-            <strong>Owner:</strong> {address}
-            <img
-              src="../../assets/opensea.png"
-              className="w-6 h-6"
-              alt="OpenSea"
-              onClick={() => openLink(asset.permalink)}
-            />
+          <div className="text-xs margin-top-s">
+            <strong>Owner</strong>
+            <br />
+            <div className="text-xxs margin-top-minus">
+              {address}
+              {isArtist ? " (Artist)" : ""}
+              {address && (
+                <img
+                  src="/assets/opensea.png"
+                  className="block-social"
+                  alt="OpenSea"
+                  onClick={() => openLink(asset.permalink)}
+                />
+              )}
+            </div>
           </div>
           {!isOwner ? (
-            <div className="flex">
+            <div className="flex margin-top-s">
               <div className="form__group field">
                 <input
                   type="number"
@@ -659,9 +711,7 @@ export default function OpenMarket({ tokenId, contract }) {
                     setBidErr(null);
                   }}
                 />
-                <label className="form__label_s">
-                  Bid Amount {balance !== null ? `(${balance} WETH)` : "(WETH)"}
-                </label>
+                <label className="form__label_s">Bid Amount (WETH)</label>
               </div>
               &nbsp;
               <input
@@ -706,20 +756,24 @@ export default function OpenMarket({ tokenId, contract }) {
                   className="text-grey pointer"
                   onClick={() => setInfoOpen(true)}
                 >
-                  <strong>
-                    Ξ
-                    {Number(
-                      Web3.utils.fromWei(
-                        (
-                          Math.round(
-                            Number(auction.base_price).toFixed(2) * 1000
-                          ) / 100
-                        ).toString(),
-                        "ether"
-                      )
-                    ).toFixed(2)}{" "}
-                    Reserve {reserveMet === 0 ? "Price" : "Met"}
-                  </strong>
+                  {auction.base_price !== "0" ? (
+                    <strong>
+                      Ξ
+                      {Number(
+                        Web3.utils.fromWei(
+                          (
+                            Math.round(
+                              Number(auction.base_price).toFixed(2) * 1000
+                            ) / 100
+                          ).toString(),
+                          "ether"
+                        )
+                      ).toFixed(2)}{" "}
+                      Reserve {reserveMet === 0 ? "Price" : "Met"}
+                    </strong>
+                  ) : (
+                    <strong>Reserve Price Unknown</strong>
+                  )}
                 </span>
               </div>
               <AuctionTimer time={auctionEnd} />
@@ -731,7 +785,7 @@ export default function OpenMarket({ tokenId, contract }) {
                 <div className="text-s">List Price</div>Ξ
                 {Web3.utils.fromWei(listed.current_price, "ether")}
               </div>
-              <div className="flex-full" />
+              <div className="small-space" />
               {listed.maker.address.toLowerCase() !== connectedAddress && (
                 <input
                   type="submit"
@@ -747,64 +801,64 @@ export default function OpenMarket({ tokenId, contract }) {
               bids.map((bid, index) => {
                 return (
                   <div className="margin-top-s" key={index}>
-                    {index === 0 ? (
-                      <div>
-                        <strong>Bid of Ξ{bid.value}</strong>
-                        {bid.maker.address.toLowerCase() ===
+                    <div>
+                      <span>
+                        Bid of ${bid.value} (
+                        {bid.currency === "DAI" || bid.currency === "USDC"
+                          ? bid.currency
+                          : `Ξ${bid.ethValue}`}
+                        )
+                      </span>
+                      {bid.maker.address.toLowerCase() === connectedAddress && (
+                        <span
+                          className="text-s text-grey pointer"
+                          onClick={() => cancelOrder(bid)}
+                        >
+                          &nbsp;- Cancel
+                        </span>
+                      )}
+                      {isOwner &&
+                        bid.maker.address.toLowerCase() !==
                           connectedAddress && (
                           <span
                             className="text-s text-grey pointer"
-                            onClick={() => cancelOrder(bid)}
+                            onClick={() => purchase(bid)}
                           >
-                            &nbsp;- Cancel
+                            &nbsp;- Accept
                           </span>
                         )}
-                        {isOwner &&
-                          bid.maker.address.toLowerCase() !==
-                            connectedAddress && (
-                            <span
-                              className="text-s text-grey pointer"
-                              onClick={() => purchase(bid)}
-                            >
-                              &nbsp;- Accept
-                            </span>
-                          )}
+                    </div>
+                    <div className="flex margin-top-xs">
+                      <span
+                        className="flex pointer"
+                        onClick={() =>
+                          openLink(
+                            `https://opensea.io/accounts/${bid.maker.address}`
+                          )
+                        }
+                      >
+                        <span className="text-xs">
+                          {bid.maker.address.toLowerCase() === connectedAddress
+                            ? "You - "
+                            : ""}
+                          {bid.user}
+                        </span>
+                      </span>
+                    </div>
+                    {bid.expiration_time ? (
+                      <div className="margin-top-xs text-xxs">
+                        Expires {moment(bid.expiration_time * 1000).fromNow()}
                       </div>
                     ) : (
-                      <div>
-                        Bid of Ξ{bid.value}
-                        {bid.maker.address.toLowerCase() ===
-                          connectedAddress && (
-                          <span
-                            className="text-s text-grey pointer"
-                            onClick={() => cancelOrder(bid)}
-                          >
-                            &nbsp;- Cancel
-                          </span>
-                        )}
-                        {isOwner &&
-                          bid.maker.address.toLowerCase() !==
-                            connectedAddress && (
-                            <span
-                              className="text-s text-grey pointer"
-                              onClick={() => purchase(bid)}
-                            >
-                              &nbsp;- Accept
-                            </span>
-                          )}
-                      </div>
+                      <></>
                     )}
-                    <span className="text-xs">
-                      {bid.maker.address.toLowerCase() === connectedAddress
-                        ? "You - "
-                        : ""}
-                      {bid.user}
-                    </span>
                   </div>
                 );
               })
             ) : (
-              <div className="margin-top text-mid">No active bids</div>
+              <div className="margin-top text-mid">
+                {isArtist ? "Tendering Bids ❤️" : "No active bids"}
+              </div>
             )}
           </div>
         </div>

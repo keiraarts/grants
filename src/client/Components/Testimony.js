@@ -14,7 +14,7 @@ export default function Committee() {
           <i>
             If you would like to share your experiences in short, please{" "}
             <a
-              href="mailto:tim@grants.art"
+              href="mailto:sevens@grants.art"
               className="text-s text-grey pointer"
             >
               email us

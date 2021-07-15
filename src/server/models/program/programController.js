@@ -1,4 +1,5 @@
 const ENV = process.env;
+const _ = require("lodash");
 const crypto = require("crypto");
 const fs = require("fs");
 const path = require("path");
@@ -191,6 +192,7 @@ exports.updateProgram = async (req, res) => {
   program.isProtected = req.body.passcode ? true : false;
   program.tagline = req.body.tagline;
   program.description = req.body.description;
+  program.bypassStatement = req.body.bypassStatement;
   program.logistics = req.body.logistics;
   program.criteria = req.body.criteria;
   program.open = req.body.open;
@@ -213,7 +215,33 @@ exports.updateCurationCriteria = async (req, res) => {
   program.blindVoting = req.body.blindVoting;
   program.topThreshold = req.body.topThreshold;
   program.voteThreshold = req.body.voteThreshold;
+  program.advancedCuration = req.body.advancedCuration;
+  program.advancedMetrics = req.body.advancedMetrics;
   program.save();
+
+  if (req.body.advancedCuration) {
+    const applicants = await ProgramApplicant.find({ program: req.body.id });
+    applicants.forEach((applicant) => {
+      let score = 0;
+      applicant.scores.forEach((item) => {
+        let individualScore = 0;
+        program.advancedMetrics.forEach((e) => {
+          let foundScore =
+            item.score[e.metric.toLowerCase().replace(/\s+/g, "")];
+          if (foundScore) {
+            individualScore += (e.weight * foundScore) / 100;
+          }
+        });
+
+        score += individualScore / program.advancedMetrics.length;
+      });
+
+      console.log("applicant score", score);
+
+      applicant.score = Number(score / applicant.scores.length || 0).toFixed(2);
+      applicant.save();
+    });
+  }
   return res.json({ success: true });
 };
 
@@ -420,16 +448,16 @@ exports.submitApplication = async (req, res) => {
     !user.wallet
   )
     return res.json({ error: "User profile incomplete" });
+
+  const program = await Program.findById(req.body.program);
   if (
     !req.body.program ||
-    !req.body.statement ||
+    (!program.bypassStatement && !req.body.statement) ||
     !req.body.title ||
     !req.body.description ||
     !req.body.art
   )
     return res.json({ error: "Application incomplete" });
-
-  const program = await Program.findById(req.body.program);
   if (!program) return res.json({ error: "Program does not exist" });
   if (program.isProtected && req.body.passcode !== program.passcode)
     return res.json({ error: "The secret phrase was incorrect" });
@@ -576,7 +604,10 @@ exports.updateApplication = async (req, res) => {
 exports.getGallery = async (req, res) => {
   const program = await Program.findOne({ url: req.body.program })
     .populate("organizers")
-    .populate("curators", "artistName first last instagram twitter website");
+    .populate(
+      "curators",
+      "username artistName first last instagram twitter website"
+    );
   return ProgramApplicant.find(
     { program: program._id, published: true },
     (err, gallery) => {
@@ -597,11 +628,11 @@ exports.getGallery = async (req, res) => {
     }
   )
     .select(
-      "-approved -rejected -program -statement -additional -ineligible -flagged -approvalCount -rejectCount -emailed -accepted"
+      "-approved -rejected -program -statement -additional -ineligible -flagged -approvalCount -rejectCount -emailed -accepted -score -scores"
     )
     .populate(
       "user",
-      "artistName birthYear country city website twitter instagram"
+      "artistName birthYear country city website twitter instagram wallet"
     )
     .sort("order");
 };
@@ -613,12 +644,12 @@ exports.getCurationPrograms = async (req, res) => {
     if (!user) return res.json({ error: "Authentication error" });
     const programs = await Program.find({ curators: jwt.id })
       .select(
-        "organizer name url perpetual passByVotes topThreshold voteThreshold blindVoting mintToArtist hideResults curationLock finalized mintInProgress"
+        "organizer name url perpetual passByVotes advancedCuration advancedMetrics topThreshold voteThreshold blindVoting mintToArtist hideResults curationLock prizeRewarded consolationURL consolationURLWeb finalized mintInProgress"
       )
       .populate("organizers");
     const sample = await Program.findById("60708c75525e3e035e8e2eb8")
       .select(
-        "organizer name url perpetual passByVotes topThreshold voteThreshold blindVoting mintToArtist hideResults curationLock finalized mintInProgress"
+        "organizer name url perpetual passByVotes advancedCuration advancedMetrics topThreshold voteThreshold blindVoting mintToArtist hideResults curationLock prizeRewarded consolationURL consolationURLWeb finalized mintInProgress"
       )
       .populate("organizers");
     if (jwt.id !== "6035e7415f0a684942f4e17c") programs.push(sample);
@@ -666,6 +697,9 @@ exports.viewResults = async (req, res) => {
   const user = await User.findById(jwt.id);
   if (!user) return res.json({ error: "Authentication error" });
 
+  const program = await Program.findById(req.body.program);
+  if (!program) return res.json({ error: "Could not find data" });
+
   return ProgramApplicant.find({ program: req.body.program }, (err, data) => {
     return err ? res.status(500).json(err) : res.json(data);
   })
@@ -673,7 +707,7 @@ exports.viewResults = async (req, res) => {
       "user",
       "artistName birthYear country city website twitter instagram"
     )
-    .sort("order")
+    .sort(program.finalized ? "order" : "-approvalCount")
     .select("-approved -rejected");
 };
 
@@ -708,6 +742,171 @@ exports.approveOrReject = async (req, res) => {
       return res.json(true);
     }
   });
+};
+
+exports.viewAllScoring = async (req, res) => {
+  const jwt = auth(req.headers.authorization, res, (jwt) => jwt);
+  const user = await User.findById(jwt.id);
+  if (!user) return res.json({ error: "Authentication error" });
+
+  const isCurator = await Program.find({ curators: user._id });
+  if (!isCurator) return res.json({ error: "Authentication error" });
+
+  return ProgramApplicant.find(
+    {
+      program: req.body.program,
+      ineligible: { $ne: true },
+      finalized: { $ne: true },
+    },
+    (err, data) => {
+      const unscored = [],
+        scored = [];
+      data.forEach((e) => {
+        if (e.scores.find((g) => g.user.equals(jwt.id))) scored.push(e);
+        else unscored.push(e);
+      });
+
+      const myScores = scored.sort((a, b) => {
+        let foundA, foundB;
+        a.scores.forEach((e) => {
+          if (e.user.equals(jwt.id)) foundA = e;
+        });
+        b.scores.forEach((e) => {
+          if (e.user.equals(jwt.id)) foundB = e;
+        });
+        return foundA.userScore > foundB.userScore ? -1 : 1;
+      });
+
+      return err
+        ? res.status(500).json(err)
+        : res.json({ unscored, scored: myScores });
+    }
+  ).populate(
+    "user",
+    "artistName birthYear country city website twitter instagram"
+  );
+};
+
+exports.submitScore = async (req, res) => {
+  const jwt = auth(req.headers.authorization, res, (jwt) => jwt);
+  const user = await User.findById(jwt.id);
+  if (!user) return res.json({ error: "Authentication error" });
+
+  const isCurator = await Program.find({ curators: user._id });
+  if (!isCurator) return res.json({ error: "Authentication error" });
+  if (isCurator.curationLock) return res.json({ error: "Curation locked" });
+
+  const program = await Program.findById(req.body.program);
+  if (!program) return res.json({ error: "Could not find data" });
+
+  return ProgramApplicant.findById(req.body.id, (err2, data) => {
+    if (err2) return res.status(500).json(err);
+    else {
+      const index = data.scores
+        ? data.scores.findIndex((e) => e.user && e.user.equals(jwt.id))
+        : -1;
+      if (index < 0) {
+        const newScore = {
+          user: jwt.id,
+          score: req.body.score,
+        };
+
+        let userScore = 0;
+        program.advancedMetrics.forEach((e) => {
+          let foundScore =
+            req.body.score[e.metric.toLowerCase().replace(/\s+/g, "")];
+          if (foundScore) {
+            userScore += (e.weight * foundScore) / 100;
+          }
+        });
+
+        const finalScore = userScore / program.advancedMetrics.length;
+        newScore.userScore = finalScore.toFixed(2);
+
+        if (data.scores) data.scores.push(newScore);
+        else data.scores = [newScore];
+
+        let score = 0;
+        data.scores.forEach((item) => {
+          let individualScore = 0;
+          program.advancedMetrics.forEach((e) => {
+            let foundScore =
+              item.score[e.metric.toLowerCase().replace(/\s+/g, "")];
+            if (foundScore) {
+              individualScore += (e.weight * foundScore) / 100;
+            }
+          });
+
+          score += individualScore / program.advancedMetrics.length;
+        });
+
+        data.score = Number(score / data.scores.length).toFixed(2);
+        data.save();
+      }
+
+      return res.json(true);
+    }
+  });
+};
+
+exports.undoScoredApplicant = async (req, res) => {
+  const jwt = auth(req.headers.authorization, res, (jwt) => jwt);
+  const user = await User.findById(jwt.id);
+  if (!user) return res.json({ error: "Authentication error" });
+
+  const isCurator = await Program.find({ curators: user._id });
+  if (!isCurator) return res.json({ error: "Authentication error" });
+
+  const program = await Program.findById(req.body.program);
+  if (!program) return res.json({ error: "Could not find data" });
+
+  return ProgramApplicant.findById(req.body.id, (err2, data) => {
+    if (err2) return res.status(500).json(err);
+    else {
+      const index = data.scores.findIndex((e) => e.user.equals(jwt.id));
+      if (index >= 0) {
+        data.scores.splice(index, 1);
+
+        let score = 0;
+        data.scores.forEach((item) => {
+          let individualScore = 0;
+          program.advancedMetrics.forEach((e) => {
+            let foundScore =
+              item.score[e.metric.toLowerCase().replace(/\s+/g, "")];
+            if (foundScore) {
+              individualScore += (e.weight * foundScore) / 100;
+            }
+          });
+
+          score += individualScore / program.advancedMetrics.length;
+        });
+
+        data.score = Number(score / data.scores.length || 0).toFixed(2) || 0;
+        data.save();
+      }
+
+      return res.json(true);
+    }
+  });
+};
+
+exports.viewScoredResults = async (req, res) => {
+  const jwt = auth(req.headers.authorization, res, (jwt) => jwt);
+  const user = await User.findById(jwt.id);
+  if (!user) return res.json({ error: "Authentication error" });
+
+  const program = await Program.findById(req.body.program);
+  if (!program) return res.json({ error: "Could not find data" });
+
+  return ProgramApplicant.find({ program: req.body.program }, (err, data) => {
+    return err ? res.status(500).json(err) : res.json(data);
+  })
+    .populate(
+      "user",
+      "artistName birthYear country city website twitter instagram"
+    )
+    .sort(program.finalized ? "order" : "-score")
+    .select("-approved -rejected");
 };
 
 exports.undoApplicant = async (req, res) => {
@@ -799,6 +998,196 @@ exports.finalizeDeferred = async (req, res) => {
   return res.json({ success: "Deferrment finalized" });
 };
 
+exports.getEmails = async (req, res) => {
+  const jwt = auth(req.headers.authorization, res, (jwt) => jwt);
+  const organizer = await Organizer.findOne({
+    _id: req.body.org,
+    admins: jwt.id,
+  });
+  if (!organizer) return res.json({ error: "Authentication error" });
+  const program = await Program.findById(req.body.program);
+  if (!program) return res.json({ error: "Authentication error" });
+
+  let query;
+  if (req.body.type === "all") {
+    query = {};
+  } else if (req.body.type === "approved") {
+    query = { order: { $exists: true } };
+  } else if (req.body.type === "deferred") {
+    query = { order: { $exists: false }, finalized: true };
+  } else {
+    return res.json({ error: "Issue retrieving emails" });
+  }
+
+  const applicants = await ProgramApplicant.find({
+    program: program.id,
+    ...query,
+  }).populate("user", "username first last country birthYear city email");
+
+  let emails = [];
+  applicants.forEach((applicant) => {
+    emails.push([
+      applicant.user.username,
+      applicant.user.first,
+      applicant.user.last,
+      applicant.user.country,
+      applicant.user.city,
+      applicant.user.birthYear,
+      applicant.user.email,
+      `https://grants.art/${program.url}/${applicant.order}`,
+    ]);
+  });
+
+  return res.json({ success: emails });
+};
+
+exports.getWallets = async (req, res) => {
+  const jwt = auth(req.headers.authorization, res, (jwt) => jwt);
+  const organizer = await Organizer.findOne({
+    _id: req.body.org,
+    admins: jwt.id,
+  });
+  if (!organizer) return res.json({ error: "Authentication error" });
+  const program = await Program.findById(req.body.program);
+  if (!program) return res.json({ error: "Authentication error" });
+
+  let query;
+  if (req.body.type === "minted") {
+    query = { published: true };
+  } else {
+    return res.json({ error: "Issue retrieving wallets" });
+  }
+
+  const applicants = await ProgramApplicant.find({
+    program: program.id,
+    ...query,
+  }).populate("user", "artistName wallet");
+
+  let wallets = [];
+  applicants.forEach((applicant) => {
+    wallets.push([
+      applicant.user.artistName,
+      applicant.user.wallet,
+      applicant.order,
+    ]);
+  });
+
+  return res.json({ success: wallets });
+};
+
+exports.consolationArt = async (req, res) => {
+  const jwt = auth(req.headers.authorization, res, (jwt) => jwt);
+  const organizer = await Organizer.findOne({
+    _id: req.body.org,
+    admins: jwt.id,
+  });
+  if (!organizer) return res.json({ error: "Authentication error" });
+  const program = await Program.findById(req.body.program);
+  if (!program) return res.json({ error: "Authentication error" });
+
+  await Object.keys(req.body).forEach(async (item) => {
+    if (item === "art") {
+      let ext, image;
+      ext = req.body[item].split(";")[0].match(/jpeg|png|gif|webp|mp4/)[0];
+      image = req.body[item].replace(/^data:image\/\w+;base64,/, "");
+      image = image.replace(/^data:video\/mp4;base64,/, "");
+      let buf = new Buffer.from(image, "base64");
+
+      const name = crypto.randomBytes(20).toString("hex");
+
+      program.consolationURL = `${name}.${ext}`;
+      program.consolationURLWeb = `${name}-web.${ext}`;
+
+      const saveImage = promisify(fs.writeFile);
+      await saveImage(
+        path.join(__dirname, `../../images/${program.consolationURL}`),
+        buf
+      );
+      await compressor(program.consolationURL, program.consolationURLWeb);
+      if (ext === "mp4") {
+        await hbjs.run({
+          input: path.join(__dirname, `../../images/${program.consolationURL}`),
+          output: path.join(
+            __dirname,
+            `../../images/video-${program.consolationURL}`
+          ),
+          preset: "Vimeo YouTube HQ 2160p60 4K",
+        });
+      }
+
+      const uploader = await spaces.uploadFile({
+        localFile: path.join(
+          __dirname,
+          `../../images/${
+            ext === "mp4"
+              ? `video-${program.consolationURL}`
+              : program.consolationURL
+          }`
+        ),
+        s3Params: {
+          Bucket: "grants",
+          Key: `${program.consolationURL}`,
+          ACL: "public-read",
+        },
+      });
+
+      const uploader2 = await spaces.uploadFile({
+        localFile: path.join(
+          __dirname,
+          `../../images/${program.consolationURLWeb}`
+        ),
+        s3Params: {
+          Bucket: "grants",
+          Key: `${program.consolationURLWeb}`,
+          ACL: "public-read",
+        },
+      });
+
+      uploader.on("end", () => {
+        program.save();
+        fs.unlink(
+          path.join(__dirname, `../../images/${program.consolationURL}`),
+          (err2) => {
+            if (err2 !== null) {
+              console.log(err2);
+            }
+            return null;
+          }
+        );
+
+        if (ext === "mp4") {
+          fs.unlink(
+            path.join(
+              __dirname,
+              `../../images/video-${program.consolationURL}`
+            ),
+            (err2) => {
+              if (err2 !== null) {
+                console.log(err2);
+              }
+              return null;
+            }
+          );
+        }
+      });
+
+      uploader2.on("end", () => {
+        fs.unlink(
+          path.join(__dirname, `../../images/${program.consolationURLWeb}`),
+          (err2) => {
+            if (err2 !== null) {
+              console.log(err2);
+            }
+            return null;
+          }
+        );
+      });
+
+      res.json({ success: program.consolationURL });
+    }
+  });
+};
+
 exports.flagApplicant = (req, res) => {
   auth(req.headers.authorization, res, (jwt) => {
     User.findById(jwt.id, (err, user) => {
@@ -850,52 +1239,39 @@ exports.removeFlag = (req, res) => {
   });
 };
 
-// setTimeout(() => {
-//   Applicant.find({ published: { $ne: true }, order: { $exists: false } }, (err, applicants) => {
-//     applicants.forEach(applicant => {
-//       const transfer = {
-//         user:           applicant.user,
-//         program:        '605fef70830ed668addb44ab',
-//         url:            applicant.website,
-//         statement:      applicant.statement,
-//         additional:     applicant.additional,
-//         title:          applicant.title,
-//         description:    applicant.description,
-//         art:            applicant.art,
-//         artWeb:         applicant.artWeb,
-//         ineligible:     applicant.ineligible,
-//         flagged:        applicant.flagged,
-//         approvalCount:  applicant.approvalCount,
-//         rejectCount:    applicant.rejectCount,
-//         approved:       applicant.approved,
-//         rejected:       applicant.rejected,
-//         emailed:        applicant.emailed,
-//         accepted:       applicant.accepted,
-//         published:      applicant.published,
-//         order:          applicant.order,
-//       };
+async function downloadGallery() {
+  ProgramApplicant.find(
+    { program: "6070ea37982e298b11fe062b" },
+    async (err, artists) => {
+      for (const artist of artists) {
+        await new Promise((resolve, reject) => {
+          const params = {
+            localFile: path.join(__dirname, `../../images/${artist.art}`),
+            s3Params: {
+              Bucket: "grants",
+              Key: `${artist.art}`,
+            },
+          };
 
-//       // console.log('WTF', transfer);
-//       // const newApplicant = new ProgramApplicant(transfer);
-//       // newApplicant.save((err, data) => {
-//       //   if (err) console.log('WTF', err);
-//       // });
-//       // console.log(applicant.email);
-//     })
+          const downloader = spaces.downloadFile(params);
+          downloader.on("error", function (err) {
+            console.error("unable to download:", err.stack);
+          });
+          downloader.on("progress", function () {
+            console.log(
+              "progress",
+              downloader.progressAmount,
+              downloader.progressTotal
+            );
+          });
+          downloader.on("end", function () {
+            resolve();
+            console.log("done downloading");
+          });
+        });
+      }
+    }
+  );
+}
 
-//     console.log(applicants.length);
-//   })
-// })
-
-// setTimeout(() => {
-//   return ProgramApplicant.find({ order: { $exists: true } }, (err2, data) => {
-//     let count = 0;
-//     data.forEach(e => {
-//       e.finalized = true;
-//       e.save();
-//       count++;
-//     })
-
-//     console.log('COUNT', count);
-//   })
-// })
+// downloadGallery();

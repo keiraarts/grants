@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useRef } from "react";
 import ReactAutolinker from "react-autolinker";
 
-export default function Curation({ nft, small, blind }) {
+export default function Curation({ nft, blind }) {
   const [loaded, setLoaded] = useState(false);
   const video = useRef();
+  const small = false;
 
   const [isFullScreen, setFullScreen] = useState(false);
   function fullScreen() {

@@ -123,6 +123,10 @@ export default function TeamPage() {
         <div className="text-s">
           Renowned digital art director & professional hair trimmer
         </div>
+        <a target="_blank" className="text-s margin-top-s text-grey pointer">
+          Keira
+        </a>
+        <div className="text-s">Software engineer & database rancher</div>
         <div className="text-m margin-top">Artists</div>
         <div
           className="text-s margin-top-s text-grey pointer"
