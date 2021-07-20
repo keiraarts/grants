@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 
 export default function Rarible() {
   return (
@@ -70,7 +70,7 @@ export default function Rarible() {
           Follow the steps, and whenever it prompts you to sign and confirm, do
           so using your wallet. Do note when a contract method is called, such
           as minting or creating a collection, it will cost gas fees.{" "}
-          <Link to="/opensea" className="text-grey remove-a">
+          <Link href="/opensea" className="text-grey remove-a">
             OpenSea
           </Link>{" "}
           is an alternative option if you'd like to list an NFT with different

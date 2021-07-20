@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 
 export default function Ethos() {
   function openLink(page) {
@@ -18,7 +18,7 @@ export default function Ethos() {
       <div className="page-container margin-top ethos-text">
         Sevens Foundation was created by Tim Kang through the heart of Mike
         Darlington. We are a global{" "}
-        <Link to="/team" className="text-rainbow remove-a">
+        <Link href="team" className="text-rainbow remove-a">
           committee
         </Link>{" "}
         and 501(c)3 non-profit organization with a mission to spotlight emerging

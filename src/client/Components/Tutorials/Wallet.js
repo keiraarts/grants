@@ -64,33 +64,40 @@ export default function Tutorial() {
           a transaction. All of these prompts will ask you, through MetaMask, to
           sign the action which verifies that you are physical owner of the
           keys.
-        <div className='text-s margin-top-s'>
-          When you use an Ethereum app (decentralized app / dApp), the site may prompt you verify an action that you do, such as logging in or sending a transaction.
-          All of these prompts will ask you, through MetaMask, to sign the action which verifies that you are physical owner of the keys.
-          <br /><br />
-          <strong>If you are using MetaMask on a mobile device, be sure to open websites *within* the MetaMask app's built in web browser!</strong>
+          <div className="text-s margin-top-s">
+            When you use an Ethereum app (decentralized app / dApp), the site
+            may prompt you verify an action that you do, such as logging in or
+            sending a transaction. All of these prompts will ask you, through
+            MetaMask, to sign the action which verifies that you are physical
+            owner of the keys.
+            <br />
+            <br />
+            <strong>
+              If you are using MetaMask on a mobile device, be sure to open
+              websites *within* the MetaMask app's built in web browser!
+            </strong>
+          </div>
+          <div className="text-m margin-top">
+            4) Fund Your MetaMask Wallet (Optional)
+          </div>
+          <div className="text-s margin-top-s">
+            To mint, transfer, or exchange an NFT or currency (i.e. a
+            transaction), it will cost a fee to use the network. This fee is
+            called "gas" on Ethereum in which you pay using the crypto currency
+            Ether (ETH). In your wallet, you will see a deposit address (e.g.
+            0x777Bc2a...) in your MetaMask.
+            <br />
+            <br />
+            Purchase ETH on a crypto currency exchange, such as Coinbase, Gemini
+            or Binance, and withdraw to this deposit address.
+            <br />
+            <br />
+            <i>
+              Grant recipients will receive all ETH necessary directly from
+              Sevens to participate
+            </i>
+          </div>
         </div>
-        <div className="text-m margin-top">
-          4) Fund Your MetaMask Wallet (Optional)
-        </div>
-        <div className="text-s margin-top-s">
-          To mint, transfer, or exchange an NFT or currency (i.e. a
-          transaction), it will cost a fee to use the network. This fee is
-          called "gas" on Ethereum in which you pay using the crypto currency
-          Ether (ETH). In your wallet, you will see a deposit address (e.g.
-          0x777Bc2a...) in your MetaMask.
-          <br />
-          <br />
-          Purchase ETH on a crypto currency exchange, such as Coinbase, Gemini
-          or Binance, and withdraw to this deposit address.
-          <br />
-          <br />
-          <i>
-            Grant recipients will receive all ETH necessary directly from Sevens
-            to participate
-          </i>
-        </div>
-        <br />
       </div>
     </div>
   );

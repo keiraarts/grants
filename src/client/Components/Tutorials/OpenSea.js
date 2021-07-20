@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 
 export default function Rarible() {
   return (
@@ -36,7 +36,7 @@ export default function Rarible() {
           create an NFT on OpenSea, you must first create a collection in which
           all of your pieces will be grouped together. Give it a name and
           optionally give it a description and add a logo.{" "}
-          <Link to="/rarible" className="text-grey remove-a">
+          <Link href="/rarible" className="text-grey remove-a">
             Rarible
           </Link>{" "}
           is an alternative option if you'd like to mint your NFT as a
