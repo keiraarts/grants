@@ -1,6 +1,6 @@
 import React from "react";
 import { NextSeo } from "next-seo";
-import Donate from "../src/client/components/donate";
+import Donate from "../src/client/Components/Donate";
 
 export default function DonatePage() {
   return (

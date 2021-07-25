@@ -1,7 +1,7 @@
-import auth from "../../../src/server/services/authorization-service";
-import dbConnect from "../../../utils/dbConnect";
-import ProgramApplicant from "../../../models/programApplicantModel";
-import User from "../../../models/userModel";
+import auth from "../../src/server/services/authorization-service";
+import dbConnect from "../../utils/dbConnect";
+import ProgramApplicant from "../../models/programApplicantModel";
+import User from "../../models/userModel";
 
 export default async function handler(req, res) {
   const { method } = req;

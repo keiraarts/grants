@@ -3,14 +3,12 @@ import ReactModal from 'react-modal';
 import { useStoreState } from 'easy-peasy';
 import { apiUrl } from '../../baseUrl';
 
-import Tile from '../../assets/tile.png';
-import Gallery from '../../assets/gallery.png';
 import Resizer from '../Tools/Resizer.js';
 import Curation from './Curation';
 import ArtList from './ArtList';
 import ReorderList from './ReorderList';
 
-import '../../styles.scss';
+// import '../../styles.scss';
 
 function shuffle(array) {
   var currentIndex = array.length, temporaryValue, randomIndex;
@@ -453,8 +451,8 @@ export default function AdvancedCuration({ selectedProgram, curateToggle, setSel
                     <div className='flex margin-top-s'>
                       Remaining: { applicants.unscored.length }
                       <div className='flex-full' />
-                      <img src={ Tile } className={ curationView === 'gallery' ? 'curation-control' : 'curation-control-selected' } onClick={ () => setCurationView('tile') } />
-                      <img src={ Gallery } className={ curationView === 'tile' ? 'margin-left-s curation-control' : 'margin-left-s curation-control-selected' } onClick={ () => setCurationView('gallery') } />
+                      <img src='/assets/tile.png' className={ curationView === 'gallery' ? 'curation-control' : 'curation-control-selected' } onClick={ () => setCurationView('tile') } />
+                      <img src='/assets/gallery.png' className={ curationView === 'tile' ? 'margin-left-s curation-control' : 'margin-left-s curation-control-selected' } onClick={ () => setCurationView('gallery') } />
                     </div>
                     :
                     <div className='margin-top-s'>

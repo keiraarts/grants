@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Redirect } from "react-router-dom";
@@ -6,42 +7,54 @@ import { useStoreState, useStoreActions } from "easy-peasy";
 import { apiUrl } from "../../src/client/baseUrl";
 import ReactAutolinker from "react-autolinker";
 import Link from "next/link";
+import dbConnect from "../../utils/dbConnect";
+import User from "../../models/userModel";
+import Gallery from "../../models/galleryModel";
 
 import Resizer from "../../src/client/Components/Tools/Resizer";
 import Collection from "../../src/client/Components/MyGallery/Collection.js";
 
 export async function getServerSideProps(context) {
+  await dbConnect();
+
   const { username } = context.query;
 
-  const resProfile = await fetch(`${apiUrl()}/getProfile`, {
-    method: "POST",
-    body: JSON.stringify({ username }),
-    headers: {
-      "Accept": "application/json",
-      "Content-Type": "application/json",
+  const profile = await User.findOne(
+    {
+      username: {
+        $regex: new RegExp(`^${ username.toLowerCase().trim() }$`, "i"),
+      },
     },
+    (err, user) => {
+      if (err) return res.json(err);
+      if (!user) return res.json({ error: "User does not exist" });
+      return user;
+    }
+  ).select(
+    "username first last artistName city country website twitter twitterVerified instagram about"
+  );
+
+  const galleries = await Gallery.find({ user: profile.id }).sort("order");
+
+  galleries.forEach((gallery) => {
+    const nfts = gallery.nfts;
+    const sorted = _.sortBy(nfts, ["order"]);
+    gallery.nfts = sorted;
   });
 
-  const profile = await resProfile.json();
-
-  const resGalleries = fetch(`${apiUrl()}/gallery/getGalleries`, {
-    method: "POST",
-    body: JSON.stringify({ user: profile.id }),
-    headers: {
-      "Accept": "application/json",
-      "Content-Type": "application/json",
-    },
-  });
-
-  const galleries = await resGalleries.json();
+  console.log(profile, galleries);
 
   return {
-    props: { profile, galleries }, // will be passed to the page component as props
+    props: {
+      profile: JSON.parse(JSON.stringify(profile)),
+      galleries: JSON.parse(JSON.stringify(galleries)),
+      username
+    },
   };
 }
 
 export default function Profile(props) {
-  const { username } = useParams();
+  const { username } = props.username;
   const auth = useStoreState((state) => state.user.auth);
   const setAuth = useStoreActions((dispatch) => dispatch.user.setAuth);
   const small = useStoreState((state) => state.app.small);
@@ -79,7 +92,7 @@ export default function Profile(props) {
               </div>
             </div>
           )}
-          {logout && <Redirect to="/" />}
+          {logout && <a href="/" />}
           <div className="flex">
             <div className="username-container">
               <div className="text-l word-wrap">

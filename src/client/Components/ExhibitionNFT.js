@@ -266,7 +266,7 @@ const ExhibitionNFT = ({
                         className={`gallery-art`}
                       >
                         <source
-                          src={`https://cdn.grants.art/${nft.artWeb}`}
+                          src={`https://cdn.grants.art/${nft.art}`}
                           type={`video/${nft.imageType}`}
                         />
                       </video>
@@ -276,7 +276,7 @@ const ExhibitionNFT = ({
                       <Image
                         quality="95"
                         layout="responsive"
-                        src={`https://cdn.grants.art/${nft.artWeb}`}
+                        src={`https://cdn.grants.art/${nft.art}`}
                         width={metadata.width}
                         height={metadata.height}
                       />

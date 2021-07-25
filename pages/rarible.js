@@ -1,6 +1,6 @@
 import React from "react";
 import { NextSeo } from "next-seo";
-import Rarible from "../src/client/components/tutorials/rarible";
+import Rarible from "../src/client/Components/Tutorials/Rarible";
 
 export default function RaribleTutorial() {
   return (

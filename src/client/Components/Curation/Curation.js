@@ -1,14 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import ReactAutolinker from "react-autolinker";
 
-import FullScreen from "../../assets/fullscreen.png";
-import MinScreen from "../../assets/minscreen.png";
-import Muted from "../../assets/muted.png";
-import Unmuted from "../../assets/unmuted.png";
-import Twitter from "../../assets/twitter.png";
-import Instagram from "../../assets/instagram.png";
-import Web from "../../assets/website.png";
-
 function openLink(page) {
   page = page.replace("@", "");
   let win = window.open(page, "_blank");
@@ -121,7 +113,7 @@ export default function Curation({ nft, small, blind }) {
                   {nft.user.website && (
                     <div>
                       <img
-                        src={Web}
+                        src="/assets/web.png"
                         className="account-social-web pointer"
                         alt="Website"
                         onClick={() => openLink(nft.user.website)}
@@ -131,7 +123,7 @@ export default function Curation({ nft, small, blind }) {
                   {nft.user.twitter && (
                     <div>
                       <img
-                        src={Twitter}
+                        src="/assets/twitter.png"
                         className="account-social pointer"
                         alt="Twitter"
                         onClick={() =>
@@ -143,7 +135,7 @@ export default function Curation({ nft, small, blind }) {
                   {nft.user.instagram && (
                     <div>
                       <img
-                        src={Instagram}
+                        src="/assets/instagram.png"
                         className="account-social pointer"
                         alt="Instagram"
                         onClick={() =>
@@ -243,9 +235,9 @@ export default function Curation({ nft, small, blind }) {
                 {video && video.current && (
                   <div onClick={() => toggleAudio()} className="pointer">
                     {muted ? (
-                      <img src={Muted} className="frame-control" />
+                      <img src="/assets/muted.png" className="frame-control" />
                     ) : (
-                      <img src={Unmuted} className="frame-control" />
+                      <img src="/assets/unmuted.png" className="frame-control" />
                     )}
                   </div>
                 )}
@@ -295,7 +287,7 @@ export default function Curation({ nft, small, blind }) {
                 {nft.website && (
                   <div>
                     <img
-                      src={Web}
+                      src="/assets/web.png"
                       className="account-social-web pointer"
                       alt="Website"
                       onClick={() => openLink(nft.website)}
@@ -305,7 +297,7 @@ export default function Curation({ nft, small, blind }) {
                 {nft.twitter && (
                   <div>
                     <img
-                      src={Twitter}
+                      src="/assets/twitter.png"
                       className="account-social pointer"
                       alt="Twitter"
                       onClick={() =>
@@ -322,7 +314,7 @@ export default function Curation({ nft, small, blind }) {
                 {nft.instagram && (
                   <div>
                     <img
-                      src={Instagram}
+                      src="/assets/instagram.png"
                       className="account-social pointer"
                       alt="Instagram"
                       onClick={() =>

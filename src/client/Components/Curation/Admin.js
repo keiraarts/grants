@@ -11,8 +11,7 @@ import DisperseABI from '../Web3/DisperseABI.json';
 import GenesisABI from '../Web3/GenesisABI.json';
 
 import WalletConnect from '../Web3/WalletConnect';
-import Drag from '../../assets/drag.png';
-import '../../styles.scss';
+// import '../../styles.scss';
 
 const reorder = (list, startIndex, endIndex) => {
   const result = Array.from(list);
@@ -956,7 +955,7 @@ export default function Admin({ selectedProgram, setSelectedProgram, programs, s
                               {...provided.dragHandleProps}
                             >
                               <div key={ index } className='margin-top-s flex'>
-                                <img src={ Drag } className='curator-drag' />
+                                <img src='/assets/drag.png' className='curator-drag' />
                                 <div>
                                   <div className='text-xs'>{ item.first || '--' } { item.last || '--' }</div>
                                   <div className='text-s'>{ item.username }</div>

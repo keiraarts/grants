@@ -1,6 +1,6 @@
 import React from "react";
 import { NextSeo } from "next-seo";
-import Ethos from "../src/client/components/ethos";
+import Ethos from "../src/client/Components/Ethos";
 
 export default function EthosPage() {
   return (

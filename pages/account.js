@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { usePromise } from "promise-hook";
-import { Link, Redirect } from "react-router-dom";
 import CountryList from "country-list";
 import { useStoreState, useStoreActions } from "easy-peasy";
 import { apiUrl } from "../src/client/baseUrl";
 import validateUsername from "../utils/validateUsername";
+import { useRouter } from 'next/router'
 import { ethers } from "ethers";
 
 let provider, signer;
 
 export default function Account() {
+  const router = useRouter();
   const auth = useStoreState((state) => state.user.auth);
   const verifiedWallet = useStoreState((state) => state.user.auth.wallet);
   const setAuth = useStoreActions((dispatch) => dispatch.user.setAuth);
@@ -37,6 +38,7 @@ export default function Account() {
     })
       .then((res) => res.json())
       .then((json) => {
+        console.log('finis', json);
         setSubmitUser(false);
         if (json.error) setErr(json.error);
         else {
@@ -135,10 +137,9 @@ export default function Account() {
     win.focus();
   }
 
-  const [logout, setLogout] = useState(false);
   const logMeOut = (e) => {
+    router.push('/')
     setAuth({});
-    setLogout(true);
   };
 
   const [highlightConfirm, setHighlightConfirm] = useState(false);
@@ -183,7 +184,7 @@ export default function Account() {
       </div>
       <div className="margin-top">
         <div className="page-container">
-          {editingAccount && (
+          {editingAccount && 
             <div>
               <div className="form__group field">
                 <input
@@ -433,8 +434,8 @@ export default function Account() {
                 </div>
               )}
             </div>
-          )}
-          {isLoading && (
+          }
+          {isLoading && 
             <div className="flex center">
               <div className="margin-top center">
                 <div className="loading">
@@ -443,7 +444,7 @@ export default function Account() {
                 </div>
               </div>
             </div>
-          )}
+          }
           {!editingAccount && data && user && (
             <div>
               <div className="text-s">
@@ -569,7 +570,7 @@ export default function Account() {
                     <div className="margin-top-s text-s">
                       Twitter Verified{" "}
                       <img
-                        src={Verified}
+                        src={"/assets/verified.png"}
                         className="verified-icon"
                         title="Twitter Verified"
                       />
@@ -623,9 +624,9 @@ export default function Account() {
                 )}
               </div>
               {!verifiedWallet && (
-                <Link to="/tutorial" className="text-s text-grey pointer">
+                <a href="/tutorial" className="text-s text-grey pointer">
                   Setup a wallet
-                </Link>
+                </a>
               )}
               {!editingAccount && (
                 <div>

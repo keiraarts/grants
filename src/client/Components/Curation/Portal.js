@@ -1,32 +1,14 @@
 import React, { useEffect, useState, useRef } from 'react';
 import ReactModal from 'react-modal';
 import { useStoreState } from 'easy-peasy';
-import { Link } from 'react-router-dom';
 import { apiUrl } from '../../baseUrl';
 
-import Close from '../../assets/close.png';
-import Switch from '../../assets/switch.png';
 import Resizer from '../Tools/Resizer.js';
 import Admin from './Admin';
 import SimpleCuration from './SimpleCuration';
 import AdvancedCuration from './AdvancedCuration';
 
-import '../../styles.scss';
-
-function shuffle(array) {
-  var currentIndex = array.length, temporaryValue, randomIndex;
-
-  while (0 !== currentIndex) {
-    randomIndex = Math.floor(Math.random() * currentIndex);
-    currentIndex -= 1;
-
-    temporaryValue = array[currentIndex];
-    array[currentIndex] = array[randomIndex];
-    array[randomIndex] = temporaryValue;
-  }
-
-  return array;
-}
+// import '../../styles.scss';
 
 export default function Portal({ updateScroll }) {
   const auth = useStoreState(state => state.user.auth);
@@ -38,9 +20,9 @@ export default function Portal({ updateScroll }) {
   const [curateToggle, setCurateToggle] = useState(true);
   const [adminTab, setAdminTab] = useState(false);
   useEffect(() => {
-    updateScroll(true);
+    // updateScroll(true);
     fetch(`${ apiUrl() }/program/getCurationPrograms`, {
-      method: 'post',
+      method: 'get',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
@@ -95,7 +77,7 @@ export default function Portal({ updateScroll }) {
             })
           :
             <div className='margin-top-l center'>
-              { loaded && <div>Please <Link to='/login' className='text-grey'>log in</Link> to curate!</div> }
+              { loaded && <div>Please <a to='/login' className='text-grey'>log in</a> to curate!</div> }
               <div className='spacer' />
             </div>
           }
@@ -106,7 +88,7 @@ export default function Portal({ updateScroll }) {
             { !adminTab &&
               <div className='margin-right-s'>
                 <div className='small-button' onClick={ () => closePage() }>
-                  <img src={ Close } className='close-icon' />
+                  <img src='/assets/close.png' className='close-icon' />
                 </div>
               </div>
             }
@@ -127,14 +109,14 @@ export default function Portal({ updateScroll }) {
                       <div>
                         <div className='small-button' onClick={ () => setCurateToggle(true) }>
                           Curation
-                          <img src={ Switch } className='switch-icon' />
+                          <img src='/assets/switch.png' className='switch-icon' />
                         </div>
                       </div>
                     :
                       <div>
                         <div className='small-button' onClick={ () => setCurateToggle(false) }>
                           Results
-                          <img src={ Switch } className='switch-icon' />
+                          <img src='/assets/switch.png' className='switch-icon' />
                         </div>
                       </div>
                     }

@@ -3,13 +3,15 @@ import { Redirect, useHistory } from "react-router-dom";
 import { apiUrl } from "../baseUrl";
 import { useStoreActions, useStoreState } from "easy-peasy";
 import Link from "next/link";
+import { useRouter } from 'next/router'
 
-export default function Register() {
+export default function Login() {
+  const router = useRouter();
   const setAuth = useStoreActions((dispatch) => dispatch.user.setAuth);
   const auth = useStoreState((state) => state.user.auth);
-  const history = useHistory();
+  // const history = useHistory();
 
-  if (auth && auth.username) history.push("/");
+  // if (auth && auth.username) history.push("/");
 
   const [loginData, setLoginData] = useState({
     username: "",
@@ -20,7 +22,6 @@ export default function Register() {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [err, setErr] = useState(false);
-  const [logged, setLogged] = useState(false);
   const submit = (e) => {
     e.preventDefault();
     setErr(false);
@@ -34,7 +35,7 @@ export default function Register() {
       .then((data) => {
         if (data && data.username) {
           setAuth(data);
-          setLogged(true);
+          router.push('/')
         } else {
           setSubmitting(false);
           setErr("Your login credentials were incorrect");
@@ -44,7 +45,6 @@ export default function Register() {
 
   return (
     <div className="content-block">
-      {logged && <Redirect href="/" />}
       <div className="text-l text-b">User Login</div>
       <div className="margin-top">
         <form onSubmit={submit}>
@@ -79,22 +79,22 @@ export default function Register() {
             <label className="form__label">Password</label>
           </div>
           {err && <div className="margin-top-s text-s text-err">{err}</div>}
-          {submitting && !submitted && !logged ? (
+          {submitting && !submitted ? (
             <div className="margin-top-s text-s text-grey">Logging in..</div>
           ) : (
             <div>
               <input type="submit" value="Log In" className="submit-button" />
               &nbsp;&nbsp;&nbsp;or&nbsp;&nbsp;
-              <Link href="/register" className="text-m text-grey pointer">
+              <a href="/register" className="text-m text-grey pointer">
                 Register an Account
-              </Link>
+              </a>
               <br />
-              <Link
+              <a
                 href="/forgotpassword"
                 className="margin-top text-s text-grey pointer"
               >
                 Forgot your password?
-              </Link>
+              </a>
             </div>
           )}
         </form>

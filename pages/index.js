@@ -33,8 +33,8 @@ export default function Home(props) {
         </div>
         <div className="flex-full" />
         <div className="text-s center">
-          <Link href="/curation" className="small-button">
-            <div className="text-rainbow">Curation</div>
+          <Link href="/curation">
+            <div className="small-button text-rainbow">Curation</div>
           </Link>
         </div>
       </div>

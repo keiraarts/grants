@@ -1,6 +1,6 @@
 import React from "react";
 import { NextSeo } from "next-seo";
-import Learn from "../src/client/components/learn";
+import Learn from "../src/client/Components/Learn";
 
 export default function LearnComponent() {
   return (

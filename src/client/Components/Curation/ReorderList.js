@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import '@appnest/masonry-layout';
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 import ReorderBlock from './ReorderBlock';
-import '../../styles.scss';
+// import '../../styles.scss';
 
 const reorder = (list, startIndex, endIndex) => {
   const result = Array.from(list);

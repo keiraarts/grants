@@ -9,7 +9,6 @@ import crypto from "crypto";
 export default async function handler(req, res) {
   const { method } = req;
   await dbConnect();
-
   switch (method) {
     case "POST":
       try {
@@ -102,7 +101,7 @@ export default async function handler(req, res) {
             user.twitter = req.body.twitter;
             user.instagram = req.body.instagram;
             user.save();
-            return res.json("Profile updated");
+            return res.json({ success: "Profile updated" });
           });
         });
       } catch (error) {

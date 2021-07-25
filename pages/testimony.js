@@ -1,6 +1,6 @@
 import React from "react";
 import { NextSeo } from "next-seo";
-import Testimony from "../src/client/components/testimony";
+import Testimony from "../src/client/Components/Testimony";
 
 export default function TestimonyPage() {
   return (

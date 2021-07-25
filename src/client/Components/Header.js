@@ -82,20 +82,32 @@ export default function Header() {
           </strong>
         </div>
         <div className="flex-full margin-top-xs" />
-        {auth?.username ? (
+        { auth.username ? 
           <div>
             <div className="flex text-s">
               <div className="flex-full" />
-              <a href="/account" className="pointer">
-                <div className="text-grey">Edit Profile</div>
-              </a>
+              <Link href="/account">
+                <a
+                  href="/account"
+                  rel="canonical"
+                  className="pointer"
+                >
+                  <div className='text-grey'>Edit Profile</div>
+                </a>
+              </Link>
               &nbsp;⬡&nbsp;
-              <a href={`/u/${auth.username}`} className="pointer">
-                <div className="text-rainbow">{auth.username}</div>
-              </a>
+              <Link href={`/u/${auth.username}`}>
+                <a
+                  href={`/u/${auth.username}`}
+                  rel="canonical"
+                  className="pointer text-rainbow"
+                >
+                  { auth.username }
+                </a>
+              </Link>
             </div>
           </div>
-        ) : (
+        :
           <div>
             <div className="flex text-s">
               <div className="flex-full" />
@@ -106,7 +118,7 @@ export default function Header() {
               </Link>
             </div>
           </div>
-        )}
+        }
       </div>
     </div>
   );

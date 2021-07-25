@@ -8,22 +8,20 @@ import DatePicker from "react-mobile-datepicker";
 
 import Resizer from "../../src/client/Components/Tools/Resizer";
 import { apiUrl } from "../../src/client/baseUrl";
+import Program from "../../models/programModel";
 import doDashes from "../../utils/doDashes";
 import moment from "moment";
+import dbConnect from "../../utils/dbConnect";
 
 export async function getServerSideProps(context) {
-  const res = await fetch(`${apiUrl()}/program/getProgram`, {
-    method: "POST",
-    body: JSON.stringify({ url: context.query.program }),
-    headers: { "Content-Type": "application/json" },
-  });
+  await dbConnect();
 
-  const program = await res.json();
-  return { props: { program } };
+  const program = await Program.findOne({ url: context.query.program }).populate("organizers");
+
+  return { props: { program: JSON.parse(JSON.stringify(program)) } };
 }
 
 export default function Application(props) {
-  const { program } = useParams();
   const auth = useStoreState((state) => state.user.auth);
   const small = useStoreState((state) => state.app.small);
 
@@ -36,7 +34,7 @@ export default function Application(props) {
 
   useEffect(() => {
     if (auth && auth.token) {
-      fetch(`${apiUrl()}/getAccount`, {
+      fetch(`${apiUrl()}/program/getAccount`, {
         method: "GET",
         headers: {
           "Accept": "application/json",
@@ -307,12 +305,12 @@ export default function Application(props) {
             <div className="text-s margin-top-s">
               Curated by&nbsp;
               <strong>
-                <Link
+                <a
                   className="text-rainbow pointer"
                   href={`/curator/${doDashes(programInfo.organizers[0].name)}`}
                 >
                   {programInfo.organizers[0].name}
-                </Link>
+                </a>
               </strong>
             </div>
             <div className="margin-top">
@@ -538,7 +536,7 @@ export default function Application(props) {
         {!applied ? (
           <div>
             <div className="margin-top text-l">Art Submission Form</div>
-            {program === "genesis" && (
+            {programInfo.url === "genesis" && (
               <div>
                 <div className="text-s margin-top form__title">
                   Have you sold your own NFT before?
@@ -773,9 +771,9 @@ export default function Application(props) {
             )}
             <div>
               {!user && (
-                <Link href="/login" className="margin-top text-mid text-grey">
+                <a href="/login" className="margin-top text-mid text-grey">
                   You must be logged in to submit an artwork
-                </Link>
+                </a>
               )}
               {user &&
                 auth &&
@@ -786,13 +784,13 @@ export default function Application(props) {
                   !user.user.country ||
                   !user.user.twitter ||
                   !user.user.website) && (
-                  <Link
+                  <a
                     href="/account"
                     className="margin-top text-mid text-grey"
                   >
                     You must complete your user profile and verify wallet &
                     email to submit an artwork
-                  </Link>
+                  </a>
                 )}
             </div>
             {programInfo &&
@@ -814,12 +812,12 @@ export default function Application(props) {
             <div className="margin-top-l">Art Submission</div>
             {applied.published ? (
               <div className="margin-top">
-                <Link
+                <a
                   href={`/${programInfo.url}/${applied.order}`}
                   className="text-rainbow"
                 >
                   Minted In Exhibition
-                </Link>
+                </a>
               </div>
             ) : (
               <div className="margin-top text-mid">

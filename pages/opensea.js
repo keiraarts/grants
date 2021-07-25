@@ -1,8 +1,8 @@
 import React from "react";
 import { NextSeo } from "next-seo";
-import OpenSea from "../src/client/components/tutorials/opensea";
+import OpenSea from "../src/client/Components/Tutorials/OpenSea";
 
-export default function RaribleTutorial() {
+export default function OpenseaTutorial() {
   return (
     <>
       <NextSeo

@@ -26,20 +26,27 @@ export default async function handler(req, res) {
             finalized: { $ne: true },
           },
           (err, data) => {
-            const unapproved = [],
-              approved = [],
-              rejected = [];
+            const unscored = [],
+              scored = [];
             data.forEach((e) => {
-              if (e.approved.find((g) => g._id.equals(jwt.id)))
-                approved.push(e);
-              else if (e.rejected.find((g) => g._id.equals(jwt.id)))
-                rejected.push(e);
-              else unapproved.push(e);
+              if (e.scores.find((g) => g.user.equals(jwt.id))) scored.push(e);
+              else unscored.push(e);
+            });
+
+            const myScores = scored.sort((a, b) => {
+              let foundA, foundB;
+              a.scores.forEach((e) => {
+                if (e.user.equals(jwt.id)) foundA = e;
+              });
+              b.scores.forEach((e) => {
+                if (e.user.equals(jwt.id)) foundB = e;
+              });
+              return foundA.userScore > foundB.userScore ? -1 : 1;
             });
 
             return err
               ? res.status(500).json(err)
-              : res.json({ unapproved, approved, rejected });
+              : res.json({ unscored, scored: myScores });
           }
         ).populate(
           "user",

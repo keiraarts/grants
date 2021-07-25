@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import Link from "next/link";
 
 function openLink(page) {
   let win = window.open(page, "_blank");
@@ -178,17 +177,17 @@ export default function Committee() {
           Paris Hilton's "I'm Excited About NFTs—You Should Be Too"
         </a>
         <br />
-        <Link href="/tutorial" className="text-grey remove-a margin-top">
+        <a href="/tutorial" className="text-grey remove-a margin-top">
           Setting up a wallet
-        </Link>
+        </a>
         <br />
-        <Link href="/opensea" className="text-grey remove-a margin-top">
+        <a href="/opensea" className="text-grey remove-a margin-top">
           Minting on OpenSea
-        </Link>
+        </a>
         <br />
-        <Link href="/rarible" className="text-grey remove-a margin-top">
+        <a href="/rarible" className="text-grey remove-a margin-top">
           Minting on Rarible
-        </Link>
+        </a>
         <br />
         <a
           className="text-grey pointer margin-top"

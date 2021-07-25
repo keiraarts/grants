@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 
-import Drag from '../../assets/drag.png';
-import '../../styles.scss';
+// import '../../styles.scss';
 
 export default function DecidedBlock({ order, nft }) {
   const [loaded, didLoad] = useState(false);
@@ -9,7 +8,7 @@ export default function DecidedBlock({ order, nft }) {
 
   return (
     <div className='reorder-block flex'>
-      <img src={ Drag } className='drag-icon v-center' />
+      <img src='/assets/drag.png' className='drag-icon v-center' />
       { (!loaded) && <div className='reorder-loading'><div className='loading'><div></div><div></div></div></div> }
       <div className='drag-order'>
         { order + 1 }

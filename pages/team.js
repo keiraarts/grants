@@ -1,6 +1,6 @@
 import React from "react";
 import { NextSeo } from "next-seo";
-import Committee from "../src/client/components/committee";
+import Committee from "../src/client/Components/Committee";
 
 export default function TeamPage() {
   return (

@@ -4,132 +4,152 @@ require("./organizerModel");
 require("./userModel");
 
 const program = {
-  organizers: [
-    {
-      type: mongoose.Schema.ObjectId,
-      ref: "Organizer",
-    },
-  ],
+  organizers: [{
+      type:     mongoose.Schema.ObjectId,
+      ref:      'Organizer',
+  }],
   name: {
-    type: String,
-    trim: true,
-    required: true,
+      type:  String,
+      trim:  true,
+      required: true,
   },
   url: {
-    type: String,
-    trim: true,
-    required: true,
+      type:  String,
+      trim:  true,
+      required: true,
   },
   description: {
-    type: String,
-    trim: true,
-    required: true,
+      type:  String,
+      trim:  true,
+      required: true,
   },
   tagline: {
-    type: String,
-    trime: true,
+      type: String,
+      trime: true,
   },
   logistics: {
-    type: String,
-    trim: true,
-    required: true,
+      type:  String,
+      trim:  true,
+      required: true,
   },
   criteria: {
-    type: String,
-    trim: true,
-    required: true,
+      type:  String,
+      trim:  true,
+      required: true,
   },
-  curators: [
-    {
-      type: mongoose.Schema.ObjectId,
-      ref: "User",
-    },
-  ],
-  active: {
-    // Shown in application list
-    type: Boolean,
-    default: false,
+  curators: [{
+      type:     mongoose.Schema.ObjectId,
+      ref:      'User',
+  }],
+  active: { // Shown in application list
+      type:    Boolean,
+      default: false,
   },
   isProtected: {
-    type: Boolean,
-    default: false,
+      type: Boolean,
+      default: false
   },
   passcode: {
-    type: String,
+      type: String,
   },
   open: {
-    type: Date,
+      type: Date,
   },
   close: {
-    type: Date,
+      type: Date,
   },
   closeApplication: {
-    type: Boolean,
+      type: Boolean,
+  },
+  bypassStatement: {
+      type: Boolean,
   },
   perpetual: {
-    type: Boolean,
-    default: false,
+      type: Boolean,
+      default: false
   },
   passByVotes: {
-    type: Boolean,
-    default: true,
+      type: Boolean,
+      default: true,
   },
   blindVoting: {
-    type: Boolean,
-    default: true,
+      type: Boolean,
+      default: true,
   },
   topThreshold: {
-    type: Number,
-    default: 10,
+      type: Number,
+      default: 10,
   },
   voteThreshold: {
-    type: Number,
-    default: 3,
+      type: Number,
+      default: 3,
   },
   contractAddress: {
-    type: String,
+      type: String
   },
   creationInProgress: {
-    type: Boolean,
-    default: false,
+      type: Boolean,
+      default: false,
+  },
+  consolationURL: {
+      type: String,
+  },
+  consolationURLWeb: {
+      type: String,
+  },
+  prizeRewarded: {
+      type: Boolean,
+      default: false,
   },
   ownershipTransferred: {
-    type: Boolean,
-    default: false,
+      type: Boolean,
+      default: false,
   },
   mintToArtist: {
-    type: Boolean,
-    default: false,
+      type: Boolean,
+      default: true,
   },
   curationLock: {
-    type: Boolean,
-    default: false,
+      type: Boolean,
+      default: false,
   },
   hideResults: {
-    type: Boolean,
-    default: false,
+      type: Boolean,
+      default: false,
   },
+  advancedCuration: {
+      type: Boolean,
+      default: false,
+  },
+  advancedMetrics: [{
+      metric: {
+          type: String,
+      },
+      weight: {
+          type: Number
+      }
+  }],
   curatorAddress: {
-    type: String,
+      type: String
   },
   mintInProgress: {
-    type: Boolean,
+      type: Boolean,
   },
   exhibiting: {
-    type: Boolean,
-    default: false,
+      type: Boolean,
+      default: false,
   },
   finalized: {
-    type: Boolean,
-    default: false,
+      type: Boolean,
+      default: false,
   },
   order: {
-    type: Number,
+      type: Number,
   },
   total: {
-    type: Number,
-    default: 0,
-  },
+      type: Number,
+      default: 0
+  }
 };
 
 const ProgramSchema = new Schema(program);

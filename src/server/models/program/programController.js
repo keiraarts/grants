@@ -52,6 +52,7 @@ exports.getPrograms = async (req, res) => {
 };
 
 exports.getProgram = async (req, res) => {
+  console.log('wtf', req.body.url);
   return Program.findOne({ url: req.body.url }, (err, data) => {
     return err ? res.status(500).json(err) : res.json(data);
   }).populate("organizers");

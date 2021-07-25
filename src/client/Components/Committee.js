@@ -14,8 +14,8 @@ export default function Committee() {
         Our shared love of art, music, and design
       </div>
       <div className="page-container margin-top">
-        <Link href="/donate" className="text-rainbow remove-a">
-          Sevens Foundation's Donors
+        <Link href="/donate">
+          <div className="pointer text-rainbow">Sevens Foundation's Donors</div>
         </Link>
         <div className="text-s">Our sincerest thanks to you all</div>
         <div className="text-m margin-top">Advisors</div>

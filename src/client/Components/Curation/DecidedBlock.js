@@ -2,11 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import ReactModal from 'react-modal';
 import ReactAutolinker from 'react-autolinker';
 
-import MinScreen from '../../assets/minscreen.png';
-import Twitter from '../../assets/twitter.png';
-import Instagram from '../../assets/instagram.png';
-import Web from '../../assets/website.png';
-import '../../styles.scss';
+// import '../../styles.scss';
 
 function openLink(page)
 {
@@ -16,7 +12,15 @@ function openLink(page)
 }
 
 
-export default function DecidedBlock({ nft, undo, type, blind, metrics, user, finalScore }) {
+export default function DecidedBlock({ nft, undo, type, blind, metrics, user, finalScore, data, index, width }) {
+  nft = data;
+  undo = nft.undo;
+  type = nft.type;
+  blind = nft.blind;
+  metrics = nft.metrics;
+  user = nft.me;
+  finalScore = nft.finalScore;
+
   const [loaded, didLoad] = useState(false);
   const [infoOpen, setInfoOpen] = useState(false);
   const imageType = nft.artWeb.split('.')[1];
@@ -130,9 +134,9 @@ export default function DecidedBlock({ nft, undo, type, blind, metrics, user, fi
           </div>
           { !blind &&
             <div className='flex margin-top-s center'>
-              { nft.user.website && <div><img src={ Web } className='account-social-web pointer' style={{ marginTop: '0.2rem' }} alt='Website' onClick={ () => openLink(nft.user.website) } /></div> }
-              { nft.user.twitter && <div><img src={ Twitter } className='account-social pointer' alt='Twitter' onClick={ () => openLink(`https://twitter.com/${ nft.user.twitter }`) } /></div> }
-              { nft.user.instagram && <div><img src={ Instagram } className='account-social pointer' alt='Instagram' onClick={ () => openLink(`https://instagram.com/${ nft.user.instagram }`) } /></div> }
+              { nft.user.website && <div><img src='/assets/website.png' className='account-social-web pointer' style={{ marginTop: '0.2rem' }} alt='Website' onClick={ () => openLink(nft.user.website) } /></div> }
+              { nft.user.twitter && <div><img src='/assets/twitter.png' className='account-social pointer' alt='Twitter' onClick={ () => openLink(`https://twitter.com/${ nft.user.twitter }`) } /></div> }
+              { nft.user.instagram && <div><img src='/assets/instagram.png' className='account-social pointer' alt='Instagram' onClick={ () => openLink(`https://instagram.com/${ nft.user.instagram }`) } /></div> }
             </div>
           }
           { nft.statement &&
@@ -151,7 +155,7 @@ export default function DecidedBlock({ nft, undo, type, blind, metrics, user, fi
       </ReactModal>
       { (isFullScreen && !(imageType === 'mp4' || imageType === 'mov')) &&
         <div className='fullscreen-container'>
-          <img src={ MinScreen } className='frame-exit pointer' onClick={ () => fullScreen() } />
+          <img src='/assets/minscreen.png' className='frame-exit pointer' onClick={ () => fullScreen() } />
           <img className='gallery-art-fullscreen' src={ `https://cdn.grants.art/${ nft.art }` } />
         </div>
       }

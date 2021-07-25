@@ -16,6 +16,7 @@ import hbjs from "handbrake-js";
 import crypto from "crypto";
 import jimp from "jimp";
 import fs from "fs";
+import path from "path";
 
 const ENV = process.env;
 
@@ -31,8 +32,8 @@ const transporter = nodemailer.createTransport({
 
 const compressor = async (file, fileWeb) => {
   return new Promise((resolve) => {
-    const input = path.join(__dirname, `../../images/${file}`);
-    const output = path.join(__dirname, `../../images/${fileWeb}`);
+    const input = path.join(__dirname, `../../../images/${file}`);
+    const output = path.join(__dirname, `../../../images/${fileWeb}`);
     const write = fs.createWriteStream(output);
 
     const fileType = file.split(".")[1];
@@ -174,14 +175,14 @@ export default async function handler(req, res) {
 
       const saveImage = promisify(fs.writeFile);
       await saveImage(
-        path.join(__dirname, `../../images/${applicant.art}`),
+        path.join(__dirname, `../../../images/${applicant.art}`),
         buf
       );
       await compressor(applicant.art, applicant.artWeb);
       if (ext === "mp4") {
         await hbjs.run({
-          input: path.join(__dirname, `../../images/${applicant.art}`),
-          output: path.join(__dirname, `../../images/video-${applicant.art}`),
+          input: path.join(__dirname, `../../../images/${applicant.art}`),
+          output: path.join(__dirname, `../../../images/video-${applicant.art}`),
           preset: "Vimeo YouTube HQ 2160p60 4K",
         });
       }
@@ -189,7 +190,7 @@ export default async function handler(req, res) {
       const uploader = await spaces.uploadFile({
         localFile: path.join(
           __dirname,
-          `../../images/${
+          `../../../images/${
             ext === "mp4" ? `video-${applicant.art}` : applicant.art
           }`
         ),
@@ -202,7 +203,7 @@ export default async function handler(req, res) {
 
       console.log("uploading");
       const uploader2 = await spaces.uploadFile({
-        localFile: path.join(__dirname, `../../images/${applicant.artWeb}`),
+        localFile: path.join(__dirname, `../../../images/${applicant.artWeb}`),
         s3Params: {
           Bucket: "grants",
           Key: `${applicant.artWeb}`,
@@ -212,7 +213,7 @@ export default async function handler(req, res) {
 
       uploader.on("end", () => {
         fs.unlink(
-          path.join(__dirname, `../../images/${applicant.art}`),
+          path.join(__dirname, `../../../images/${applicant.art}`),
           (err2) => {
             if (err2 !== null) {
               console.log(err2);
@@ -223,7 +224,7 @@ export default async function handler(req, res) {
 
         if (ext === "mp4") {
           fs.unlink(
-            path.join(__dirname, `../../images/video-${applicant.art}`),
+            path.join(__dirname, `../../../images/video-${applicant.art}`),
             (err2) => {
               if (err2 !== null) {
                 console.log(err2);
@@ -236,7 +237,7 @@ export default async function handler(req, res) {
 
       uploader2.on("end", () => {
         fs.unlink(
-          path.join(__dirname, `../../images/${applicant.artWeb}`),
+          path.join(__dirname, `../../../images/${applicant.artWeb}`),
           (err2) => {
             if (err2 !== null) {
               console.log(err2);
