@@ -27,8 +27,6 @@ export default function ExhibitionGallery({ nfts, url }) {
   );
   const resizeObserver = useResizeObserver(positioner);
 
-  console.log('yo', nfts);
-
   nfts.forEach(nft => nft.url = url);
 
   return (

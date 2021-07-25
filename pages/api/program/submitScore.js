@@ -36,8 +36,6 @@ export default async function handler(req, res) {
                 score: req.body.score,
               };
 
-              console.log('YO', program);
-
               let userScore = 0;
               program.advancedMetrics.forEach((e) => {
                 let foundScore =
@@ -53,7 +51,6 @@ export default async function handler(req, res) {
               if (data.scores) data.scores.push(newScore);
               else data.scores = [newScore];
 
-              console.log('NEW', data.scores);
               let score = 0;
               data.scores.forEach((item) => {
                 let individualScore = 0;

@@ -42,8 +42,6 @@ export async function getServerSideProps(context) {
     gallery.nfts = sorted;
   });
 
-  console.log(profile, galleries);
-
   return {
     props: {
       profile: JSON.parse(JSON.stringify(profile)),

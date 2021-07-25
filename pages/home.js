@@ -17,8 +17,6 @@ export async function getStaticProps() {
     .populate("organizers")
     .sort("order");
 
-  console.log({ programs });
-
   return {
     props: { programs: JSON.parse(JSON.stringify(programs)) },
   };
@@ -108,7 +106,6 @@ export default function Home(props) {
                     <div className="flex">
                       <a
                         href={`/curator/${item.organizers[0].url}`}
-                        className="text-rainbow text-s"
                       >
                         <div className="text-rainbow text-s">
                           <strong>{item.organizers[0].name}</strong>

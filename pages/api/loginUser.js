@@ -70,7 +70,6 @@ export default async function handler(req, res) {
           }
         );
       } catch (error) {
-        console.log('GOT ERR', error);
         res.status(400).json({ success: false });
       }
       break;

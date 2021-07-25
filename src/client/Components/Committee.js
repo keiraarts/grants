@@ -9,7 +9,9 @@ export default function Committee() {
 
   return (
     <div className="content-block">
-      <div className="text-l text-b">Committee</div>
+      <div className="text-l text-b">
+        <strong>Committee</strong>
+      </div>
       <div className="text-s margin-top-s">
         Our shared love of art, music, and design
       </div>

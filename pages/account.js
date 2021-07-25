@@ -38,7 +38,6 @@ export default function Account() {
     })
       .then((res) => res.json())
       .then((json) => {
-        console.log('finis', json);
         setSubmitUser(false);
         if (json.error) setErr(json.error);
         else {

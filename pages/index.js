@@ -68,7 +68,7 @@ export default function Home(props) {
                   if (item.exhibiting) {
                     return (
                       <Link href={`/${item.url}`} className="flex" key={index}>
-                        <div className="relative w-full h-full home-button flex-full">
+                        <div className="home-button flex-full">
                           <div className="flex">
                             <Link href={`/curator/${item.organizers[0].url}`}>
                               <div className="text-rainbow text-s">

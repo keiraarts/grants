@@ -47,7 +47,6 @@ export default async function handler(req, res) {
             return res.json({ error: "Issue verifying" });
           });
       } catch (error) {
-        console.log('got err', error);
         res.status(400).json({ success: false });
       }
       break;

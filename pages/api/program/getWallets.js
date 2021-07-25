@@ -43,7 +43,6 @@ export default async function handler(req, res) {
 
         return res.json({ success: wallets });
       } catch (error) {
-        console.log('wtf', error);
         res.status(400).json({ success: false });
       }
       break;
