@@ -1,6 +1,6 @@
 import React from "react";
 import { NextSeo } from "next-seo";
-import Wallet from "../src/client/components/tutorials/wallet";
+import Wallet from "../src/client/Components/Tutorials/Wallet";
 
 export default function WalletTutorial() {
   return (

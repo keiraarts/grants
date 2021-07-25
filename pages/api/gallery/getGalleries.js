@@ -1,4 +1,5 @@
 import dbConnect from "../../../utils/dbConnect";
+import Gallery from "../../../models/galleryModel";
 import User from "../../../models/userModel";
 
 export default async function handler(req, res) {

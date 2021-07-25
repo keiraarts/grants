@@ -1,10 +1,7 @@
 import _ from 'lodash';
-import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { Redirect } from "react-router-dom";
+import React, { useState } from "react";
 
 import { useStoreState, useStoreActions } from "easy-peasy";
-import { apiUrl } from "../../src/client/baseUrl";
 import ReactAutolinker from "react-autolinker";
 import Link from "next/link";
 import dbConnect from "../../utils/dbConnect";
@@ -42,6 +39,8 @@ export async function getServerSideProps(context) {
     gallery.nfts = sorted;
   });
 
+  console.log('hrm', username);
+
   return {
     props: {
       profile: JSON.parse(JSON.stringify(profile)),
@@ -52,7 +51,7 @@ export async function getServerSideProps(context) {
 }
 
 export default function Profile(props) {
-  const { username } = props.username;
+  const { username } = props;
   const auth = useStoreState((state) => state.user.auth);
   const setAuth = useStoreActions((dispatch) => dispatch.user.setAuth);
   const small = useStoreState((state) => state.app.small);

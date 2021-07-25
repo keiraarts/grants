@@ -1,4 +1,6 @@
+import auth from "../../../src/server/services/authorization-service";
 import dbConnect from "../../../utils/dbConnect";
+import Gallery from "../../../models/galleryModel";
 import User from "../../../models/userModel";
 
 export default async function handler(req, res) {
@@ -12,15 +14,8 @@ export default async function handler(req, res) {
         const user = await User.findById(jwt.id);
         if (!user) return res.json({ error: "Authentication error" });
 
-        const gallery = new Gallery({
-          user: jwt.id,
-          name: req.body.name,
-          description: req.body.description,
-          nfts: [],
-        });
-
-        gallery.save();
-        return res.json({ success: gallery });
+        await Gallery.findOneAndRemove({ _id: req.body.gallery, user: jwt.id });
+        return res.json({ success: "Gallery deleted" });
       } catch (error) {
         console.error(error);
         res.status(400).json({ success: false, message: "fetch failed" });

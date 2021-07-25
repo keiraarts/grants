@@ -1,3 +1,4 @@
+import auth from "../../../src/server/services/authorization-service";
 import dbConnect from "../../../utils/dbConnect";
 import Gallery from "../../../models/galleryModel";
 import User from "../../../models/userModel";

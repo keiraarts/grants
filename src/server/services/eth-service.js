@@ -6,7 +6,7 @@ const fs = require('fs');
 const log = require('ololog').configure({ time: true })
 const Arweave = require('arweave');
 const fetch = require('node-fetch');
-const hre = require("hardhat")
+const hre = require("hardhat");
 const nodemailer = require('nodemailer');
 
 const templates = require('../emails/templates');
