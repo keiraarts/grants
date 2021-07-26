@@ -39,8 +39,6 @@ export async function getServerSideProps(context) {
     gallery.nfts = sorted;
   });
 
-  console.log('hrm', username);
-
   return {
     props: {
       profile: JSON.parse(JSON.stringify(profile)),

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import NFT from "../../src/client/Components/ExhibitionNFT";
+import Gallery from '../../src/client/Components/ExhibitionGallery';
 
 import { useSwipeable } from "react-swipeable";
 import { useHistory } from "react-router-dom";
@@ -69,29 +70,46 @@ export async function getStaticProps({ params }) {
     .populate("organizers")
     .populate("curators", "artistName first last instagram twitter website");
 
-  const gallery = await ProgramApplicant.findOne({
-    program: program._id,
-    order: params.id.toString(),
-    published: true,
-  })
-    .select(
-      "-approved -rejected -program -statement -additional -ineligible -flagged -approvalCount -rejectCount -emailed -accepted"
-    )
-    .populate(
-      "user",
-      "artistName birthYear country city website twitter instagram"
-    )
-    .sort("order");
+  let gallery, imageMetadata, fullGallery;
+  if (params.id !== 'all') {
+    fullGallery = false;
+    gallery = await ProgramApplicant.findOne({
+      program: program._id,
+      order: params.id.toString(),
+      published: true,
+    })
+      .select(
+        "-approved -rejected -program -statement -additional -ineligible -flagged -approvalCount -rejectCount -emailed -accepted"
+      )
+      .populate(
+        "user",
+        "artistName birthYear country city website twitter instagram"
+      )
+      .sort("order");
 
-  set(gallery, "tokenId", gallery.order);
+    set(gallery, "tokenId", gallery.order);
 
-  let imageMetadata;
 
-  try {
-    const imageUrl = `https://cdn.grants.art/${gallery.art}`;
-    imageMetadata = await probe(imageUrl);
-  } catch (error) {
-    imageMetadata = { width: 800, height: 800 };
+    try {
+      const imageUrl = `https://cdn.grants.art/${gallery.art}`;
+      imageMetadata = await probe(imageUrl);
+    } catch (error) {
+      imageMetadata = { width: 800, height: 800 };
+    }
+  } else {
+    fullGallery = true;
+    gallery = await ProgramApplicant.find({
+      program: program._id,
+      published: true,
+    })
+      .select(
+        "-approved -rejected -program -statement -additional -ineligible -flagged -approvalCount -rejectCount -emailed -accepted"
+      )
+      .populate(
+        "user",
+        "artistName birthYear country city website twitter instagram"
+      )
+      .sort("order");
   }
 
   const data = {
@@ -113,6 +131,8 @@ export async function getStaticProps({ params }) {
       id: params.id,
       url: params.url,
       data: JSON.parse(JSON.stringify(data)),
+      fullGallery,
+      fullGalleryData: JSON.parse(JSON.stringify(gallery))
     },
   };
 }
@@ -132,7 +152,11 @@ export default function ExhibitionIndividual(props) {
   // Trigger image changes
   useEffect(() => {
     setGallery(data?.gallery);
-  }, [data?.gallery?.id]);
+  }, [id]);
+
+  useEffect(() => {
+    setGallery(props.fullGalleryData);
+  }, [props.fullGallery])
 
   // Lows next artist without rendering new page
   const LoadNextArtist = (val = 1) => {
@@ -237,6 +261,11 @@ export default function ExhibitionIndividual(props) {
           </div>
         </a>
       </div>
+      { (id === 'all' && gallery && gallery.length) &&
+        <div className='margin-top-l'>
+          { gallery && <Gallery nfts={ gallery } url={ url } /> }
+        </div>
+      }
       {!id && (
         <div className="line-breaks">
           {gallery && gallery.length ? (
@@ -333,7 +362,7 @@ export default function ExhibitionIndividual(props) {
           </div>
         </div>
       )}
-      {id && gallery && (
+      { (id && id !== 'all' && gallery) && (
         <div className="h-full gallery-min-height" id={gallery.id}>
           <NFT
             params={{ id, url }}
@@ -344,6 +373,7 @@ export default function ExhibitionIndividual(props) {
             ethPrice={ethPrice}
             contract={exhibition.contract}
             metadata={data.imageMetadata}
+            url={url}
             important
           />
         </div>

@@ -1,5 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Link } from "react-router-dom";
+import React, { useState, useRef } from 'react';
 import { useStoreState } from 'easy-peasy';
 import {
   usePositioner,
@@ -8,8 +7,6 @@ import {
   MasonryScroller
 } from "masonic";
 import { useWindowSize } from "@react-hook/window-size";
-
-import '../styles.scss';
 
 export default function ExhibitionGallery({ nfts, url }) {
   const cols = useStoreState(state => state.app.cols);
@@ -78,7 +75,7 @@ const NFT = ({ data, index, width }) => {
           </div>
         </div>
       }
-      <Link className='gallery-block' style={{ width }} to={ `/${ data.url }/${ data.order }` }>
+      <a className='gallery-block' style={{ width }} href={ `/${ data.url }/${ data.order }` }>
       { (data.imageType === 'mp4' || data.imageType === 'mov') ?
         <video muted loop autoPlay webkit-playsinline='true' playsInline preload='none' className='block-art-image' ref={ video }>
             <source src={ `https://cdn.grants.art/${ data.artWeb }` }
@@ -88,7 +85,7 @@ const NFT = ({ data, index, width }) => {
         :
         <img src={ `https://cdn.grants.art/${ data.artWeb }` } className='block-art-image' />
       }
-      </Link>
+      </a>
     </div>
   );
 };

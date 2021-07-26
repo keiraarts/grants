@@ -382,33 +382,38 @@ export default function OpenMarket({
   const [listener, setListener] = useState(null);
   async function connectWallet() {
     if (provider) {
+      console.log('WTF', provider);
       setBidErr(null);
       let createdSeaport;
-      if (window.ethereum) {
-        createdSeaport = new OpenSeaPort(provider, {
-          networkName: Network.Main,
-        });
-      } else {
-        const fm = new Fortmatic("pk_live_B635DD2C775F3285");
-        createdSeaport = new OpenSeaPort(fm.getProvider(), {
-          networkName: Network.Main,
-        });
-      }
-
-      if (listener && seaport) {
-        seaport.removeListener(listener);
-      }
-
-      const listener = createdSeaport.addListener(
-        EventType.CreateOrder,
-        ({ transactionHash, event }) => {
-          setSellOpen(false);
+      try {
+        if (window.ethereum) {
+          createdSeaport = new OpenSeaPort(provider, {
+            networkName: Network.Main,
+          });
+        } else {
+          const fm = new Fortmatic("pk_live_B635DD2C775F3285");
+          createdSeaport = new OpenSeaPort(fm.getProvider(), {
+            networkName: Network.Main,
+          });
         }
-      );
 
-      setListener(listener);
-      setSeaport(createdSeaport);
-      getBalance(provider.selectedAddress, createdSeaport);
+        if (listener && seaport) {
+          seaport.removeListener(listener);
+        }
+
+        const listener = createdSeaport.addListener(
+          EventType.CreateOrder,
+          ({ transactionHash, event }) => {
+            setSellOpen(false);
+          }
+        );
+
+        setListener(listener);
+        setSeaport(createdSeaport);
+        getBalance(provider.selectedAddress, createdSeaport);
+      } catch(err) {
+        console.log('Error connecting with OpenSeaPort', err)
+      }
     }
   }
 

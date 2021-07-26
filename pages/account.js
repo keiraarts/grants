@@ -3,6 +3,7 @@ import { usePromise } from "promise-hook";
 import CountryList from "country-list";
 import { useStoreState, useStoreActions } from "easy-peasy";
 import { apiUrl } from "../src/client/baseUrl";
+import WalletConnect from '../src/client/Components/Web3/WalletConnect';
 import validateUsername from "../utils/validateUsername";
 import { useRouter } from 'next/router'
 import { ethers } from "ethers";
@@ -71,11 +72,13 @@ export default function Account() {
     if (window.ethereum) {
       window.ethereum
         .enable()
-        .then((provider = new ethers.providers.Web3Provider(window.ethereum)));
-      signer = provider.getSigner();
-      signer.getAddress().then((add) => {
-        setAddress(add);
-      });
+        .then(() => {
+          provider = new ethers.providers.Web3Provider(window.ethereum);
+          signer = provider.getSigner();
+          signer.getAddress().then((add) => {
+            setAddress(add);
+          });
+        });
     }
   }
 
@@ -171,6 +174,7 @@ export default function Account() {
 
   return (
     <div className="content-block">
+      <WalletConnect />
       <div className="flex text-l">
         <strong>Sevens Account</strong>
         <div className="flex-full" />

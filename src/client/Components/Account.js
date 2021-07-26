@@ -20,6 +20,7 @@ function validateUsername(string) {
 }
 
 export default function Account() {
+  console.log('what are we doing');
   const auth = useStoreState(state => state.user.auth);
   const provider = useStoreState(state => state.eth.provider);
   const setProvider = useStoreActions(dispatch => dispatch.eth.setProvider);
